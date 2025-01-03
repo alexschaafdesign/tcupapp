@@ -1,0 +1,159 @@
+import React, { useState, useEffect } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
+import Home from "./pages/Home.js";
+import ShowsTable from "./pages/Shows/ShowsTable.js";
+import "./styles/App.css";
+import VenuesTable from "./pages/Venues/VenuesTable.js";
+import VenueProfile from "./pages/Venues/VenueProfile.js";
+import { Box } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./styles/theme"; // Import your custom theme
+import TCUPBandForm from "./pages/Bands/TCUPBandForm.js";
+import TCUPBandsGrid from "./pages/Bands/TCUPBandsGrid.js";
+import TCUPBandProfile from "./pages/Bands/TCUPBandProfile.js";
+import Header from "./components/Header.js"; // Import your custom Header component
+import TCUPPeopleForm from "./pages/TCUPPeopleForm.js";
+import TCUPPeopleTable from "./pages/TCUPPeopleTable.js";
+import TCUPPeopleProfile from "./pages/TCUPPeopleProfile.js";
+import Organize from "./pages/Organize.js";
+import ShowProfile from "./pages/Shows/ShowProfile.js";
+import ShowsMinimal from "./pages/WithoutHeader/ShowsMinimal.js";
+import ShowForm from "./pages/Shows/ShowForm.js";
+import EditShowPage from "./components/EditShowPage.js";
+import RootLayout from "./components/layout/RootLayout.js";
+import { Login, ProtectedRoute } from './auth/XenforoAuth';
+import OAuthCallback from "./components/OAuthCallback.js";
+import ShowFormMinimal from "./pages/WithoutHeader/ShowFormMinimal.js";
+import ShowProfileMinimal from "./pages/WithoutHeader/ShowProfileMinimal.js";
+import EditShowPageMinimal from "./pages/WithoutHeader/EditShowPageMinimal.js";
+import ForumLayout from "./components/forum/ForumLayout.js";
+import Callback from "./components/Callback.js";
+import UserProfile from "./pages/UserProfile.js";
+import AuthTest from "./components/AuthTest.js";
+import SessionMusiciansTable from "./pages/SessionMusicians/SessionMusiciansTable.js";
+import SessionMusicianProfile from "./pages/SessionMusicians/SessionMusiciansProfile.js";
+import useApi from "./hooks/useApi.js";
+import { useAuth0 } from "@auth0/auth0-react";
+import MessageBoard from "./pages/MessageBoard.js";
+import VenueForm from "./pages/Venues/VenueForm.js";
+import CalendarEvents from "./components/CalendarEvents.js";
+
+function App() {
+  const [allShows, setAllShows] = useState([]);
+  const { isAuthenticated, user } = useAuth0();
+  const { callApi } = useApi();
+  const location = useLocation(); // Get the current route location
+  const getMaxWidth = () => {
+    return location.pathname === '/sessionmusicians' ? false : 'md';
+  };
+
+  const hasAttemptedRegistration = React.useRef(false);
+
+  useEffect(() => {
+    const registerUser = async () => {
+      // Only try to register if:
+      // 1. We haven't attempted registration yet
+      // 2. User is authenticated
+      // 3. We have user info
+      if (!hasAttemptedRegistration.current && isAuthenticated && user) {
+        try {
+          hasAttemptedRegistration.current = true; // Mark that we've tried
+          await callApi(`${process.env.REACT_APP_API_URL}/auth/register`, {
+            method: 'POST'
+          });
+        } catch (error) {
+          console.error('Error registering user:', error);
+        }
+      }
+    };
+
+    registerUser();
+  }, [isAuthenticated, user, callApi]);
+  
+
+  return (
+    <ThemeProvider theme={theme}>
+      {/* Conditionally render Header based on the current route */}
+      {!location.pathname.match(/\/minimal($|\/)/) && <Header />}
+
+      <RootLayout maxWidth={getMaxWidth()}>
+     
+        <Routes>
+          
+          {/* Home */}
+          <Route path="/" element={<ShowsTable />} />
+
+          {/* Shows */}
+          <Route path="/shows" element={<ShowsTable allShows={allShows} />} />
+          <Route path="/shows/minimal" element={<ShowsMinimal />} />
+          <Route path="/shows/add" element={<ShowForm />} />
+          <Route path="/shows/add/minimal" element={<ShowFormMinimal />} />
+          <Route path="/shows/:id/edit" element={<EditShowPage />} />
+          <Route path="/shows/:id" element={<ShowProfile />} />
+          <Route path="/shows/:id/minimal" element={<ShowProfileMinimal />} />
+          <Route path="/shows/:id/edit/minimal" element={<EditShowPageMinimal />} />
+
+          <Route path="/forum/*" element={<ForumLayout />} />
+          <Route path="/test-auth" element={<AuthTest />} />
+
+          <Route path="/messageboard" element={<MessageBoard />} />
+
+          <Route path="/calendar" element={<CalendarEvents />} />
+
+
+          {/* Organize */}
+          <Route path="/organize" element={<Organize />} />
+
+          <Route path="/callback" element={<Callback />} />
+
+
+
+
+          {/* TCUP Bands */}
+          <Route path="/bands" element={<TCUPBandsGrid />} />
+          <Route path="/bands/:bandSlug" element={<TCUPBandProfile />} />
+          <Route path="/bands/add" element={<TCUPBandForm isEdit={false} />} />
+
+          <Route path="/bands/:bandid/edit" element={<TCUPBandForm isEdit={true} />} />
+
+          {/* Venues */}
+          <Route path="/venues" element={<VenuesTable />} />
+          <Route path="/venues/:id" element={<VenueProfile />} />
+          <Route path="/venues/add" element={<VenueForm />} />
+          <Route path="/venues/edit/:id" element={<VenueForm />} />
+
+
+
+          {/* People */}
+          <Route path="/people/add" element={<TCUPPeopleForm />} />
+          <Route
+            path="/people/:personId/edit"
+            element={<TCUPPeopleForm isEdit />}
+          />
+          <Route 
+            path="/people/:personID"
+            element={<TCUPPeopleProfile />}
+          />
+          <Route path="/people" element={<TCUPPeopleTable />} />
+
+          <Route path="/profile" element={<UserProfile />} />
+
+          <Route path="/sessionmusicians" element={<SessionMusiciansTable />} />
+          <Route path="/sessionmusicians/:id" element={<SessionMusicianProfile />} />
+
+
+
+
+
+          {/* Catch-All */}
+          <Route
+            path="*"
+            element={<div style={{ textAlign: "center", padding: "20px" }}>Page Not Found</div>}
+          />
+        </Routes>
+      </RootLayout>
+    </ThemeProvider>
+  );
+}
+
+export default App;

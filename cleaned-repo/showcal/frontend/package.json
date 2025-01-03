@@ -1,0 +1,84 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://portal.tcupboard.org",
+  "proxy": "https://tcupboard.org",
+  "dependencies": {
+    "-": "^0.0.1",
+    "@auth0/auth0-react": "^2.2.4",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
+    "@mui/icons-material": "^6.3.0",
+    "@mui/material": "^6.3.0",
+    "@mui/system": "^6.1.9",
+    "@mui/x-date-pickers": "^7.23.3",
+    "@mui/x-date-pickers-pro": "^7.23.3",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "assert": "^2.1.0",
+    "auth0": "^4.15.0",
+    "axios": "^1.7.9",
+    "buffer": "^6.0.3",
+    "cloudinary": "^2.5.1",
+    "date-fns": "^2.29.3",
+    "dayjs": "^1.11.13",
+    "express": "^4.21.2",
+    "express-openid-connect": "^2.17.1",
+    "filepond": "^4.32.4",
+    "filepond-plugin-file-poster": "^2.5.1",
+    "filepond-plugin-file-validate-type": "^1.2.9",
+    "filepond-plugin-image-preview": "^4.6.12",
+    "googleapis": "^39.2.0",
+    "http-proxy-middleware": "^3.0.3",
+    "https-browserify": "^1.0.0",
+    "ics": "^3.8.1",
+    "papaparse": "^5.4.1",
+    "pg": "^8.7.1",
+    "process": "^0.11.10",
+    "react": "^18.2.0",
+    "react-datepicker": "^7.5.0",
+    "react-dom": "^18.2.0",
+    "react-filepond": "^7.1.2",
+    "react-icons": "^5.4.0",
+    "react-paginate": "^8.2.0",
+    "react-router-dom": "^6.28.0",
+    "react-scripts": "^5.0.1",
+    "save": "^2.9.0",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.4",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.2.0"
+  }
+}

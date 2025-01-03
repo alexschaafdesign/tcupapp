@@ -1,0 +1,91 @@
+Starting scrapers...
+Running scraper for First_Avenue...
+[2024-12-22 21:18:17] First_Avenue scraper completed successfully.
+Running scraper for Green_Room...
+[2024-12-22 21:18:23] Green_Room scraper completed successfully.
+Running scraper for White_Squirrel...
+[2024-12-22 21:18:24] White_Squirrel scraper completed successfully.
+Running scraper for 331_Club...
+[2024-12-22 21:18:27] 331_Club scraper completed successfully.
+Running scraper for Icehouse...
+[2024-12-22 21:18:28] Icehouse scraper completed successfully.
+Running scraper for The_Cedar_Cultural_Center...
+[2024-12-22 21:19:18] The_Cedar_Cultural_Center scraper failed with output:\nEvent cards loaded successfully.
+Missing flyer image for event: https://www.thecedar.org/events/katz-dogs-with-special-guests-olivia-katz-michelle-kinney
+Missing flyer image for event: https://www.thecedar.org/events/first-avenue-presents-michael-kosta
+Missing flyer image for event: https://www.thecedar.org/events/a-winter-solstice-sound-bath
+Missing flyer image for event: https://www.thecedar.org/events/first-avenue-presents-will-burkart
+Missing flyer image for event: https://www.thecedar.org/events/volunteer-orientation
+Missing flyer image for event: https://www.thecedar.org/events/honky-tonk-takeover-f-jack-klatt-trio-mckain-lakey-band
+Missing flyer image for event: https://www.thecedar.org/events/tc-trans-mutual-aid-trans-day-of-revenge-featuring-slog-more
+Missing start time for event: https://www.thecedar.org/events/drone-not-drones-the-10th-28-hour-drone
+Missing flyer image for event: https://www.thecedar.org/events/drone-not-drones-the-10th-28-hour-drone
+Skipped event due to missing critical data: {'venue': 'The Cedar Cultural Center', 'event_link': 'https://www.thecedar.org/events/drone-not-drones-the-10th-28-hour-drone', 'date': datetime.date(2025, 1, 24), 'start': None, 'bands': 'DRONE NOT DRONES - The 10th 28-Hour Drone', 'flyer_image': None}
+Missing flyer image for event: https://www.thecedar.org/events/the-cedar-commissions-night-one-ap-looze-hibah-hassan-phillip-st-john
+Missing flyer image for event: https://www.thecedar.org/events/the-cedar-commissions-night-two-john-jamison-ii-may-klug-yeej
+Missing flyer image for event: https://www.thecedar.org/events/the-qalanjo-project-presents-echoes-from-the-horn-somali-lives-in-cinema
+Missing flyer image for event: https://www.thecedar.org/events/nordic-roots-series-lena-jonsson-trio
+Missing flyer image for event: https://www.thecedar.org/events/samora-pinderhughes-with-tbd-special-guest
+Missing flyer image for event: https://www.thecedar.org/events/larry-joe-with-tbd-special-guest
+Missing flyer image for event: https://www.thecedar.org/events/an-evening-with-guy-davis
+Missing flyer image for event: https://www.thecedar.org/events/first-avenue-presents-eivr-with-sylvaine
+Missing flyer image for event: https://www.thecedar.org/events/first-avenue-presents-mustafa-lost-in-the-dunya-tour
+Missing flyer image for event: https://www.thecedar.org/events/the-okee-dokee-brothers-early-show
+Missing flyer image for event: https://www.thecedar.org/events/the-okee-dokee-brothers-late-show
+Missing flyer image for event: https://www.thecedar.org/events/the-craft-hip-hop-songwriters-showcase
+Missing flyer image for event: https://www.thecedar.org/events/guitar-band-release-show-with-fake-accent-and-the-miami-dolphins
+Missing flyer image for event: https://www.thecedar.org/events/the-cedar-presents-talisk-and-gardiner-brothers-unleashed
+Missing flyer image for event: https://www.thecedar.org/events/first-avenue-presents-an-evening-with-jesse-welles
+Missing flyer image for event: https://www.thecedar.org/events/farah-siraj-with-tbd-special-guest
+Missing flyer image for event: https://www.thecedar.org/events/kris-delmhorst-with-rose-cousins
+Missing flyer image for event: https://www.thecedar.org/events/duke-concept-presents-calledout-music-best-days-of-our-lives-tour
+Missing flyer image for event: https://www.thecedar.org/events/an-evening-with-sissoko-segal-parisien-peirani-les-gars
+Missing flyer image for event: https://www.thecedar.org/events/an-evening-with-alash-0
+Missing flyer image for event: https://www.thecedar.org/events/basia-bulat-basias-palace-live-in-concert
+Missing flyer image for event: https://www.thecedar.org/events/flore-laurentienne-with-tbd-special-guest
+Missing flyer image for event: https://www.thecedar.org/events/an-evening-with-cheryl-wheeler-kenny-white
+Missing flyer image for event: https://www.thecedar.org/events/the-arcadian-wild-with-tbd
+Missing flyer image for event: https://www.thecedar.org/events/the-cedar-presents-valerie-june-owls-omens-and-oracles-tour
+Missing flyer image for event: https://www.thecedar.org/events/mpls-afrobeats-dance-party-f-fananka-nation-guests-bakarii-djs-kwey-and-salif-keita
+Missing flyer image for event: https://www.thecedar.org/events/first-avenue-presents-history-that-doesnt-suck-with-professor-greg-jackson
+Missing flyer image for event: https://www.thecedar.org/events/mr-sun-plays-ellingtons-nutcracker
+Missing flyer image for event: https://www.thecedar.org/events/ben-cook-feltzs-4th-annual-holiday-shindig
+Missing flyer image for event: https://www.thecedar.org/events/flowers-now-a-celebration-of-black-elders-of-the-arts-community
+Missing flyer image for event: https://www.thecedar.org/events/antje-duvekot-seth-glier
+Missing flyer image for event: https://www.thecedar.org/events/lemon-bucket-orkestra-with-ukrainian-village-band
+Missing flyer image for event: https://www.thecedar.org/events/the-band-of-heathens-duo-f-ed-jurdi-and-gordy-quist-with-chris-and-ari-silver
+Missing flyer image for event: https://www.thecedar.org/events/an-evening-with-paul-metzger-krissy-bergmark
+Missing flyer image for event: https://www.thecedar.org/events/bad-posture-club-a-farewell-show-with-voulouse
+Missing flyer image for event: https://www.thecedar.org/events/extreme-noise-records-presents-zero-boys-sick-thoughts-long-knife-color-tv-and-citric-dummies
+Missing flyer image for event: https://www.thecedar.org/events/duke-concept-presents-oxlade-/-oxlade-from-africa-tour-z47gg
+Missing flyer image for event: https://www.thecedar.org/events/an-evening-with-habib-koit-aly-keita-lamine-cissokho-mand-sila
+Missing flyer image for event: https://www.thecedar.org/events/an-evening-with-david-wilcox
+Missing flyer image for event: https://www.thecedar.org/events/prairie-fire-choir-13th-season-finale-withmeghan-kreidler
+Missing flyer image for event: https://www.thecedar.org/events/mariee-siou-with-donnie-coco
+Missing flyer image for event: https://www.thecedar.org/events/afghan-cultural-society-anniversary-arts-festival-2024
+Missing flyer image for event: https://www.thecedar.org/events/r-ta-confirmed-tlalnepantla-arts-presents-12th-annual-festival-de-las-calaveras-twin-cities-latinx-music-arts-festival
+Missing flyer image for event: https://www.thecedar.org/events/john-mceuen-the-circle-band-with-the-eclectics
+Missing flyer image for event: https://www.thecedar.org/events/one-day-early-voting-pop-up
+Missing flyer image for event: https://www.thecedar.org/events/cedar-celebration
+Missing flyer image for event: https://www.thecedar.org/events/sister-species-release-show-with-theo-langason
+Missing flyer image for event: https://www.thecedar.org/events/first-avenue-presents-rachael-yamagata-unseen-hearts-tourwith-sandy-bell
+Missing flyer image for event: https://www.thecedar.org/events/the-arab-blues-with-amwaaj
+Missing flyer image for event: https://www.thecedar.org/events/first-avenue-presents-hania-rani
+Missing flyer image for event: https://www.thecedar.org/events/yungchen-lhamo-with-broken-caterpillar
+Missing flyer image for event: https://www.thecedar.org/events/extreme-noise-records-presents-gorilla-biscuits-with-big-laugh-and-more
+Missing flyer image for event: https://www.thecedar.org/events/john-craigie-with-tre-burt
+Missing flyer image for event: https://www.thecedar.org/events/alessandro-cortini-with-aida-shahghasemi-jeremy-max-ylvisaker
+Missing flyer image for event: https://www.thecedar.org/events/robin-and-linda-williams-with-maya-de-vitry
+Traceback (most recent call last):
+  File "/Users/musicdaddy/Desktop/venues/scrapers/cedar.py", line 149, in <module>
+    if event.get('start') and (event['venue_id'], event['start'], event['event_link']) not in existing_events:
+                               ~~~~~^^^^^^^^^^^^
+KeyError: 'venue_id'
+Running scraper for Pilllar...
+[2024-12-22 21:19:18] Pilllar scraper failed with output:\n./run_scripts.sh: line 30: Forum: command not found
+Running scraper for Zhora...
+[2024-12-22 21:19:18] Zhora scraper failed with output:\n./run_scripts.sh: line 30: Darling: command not found
+Running scraper for Mortimer's...
+[2024-12-22 21:19:34] Mortimer's scraper completed successfully.
+Running scraper for Hook...
+[2024-12-22 21:19:34] Hook scraper failed with output:\n./run_scripts.sh: line 30: &: command not found

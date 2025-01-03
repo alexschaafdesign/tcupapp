@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar App</title>
+<!-- FullCalendar CSS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
+
+</head>
+<body>
+  <!-- Calendar container -->
+  <div id="calendar"></div>
+
+  <!-- Root container for React to render the app -->
+  <div id="root"></div>
+
+  <!-- FullCalendar JS -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+
+  <!-- Link to Calendar.js script -->
+  <script src="./src/pages/Calendar.js"></script>
+
+   <!-- Link to bands.js script -->
+   <script src="./src/pages/Bands.js"></script>
+
+  <!-- Link to table.js script -->
+  <script src="./src/pages/Table.js"></script>
+  
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./favicon.ico">
+
+</body>
+</html>
