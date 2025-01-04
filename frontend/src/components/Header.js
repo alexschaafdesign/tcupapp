@@ -20,7 +20,10 @@ const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
-  const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
+  const { isAuthenticated, isLoading, loginWithRedirect, logout, user } = useAuth0();
+
+  console.log('Header auth state:', { isAuthenticated, isLoading, user });
+
 
   const toggleDrawer = (open) => () => {
     setDrawerOpen(open);
@@ -28,7 +31,7 @@ const Header = () => {
 
   const navLinks = [
     { text: "TCUP CALENDAR", path: "/calendar"},
-    { text: "MESSAGE BOARD", path: "/messageboard" },
+    { text: "MESSAGE BOARD", path: "/messages" },
     { text: "SHOWS", path: "/shows" },
     { text: "VENUES", path: "/venues" },
     { text: "BANDS", path: "/bands" },

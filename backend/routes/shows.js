@@ -74,7 +74,7 @@ router.get('/', async (req, res) => {
     // Execute the query
     const { rows: rawResults } = await pool.query(query, venueId ? [venueId] : []);
 
-    console.log('Raw Query Results:', rawResults);
+  //  console.log('Raw Query Results:', rawResults);
 
     // Process the results to group by show_id
     const processedShows = rawResults.reduce((acc, row) => {
@@ -107,7 +107,7 @@ router.get('/', async (req, res) => {
       return acc;
     }, []);
 
-    console.log('Processed Shows:', processedShows);
+   // console.log('Processed Shows:', processedShows);
 
     // Send the structured response
     res.json(processedShows);

@@ -4,13 +4,26 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 from db_utils import connect_to_db, insert_show, get_venue_id
 
 # Initialize WebDriver
-driver = webdriver.Chrome()
+# Set up Chrome options before initializing WebDriver
+chrome_options = Options()
+chrome_options.add_argument("--headless")  # Enable headless mode
+chrome_options.add_argument("--disable-gpu")  # Disable GPU usage
+chrome_options.add_argument("--no-sandbox")  # Bypass OS security model
+chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource issues
+
+# Initialize WebDriver with options
+print("Starting headless Chrome...")
+driver = webdriver.Chrome(options=chrome_options)
+print("Chrome initialized successfully")
 url = 'https://331club.com/#calendar'
+print(f"Navigating to {url}")
 driver.get(url)
+print("Page loaded, waiting for 'See all upcoming events' button...")
 
 # Click "See all upcoming events" button
 try:
@@ -65,20 +78,22 @@ def get_event_year(month):
 # Normalize time
 def normalize_time(time_str):
     """
-    Normalize the time string into the format 'HH:MM am/pm'.
+    Normalize various time string formats into 'HH:MM PM' format.
     """
     try:
-        # Add a colon if it's missing (e.g., '7pm' -> '7:00 pm')
+        # Clean the input string
+        time_str = time_str.lower().strip()
+        
+        # Handle cases without minutes (e.g., "9pm" -> "9:00pm")
         if ':' not in time_str:
-            time_str = time_str.replace('am', ':00 am').replace('pm', ':00 pm')
-        else:
-            time_str = re.sub(r'(\d+:\d{2})\s?(am|pm)', r'\1 \2', time_str)
-
-        # Parse and return the normalized time
-        normalized_time = datetime.strptime(time_str, "%I:%M %p").strftime("%I:%M %p")
-        return normalized_time
-    except Exception as e:
-        print(f"Error normalizing time: {time_str}. Error: {e}")
+            time_str = re.sub(r'(\d+)(am|pm)', r'\1:00\2', time_str)
+        
+        # Ensure space before am/pm
+        time_str = re.sub(r'(am|pm)', r' \1', time_str)
+        
+        # Parse and normalize
+        return datetime.strptime(time_str, "%I:%M %p").strftime("%I:%M %p")
+    except Exception:
         return None
     
 def clean_band_name(name):
@@ -116,26 +131,75 @@ for event in events:
     if not columns_div:
         continue
 
+    def get_default_time(bands_str):
+        """
+        Return default time based on event patterns at 331 Club
+        """
+        if any(event in bands_str for event in ["Worker's Playtime", "Movie Music Trivia", "Drinkin' Spelling Bee"]):
+            return "06:00 PM"
+        elif "Harold's House Party" in bands_str:
+            return "04:00 PM"
+        elif "Dr. Sketchy" in bands_str:
+            return "02:00 PM"
+        elif "Conspiracy Series" in bands_str:
+            return "09:00 PM"
+        # Most shows at 331 Club start at 10 PM
+        return "10:00 PM"
+
+    # In your main event processing loop:
     for column in columns_div.find_all("div", class_="column"):
         # Extract event details
-        name_tag = column.find("p")
-        if not name_tag:
+        p_tag = column.find("p")
+        if not p_tag:
             continue
 
-        # Extract bands and times from the column
-        full_text = name_tag.get_text(separator="\n", strip=True).split("\n")
-        bands = []
+        # Get all text nodes including the time
+        contents = [node.strip() for node in p_tag.stripped_strings]
+        
+        # Extract time - it's usually the last text node after the <br> tags
         event_time = None
+        time_pattern = re.compile(r'\d{1,2}:?\d{0,2}\s*(?:am|pm)', re.IGNORECASE)
+        
+        # Look for time in the contents
+        for content in reversed(contents):  # Search from end since time is usually last
+            if time_match := time_pattern.search(content):
+                time_text = time_match.group().strip()
+                event_time = normalize_time(time_text)
+                break
+        
+        # If no time found, use default based on event type
+        if not event_time:
+            # Combine all non-time text to check for event patterns
+            full_text = ' '.join(content for content in contents if not time_pattern.search(content))
+            event_time = get_default_time(full_text)
 
-        for line in full_text:
-            line = line.strip()
-            if re.search(r'\d{1,2}(:\d{2})?\s?[ap]m', line, re.IGNORECASE):  # Line is a time
-                event_time = normalize_time(line)  # Normalize the time
+        # Extract bands (everything except the time)
+        bands = []
+        for content in contents:
+            if not time_pattern.search(content) and content.strip():
+                bands.append(clean_band_name(content))
+
+        # If we still don't have a time but see a raw time string
+        if not event_time:
+            raw_text = p_tag.get_text()
+            time_match = re.search(r'\d{1,2}:\d{2}(?:am|pm)', raw_text.lower())
+            if time_match:
+                event_time = normalize_time(time_match.group())
             else:
-                bands.append(line)  # Add line as a band
+                # Default time based on event type
+                if any("Worker's Playtime" in band for band in bands):
+                    event_time = "06:00 PM"
+                elif any("Dr. Sketchy" in band for band in bands):
+                    event_time = "02:00 PM"
+                elif any("Conspiracy Series" in band for band in bands):
+                    event_time = "09:00 PM"
+                else:
+                    event_time = "08:00 PM"  # Default evening show time
 
-        # Deduplicate and clean band names
-        bands = list(dict.fromkeys([clean_band_name(band) for band in bands]))  # Remove duplicates
+        # Clean up band list - remove any remaining time strings
+        bands = [band for band in bands if not re.search(r'\d{1,2}:\d{2}(?:am|pm)', band.lower())]
+        bands = [band for band in bands if band.strip()]  # Remove empty strings
+        
         bands_str = ", ".join(bands)
 
         # Combine date and time
@@ -161,10 +225,10 @@ for event in events:
             )
             if was_inserted:
                 added_count += 1
-                print(f"Inserted event: {bands_str} at {start}")
+            #    print(f"Inserted event: {bands_str} at {start}")
             else:
                 duplicate_count += 1
-                print(f"Duplicate event skipped: {bands_str} at {start}")
+            #    print(f"Duplicate event skipped: {bands_str} at {start}")
         except Exception as e:
             print(f"Error processing event: {bands_str}. Error: {e}")
             conn.rollback()

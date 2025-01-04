@@ -12,15 +12,23 @@ console.log('Domain:', process.env.REACT_APP_AUTH0_DOMAIN);
 console.log('Client ID:', process.env.REACT_APP_AUTH0_CLIENT_ID);
 
 root.render(
-  <Auth0Provider
+<Auth0Provider
     domain={process.env.REACT_APP_AUTH0_DOMAIN}
     clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
     authorizationParams={{
-      redirect_uri: window.location.origin,
-      audience: process.env.REACT_APP_AUTH0_API_IDENTIFIER,  // Your new API identifier
-      scope: 'openid profile email'  // Add this line
+      redirect_uri: `${window.location.origin}/callback`,  // Explicitly set callback
+      audience: process.env.REACT_APP_AUTH0_API_IDENTIFIER,
+      scope: 'openid profile email'
     }}
-  >
+    onRedirectCallback={(appState) => {
+      console.log('Auth0 redirect callback', appState);
+      window.history.replaceState(
+        {},
+        document.title,
+        appState?.returnTo || window.location.pathname
+      );
+    }}
+>
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>

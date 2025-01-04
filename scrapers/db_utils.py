@@ -42,7 +42,7 @@ def insert_show(conn, cursor, venue_id, bands, start, event_link, flyer_image):
                 END
             RETURNING id, xmax = 0 AS was_inserted;
         """
-        print(f"Executing query with values: venue_id={venue_id}, bands={bands}, start={start}, event_link={event_link}, flyer_image={flyer_image}")
+      #  print(f"Executing query with values: venue_id={venue_id}, bands={bands}, start={start}, event_link={event_link}, flyer_image={flyer_image}")
         cursor.execute(insert_query, (venue_id, bands, start, event_link, flyer_image))
         conn.commit()
         result = cursor.fetchone()

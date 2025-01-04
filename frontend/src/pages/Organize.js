@@ -44,8 +44,6 @@ const Organize = () => {
       </Typography>
       <TestSupabase />
 
-      <CalendarEvents />
-
       <Grid container spacing={4} justifyContent="center">
         {cards.map((card, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>

@@ -8,23 +8,23 @@ const router = express.Router();
 router.post('/register', authMiddleware, async (req, res) => {
     const auth0Id = req.user.sub;
     const email = req.user.email;
+    // Get username from Auth0 profile - it might be in nickname, name, or preferred_username
+    const username = req.user.nickname || req.user.name || req.user.preferred_username || email.split('@')[0];
 
     try {
-        // First try to find the user
         const existingUser = await pool.query(
             'SELECT * FROM users WHERE auth0_id = $1',
             [auth0Id]
         );
 
         if (existingUser.rows.length === 0) {
-            // User doesn't exist, create them
+            // Add username to the insertion
             const newUser = await pool.query(
-                'INSERT INTO users (auth0_id, email) VALUES ($1, $2) RETURNING *',
-                [auth0Id, email]
+                'INSERT INTO users (auth0_id, email, username) VALUES ($1, $2, $3) RETURNING *',
+                [auth0Id, email, username]
             );
             res.json(newUser.rows[0]);
         } else {
-            // User exists, return their info
             res.json(existingUser.rows[0]);
         }
     } catch (error) {

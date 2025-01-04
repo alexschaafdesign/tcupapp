@@ -34,13 +34,14 @@ import SessionMusiciansTable from "./pages/SessionMusicians/SessionMusiciansTabl
 import SessionMusicianProfile from "./pages/SessionMusicians/SessionMusiciansProfile.js";
 import useApi from "./hooks/useApi.js";
 import { useAuth0 } from "@auth0/auth0-react";
-import MessageBoard from "./pages/MessageBoard.js";
 import VenueForm from "./pages/Venues/VenueForm.js";
 import CalendarEvents from "./components/CalendarEvents.js";
+import ThreadList from "./components/messageboard/ThreadList.js";
+import ThreadDetail from "./components/messageboard/ThreadDetail.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
-  const { isAuthenticated, user } = useAuth0();
+  const { isAuthenticated, user, isLoading } = useAuth0();
   const { callApi } = useApi();
   const location = useLocation(); // Get the current route location
   const getMaxWidth = () => {
@@ -50,25 +51,30 @@ function App() {
   const hasAttemptedRegistration = React.useRef(false);
 
   useEffect(() => {
-    const registerUser = async () => {
-      // Only try to register if:
-      // 1. We haven't attempted registration yet
-      // 2. User is authenticated
-      // 3. We have user info
-      if (!hasAttemptedRegistration.current && isAuthenticated && user) {
-        try {
-          hasAttemptedRegistration.current = true; // Mark that we've tried
-          await callApi(`${process.env.REACT_APP_API_URL}/auth/register`, {
-            method: 'POST'
-          });
-        } catch (error) {
-          console.error('Error registering user:', error);
+      console.log('Auth state changed:', {
+        isLoading,
+        isAuthenticated,
+        user,
+        hasAttempted: hasAttemptedRegistration.current
+      });
+  
+      const registerUser = async () => {
+        if (!hasAttemptedRegistration.current && isAuthenticated && user && !isLoading) {
+          try {
+            console.log('Attempting registration with user:', user);
+            hasAttemptedRegistration.current = true;
+            const response = await callApi(`${process.env.REACT_APP_API_URL}/auth/register`, {
+              method: 'POST'
+            });
+            console.log('Registration response:', response);
+          } catch (error) {
+            console.error('Error registering user:', error);
+          }
         }
-      }
-    };
-
-    registerUser();
-  }, [isAuthenticated, user, callApi]);
+      };
+  
+      registerUser();
+    }, [isAuthenticated, user, isLoading, callApi]);
   
 
   return (
@@ -96,7 +102,10 @@ function App() {
           <Route path="/forum/*" element={<ForumLayout />} />
           <Route path="/test-auth" element={<AuthTest />} />
 
-          <Route path="/messageboard" element={<MessageBoard />} />
+          <Route path="/messages" element={<ThreadList category="General" />} />
+          <Route path="/thread/:threadId" element={<ThreadDetail />} />
+
+
 
           <Route path="/calendar" element={<CalendarEvents />} />
 
