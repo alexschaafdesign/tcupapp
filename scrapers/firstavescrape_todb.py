@@ -170,8 +170,6 @@ def fetch_and_process_events(url):
 
 # List of URLs for different months
 urls = [
-    'https://first-avenue.com/shows/?post_type=event&start_date=20241201',  # URL for December
-    'https://first-avenue.com/shows/?post_type=event&start_date=20241201',  # URL for December
     'https://first-avenue.com/shows/?post_type=event&start_date=20250101',  # URL for January
     'https://first-avenue.com/shows/?post_type=event&start_date=20250201',  # URL for February
     'https://first-avenue.com/shows/?post_type=event&start_date=20250301',  # URL for March

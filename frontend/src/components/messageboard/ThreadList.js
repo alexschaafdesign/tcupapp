@@ -94,8 +94,51 @@ const ThreadList = ({ category: initialCategory }) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const data = await response.json();
-            setThreads(data);
+            
+            // Fetch avatars for replies in a separate call
+            const threadsData = await response.json();
+            
+            // Debug log to see what we're getting from the backend
+            console.log('Thread data received:', JSON.stringify(threadsData, null, 2));
+            
+            // Get unique user IDs from all replies
+            const replyUserIds = new Set();
+            threadsData.forEach(thread => {
+                if (thread.recent_replies) {
+                    thread.recent_replies.forEach(reply => {
+                        if (reply.auth0_id) replyUserIds.add(reply.auth0_id);
+                    });
+                }
+            });
+            
+            // Fetch avatars for reply authors
+            const avatarsResponse = await fetch(`${apiUrl}/messages/users/avatars`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userIds: Array.from(replyUserIds)
+                })
+            });
+            
+            if (!avatarsResponse.ok) {
+                throw new Error('Failed to fetch avatars');
+            }
+            
+            const avatarsData = await avatarsResponse.json();
+            
+            // Merge avatar data with replies
+            const threadsWithAvatars = threadsData.map(thread => ({
+                ...thread,
+                recent_replies: thread.recent_replies?.map(reply => ({
+                    ...reply,
+                    avatar_url: avatarsData[reply.auth0_id]?.avatar_url
+                }))
+            }));
+            
+            setThreads(threadsWithAvatars);
             setLoading(false);
         } catch (error) {
             console.error('Error fetching threads:', error);
@@ -103,7 +146,6 @@ const ThreadList = ({ category: initialCategory }) => {
             setLoading(false);
         }
     };
-
     useEffect(() => {
         fetchThreads();
 

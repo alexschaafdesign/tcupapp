@@ -16,9 +16,10 @@ print("Starting scraper...")
 # Initialize WebDriver
 # List of URLs for multiple months
 urls = [
-    'https://palmers-bar.com/?view=calendar&month=11-2024',
-    'https://palmers-bar.com/?view=calendar&month=12-2024',
     'https://palmers-bar.com/?view=calendar&month=01-2025',
+    'https://palmers-bar.com/?view=calendar&month=02-2025',
+    'https://palmers-bar.com/?view=calendar&month=03-2025',
+    'https://palmers-bar.com/?view=calendar&month=04-2025',
 ]
 
 # Initialize WebDriver
@@ -97,6 +98,15 @@ for url in urls:
                                 event_soup = BeautifulSoup(driver.page_source, 'html.parser')
                                 event_details = {'venue': "Palmer's Bar", 'event_link': full_event_url}
                                 
+                                # Extract flyer image
+                                flyer_img = event_soup.find("img", {"data-image": True})
+                                if flyer_img:
+                                    event_details['flyer'] = flyer_img.get('data-image')
+                                    print(f"Found flyer image: {event_details['flyer']}")
+                                else:
+                                    event_details['flyer'] = None
+                                    print("No flyer image found")
+                                
                                 # Extract bands
                                 title_tag = event_soup.find("h1", class_="eventitem-title")
                                 if title_tag:
@@ -139,16 +149,11 @@ for url in urls:
                                 # Append event details to the list
                                 all_events_data.append(event_details)
                                 print(f"Added event: {event_details}")
-                    else:
-                        print("Event list not found for this day.")
-    else:
-        print(f"No calendar body found for {url}.")
 
-# Close the driver
 # Close the driver
 driver.quit()
 
-# Process collected events (e.g., insert into the database)
+# Process collected events
 print("\nAll collected events from all months:")
 for event in all_events_data:
     print(event)
@@ -175,13 +180,14 @@ for event in all_events_data:
         start = event['start']
         event_link = event['event_link']
         venue = event['venue']
+        flyer_url = event.get('flyer')  # Get flyer URL if it exists
 
-        # Get venue ID for the venue (adjust as needed)
+        # Get venue ID
         venue_id = get_venue_id(cursor, venue)
 
         # Insert the event into the database
         show_id, was_inserted = insert_show(
-            conn, cursor, venue_id, bands, start, event_link, None  # Assuming no flyer image
+            conn, cursor, venue_id, bands, start, event_link, flyer_url
         )
 
         # Update counters based on insertion result
@@ -193,7 +199,7 @@ for event in all_events_data:
             print(f"Duplicate event found: {bands} at {start}. Skipping.")
     except Exception as e:
         print(f"Error processing event: {event}. Error: {e}")
-        conn.rollback()  # Rollback on error
+        conn.rollback()
         continue
 
 # Commit changes and close the database connection

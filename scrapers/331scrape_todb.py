@@ -8,7 +8,6 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 from db_utils import connect_to_db, insert_show, get_venue_id
 
-# Initialize WebDriver
 # Set up Chrome options before initializing WebDriver
 chrome_options = Options()
 chrome_options.add_argument("--headless")  # Enable headless mode
@@ -225,7 +224,7 @@ for event in events:
             )
             if was_inserted:
                 added_count += 1
-            #    print(f"Inserted event: {bands_str} at {start}")
+                print(f"Inserted event: {bands_str} at {start}")
             else:
                 duplicate_count += 1
             #    print(f"Duplicate event skipped: {bands_str} at {start}")

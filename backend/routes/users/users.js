@@ -131,6 +131,34 @@ router.put('/avatar', authMiddleware, async (req, res) => {
   }
 });
 
+// Add this to routes/users.js
+router.put('/username', authMiddleware, async (req, res) => {
+  const { username } = req.body;
+  const userId = req.user.sub;
+
+  console.log('Updating username for user:', userId);
+  console.log('New username:', username);
+  
+  try {
+    const result = await pool.query(
+      'UPDATE users SET username = $1 WHERE auth0_id = $2 RETURNING *',
+      [username, userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error updating username:', error);
+    res.status(500).json({ 
+      error: 'Failed to update username',
+      details: error.message 
+    });
+  }
+});
+
 // routes/users.js or where you have your routes
 // In users.js routes
 router.get('/test-auth', authMiddleware, (req, res) => {

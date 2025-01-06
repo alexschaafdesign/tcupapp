@@ -106,7 +106,12 @@ excluded_words = [
     "League",
     "Dance",
     "Party",
-    "Dancers"
+    "Dancers",
+    "tango desperados practilonga",
+    "Dancing",
+    "Miss Shannon",
+    "Miss Shannon's",
+    "dancing",
 ]
 
 # Function to check if an event title contains any of the excluded words

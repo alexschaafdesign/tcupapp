@@ -31,7 +31,7 @@ const Header = () => {
 
   const navLinks = [
     { text: "TCUP CALENDAR", path: "/calendar"},
-    { text: "MESSAGE BOARD", path: "/messages" },
+    { text: "MESSAGE BOARD", path: "/forum" },
     { text: "SHOWS", path: "/shows" },
     { text: "VENUES", path: "/venues" },
     { text: "BANDS", path: "/bands" },

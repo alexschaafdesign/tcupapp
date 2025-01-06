@@ -26,7 +26,6 @@ import OAuthCallback from "./components/OAuthCallback.js";
 import ShowFormMinimal from "./pages/WithoutHeader/ShowFormMinimal.js";
 import ShowProfileMinimal from "./pages/WithoutHeader/ShowProfileMinimal.js";
 import EditShowPageMinimal from "./pages/WithoutHeader/EditShowPageMinimal.js";
-import ForumLayout from "./components/forum/ForumLayout.js";
 import Callback from "./components/Callback.js";
 import UserProfile from "./pages/UserProfile.js";
 import AuthTest from "./components/AuthTest.js";
@@ -37,7 +36,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import VenueForm from "./pages/Venues/VenueForm.js";
 import CalendarEvents from "./components/CalendarEvents.js";
 import ThreadList from "./components/messageboard/ThreadList.js";
-import ThreadDetail from "./components/messageboard/ThreadDetail.js";
+import ForumContainer from "./pages/ForumContainer.js";
+import ThreadView from "./components/forum/ThreadView.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -99,11 +99,11 @@ function App() {
           <Route path="/shows/:id/minimal" element={<ShowProfileMinimal />} />
           <Route path="/shows/:id/edit/minimal" element={<EditShowPageMinimal />} />
 
-          <Route path="/forum/*" element={<ForumLayout />} />
+          <Route path="/forum" element={<ForumContainer />} />
           <Route path="/test-auth" element={<AuthTest />} />
 
           <Route path="/messages" element={<ThreadList category="General" />} />
-          <Route path="/thread/:threadId" element={<ThreadDetail />} />
+          <Route path="/thread/:threadId" element={<ThreadView />} />
 
 
 
