@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import Home from "./pages/Home.js";
 import ShowsTable from "./pages/Shows/ShowsTable.js";
 import "./styles/App.css";
 import VenuesTable from "./pages/Venues/VenuesTable.js";
@@ -26,7 +25,6 @@ import OAuthCallback from "./components/OAuthCallback.js";
 import ShowFormMinimal from "./pages/WithoutHeader/ShowFormMinimal.js";
 import ShowProfileMinimal from "./pages/WithoutHeader/ShowProfileMinimal.js";
 import EditShowPageMinimal from "./pages/WithoutHeader/EditShowPageMinimal.js";
-import ForumLayout from "./components/forum/ForumLayout.js";
 import Callback from "./components/Callback.js";
 import UserProfile from "./pages/UserProfile.js";
 import AuthTest from "./components/AuthTest.js";
@@ -34,13 +32,17 @@ import SessionMusiciansTable from "./pages/SessionMusicians/SessionMusiciansTabl
 import SessionMusicianProfile from "./pages/SessionMusicians/SessionMusiciansProfile.js";
 import useApi from "./hooks/useApi.js";
 import { useAuth0 } from "@auth0/auth0-react";
-import MessageBoard from "./pages/MessageBoard.js";
 import VenueForm from "./pages/Venues/VenueForm.js";
 import CalendarEvents from "./components/CalendarEvents.js";
+import ThreadList from "./components/messageboard/ThreadList.js";
+import ForumContainer from "./pages/ForumContainer.js";
+import ThreadView from "./components/forum/ThreadView.js";
+import LandingPage from "./pages/LandingPage.js";
+import Privacy from "./pages/Privacy.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
-  const { isAuthenticated, user } = useAuth0();
+  const { isAuthenticated, user, isLoading } = useAuth0();
   const { callApi } = useApi();
   const location = useLocation(); // Get the current route location
   const getMaxWidth = () => {
@@ -50,25 +52,30 @@ function App() {
   const hasAttemptedRegistration = React.useRef(false);
 
   useEffect(() => {
-    const registerUser = async () => {
-      // Only try to register if:
-      // 1. We haven't attempted registration yet
-      // 2. User is authenticated
-      // 3. We have user info
-      if (!hasAttemptedRegistration.current && isAuthenticated && user) {
-        try {
-          hasAttemptedRegistration.current = true; // Mark that we've tried
-          await callApi(`${process.env.REACT_APP_API_URL}/auth/register`, {
-            method: 'POST'
-          });
-        } catch (error) {
-          console.error('Error registering user:', error);
+      console.log('Auth state changed:', {
+        isLoading,
+        isAuthenticated,
+        user,
+        hasAttempted: hasAttemptedRegistration.current
+      });
+  
+      const registerUser = async () => {
+        if (!hasAttemptedRegistration.current && isAuthenticated && user && !isLoading) {
+          try {
+            console.log('Attempting registration with user:', user);
+            hasAttemptedRegistration.current = true;
+            const response = await callApi(`${process.env.REACT_APP_API_URL}/auth/register`, {
+              method: 'POST'
+            });
+            console.log('Registration response:', response);
+          } catch (error) {
+            console.error('Error registering user:', error);
+          }
         }
-      }
-    };
-
-    registerUser();
-  }, [isAuthenticated, user, callApi]);
+      };
+  
+      registerUser();
+    }, [isAuthenticated, user, isLoading, callApi]);
   
 
   return (
@@ -82,6 +89,7 @@ function App() {
           
           {/* Home */}
           <Route path="/" element={<ShowsTable />} />
+          <Route path="/home" element={<LandingPage />} />
 
           {/* Shows */}
           <Route path="/shows" element={<ShowsTable allShows={allShows} />} />
@@ -93,10 +101,13 @@ function App() {
           <Route path="/shows/:id/minimal" element={<ShowProfileMinimal />} />
           <Route path="/shows/:id/edit/minimal" element={<EditShowPageMinimal />} />
 
-          <Route path="/forum/*" element={<ForumLayout />} />
+          <Route path="/forum" element={<ForumContainer />} />
           <Route path="/test-auth" element={<AuthTest />} />
 
-          <Route path="/messageboard" element={<MessageBoard />} />
+          <Route path="/messages" element={<ThreadList category="General" />} />
+          <Route path="/thread/:threadId" element={<ThreadView />} />
+
+
 
           <Route path="/calendar" element={<CalendarEvents />} />
 
@@ -105,6 +116,9 @@ function App() {
           <Route path="/organize" element={<Organize />} />
 
           <Route path="/callback" element={<Callback />} />
+
+          <Route path="/privacy" element={<Privacy />} />
+
 
 
 

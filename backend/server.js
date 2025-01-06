@@ -17,7 +17,8 @@ import usersRouter from './routes/users/users.js';
 import favoritesRouter from './routes/users/favorites.js';
 import authRoutes from './routes/auth.js';
 import sessionMusiciansRouter from './routes/sessionmusicians.js';
-import messagesRouter from './routes/messages.js';
+import postsRouter from './routes/posts.js';
+import tagsRouter from './routes/tags.js';
 import tcupgcalRouter from './routes/tcupgcal.js';
 
 
@@ -112,49 +113,15 @@ app.use('/api/users', usersRouter);
 app.use('/api/favorites', favoritesRouter);
 app.use('/api/sessionmusicians', sessionMusiciansRouter);
 app.use('/api/auth', authRoutes);
-app.use('/api/messages', messagesRouter)
+app.use('/api/posts', postsRouter);
+app.use('/api/tags', tagsRouter);
 app.use('/api/tcupgcal', tcupgcalRouter);
 
 
 
 
 
-// Forum routes (keeping your existing routes)
-app.get('/api/forum/threads', async (req, res) => {
-  try {
-    const { page = 1 } = req.query;
-    const response = await xenforoClient.get('/threads', {
-      params: {
-        page,
-        order: 'last_post_date',
-        direction: 'desc'
-      }
-    });
-    res.json(response.data);
-  } catch (error) {
-    console.error('Error fetching threads:', error);
-    res.status(500).json({ error: 'Failed to fetch threads' });
-  }
-});
 
-app.get('/api/forum/forums/:forumId', async (req, res) => {
-  try {
-    const { forumId } = req.params;
-    const { page = 1 } = req.query;
-    const response = await xenforoClient.get(`/forums/${forumId}`, {
-      params: {
-        with_threads: true,
-        page,
-        order: 'last_post_date',
-        direction: 'desc'
-      }
-    });
-    res.json(response.data);
-  } catch (error) {
-    console.error('Error fetching forum:', error);
-    res.status(500).json({ error: 'Failed to fetch forum' });
-  }
-});
 
 // Example database test route
 app.get('/api/test-db', async (req, res) => {

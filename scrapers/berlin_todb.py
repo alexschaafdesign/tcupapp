@@ -1,6 +1,7 @@
 import re
 import time
 from datetime import datetime
+from dateutil import parser
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -22,11 +23,13 @@ chrome_options.add_argument('--disable-dev-shm-usage')
 
 # Initialize WebDriver
 service = Service(CHROMEDRIVER_PATH)
+print("Starting headless Chrome...")
 driver = webdriver.Chrome(service=service, options=chrome_options)
-
-# URL of the event page
+print("Chrome initialized successfully")
 url = 'https://www.berlinmpls.com/calendar'
+print(f"Navigating to {url}")
 driver.get(url)
+print("Page loaded")
 
 # Wait for event cards to load
 try:
@@ -99,19 +102,33 @@ for card in event_cards:
                 flyer_image = img_tag['src']
 
         # Extract date and time
+        # First try event-time-localized-start, if that’s not found, try event-time-localized
         time_span = event_soup.find("time", class_="event-time-localized-start")
+        if not time_span:
+            time_span = event_soup.find("time", class_="event-time-localized")
+
         if time_span:
-            date_str = time_span.get("datetime", "").strip()      # e.g. "2024-12-26"
-            time_str = time_span.get_text(strip=True)             # e.g. "4:30 PM"
+            # The date might be in the `datetime` attribute (e.g. "2024-12-26"),
+            # or you might only have text like "4:30 PM", etc.
+            date_str = time_span.get("datetime", "").strip()    # e.g. "2025-01-10"
+            time_str = time_span.get_text(strip=True)           # e.g. "10:15 PM"
 
-            # Combine them into a single string like "2024-12-26 4:30 PM"
-            combined_str = f"{date_str} {time_str}"
+            # If the HTML consistently puts the date in `datetime` and the time in get_text,
+            # you can just combine them:
+            if date_str and time_str:
+                # e.g. "2025-01-10 10:15 PM"
+                combined_str = f"{date_str} {time_str}"
+            else:
+                # If it’s *all* in the text or the attribute is missing, you can still parse
+                # just from text using dateutil.parser
+                combined_str = time_str or date_str
 
-            # Now parse with strptime, noting that "4:30 PM" uses %I:%M %p
-            start = datetime.strptime(combined_str, "%Y-%m-%d %I:%M %p")
-
-            # Now you have the correct local datetime
-            print("Parsed start:", start)
+            try:
+                # dateutil.parser can handle many “mixed” formats without you spelling out strptime masks
+                start = parser.parse(combined_str)
+          #      print("Parsed datetime:", start)
+            except ValueError:
+                print("Could not parse time/date:", combined_str)
 
 
     # Extract bands
@@ -125,6 +142,8 @@ for card in event_cards:
     # Remove duplicates and clean band names
     bands = list(dict.fromkeys([band.strip() for band in bands]))
 
+  #  print(f"DEBUG: event={event_name}, start={start}, link={event_link}")
+
     # Process the show
     try:
         show_id, was_inserted = insert_show(conn, cursor, venue_id, ", ".join(bands), start, event_link, flyer_image)
@@ -133,7 +152,7 @@ for card in event_cards:
             print(f"Inserted event: {event_name} on {start}")
         else:
             duplicate_count += 1
-            print(f"Duplicate event found: {event_name} on {start}")
+          #  print(f"Duplicate event found: {event_name} on {start}")
     except Exception as e:
         print(f"Error processing event: {event_name}. Error: {e}")
         conn.rollback()

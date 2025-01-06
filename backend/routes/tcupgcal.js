@@ -1,6 +1,5 @@
 import express from 'express';
 import { listEvents } from '../calendar.js';
-
 const router = express.Router();
 
 // Define the route for fetching events

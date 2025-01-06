@@ -1,17 +1,47 @@
+import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Box, Avatar, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import useApi from '../hooks/useApi';
 import { useUserProfile } from '../hooks/useUserProfile';
 
 function HeaderUserProfile() {
   const { user, isAuthenticated } = useAuth0();
   const navigate = useNavigate();
-  const { avatarUrl } = useUserProfile();
+  const { avatarUrl, setAvatarUrl, fetchUserProfile } = useUserProfile();
+  const [isLoaded, setIsLoaded] = useState(false);  // Add this flag
+  const [username, setUsername] = useState('');
+  
+
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const { callApi } = useApi();
+  
 
   // Add console logs
   console.log('HeaderUserProfile - isAuthenticated:', isAuthenticated);
   console.log('HeaderUserProfile - avatarUrl:', avatarUrl);
   console.log('HeaderUserProfile - user:', user);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+        if (isAuthenticated && !isLoaded) {
+            try {
+                console.log('Fetching profile from:', `${apiUrl}/users/profile`); // Debug URL
+                const userProfile = await callApi(`${apiUrl}/users/profile`);
+                if (userProfile?.username) {
+                  setUsername(userProfile.username);
+                }                console.log('Profile response:', userProfile);
+                if (userProfile?.avatar_url) {
+                    setAvatarUrl(userProfile.avatar_url);
+                }
+            } catch (err) {
+                console.error('Error fetching user profile:', err);
+            }
+        }
+    };
+
+    fetchUserProfile();
+}, [isAuthenticated, isLoaded]);
 
   if (!isAuthenticated || !user) {
     return null;
@@ -56,7 +86,7 @@ function HeaderUserProfile() {
               textOverflow: 'ellipsis'
             }}
           >
-            {user.name}
+            {username}
           </Typography>
         </Box>
       </Box>

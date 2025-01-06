@@ -1,5 +1,6 @@
 import re
 import os
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,13 +9,29 @@ from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
 import psycopg2
 from datetime import datetime
+from db_utils import connect_to_db, insert_show
 
-# Database connection parameters
-DB_NAME = "tcup_db"
-DB_USER = "aschaaf"
-DB_PASSWORD = "notthesame"
-DB_HOST = "localhost"
+# Set ChromeDriver path
+CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'  # Replace with your ChromeDriver path
 
+# Configure Chrome options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+
+chrome_options = Options()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+
+# Initialize WebDriver
+service = Service(CHROMEDRIVER_PATH)
+driver = webdriver.Chrome(service=service, options=chrome_options)
+
+# URL of the event page
+url = 'https://www.thecedar.org/events'
+driver.get(url)
+
+# Function to navigate to the event page
 def navigate_to_event(driver, url, max_retries=3):
     for attempt in range(max_retries):
         try:
@@ -22,6 +39,7 @@ def navigate_to_event(driver, url, max_retries=3):
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "div.eventitem-column-meta"))
             )
+        #    print("Event cards loaded successfully.")
             return True
         except TimeoutException:
             if attempt < max_retries - 1:
@@ -29,11 +47,6 @@ def navigate_to_event(driver, url, max_retries=3):
                 continue
             print(f"Failed to load page after {max_retries} attempts: {url}")
             return False
-
-# Initialize WebDriver
-driver = webdriver.Chrome()
-url = 'https://www.thecedar.org/events'
-driver.get(url)
 
 # Wait for event cards to load
 try:
@@ -52,7 +65,12 @@ soup = BeautifulSoup(driver.page_source, 'html.parser')
 events = soup.select("article.eventlist-event")
 events_data = []
 
+# Counters for added, updated, and skipped events
+added_count = 0
+updated_count = 0
+duplicate_count = 0
 
+# Iterate through events
 for event in events:
     event_details = {'venue': "The Cedar Cultural Center", 'venue_id': 16}
 
@@ -62,6 +80,7 @@ for event in events:
         print("No event link found for this event card.")
         continue
 
+    # Get the full event URL
     event_url = link['href']
     full_event_url = f"https://www.thecedar.org{event_url}"
     event_details['event_link'] = full_event_url
@@ -137,52 +156,46 @@ for event in events:
     else:
         print(f"Skipped event due to missing critical data: {event_details}")
 
-# Connect to the PostgreSQL database
-conn = psycopg2.connect(
-    dbname=DB_NAME,
-    user=DB_USER,
-    password=DB_PASSWORD,
-    host=DB_HOST
-)
+# Connect to the database
+conn = connect_to_db()
 cursor = conn.cursor()
-
-
 
 # Fetch existing events to avoid duplicates
 cursor.execute("SELECT venue_id, start FROM shows")
 existing_events = set(cursor.fetchall())
-print(f"Existing events for venue_id 16: {existing_events}")
+# print(f"Existing events for venue_id 16: {existing_events}")
 
 
 # Prepare rows for 'shows' table insertion, only if 'bands' is not empty
-rows_to_add = []
 for event in events_data:
-    if event.get('start') and (event['venue_id'], event['start']) not in existing_events:
-        print(f"Adding event to rows_to_add: {event}")
-        rows_to_add.append((
-            event['venue_id'],
-            event['bands'],
-            event['start'],
-            event['event_link'],
-            event['flyer_image']
-        ))
-
-# Insert rows if they exist
-if rows_to_add:
-    insert_query = """
-    INSERT INTO shows (venue_id, bands, start, event_link, flyer_image)
-    VALUES (%s, %s, %s, %s, %s)
-    ON CONFLICT (venue_id, start) DO NOTHING
-    """
-    
-    cursor.executemany(insert_query, rows_to_add)
-    conn.commit()
-    print(f"{len(rows_to_add)} new events added to the shows table.")
-else:
-    print("No new events to add to the shows table.")
+    if (event['venue_id'], event['start']) not in existing_events:
+        try:
+            show_id, was_inserted = insert_show(
+                conn, cursor,
+                event['venue_id'],
+                event['bands'],
+                event['start'],
+                event['event_link'],
+                event['flyer_image']
+            )
+            if was_inserted:
+                added_count += 1
+                print(f"Inserted event: {event['bands']} on {event['start']}")
+            else:
+                duplicate_count += 1
+                print(f"Duplicate event found: {event['bands']} on {event['start']}")
+        except Exception as e:
+            print(f"Error processing event: {event['bands']}. Error: {e}")
+            conn.rollback()
 
 # Close the database connection
 cursor.close()
+
+# Commit the changes and close the connection
 conn.close()
 
-print("Events processed and added to the database.")
+# Close the WebDriver
+driver.quit()
+
+# Print summary
+print(f"All events processed. Added: {added_count}, Duplicates skipped: {duplicate_count}.")

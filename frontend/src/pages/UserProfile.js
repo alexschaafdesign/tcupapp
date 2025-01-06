@@ -11,6 +11,7 @@ import {
   Tab,
   CircularProgress,
   Alert,
+  TextField
 } from '@mui/material';
 import useCloudinaryUpload from '../hooks/useCloudinaryUpload';
 import useApi from '../hooks/useApi';
@@ -29,6 +30,9 @@ function UserProfile() {
   const [uploadError, setUploadError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);  // Add this flag
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
+  const [username, setUsername] = useState('');
+  const [usernameError, setUsernameError] = useState(null);
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -38,7 +42,9 @@ function UserProfile() {
             try {
                 console.log('Fetching profile from:', `${apiUrl}/users/profile`); // Debug URL
                 const userProfile = await callApi(`${apiUrl}/users/profile`);
-                console.log('Profile response:', userProfile);
+                if (userProfile?.username) {
+                  setUsername(userProfile.username);
+                }                console.log('Profile response:', userProfile);
                 if (userProfile?.avatar_url) {
                     setAvatarUrl(userProfile.avatar_url);
                 }
@@ -50,6 +56,26 @@ function UserProfile() {
 
     fetchUserProfile();
 }, [isAuthenticated, isLoaded]);
+
+const handleUsernameUpdate = async () => {
+  try {
+    setUsernameError(null);
+    const response = await callApi(`${apiUrl}/users/username`, {
+      method: 'PUT',
+      body: JSON.stringify({ username }),
+    });
+
+    if (response.error) {
+      throw new Error(response.error);
+    }
+
+    setIsEditingUsername(false);
+    // Show success message if you want
+  } catch (error) {
+    console.error('Error updating username:', error);
+    setUsernameError('Failed to update username. Please try again.');
+  }
+};
 
 const handleAvatarUpload = async (event) => {
   const file = event.target.files[0];
@@ -271,9 +297,46 @@ const handleAvatarUpload = async (event) => {
             </Alert>
           )}
         </Box>
-        
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        {isEditingUsername ? (
+          <>
+            <TextField
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              size="small"
+              error={!!usernameError}
+              helperText={usernameError}
+            />
+            <Button 
+              onClick={handleUsernameUpdate}
+              variant="contained" 
+              size="small"
+            >
+              Save
+            </Button>
+            <Button 
+              onClick={() => setIsEditingUsername(false)}
+              variant="outlined" 
+              size="small"
+            >
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <>
+            <Typography variant="h4">{username || user.name}</Typography>
+            <Button 
+              onClick={() => setIsEditingUsername(true)}
+              size="small"
+              sx={{ ml: 1 }}
+            >
+              Edit
+            </Button>
+          </>
+        )}
+      </Box>
+
         <Box>
-          <Typography variant="h4">{user.name}</Typography>
           <Typography color="textSecondary">{user.email}</Typography>
         </Box>
       </Box>
