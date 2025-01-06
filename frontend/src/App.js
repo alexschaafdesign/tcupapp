@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import Home from "./pages/Home.js";
 import ShowsTable from "./pages/Shows/ShowsTable.js";
 import "./styles/App.css";
 import VenuesTable from "./pages/Venues/VenuesTable.js";
@@ -38,6 +37,8 @@ import CalendarEvents from "./components/CalendarEvents.js";
 import ThreadList from "./components/messageboard/ThreadList.js";
 import ForumContainer from "./pages/ForumContainer.js";
 import ThreadView from "./components/forum/ThreadView.js";
+import LandingPage from "./pages/LandingPage.js";
+import Privacy from "./pages/Privacy.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -88,6 +89,7 @@ function App() {
           
           {/* Home */}
           <Route path="/" element={<ShowsTable />} />
+          <Route path="/home" element={<LandingPage />} />
 
           {/* Shows */}
           <Route path="/shows" element={<ShowsTable allShows={allShows} />} />
@@ -114,6 +116,9 @@ function App() {
           <Route path="/organize" element={<Organize />} />
 
           <Route path="/callback" element={<Callback />} />
+
+          <Route path="/privacy" element={<Privacy />} />
+
 
 
 
