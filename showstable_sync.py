@@ -51,17 +51,15 @@ def sync_table(table_name):
     local_cursor = local_conn.cursor()
     prod_cursor = prod_conn.cursor()
 
-    # Define conflict handling
     if table_name == "shows":
-        conflict_columns = ["venue_id", "start"]  # Matches unique_show constraint
+        conflict_columns = ["venue_id", "start"]
         exclude_columns = ["venue_id", "start", "created_at"]
     elif table_name == "venues":
-        conflict_columns = ["name"]  # Adjust to match the unique constraint
-        exclude_columns = ["id", "created_at"]
+        conflict_columns = ["id"]  # Use id as the conflict column
+        exclude_columns = ["created_at"]
     else:
         raise ValueError(f"Unknown table: {table_name}")
 
-    # Track counts
     added_rows = 0
     updated_rows = 0
     skipped_rows = 0
@@ -69,6 +67,9 @@ def sync_table(table_name):
     for rows, columns in fetch_new_records(local_cursor, table_name):
         for row in rows:
             try:
+                # Start a new transaction for each row
+                prod_conn.rollback()  # Clear any previous failed transaction
+                
                 insert_query = f"""
                 INSERT INTO {table_name} ({', '.join(columns)}) 
                 VALUES ({', '.join(['%s'] * len(row))})
@@ -76,28 +77,23 @@ def sync_table(table_name):
                     {', '.join([f"{col} = EXCLUDED.{col}" for col in columns if col not in exclude_columns])};
                 """
                 prod_cursor.execute(insert_query, row)
+                prod_conn.commit()  # Commit each row individually
 
-                # Check if row was inserted or updated
                 if prod_cursor.statusmessage.startswith("INSERT"):
                     added_rows += 1
                 elif prod_cursor.statusmessage.startswith("UPDATE"):
                     updated_rows += 1
 
-            except psycopg2.errors.UniqueViolation as e:
-                # Skipped due to unique constraint violation
-                print(f"Duplicate row skipped: {row}, Error: {e}")
+            except psycopg2.Error as e:
+                prod_conn.rollback()  # Rollback on any error
+                print(f"Error processing row {row}: {e}")
                 skipped_rows += 1
                 continue
-            except Exception as e:
-                print(f"Error processing row {row}: {e}")
-                continue
 
-    prod_conn.commit()
-    print(f"Finished syncing table: {table_name}")
     print(f"Summary for {table_name}:")
     print(f"  Added rows: {added_rows}")
     print(f"  Updated rows: {updated_rows}")
-    print(f"  Skipped rows (due to constraints): {skipped_rows}")
+    print(f"  Skipped rows: {skipped_rows}")
 
     local_cursor.close()
     prod_cursor.close()

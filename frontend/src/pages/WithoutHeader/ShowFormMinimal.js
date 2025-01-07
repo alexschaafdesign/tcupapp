@@ -10,13 +10,14 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import EditableBandList from "../../components/shows/EditableBandList";
 
-const ShowFormMinimal = ({ isEdit = false, initialData = null }) => {
+const ShowForm = ({ isEdit = false, initialData = null }) => {
   const navigate = useNavigate();
-  const { id } = useParams(); // Get ID from URL if in edit mode
-
-  // Initialize form data with initialData if provided, otherwise use default values
+  const { id } = useParams();
+  const location = useLocation();
+  
   const [formData, setFormData] = useState({
     flyer_image: "",
     event_link: "",
@@ -32,14 +33,23 @@ const ShowFormMinimal = ({ isEdit = false, initialData = null }) => {
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
-  // Set initial form data when initialData changes
+  // Store the return URL with filters when component mounts
+  const [returnUrl, setReturnUrl] = useState('/shows');
+  useEffect(() => {
+    // Capture the return URL with filters when component mounts
+    const searchParams = new URLSearchParams(location.search);
+    const filters = searchParams.get('returnFilters');
+    if (filters) {
+      setReturnUrl(`/shows?${filters}`);
+    }
+  }, [location]);
+
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
     }
   }, [initialData]);
 
-  // Fetch venues
   useEffect(() => {
     const fetchVenues = async () => {
       try {
@@ -57,7 +67,6 @@ const ShowFormMinimal = ({ isEdit = false, initialData = null }) => {
     fetchVenues();
   }, [apiUrl]);
 
-  // Form validation
   useEffect(() => {
     const canSubmit = formData.start && formData.venue_id && formData.bands.length > 0;
     setIsReadyToSubmit(canSubmit);
@@ -78,31 +87,24 @@ const ShowFormMinimal = ({ isEdit = false, initialData = null }) => {
     }
   };
 
-  const handleRemoveBand = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      bands: prev.bands.filter((_, i) => i !== index),
-    }));
-  };
-
   const handleDelete = async () => {
     if (!isEdit) return;
-  
+    
     if (!window.confirm("Are you sure you want to delete this show?")) {
-      return; // User canceled
+      return;
     }
-  
+
     try {
       const response = await fetch(`${apiUrl}/shows/${id}`, {
         method: "DELETE",
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to delete the show.");
       }
-  
-      alert("Show successfully deleted.");
-      navigate("/shows/minimal"); // Redirect to the shows list
+
+      // Only navigate after successful deletion
+      navigate(returnUrl);
     } catch (err) {
       console.error(err);
       setErrorMessage("An error occurred while deleting the show.");
@@ -111,24 +113,23 @@ const ShowFormMinimal = ({ isEdit = false, initialData = null }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    
     if (!isReadyToSubmit) {
       setErrorMessage("Please fill out all required fields.");
       return;
     }
-  
-    // Convert bands array to string format
+
     const bandsFormatted = formData.bands.map((band) => band.name).join(", ");
-  
+    
     const dataToSubmit = {
       ...formData,
       bands: bandsFormatted,
     };
-  
+
     const endpoint = isEdit
-      ? `${apiUrl}/shows/${id}/minimal`  // Use ID from URL params
-      : `${apiUrl}/shows/add/minimal`;
-  
+      ? `${apiUrl}/shows/${id}`
+      : `${apiUrl}/shows/add`;
+
     try {
       const response = await fetch(endpoint, {
         method: isEdit ? "PUT" : "POST",
@@ -137,12 +138,13 @@ const ShowFormMinimal = ({ isEdit = false, initialData = null }) => {
         },
         body: JSON.stringify(dataToSubmit),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to submit show data");
       }
-  
-      navigate("/shows/minimal");
+
+      // Only navigate after successful submission
+      navigate(returnUrl);
     } catch (err) {
       console.error(err);
       setErrorMessage("An error occurred while submitting the form.");
@@ -172,7 +174,7 @@ const ShowFormMinimal = ({ isEdit = false, initialData = null }) => {
           sx={{ mb: 2 }}
         />
         <TextField
-          label="Flyer Image URL (right-click 'Copy Image Address' on the venue's flyer)"
+          label="Flyer Image URL"
           name="flyer_image"
           value={formData.flyer_image}
           onChange={handleChange}
@@ -223,30 +225,10 @@ const ShowFormMinimal = ({ isEdit = false, initialData = null }) => {
           </Button>
         </Box>
 
-        {formData.bands.length > 0 && (
-          <Box sx={{ mb: 2 }}>
-            {formData.bands.map((band, index) => (
-              <Box
-                key={index}
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  mb: 1,
-                }}
-              >
-                <Typography>{band.name}</Typography>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => handleRemoveBand(index)}
-                >
-                  Remove
-                </Button>
-              </Box>
-            ))}
-          </Box>
-        )}
+        <EditableBandList 
+          bands={formData.bands} 
+          onChange={(newBands) => setFormData(prev => ({ ...prev, bands: newBands }))}
+        />
 
         <Button
           type="submit"
@@ -275,4 +257,4 @@ const ShowFormMinimal = ({ isEdit = false, initialData = null }) => {
   );
 };
 
-export default ShowFormMinimal;
+export default ShowForm;
