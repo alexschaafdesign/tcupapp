@@ -34,13 +34,13 @@ const ShowFormMinimal = ({ isEdit = false, initialData = null }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   // Store the return URL with filters when component mounts
-  const [returnUrl, setReturnUrl] = useState('/shows');
+  const [returnUrl, setReturnUrl] = useState('/shows/minimal');
   useEffect(() => {
     // Capture the return URL with filters when component mounts
     const searchParams = new URLSearchParams(location.search);
     const filters = searchParams.get('returnFilters');
     if (filters) {
-      setReturnUrl(`/shows?${filters}`);
+      setReturnUrl(`/shows?${filters}/minimal`);
     }
   }, [location]);
 

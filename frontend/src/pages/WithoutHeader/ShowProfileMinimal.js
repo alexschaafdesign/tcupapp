@@ -63,7 +63,7 @@ const ShowProfileMinimal = () => {
 
       // Close the dialog and redirect to shows list
       setDeleteDialogOpen(false);
-      navigate('/shows', { 
+      navigate('/shows/minimal', { 
         state: { 
           message: 'Show deleted successfully',
           severity: 'success'
@@ -85,7 +85,7 @@ const ShowProfileMinimal = () => {
 
   const handleBandClick = (bandId) => {
     if (bandId) {
-      navigate(`/bands/${bandId}`);
+      navigate(`/bands/${bandId}/minimal`);
     }
   };
 
@@ -170,10 +170,10 @@ const ShowProfileMinimal = () => {
       </Paper>
 
       <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
-        <Button variant="contained" color="primary" onClick={() => navigate('/shows')}>
+        <Button variant="contained" color="primary" onClick={() => navigate('/shows/minimal')}>
           Back to Shows
         </Button>
-        <Button variant="contained" color="secondary" onClick={() => navigate(`/shows/${id}/edit`)}>
+        <Button variant="contained" color="secondary" onClick={() => navigate(`/shows/${id}/edit/minimal`)}>
           Edit Show
         </Button>
         <Button variant="contained" color="error" onClick={handleDeleteClick}>

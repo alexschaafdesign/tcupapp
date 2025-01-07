@@ -45,11 +45,11 @@ const ShowsTableCoreMinimal = ({ data }) => {
 
   const handleEdit = (e, showId) => {
     e.stopPropagation();
-    navigate(`/shows/${showId}/edit`);
+    navigate(`/shows/${showId}/edit/minimal`);
   };
 
   const handleRowClick = (showId) => {
-    navigate(`/shows/${showId}`);
+    navigate(`/shows/${showId}/minimal`);
   };
 
 
