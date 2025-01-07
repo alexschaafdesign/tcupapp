@@ -182,7 +182,7 @@ function ShowsTableMinimal() {
           // Get current search params
           const currentParams = searchParams.toString();
           // Navigate to show with return filters
-          navigate(`/shows/${showId}/edit?returnFilters=${encodeURIComponent(currentParams)}`);
+          navigate(`/shows/${showId}/edit?returnFilters=${encodeURIComponent(currentParams)}/minimal`);
         }}
       />
 
