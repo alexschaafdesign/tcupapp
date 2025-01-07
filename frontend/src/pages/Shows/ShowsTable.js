@@ -150,12 +150,31 @@ function ShowsTable() {
         filters={filters}
         navigate={navigate} />
        
-      <Typography variant="h6" sx={{ marginBottom: 2 }}>
-        <Typography variant="h3"> <b>{filteredData.length} SHOWS</b></Typography>
-        <Typography variant="body1">
-          At {filters[1].options.length} Venues
-        </Typography>
-      </Typography>
+       <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          marginBottom: 2 
+        }}>
+          <Box>
+            <Typography variant="h3">
+              <b>{filteredData.length} SHOWS</b>
+            </Typography>
+            <Typography variant="body1">
+              At {filters[1].options.length} Venues
+            </Typography>
+          </Box>
+
+          <TablePagination
+            component="div"
+            count={filteredData.length}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            rowsPerPageOptions={[5, 10, 20, 50]}
+          />
+        </Box>
 
       <ShowsTableCore
         data={filteredData.slice(page * rowsPerPage, (page + 1) * rowsPerPage)}
@@ -174,7 +193,7 @@ function ShowsTable() {
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-        rowsPerPageOptions={[5, 10, 20]}
+        rowsPerPageOptions={[5, 10, 20, 50]}
       />
     </Box>
   );
