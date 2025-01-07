@@ -45,12 +45,13 @@ const ShowsTableCoreMinimal = ({ data }) => {
 
   const handleEdit = (e, showId) => {
     e.stopPropagation();
-    navigate(`/shows/${showId}/edit/minimal`);
+    navigate(`/shows/${showId}/edit`);
   };
 
   const handleRowClick = (showId) => {
-    navigate(`/shows/${showId}/minimal`);
+    navigate(`/shows/${showId}`);
   };
+
 
   return (
     <TableContainer 
@@ -229,22 +230,30 @@ const ShowsTableCoreMinimal = ({ data }) => {
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                           {item.bands.map((band, index) => (
                             <Box
-                              key={`${item.show_id}-${band.id || band.name}-${index}`}
+                              key={`${item.show_id}-${band.name}-${index}`}
                               sx={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: 1
+                                gap: 1,
                               }}
                             >
                               <Typography
                                 sx={{
                                   fontWeight: 600,
-                                  color: band.id ? 'primary.main' : 'text.primary',
+                                  color: band.id ? 'primary.main' : 'text.primary', // Highlight TCUP bands
+                                  cursor: band.slug ? 'pointer' : 'default', // Only make clickable if slug exists
+                                  '&:hover': band.slug ? { textDecoration: 'underline' } : {},
+                                }}
+                                onClick={(e) => {
+                                  if (band.slug) {
+                                    e.stopPropagation();
+                                    navigate(`/bands/${band.slug}`);
+                                  }
                                 }}
                               >
                                 {band.name}
                               </Typography>
-                              {band.id && (
+                              {band.id && ( // Only show TCUP chip for TCUP bands
                                 <Chip
                                   label="TCUP BAND"
                                   size="small"
@@ -252,7 +261,7 @@ const ShowsTableCoreMinimal = ({ data }) => {
                                     bgcolor: 'primary.main',
                                     color: 'primary.contrastText',
                                     fontWeight: 600,
-                                    fontSize: '0.625rem'
+                                    fontSize: '0.625rem',
                                   }}
                                 />
                               )}
