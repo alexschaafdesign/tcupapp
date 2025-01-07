@@ -5,12 +5,12 @@ import {
   TablePagination,
 } from '@mui/material';
 import dayjs from 'dayjs';
-import ShowsTableCore from './ShowsTableCore';
+import ShowsTableCoreMinimal from './ShowsTableCoreMinimal';
 import DynamicFilterComponent from '../../components/DynamicFilterComponent';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import DateRangeFilter from '../../components/DateRangeFilter';
 
-function ShowsTable() {
+function ShowsTableMinimal() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   
@@ -176,7 +176,7 @@ function ShowsTable() {
           />
         </Box>
 
-      <ShowsTableCore
+      <ShowsTableCoreMinimal
         data={filteredData.slice(page * rowsPerPage, (page + 1) * rowsPerPage)}
         onShowClick={(showId) => {
           // Get current search params
@@ -199,4 +199,4 @@ function ShowsTable() {
   );
 }
 
-export default ShowsTable;
+export default ShowsTableMinimal;

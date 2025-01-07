@@ -6,16 +6,24 @@ import {
   Button,
   Paper,
   Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Alert,
+  Snackbar,
 } from '@mui/material';
 
 const ShowProfileMinimal = () => {
-  const { id } = useParams();  // Get the show ID from the URL
+  const { id } = useParams();
   const [show, setShow] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
   const navigate = useNavigate();
 
-  const apiUrl = process.env.REACT_APP_API_URL;  // The backend API URL from the .env file
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchShow = async () => {
@@ -39,68 +47,99 @@ const ShowProfileMinimal = () => {
     }
   }, [id, apiUrl]);
 
+  const handleDeleteClick = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/shows/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete show');
+      }
+
+      // Close the dialog and redirect to shows list
+      setDeleteDialogOpen(false);
+      navigate('/shows', { 
+        state: { 
+          message: 'Show deleted successfully',
+          severity: 'success'
+        }
+      });
+    } catch (error) {
+      setDeleteError(error.message);
+      // Keep the dialog open if there's an error
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+    setDeleteError(null);
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   const handleBandClick = (bandId) => {
     if (bandId) {
-      navigate(`/bands/${bandId}/minimal`);  // Navigate to the band profile page
+      navigate(`/bands/${bandId}`);
     }
   };
 
   return (
     <Box sx={{ padding: 3 }}>
       <Typography variant="h4" gutterBottom>
-        {show && show.name} {/* Display the show name */}
+        {show && show.name}
       </Typography>
 
       {/* Show Flyer */}
       <Box sx={{ display: "flex", justifyContent: "center", padding: "0px", mt: 3 }}>
         {show.flyer_image ? (
           <img
-            src={show.flyer_image}  // Directly using the URL from the DB
+            src={show.flyer_image}
             alt="Show Flyer"
             style={{
-              maxWidth: '100%',  // Adjust to your layout
-              width: '500px',    // Set a max width
+              maxWidth: '100%',
+              width: '500px',
               borderRadius: '8px',
               objectFit: 'contain',
             }}
           />
         ) : (
-          <Typography>No Flyer Available</Typography>  // Fallback message
+          <Typography>No Flyer Available</Typography>
         )}
       </Box>
 
       <Box sx={{ marginTop: 3 }}>
-        {/* Show Event Link */}
         {show.event_link ? (
-          <Typography variant="h3" gutterBottom>
+          <Typography variant="h4" gutterBottom>
             <a href={show.event_link} target="_blank" rel="noopener noreferrer">
               GET TICKETS / MORE INFO
             </a>
           </Typography>
         ) : (
-          <Typography>No event link available</Typography>  // Fallback message
+          <Typography>No event link available</Typography>
         )}
       </Box>
 
-      {/* Show List of Bands (if available) */}
       {show.bands && show.bands.length > 0 && (
-        <Box sx={{ display: "flex", flexDirection: "column", mt: 3 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", mt: 3, marginBottom: 3 }}>
           {show.bands.map((band, index) => (
             <Typography
               key={band.id}
-              variant={index === 0 ? "h4" : "body1"} // First band is large (h4), others are body1
+              variant={index === 0 ? "h4" : "h4"}
               sx={{
-                fontWeight: band.id ? 'bold' : 'normal', // Bold the band name if it has an ID
-                fontSize: index === 0 ? '2rem' : '1rem', // Make the first band bigger
-                marginTop: index === 0 ? 0 : 1, // Adds margin top for subsequent bands
-                color: band.id ? 'primary.main' : 'text.secondary', // Customize colors
+                fontWeight: band.id ? 'bold' : 'normal',
+                fontSize: index === 0 ? '2rem' : '2rem',
+                marginTop: index === 0 ? 0 : 1,
+                color: band.id ? 'primary.main' : 'text.secondary',
                 cursor: 'pointer',
                 textTransform: 'capitalize',
               }}
-              onClick={() => handleBandClick(band.id)}  // Make the band clickable and navigate
+              onClick={() => handleBandClick(band.id)}
             >
               {band.name}
               {band.id && (
@@ -128,21 +167,41 @@ const ShowProfileMinimal = () => {
         <Typography variant="h6" gutterBottom>
           <strong>Venue:</strong> {show.venue_name}
         </Typography>
-
-        {/* Display any additional show details */}
-        <Typography variant="body1" gutterBottom>
-          <strong>Description:</strong> {show.description || "No description available"}
-        </Typography>
       </Paper>
 
-        <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
-          <Button variant="contained" color="primary" onClick={() => navigate('/shows/minimal')}>
-            Back to Shows
+      <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
+        <Button variant="contained" color="primary" onClick={() => navigate('/shows')}>
+          Back to Shows
+        </Button>
+        <Button variant="contained" color="secondary" onClick={() => navigate(`/shows/${id}/edit`)}>
+          Edit Show
+        </Button>
+        <Button variant="contained" color="error" onClick={handleDeleteClick}>
+          Delete Show
+        </Button>
+      </Box>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
+        <DialogTitle>Delete Show</DialogTitle>
+        <DialogContent>
+          {deleteError ? (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {deleteError}
+            </Alert>
+          ) : (
+            <Typography>
+              Are you sure you want to delete this show? This action cannot be undone.
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel}>Cancel</Button>
+          <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+            Delete
           </Button>
-          <Button variant="contained" color="secondary" onClick={() => navigate(`/shows/${id}/edit/minimal`)}>
-            Edit Show
-          </Button>
-        </Box>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

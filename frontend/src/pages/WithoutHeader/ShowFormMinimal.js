@@ -13,7 +13,7 @@ import {
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import EditableBandList from "../../components/shows/EditableBandList";
 
-const ShowForm = ({ isEdit = false, initialData = null }) => {
+const ShowFormMinimal = ({ isEdit = false, initialData = null }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
@@ -257,4 +257,4 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
   );
 };
 
-export default ShowForm;
+export default ShowFormMinimal;
