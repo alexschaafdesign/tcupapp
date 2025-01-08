@@ -39,6 +39,7 @@ import ForumContainer from "./pages/ForumContainer.js";
 import ThreadView from "./components/forum/ThreadView.js";
 import LandingPage from "./pages/LandingPage.js";
 import Privacy from "./pages/Privacy.js";
+import AdminImportPost from "./pages/AdminImportPost.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -106,6 +107,8 @@ function App() {
 
           <Route path="/messages" element={<ThreadList category="General" />} />
           <Route path="/thread/:threadId" element={<ThreadView />} />
+          <Route path="/import" element={<AdminImportPost />} />
+
 
 
 

@@ -8,7 +8,9 @@ import {
   IconButton,
   Box,
   Typography,
-  CircularProgress
+  CircularProgress,
+  Chip,
+  Stack
 } from '@mui/material';
 import { Edit as EditIcon, Close as CloseIcon } from '@mui/icons-material';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -19,6 +21,7 @@ export const ForumContainer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState([]);
   const [tags, setTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
   const [loading, setLoading] = useState(true);
   const { getAccessTokenSilently } = useAuth0();
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -36,7 +39,11 @@ export const ForumContainer = () => {
     const fetchPosts = async () => {
       try {
         const token = await getAccessTokenSilently();
-        const response = await fetch(`${apiUrl}/posts`, {
+        let url = `${apiUrl}/posts`;
+        if (selectedTags.length > 0) {
+          url += `?tags=${selectedTags.join(',')}`;
+        }
+        const response = await fetch(url, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await response.json();
@@ -49,15 +56,41 @@ export const ForumContainer = () => {
       }
     };
     fetchPosts();
-  }, [getAccessTokenSilently, apiUrl]);
+  }, [getAccessTokenSilently, apiUrl, selectedTags]);
 
   const handlePostCreated = (newPost) => {
     setPosts([newPost, ...posts]);
     setIsModalOpen(false);
   };
 
+  const handleTagClick = (tagId) => {
+    setSelectedTags(prev => 
+      prev.includes(tagId) 
+        ? prev.filter(id => id !== tagId)
+        : [...prev, tagId]
+    );
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* Tag Filter */}
+      <Paper sx={{ p: 2, mb: 4 }}>
+        <Typography variant="subtitle2" gutterBottom>
+          Filter by tags:
+        </Typography>
+        <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
+          {tags.map(tag => (
+            <Chip
+              key={tag.id}
+              label={tag.name}
+              onClick={() => handleTagClick(tag.id)}
+              color={selectedTags.includes(tag.id) ? "primary" : "default"}
+              sx={{ m: 0.5 }}
+            />
+          ))}
+        </Stack>
+      </Paper>
+
       {/* Create Post Trigger */}
       <Paper 
         sx={{ 
@@ -82,7 +115,7 @@ export const ForumContainer = () => {
           sx={{ mr: 2 }}
         />
         <Button variant="contained" size="small">
-          Create Post
+          New thread
         </Button>
       </Paper>
 

@@ -73,7 +73,7 @@ export const CreatePost = ({ onPostCreated, tags }) => {
       
       <Paper variant="outlined" sx={{ p: 2, mb: 3 }}>
         <Typography variant="subtitle2" sx={{ mb: 1 }}>
-          Select Tags
+          Select Tags (as many as you'd like!)
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
           {tags.map((tag) => (

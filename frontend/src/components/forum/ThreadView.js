@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Container, Typography, TextField, Button, Avatar, Box, CircularProgress, Paper } from '@mui/material';
-import { FormatQuote as QuoteIcon } from '@mui/icons-material';
+import { Container, Typography, TextField, Button, Avatar, Box, CircularProgress, Paper, IconButton, Dialog } from '@mui/material';
+import { FormatQuote as QuoteIcon, Edit as EditIcon } from '@mui/icons-material';
 import ReactionBar from './ReactionBar';
+import EditHistoricalPost from './EditHistoricalPost.js';
+import HistoricalReplyForm from './HistoricalReplyForm.js';
 
 export const ThreadView = () => {
   const { threadId } = useParams();
@@ -12,25 +14,28 @@ export const ThreadView = () => {
   const [replyContent, setReplyContent] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [editingPost, setEditingPost] = useState(null);
   const replyBoxRef = useRef(null);
   const textFieldRef = useRef(null);
+  const [showHistoricalReplyModal, setShowHistoricalReplyModal] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
 
+  const fetchThread = async () => {
+    try {
+      const token = await getAccessTokenSilently();
+      const response = await fetch(`${apiUrl}/posts/${threadId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await response.json();
+      setThreadData(data);
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchThread = async () => {
-      try {
-        const token = await getAccessTokenSilently();
-        const response = await fetch(`${apiUrl}/posts/${threadId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await response.json();
-        setThreadData(data);
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchThread();
   }, [threadId, getAccessTokenSilently, apiUrl]);
 
@@ -77,6 +82,37 @@ export const ThreadView = () => {
     }
   };
 
+  const renderPostHeader = (post, isReply) => (
+    <Box sx={{ 
+      display: 'flex', 
+      justifyContent: 'space-between',
+      mb: 2 
+    }}>
+      <Box>
+        {!isReply && (
+          <Typography variant="h3" sx={{ mb: 1 }}>
+            {post.title}
+          </Typography>
+        )}
+        <Typography variant="caption" color="text.secondary">
+          {new Date(post.created_at).toLocaleString()}
+        </Typography>
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'start', gap: 1 }}>
+        <IconButton 
+          size="small" 
+          onClick={() => setEditingPost(post)}
+          sx={{ padding: 0.5 }}
+        >
+          <EditIcon fontSize="small" />
+        </IconButton>
+        <Typography variant="caption" color="text.secondary">
+          #{post.id}
+        </Typography>
+      </Box>
+    </Box>
+  );
+
   const renderPost = (post, isReply = false) => (
     <Paper 
       elevation={0} 
@@ -91,7 +127,7 @@ export const ThreadView = () => {
         display: 'flex', 
         gap: 2,
         p: 2,
-        bgcolor: isReply ? 'background.default' : 'background.paper',
+        bgcolor: isReply ? 'background.gray' : 'background.paper',
       }}>
         <Box sx={{ width: 100, flexShrink: 0 }}>
           <Avatar 
@@ -108,25 +144,7 @@ export const ThreadView = () => {
         </Box>
         
         <Box sx={{ flexGrow: 1 }}>
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between',
-            mb: 2 
-          }}>
-            <Box>
-              {!isReply && (
-                <Typography variant="h6" sx={{ mb: 1 }}>
-                  {post.title}
-                </Typography>
-              )}
-              <Typography variant="caption" color="text.secondary">
-                {new Date(post.created_at).toLocaleString()}
-              </Typography>
-            </Box>
-            <Typography variant="caption" color="text.secondary">
-              #{post.id}
-            </Typography>
-          </Box>
+          {renderPostHeader(post, isReply)}
 
           {post.content.includes('[quote="') ? (
             <Box>
@@ -138,11 +156,11 @@ export const ThreadView = () => {
           )}
 
           <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
-          <ReactionBar 
-            postId={post.id} 
-            postAuthor={post.username}
-            onReplyClick={() => handleReplyClick(post)}
-          />
+            <ReactionBar 
+              postId={post.id} 
+              postAuthor={post.username}
+              onReplyClick={() => handleReplyClick(post)}
+            />
           </Box>
         </Box>
       </Box>
@@ -191,6 +209,7 @@ export const ThreadView = () => {
         </Box>
       ))}
 
+      {/* Adding 'historical reply' */}
       <Box ref={replyBoxRef} sx={{ mt: 3 }}>
         {replyingTo && (
           <Box sx={{ mb: 2 }}>
@@ -220,14 +239,75 @@ export const ThreadView = () => {
           variant="outlined"
           sx={{ mb: 2 }}
         />
-        <Button 
-          variant="contained"
-          onClick={() => handleReply(threadData.post.id)}
-          disabled={!replyContent.trim()}
-        >
-          Post Reply
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button 
+            variant="contained"
+            onClick={() => handleReply(threadData.post.id)}
+            disabled={!replyContent.trim()}
+          >
+            Post Reply
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => setShowHistoricalReplyModal(true)}
+          >
+            Add Historical Reply
+          </Button>
+        </Box>
       </Box>
+
+      {showHistoricalReplyModal && (
+        <Dialog 
+          open 
+          onClose={() => setShowHistoricalReplyModal(false)} 
+          maxWidth="md" 
+          fullWidth
+        >
+          <HistoricalReplyForm
+            threadId={threadId}
+            onReplyCreated={(reply) => {
+              setThreadData(prev => ({
+                ...prev,
+                replies: [...prev.replies, reply]
+              }));
+              setShowHistoricalReplyModal(false);
+            }}
+            onClose={() => setShowHistoricalReplyModal(false)}
+          />
+        </Dialog>
+      )}
+
+      {editingPost && (
+        <Box sx={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          bgcolor: 'rgba(0, 0, 0, 0.5)',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: 2
+        }}>
+          <Box sx={{ 
+            maxWidth: '100%',
+            maxHeight: '100%',
+            overflow: 'auto',
+            bgcolor: 'background.paper',
+            borderRadius: 1
+          }}>
+            <EditHistoricalPost
+              postId={editingPost.id}
+              onClose={() => {
+                setEditingPost(null);
+                fetchThread();
+              }}
+            />
+          </Box>
+        </Box>
+      )}
     </Container>
   );
 };
