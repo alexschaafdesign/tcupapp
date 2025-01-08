@@ -123,7 +123,7 @@ const colors = {
     green20: '#143D00',
     green30: '#246B00',
     green40: '#318C03',
-    green50: '#48A319',
+    green50: '#5B8C5A',
     green60: '#53B422',
     green70: '#6BCC38',
     green80: '#9BE576',

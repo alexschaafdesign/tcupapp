@@ -302,4 +302,172 @@ router.post('/:postId/reactions', authMiddleware, async (req, res) => {
     }
   });
 
+  // POST /api/posts/import
+  router.post('/import', authMiddleware, async (req, res) => {
+    const { title, content, userId, createdAt, tags, parentThreadId } = req.body;
+
+    try {
+        const { rows: userRows } = await pool.query(
+            'SELECT username FROM users WHERE auth0_id = $1',
+            [userId]
+        );
+
+        if (!userRows.length) {
+            return res.status(404).json({ error: 'Specified user not found' });
+        }
+
+        const username = userRows[0].username;
+
+        // Insert the post into Supabase using the correct column names
+        const { data: post, error } = await supabase
+            .from('forum_messages')
+            .insert([
+                {
+                    title,
+                    content,
+                    auth0_id: userId,  // Changed from user_id to auth0_id
+                    author: username,
+                    created_at: createdAt,
+                    parent_id: parentThreadId || null,
+                    is_thread_starter: !parentThreadId
+                }
+            ])
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        // Add tags if provided
+        if (tags?.length) {
+            const { error: tagError } = await supabase
+                .from('post_tags')
+                .insert(
+                    tags.map(tagId => ({
+                        post_id: post.id,
+                        tag_id: tagId
+                    }))
+                );
+
+            if (tagError) throw tagError;
+        }
+
+        // Update thread stats if this is a reply
+        if (parentThreadId) {
+            const { error: updateError } = await supabase
+                .rpc('update_thread_reply_stats', { thread_id: parentThreadId });
+
+            if (updateError) throw updateError;
+        }
+
+        res.json(post);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.put('/edit/:id', authMiddleware, async (req, res) => {
+    const { id } = req.params;
+    const { title, content, tags, userId, createdAt } = req.body;
+
+    try {
+        // Get user info
+        const { rows: userRows } = await pool.query(
+            'SELECT username FROM users WHERE auth0_id = $1',
+            [userId]
+        );
+
+        if (!userRows.length) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Update post
+        const { data: post, error } = await supabase
+            .from('forum_messages')
+            .update({
+                title,
+                content,
+                auth0_id: userId,
+                author: userRows[0].username,
+                created_at: createdAt,
+                is_edited: true
+            })
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        // Update tags
+        if (tags) {
+            // Remove existing tags
+            await supabase
+                .from('post_tags')
+                .delete()
+                .eq('post_id', id);
+
+            // Add new tags
+            if (tags.length > 0) {
+                await supabase
+                    .from('post_tags')
+                    .insert(tags.map(tagId => ({
+                        post_id: id,
+                        tag_id: tagId
+                    })));
+            }
+        }
+
+        res.json(post);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Add historical reply to historical thread
+router.post('/:id/historical-reply', authMiddleware, async (req, res) => {
+    const { content, userId, createdAt } = req.body;
+    const { id: parentId } = req.params;
+    
+    try {
+        // Verify user exists
+        const { rows: userRows } = await pool.query(
+            'SELECT username FROM users WHERE auth0_id = $1',
+            [userId]
+        );
+
+        if (!userRows.length) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Create reply with custom timestamp
+        const { data: reply, error } = await supabase
+            .from('forum_messages')
+            .insert([{
+                content,
+                parent_id: parentId,
+                auth0_id: userId,
+                author: userRows[0].username,
+                created_at: createdAt
+            }])
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        // Add user data
+        const userData = await pool.query(
+            'SELECT avatar_url FROM users WHERE auth0_id = $1',
+            [userId]
+        );
+
+        res.json({
+            ...reply,
+            avatar_url: userData.rows[0]?.avatar_url,
+            username: userRows[0].username
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 export default router;

@@ -57,10 +57,9 @@ const ReactionBar = ({ postId, postAuthor, onReplyClick }) => {
      justifyContent: 'space-between',
      alignItems: 'center',
      width: '100%',
-     mt: 1,
+     mt: 0,
      pt: 1,
-     borderTop: '1px solid',
-     borderColor: 'divider'
+
    }}>
      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
        {Object.entries(reactions).map(([type, data]) => (
@@ -72,6 +71,7 @@ const ReactionBar = ({ postId, postAuthor, onReplyClick }) => {
      </Box>
 
      <Box sx={{ display: 'flex', gap: 1, position: 'relative' }}>
+      
        <Box
          onMouseEnter={() => setShowReactions(true)}
          onMouseLeave={() => setShowReactions(false)}

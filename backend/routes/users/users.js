@@ -5,7 +5,7 @@ import authMiddleware from '../../middleware/auth.js';
 
 const router = express.Router();
 
-// In your users.js routes file
+// Get a user
 router.get('/profile', authMiddleware, async (req, res) => {
   console.log('GET /profile hit'); // Debug endpoint hit
   console.log('Auth0 ID:', req.user.sub); // Debug auth ID
@@ -25,6 +25,18 @@ router.get('/profile', authMiddleware, async (req, res) => {
   } catch (err) {
       console.error('Error fetching user profile:', err);
       res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get all users
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+      const { rows } = await pool.query('SELECT auth0_id, username, email FROM users ORDER BY username');
+      console.log('Users fetched:', rows);
+      res.json(rows);
+  } catch (error) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ error: error.message });
   }
 });
 
