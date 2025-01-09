@@ -17,6 +17,8 @@ import useCloudinaryUpload from '../hooks/useCloudinaryUpload';
 import useApi from '../hooks/useApi';
 import AuthTest from '../components/AuthTest';
 import { useUserProfile } from '../hooks/useUserProfile';
+import { useNavigate } from 'react-router-dom';
+
 
 function UserProfile() {
   const { uploadImage, uploading, uploadProgress } = useCloudinaryUpload();
@@ -33,6 +35,9 @@ function UserProfile() {
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [username, setUsername] = useState('');
   const [usernameError, setUsernameError] = useState(null);
+  const [claimedBands, setClaimedBands] = useState([]);
+  const navigate = useNavigate();
+
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -115,21 +120,27 @@ const handleAvatarUpload = async (event) => {
   // Fetch user's bands and shows
   useEffect(() => {
     const fetchUserData = async () => {
-      if (isAuthenticated && !isLoaded) {  // Only fetch if not loaded
+      if (isAuthenticated && !isLoaded) {
         try {
-          // Fetch bands
+          // Existing fetch calls
           const bandsData = await callApi(`${apiUrl}/users/bands`);
           setUserBands(bandsData);
   
-          // Fetch shows
           const showsData = await callApi(`${apiUrl}/users/shows`);
           setSavedShows(showsData);
   
-          // Fetch favorites
-          const favoritesData = await callApi(`${apiUrl}/favorites`);
-          setFavoriteBands(favoritesData);
+        // Update this line to use the correct endpoint
+        const favoritesData = await callApi(`${apiUrl}/favorites`);  
+        console.log('Fetched favorites:', favoritesData); // Debug log
+        setFavoriteBands(favoritesData);
+  
+          // Add fetch for claimed bands  
+          console.log('Fetching claimed bands...');
+          const claimedData = await callApi(`${apiUrl}/bands/myclaims`);
+          console.log('Received claimed bands:', claimedData);
+          setClaimedBands(claimedData);
           
-          setIsLoaded(true);  // Mark as loaded after successful fetch
+          setIsLoaded(true);
         } catch (err) {
           console.error('Error fetching user data:', err);
         }
@@ -137,7 +148,7 @@ const handleAvatarUpload = async (event) => {
     };
   
     fetchUserData();
-  }, [isAuthenticated, isLoaded]);  // Remove apiUrl and callApi from dependencies
+  }, [isAuthenticated, isLoaded]);
 
 
   if (isLoading) {
@@ -348,27 +359,28 @@ const handleAvatarUpload = async (event) => {
         mb: 3  // Add margin bottom for spacing
         }}>
         <Tabs 
-            value={activeTab} 
-            onChange={(e, newValue) => setActiveTab(newValue)}
-            sx={{ 
+          value={activeTab} 
+          onChange={(e, newValue) => setActiveTab(newValue)}
+          sx={{ 
             '& .MuiTab-root': { 
-                color: 'black',  // Unselected tab color
-                fontWeight: 500,
-                fontSize: '1rem'
+              color: 'black',
+              fontWeight: 500,
+              fontSize: '1rem'
             },
             '& .Mui-selected': { 
-                color: 'black',  // Selected tab color
-                fontWeight: 600
+              color: 'black',
+              fontWeight: 600
             },
             '& .MuiTabs-indicator': { 
-                backgroundColor: 'black',
-                height: 2
+              backgroundColor: 'black',
+              height: 2
             }
-            }}
+          }}
         >
-            <Tab label="My Bands" />
-            <Tab label="Favorite Bands" />
-            <Tab label="Saved Shows" />
+          <Tab label="My Bands" />
+          <Tab label="Claimed Bands" />
+          <Tab label="Favorite Bands" />
+          <Tab label="Saved Shows" />
         </Tabs>
         </Box>
 
@@ -390,8 +402,52 @@ const handleAvatarUpload = async (event) => {
         </Box>
         )}
 
+        {/* Add the Claimed Bands tab content */}
+          {activeTab === 1 && (
+            <Box sx={{ pt: 2 }}>
+              {claimedBands.length === 0 ? (
+                <Typography sx={{ color: 'black', p: 2 }}>No claimed bands yet</Typography>
+              ) : (
+                claimedBands.map(band => (
+                  <Paper 
+                    key={band.id} 
+                    sx={{ 
+                      p: 3, 
+                      mb: 2, 
+                      backgroundColor: '#fff', 
+                      boxShadow: 2,
+                      cursor: 'pointer',
+                      '&:hover': {
+                        boxShadow: 4
+                      }
+                    }}
+                    onClick={() => navigate(`/bands/${band.slug}`)}
+                  >
+                    <Typography variant="h6" sx={{ color: 'black', mb: 1 }}>
+                      {band.name}
+                    </Typography>
+                    {band.genre && (
+                      <Typography variant="body2" sx={{ color: 'rgba(0, 0, 0, 0.7)' }}>
+                        {Array.isArray(band.genre) ? band.genre.join(', ') : band.genre}
+                      </Typography>
+                    )}
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        color: 'success.main',
+                        mt: 1
+                      }}
+                    >
+                      Claimed on {new Date(band.claimed_at).toLocaleDateString()}
+                    </Typography>
+                  </Paper>
+                ))
+              )}
+            </Box>
+          )}
+
         {/* Favorite Bands Tab */}
-        {activeTab === 1 && (
+        {activeTab === 2 && (
         <Box sx={{ pt: 2 }}>
             {favoriteBands.length === 0 ? (
             <Typography sx={{ color: 'black', p: 2 }}>No favorite bands yet</Typography>
@@ -411,7 +467,7 @@ const handleAvatarUpload = async (event) => {
         )}
 
         {/* Shows Tab */}
-        {activeTab === 2 && (
+        {activeTab === 3 && (
         <Box sx={{ pt: 2 }}>
             {savedShows.length === 0 ? (
             <Typography sx={{ color: 'black', p: 2 }}>No saved shows yet</Typography>

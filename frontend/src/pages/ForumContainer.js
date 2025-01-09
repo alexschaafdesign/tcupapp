@@ -17,6 +17,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 import CreatePost from '../components/forum/CreatePost';
 import PostList from '../components/forum/PostList';
+import { height } from '@mui/system';
 
 export const ForumContainer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,7 +77,7 @@ export const ForumContainer = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Tag Filter */}
-      <Paper sx={{ p: 2, mb: 4 }}>
+      <Paper sx={{ p: 2, mb: 4, }}>
         <Typography variant="subtitle2" gutterBottom>
           Filter by tags:
         </Typography>
@@ -97,7 +98,7 @@ export const ForumContainer = () => {
       <Paper 
         sx={{ 
           p: 2, 
-          mb: 4, 
+          mb: 2, 
           display: 'flex', 
           alignItems: 'center',
           cursor: 'pointer',
@@ -117,19 +118,24 @@ export const ForumContainer = () => {
           sx={{ mr: 2 }}
         />
         <Stack direction="row" spacing={1}>
-          <Button variant="contained" size="small">
+          <Button variant="contained" size="small"
+            sx={{ height: '42px' }}
+
+          
+          >
             New thread
           </Button>
           <Button 
             variant="outlined" 
             size="small" 
+
             startIcon={<HistoryIcon />}
             onClick={(e) => {
               e.stopPropagation();
               navigate('/import');
             }}
+            sx={{}}
           >
-            Add historical thread
           </Button>
         </Stack>
       </Paper>
