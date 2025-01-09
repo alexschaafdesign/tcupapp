@@ -1,3 +1,4 @@
+// SessionMusiciansTable.js
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -57,44 +58,45 @@ const SessionMusiciansTable = () => {
   if (error) return <Typography color="error">Error: {error}</Typography>;
 
   return (
-    <Box sx={{ padding: 2 }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-        <Button 
-          variant="contained" 
+      <Box sx={{ 
+        width: '100%'
+     
+      }}>
+        <Box sx={{ mb: 3 }}>
+          <Button 
+            variant="contained" 
+            sx={{ 
+              bgcolor: '#8B2626',
+              '&:hover': { bgcolor: '#6B1C1C' }
+            }}
+            onClick={() => navigate("/sessionmusicians/add")}
+          >
+            Add Musician
+          </Button>
+        </Box>
+
+        <Typography sx={{ mb: 2 }}>
+          Many thanks to <b>Minnehaha Recording Company</b> for putting together this list!
+        </Typography>
+
+        <TextField
+          label="Search by Name or Instrument"
+          value={searchQuery}
+          onChange={handleSearch}
+          variant="outlined"
+          fullWidth
+          sx={{ mb: 3 }}
+        />
+
+        <Box 
           sx={{ 
-            bgcolor: '#8B2626',
-            '&:hover': { bgcolor: '#6B1C1C' }
+            width: '100%',
+            overflowX: 'auto'
           }}
-          onClick={() => navigate("/sessionmusicians/add")}
         >
-          Add Musician
-        </Button>
-      </Box>
-
-      <Typography sx={{ marginBottom: 2 }}>
-        Many thanks to <b>Minnehaha Recording Company</b> for putting together this list!
-      </Typography>
-
-      <TextField
-        label="Search by Name or Instrument"
-        value={searchQuery}
-        onChange={handleSearch}
-        variant="outlined"
-        fullWidth
-        sx={{ mb: 3 }}
-      />
-
-      <Paper 
-        elevation={3}
-        sx={{
-          width: '100%',
-          overflow: 'hidden',  // Hide overflow at Paper level
-        }}
-      >
-        <Box sx={{ overflow: 'auto' }}>  // Add horizontal scroll container
-          <Table sx={{ minWidth: 800 }}>  // Set minimum width
+          <Table sx={{ minWidth: 800 }}>
             <TableHead>
-              <TableRow sx={{ bgcolor: '#9B4F96' }}>
+            <TableRow sx={{ bgcolor: '#9B4F96' }}>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold', minWidth: 120 }}>NAME</TableCell>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold', minWidth: 120 }}>PRIMARY INSTRUMENT</TableCell>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold', minWidth: 150 }}>OTHER INSTRUMENTS</TableCell>
@@ -145,8 +147,7 @@ const SessionMusiciansTable = () => {
             </TableBody>
           </Table>
         </Box>
-      </Paper>
-    </Box>
+      </Box>
   );
 };
 

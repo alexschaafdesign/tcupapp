@@ -41,6 +41,8 @@ import ThreadView from "./components/forum/ThreadView.js";
 import LandingPage from "./pages/LandingPage.js";
 import Privacy from "./pages/Privacy.js";
 import AdminImportPost from "./pages/AdminImportPost.js";
+import VRCForm from "./pages/VRC/VRCForm.js";
+import PowerPledgeForm from "./pages/PowerPledge.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -109,6 +111,9 @@ function App() {
           <Route path="/messages" element={<ThreadList category="General" />} />
           <Route path="/thread/:threadId" element={<ThreadView />} />
           <Route path="/import" element={<AdminImportPost />} />
+
+          <Route path="/vrc" element={<VRCForm />} />
+          <Route path="/powerpledge" element={<PowerPledgeForm />} />
 
 
 

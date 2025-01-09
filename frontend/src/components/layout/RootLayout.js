@@ -1,32 +1,40 @@
 import React from 'react';
-import { Box, Container } from '@mui/material';
+import { Box } from '@mui/material';
 
-// RootLayout.js
 const RootLayout = ({ children, maxWidth = "md" }) => {
-    console.log('Current maxWidth:', maxWidth); // Add this to debug
-    return (
-      <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
+  return (
+    <Box sx={{ 
+      display: 'flex',
+      minHeight: '100vh',
+      backgroundColor: 'background.default'
+    }}>
+      {/* Fixed sidebar spacer */}
+      <Box sx={{ 
+        width: { xs: 0, md: '140px' }, 
+        flexShrink: 0 
+      }} />
+      
+      {/* Main content area */}
+      <Box sx={{ 
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        overflowX: 'auto',
+        px: { xs: 2, sm: 3, md: 12 },
+        py: { xs: 2, sm: 3 }
+      }}>
+        {/* Constrain width for normal content but allow full width for tables */}
         <Box sx={{ 
-          marginLeft: { md: '140px' },
-          display: 'flex',
-          justifyContent: 'center',
-          maxWidth: '100%' // Add this
+          width: '100%',
+          maxWidth: maxWidth === 'md' ? '900px' : '100%',
+          mx: 'auto'
         }}>
-          <Container 
-            maxWidth={maxWidth}
-            disableGutters // Add this
-            sx={{
-              px: { xs: 2, sm: 3, md: 1 },
-              py: { xs: 2, sm: 3, md: 1 },
-              minHeight: '100vh',
-              maxWidth: '100%' // Add this
-            }}
-          >
-            {children}
-          </Container>
+          {children}
         </Box>
       </Box>
-    );
-  };
+    </Box>
+  );
+};
 
 export default RootLayout;

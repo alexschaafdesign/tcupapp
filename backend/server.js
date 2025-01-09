@@ -20,6 +20,7 @@ import sessionMusiciansRouter from './routes/sessionmusicians.js';
 import postsRouter from './routes/posts.js';
 import tagsRouter from './routes/tags.js';
 import tcupgcalRouter from './routes/tcupgcal.js';
+import pledgesRouter from './routes/pledges.js';
 
 
 
@@ -116,6 +117,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/posts', postsRouter);
 app.use('/api/tags', tagsRouter);
 app.use('/api/tcupgcal', tcupgcalRouter);
+app.use('/api/pledges', pledgesRouter);
+
 
 
 
