@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import ShowsTable from "./pages/Shows/ShowsTable.js";
 import "./styles/App.css";
+import 'draft-js/dist/Draft.css';
 import VenuesTable from "./pages/Venues/VenuesTable.js";
 import VenueProfile from "./pages/Venues/VenueProfile.js";
 import { Box } from "@mui/material";

@@ -12,8 +12,9 @@ import {
   Chip,
   Stack
 } from '@mui/material';
-import { Edit as EditIcon, Close as CloseIcon } from '@mui/icons-material';
+import { Edit as EditIcon, Close as CloseIcon, History as HistoryIcon } from '@mui/icons-material';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
 import CreatePost from '../components/forum/CreatePost';
 import PostList from '../components/forum/PostList';
 
@@ -24,6 +25,7 @@ export const ForumContainer = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [loading, setLoading] = useState(true);
   const { getAccessTokenSilently } = useAuth0();
+  const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
@@ -114,9 +116,22 @@ export const ForumContainer = () => {
           }}
           sx={{ mr: 2 }}
         />
-        <Button variant="contained" size="small">
-          New thread
-        </Button>
+        <Stack direction="row" spacing={1}>
+          <Button variant="contained" size="small">
+            New thread
+          </Button>
+          <Button 
+            variant="outlined" 
+            size="small" 
+            startIcon={<HistoryIcon />}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate('/import');
+            }}
+          >
+            Add historical thread
+          </Button>
+        </Stack>
       </Paper>
 
       {/* Create Post Modal */}

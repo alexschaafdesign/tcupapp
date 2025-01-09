@@ -42,7 +42,16 @@ export const buttonStyles = {
           fontFamily: '"Roboto", "Arial", sans-serif', // Set font family
           fontWeight: 600, // Set font weight
           fontSize: '1rem', // Set font size
-        }
+        },
+          danger: {
+            backgroundColor: palette.error.main, // Contained buttons use primary color
+            color: palette.neutral.white,
+            fontWeight: "bold",
+            textTransform: "uppercase",
+            '&:hover': {
+              backgroundColor: palette.error.light,
+            },
+          },
       },
     },
   MuiIconButton: {

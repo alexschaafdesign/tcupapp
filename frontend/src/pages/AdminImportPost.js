@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { Card, CardContent, TextField, Select, MenuItem, Button, Typography, Box, Chip, Alert, InputLabel, FormControl, Grid, Paper } from '@mui/material';
+import { AccessTime, PersonOutline, LabelOutlined, Reply } from '@mui/icons-material';
 
 const AdminImportPost = () => {
   const { getAccessTokenSilently } = useAuth0();
@@ -21,9 +23,7 @@ const AdminImportPost = () => {
       try {
         const token = await getAccessTokenSilently();
         const response = await fetch(`${process.env.REACT_APP_API_URL}/users`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+          headers: { Authorization: `Bearer ${token}` }
         });
         const data = await response.json();
         setUsers(data);
@@ -48,22 +48,20 @@ const AdminImportPost = () => {
       const token = await getAccessTokenSilently();
       const timestamp = new Date(`${formData.postDate}T${formData.postTime}`).toISOString();
 
-      const postData = {
-        title: formData.title,
-        content: formData.content,
-        userId: formData.selectedUserId,
-        createdAt: timestamp,
-        tags: formData.tags,
-        parentThreadId: formData.parentThreadId || null
-      };
-
       const response = await fetch(`${process.env.REACT_APP_API_URL}/posts/import`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(postData)
+        body: JSON.stringify({
+          title: formData.title,
+          content: formData.content,
+          userId: formData.selectedUserId,
+          createdAt: timestamp,
+          tags: formData.tags,
+          parentThreadId: formData.parentThreadId || null
+        })
       });
 
       if (response.ok) {
@@ -89,121 +87,184 @@ const AdminImportPost = () => {
     }
   };
 
+  const handleTagsChange = (event) => {
+    const tagArray = event.target.value.split(',').map(tag => tag.trim()).filter(Boolean);
+    setFormData(prev => ({ ...prev, tags: tagArray }));
+  };
+
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-6">Import Historical Post</h2>
-      
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium mb-2">Title (for new threads)</label>
-          <input
-            type="text"
-            value={formData.title}
-            onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-            className="w-full p-2 border rounded"
-            placeholder="Thread title (optional)"
-          />
-        </div>
+    <Card elevation={3} className="max-w-4xl mx-auto">
+      <CardContent className="p-8">
+        <Typography variant="h4" component="h1" className="mb-6 font-bold">
+          Import Historical Post
+        </Typography>
 
-        <div>
-          <label className="block text-sm font-medium mb-2">Content</label>
-          <textarea
-            value={formData.content}
-            onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-            className="w-full p-2 border rounded h-32"
-            required
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Thread Title"
+                value={formData.title}
+                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                placeholder="Title for new threads"
+                variant="outlined"
+                InputProps={{
+                  startAdornment: (
+                    <Box className="mr-2 text-gray-400">
+                      <LabelOutlined />
+                    </Box>
+                  ),
+                }}
+              />
+            </Grid>
 
-        <div>
-          <label className="block text-sm font-medium mb-2">Post as User</label>
-          <select
-            value={formData.selectedUserId}
-            onChange={(e) => setFormData(prev => ({ ...prev, selectedUserId: e.target.value }))}
-            className="w-full p-2 border rounded"
-            required
-          >
-            <option value="">Select a user</option>
-            {users.map(user => (
-              <option key={user.auth0_id} value={user.auth0_id}>
-                {user.username || user.email}
-              </option>
-            ))}
-          </select>
-        </div>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                multiline
+                rows={4}
+                label="Content"
+                value={formData.content}
+                onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                required
+                variant="outlined"
+              />
+            </Grid>
 
-        <div className="space-y-2">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Date</label>
-              <input
+            <Grid item xs={12}>
+              <FormControl fullWidth variant="outlined">
+                <InputLabel>Post as User</InputLabel>
+                <Select
+                  value={formData.selectedUserId}
+                  onChange={(e) => setFormData(prev => ({ ...prev, selectedUserId: e.target.value }))}
+                  label="Post as User"
+                  required
+                  startAdornment={
+                    <Box className="ml-2 mr-2 text-gray-400">
+                      <PersonOutline />
+                    </Box>
+                  }
+                >
+                  <MenuItem value="">
+                    <em>Select a user</em>
+                  </MenuItem>
+                  {[...users].sort((a, b) => {
+                    const nameA = (a.username || a.email || '').toLowerCase();
+                    const nameB = (b.username || b.email || '').toLowerCase();
+                    return nameA.localeCompare(nameB);
+                  }).map(user => (                    <MenuItem key={user.auth0_id} value={user.auth0_id}>
+                      {user.username || user.email}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
                 type="date"
+                label="Date"
                 value={formData.postDate}
                 onChange={(e) => setFormData(prev => ({ ...prev, postDate: e.target.value }))}
-                className="w-full p-2 border rounded"
                 required
+                variant="outlined"
+                InputLabelProps={{ shrink: true }}
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Time</label>
-              <input
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
                 type="time"
+                label="Time"
                 value={formData.postTime}
                 onChange={(e) => setFormData(prev => ({ ...prev, postTime: e.target.value }))}
-                className="w-full p-2 border rounded"
                 required
+                variant="outlined"
+                InputLabelProps={{ shrink: true }}
               />
-            </div>
-          </div>
-          <div className="text-sm text-gray-600">
-            Will be posted as: {getFormattedDateTime()}
-          </div>
-        </div>
+            </Grid>
 
-        <div>
-          <label className="block text-sm font-medium mb-2">Reply to Thread (optional)</label>
-          <input
-            type="text"
-            value={formData.parentThreadId}
-            onChange={(e) => setFormData(prev => ({ ...prev, parentThreadId: e.target.value }))}
-            className="w-full p-2 border rounded"
-            placeholder="Thread ID (leave empty for new thread)"
-          />
-        </div>
+            <Grid item xs={12}>
+              <Paper elevation={0} className="p-3 bg-gray-50">
+                <Box className="flex items-center text-gray-600">
+                  <AccessTime className="mr-2" />
+                  <Typography variant="body2">
+                    Will be posted as: {getFormattedDateTime()}
+                  </Typography>
+                </Box>
+              </Paper>
+            </Grid>
 
-        <div>
-          <label className="block text-sm font-medium mb-2">Tags (comma-separated)</label>
-          <input
-            type="text"
-            value={formData.tags.join(', ')}
-            onChange={(e) => setFormData(prev => ({ 
-              ...prev, 
-              tags: e.target.value.split(',').map(tag => tag.trim()).filter(Boolean)
-            }))}
-            className="w-full p-2 border rounded"
-            placeholder="community, events, etc."
-          />
-        </div>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Reply to Thread ID"
+                value={formData.parentThreadId}
+                onChange={(e) => setFormData(prev => ({ ...prev, parentThreadId: e.target.value }))}
+                placeholder="Leave empty for new thread"
+                variant="outlined"
+                InputProps={{
+                  startAdornment: (
+                    <Box className="mr-2 text-gray-400">
+                      <Reply />
+                    </Box>
+                  ),
+                }}
+              />
+            </Grid>
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className={`w-full p-3 text-white rounded ${
-            isSubmitting ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'
-          }`}
-        >
-          {isSubmitting ? 'Importing...' : 'Import Post'}
-        </button>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Tags"
+                value={formData.tags.join(', ')}
+                onChange={handleTagsChange}
+                placeholder="community, events, etc."
+                variant="outlined"
+                helperText="Separate tags with commas"
+              />
+              <Box className="mt-2 flex flex-wrap gap-2">
+                {formData.tags.map((tag, index) => (
+                  <Chip
+                    key={index}
+                    label={tag}
+                    onDelete={() => {
+                      const newTags = formData.tags.filter((_, i) => i !== index);
+                      setFormData(prev => ({ ...prev, tags: newTags }));
+                    }}
+                    color="primary"
+                    variant="outlined"
+                  />
+                ))}
+              </Box>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button
+                fullWidth
+                type="submit"
+                variant="contained"
+                disabled={isSubmitting}
+                className={`h-12 ${isSubmitting ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'}`}
+              >
+                {isSubmitting ? 'Importing...' : 'Import Post'}
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
 
         {message && (
-          <div className={`p-3 rounded ${
-            message.includes('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
-          }`}>
-            {message}
-          </div>
+          <Box className="mt-4">
+            <Alert severity={message.includes('Error') ? 'error' : 'success'}>
+              {message}
+            </Alert>
+          </Box>
         )}
-      </form>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

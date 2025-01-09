@@ -28,6 +28,7 @@
     "cloudinary": "^2.5.1",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.13",
+    "draft-js": "^0.11.7",
     "express": "^4.21.2",
     "express-openid-connect": "^2.17.1",
     "filepond": "^4.32.4",
