@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv(dotenv_path='/Users/musicdaddy/Desktop/venues/backend/.env.local')
+load_dotenv(dotenv_path='/Users/musicdaddy/Desktop/venues/backend/.env.development')
 
 # Create connections for both local and production
 local_conn = psycopg2.connect(

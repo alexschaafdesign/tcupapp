@@ -6,7 +6,10 @@
   "scripts": {
     "server": "NODE_ENV=development nodemon server.js",
     "start": "node server.js",
-    "dev": "nodemon -r dotenv/config server.js"
+    "dev": "nodemon -r dotenv/config server.js",
+    "migrate": "node-pg-migrate",
+    "migrate:up": "node-pg-migrate up",
+    "migrate:down": "node-pg-migrate down"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +31,7 @@
     "jwks-rsa": "^3.1.0",
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
+    "node-pg-migrate": "^7.9.0",
     "pg": "^8.13.1",
     "react-router-dom": "^6.28.0"
   },

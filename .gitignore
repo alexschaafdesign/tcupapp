@@ -19,7 +19,8 @@ frontend/node_modules/.cache/
 # Ignore environment variables file
 .env.DS_Store
 .env
-.env.local
+.env.development
+.env.development
 
 # Ignore build folder
 build/
@@ -28,3 +29,4 @@ token.json
 scrapers/credentials.json
 
 flyway/*.conf
+other_scripts

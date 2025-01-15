@@ -43,6 +43,7 @@ import Privacy from "./pages/Privacy.js";
 import AdminImportPost from "./pages/AdminImportPost.js";
 import VRCForm from "./pages/VRC/VRCForm.js";
 import PowerPledgeForm from "./pages/PowerPledge.js";
+import ImageDisplayPage from "./pages/ImageDisplayPage.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -145,6 +146,7 @@ function App() {
           <Route path="/venues/add" element={<VenueForm />} />
           <Route path="/venues/edit/:id" element={<VenueForm />} />
 
+          <Route path="/interviewtest" element={<ImageDisplayPage />} />
 
 
           {/* People */}

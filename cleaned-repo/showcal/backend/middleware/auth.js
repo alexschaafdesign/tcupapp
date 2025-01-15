@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Log the current directory and env file path
-const envPath = path.resolve(__dirname, '../.env.local');
+const envPath = path.resolve(__dirname, '../.env.development');
 console.log('Current directory:', __dirname);
 console.log('Looking for env file at:', envPath);
 

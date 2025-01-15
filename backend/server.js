@@ -5,8 +5,8 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pg from 'pg';
-import fetch from 'node-fetch';
-import authMiddleware from './middleware/auth.js';
+import fetch from 'node-fetch'; // if still needed
+import authMiddleware from './middleware/auth.js'; // if still in use
 
 // Route imports
 import venuesRoutes from './routes/venues.js';
@@ -22,53 +22,41 @@ import tagsRouter from './routes/tags.js';
 import tcupgcalRouter from './routes/tcupgcal.js';
 import pledgesRouter from './routes/pledges.js';
 
-
-
 const { Pool } = pg;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
-
-// Load environment variables
-  dotenv.config({ 
-    path: path.resolve(__dirname, `.env.${process.env.ENV || 'local'}`)
-  });
-
-// Log environment variables to check what's being loaded
-console.log('Environment:', {
-  ENV: process.env.ENV,
-  DB_NAME: process.env.LOCAL_DB_NAME,
-  DB_USER: process.env.LOCAL_DB_USER,
-  DB_HOST: process.env.LOCAL_DB_HOST,
-  DB_PORT: process.env.LOCAL_DB_PORT
+/**
+ * 1) Load environment variables
+ *    - If NODE_ENV=development, loads .env.development
+ *    - If NODE_ENV=production, loads .env.production
+ *    - Defaults to .env.development if NODE_ENV is not set
+ */
+dotenv.config({
+  path: path.resolve(__dirname, `.env.${process.env.NODE_ENV || 'development'}`)
 });
 
-// Add after dotenv.config()
-console.log({
-  ENV: process.env.ENV,
-  isProduction: process.env.ENV === 'production',
-  isLocalEnv: process.env.ENV === 'local',
-  DB_NAME: process.env.LOCAL_DB_NAME
+// Helpful logs
+console.log('Using environment file:', `.env.${process.env.NODE_ENV || 'development'}`);
+console.log('Environment variables loaded:', {
+  NODE_ENV: process.env.NODE_ENV,
+  DB_NAME: process.env.DB_NAME,
+  DB_USER: process.env.DB_USER,
+  DB_HOST: process.env.DB_HOST,
+  DB_PORT: process.env.DB_PORT,
+  // Add any others you care about
 });
 
-// Add right after dotenv.config()
-console.log('Env file path:', path.resolve(__dirname, `.env.${process.env.ENV || 'local'}`));
-
-// Database configuration based on environment
-const isProduction = process.env.ENV === 'production';
-const dbConfig = {
-  user: isProduction ? process.env.PROD_DB_USER : process.env.LOCAL_DB_USER,
-  password: isProduction ? process.env.PROD_DB_PASSWORD : process.env.LOCAL_DB_PASSWORD,
-  host: isProduction ? process.env.PROD_DB_HOST : process.env.LOCAL_DB_HOST,
-  port: isProduction ? process.env.PROD_DB_PORT : process.env.LOCAL_DB_PORT,
-  database: isProduction ? process.env.PROD_DB_NAME : process.env.LOCAL_DB_NAME,
-  ssl: isProduction ? { rejectUnauthorized: false } : false
-};
-
-// Create database pool
-const pool = new Pool(dbConfig);
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: parseInt(process.env.DB_PORT, 10),
+  // If you want SSL in production only, you can do:
+  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+});
 
 // Test database connection
 pool.connect((err, client, release) => {
@@ -82,10 +70,10 @@ pool.connect((err, client, release) => {
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// CORS configuration (keeping your existing settings)
+// 2) CORS configuration
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? 'https://portal.tcupboard.org' 
+  origin: process.env.NODE_ENV === 'production'
+    ? 'https://portal.tcupboard.org'
     : 'http://localhost:3002',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -96,7 +84,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Create Xenforo API client (keeping your existing settings)
+// 3) Create Xenforo API client (if still needed)
 const xenforoClient = axios.create({
   baseURL: 'https://tcupboard.org/api',
   headers: {
@@ -105,7 +93,7 @@ const xenforoClient = axios.create({
   }
 });
 
-// API routes
+// 4) API routes
 app.use('/api/venues', venuesRoutes);
 app.use('/api/bands', tcupbandsRouter);
 app.use('/api/shows', showsRouter);
@@ -119,13 +107,6 @@ app.use('/api/tags', tagsRouter);
 app.use('/api/tcupgcal', tcupgcalRouter);
 app.use('/api/pledges', pledgesRouter);
 
-
-
-
-
-
-
-
 // Example database test route
 app.get('/api/test-db', async (req, res) => {
   try {
@@ -137,6 +118,7 @@ app.get('/api/test-db', async (req, res) => {
   }
 });
 
+// Debug request logging
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`, req.body);
   next();
@@ -177,23 +159,24 @@ app.post('/index.php?api/oauth2/token', async (req, res) => {
   }
 });
 
-// Add this after all your route declarations
-app._router.stack.forEach(function(r){
-  if (r.route && r.route.path){
-    console.log(`Route: ${r.route.path}`)
-  } else if(r.name === 'router'){
-    console.log('Router middleware:')
-    r.handle.stack.forEach(function(r){
-      if (r.route){
-        console.log(`  ${r.route.path}`)
+// Print out routes (for debugging)
+app._router.stack.forEach((r) => {
+  if (r.route && r.route.path) {
+    console.log(`Route: ${r.route.path}`);
+  } else if (r.name === 'router') {
+    console.log('Router middleware:');
+    r.handle.stack.forEach((rr) => {
+      if (rr.route) {
+        console.log(`  ${rr.route.path}`);
       }
-    })
+    });
   }
-})
+});
 
-// Export pool for use in route files
+// Export pool for reuse in other modules (if needed)
 export const db = pool;
 
+// Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
