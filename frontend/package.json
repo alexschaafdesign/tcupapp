@@ -37,12 +37,14 @@
     "filepond-plugin-file-validate-type": "^1.2.9",
     "filepond-plugin-image-preview": "^4.6.12",
     "framer-motion": "^11.16.0",
-    "googleapis": "^39.2.0",
+    "google-auth-library": "^9.15.0",
+    "googleapis": "^144.0.0",
     "http-proxy-middleware": "^3.0.3",
     "https-browserify": "^1.0.0",
     "ics": "^3.8.1",
     "papaparse": "^5.4.1",
     "pg": "^8.7.1",
+    "postcss": "^8.5.1",
     "process": "^0.11.10",
     "react": "^18.2.0",
     "react-datepicker": "^7.5.0",
@@ -54,11 +56,14 @@
     "react-router-dom": "^6.28.0",
     "react-scripts": "^5.0.1",
     "react-signature-canvas": "^1.0.7",
+    "resolve-url-loader": "^5.0.0",
     "save": "^2.9.0",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "url": "^0.11.4",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "webpack": "^5.97.1",
+    "webpack-dev-server": "^4.15.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -85,6 +90,10 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^6.2.0"
+    "@svgr/webpack": "^6.5.1",
+    "css-select": "^4.3.0",
+    "gh-pages": "^6.2.0",
+    "nth-check": "^2.1.1",
+    "svgo": "^2.8.0"
   }
 }
