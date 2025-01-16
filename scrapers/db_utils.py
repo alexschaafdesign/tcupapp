@@ -1,19 +1,27 @@
 import psycopg2
 import json
+from dotenv import load_dotenv
+import os
+from pathlib import Path
 
-# Database connection parameters
-DB_NAME = "tcup_db"
-DB_USER = "aschaaf"
-DB_PASSWORD = "notthesame"
-DB_HOST = "localhost"
+# Get path to backend directory (one level up from scrapers)
+backend_dir = Path(__file__).parents[1] / 'backend'
+
+# Load base .env file from backend directory
+load_dotenv(backend_dir / '.env')
+env = os.getenv('NODE_ENV', 'development')
+
+# Load environment-specific file
+env_file = backend_dir / f'.env.{env}'
+load_dotenv(env_file)
 
 def connect_to_db():
     """Establish a connection to the database."""
     return psycopg2.connect(
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        host=DB_HOST
+        dbname=os.getenv('DB_NAME'),
+        user=os.getenv('DB_USER'),
+        password=os.getenv('DB_PASSWORD'),
+        host=os.getenv('DB_HOST')
     )
 
 def get_venue_id(cursor, venue_name):
