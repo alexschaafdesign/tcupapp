@@ -54,9 +54,11 @@ function App() {
     return location.pathname === '/sessionmusicians' ? false : 'md';
   };
 
+  console.log("NODE_ENV:", process.env.NODE_ENV);
+
   const hasAttemptedRegistration = React.useRef(false);
 
-  const showHeader = process.env.REACT_APP_SHOW_HEADER === 'true';
+  const showHeader = process.env.NODE_ENV === 'development';
 
   useEffect(() => {
       console.log('Auth state changed:', {
