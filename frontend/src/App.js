@@ -56,6 +56,8 @@ function App() {
 
   const hasAttemptedRegistration = React.useRef(false);
 
+  const showHeader = process.env.REACT_APP_SHOW_HEADER === 'true';
+
   useEffect(() => {
       console.log('Auth state changed:', {
         isLoading,
@@ -86,7 +88,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       {/* Conditionally render Header based on the current route */}
-      {!location.pathname.match(/\/minimal($|\/)/) && <Header />}
+      {showHeader && <Header />}
 
       <RootLayout maxWidth={getMaxWidth()}>
      
