@@ -19,6 +19,7 @@ import '@fontsource/arimo';
 const PowerPledgeForm = () => {
   const [formData, setFormData] = useState({ name: '', bands: '' });
   const [imageData, setImageData] = useState(null);
+  const [signatureData, setSignatureData] = useState(null); // Store signature
   const [finalImage, setFinalImage] = useState(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -132,9 +133,38 @@ const PowerPledgeForm = () => {
     setFormData({ ...formData, bands: e.target.value });
   };
 
+  // Store signature when it changes
+  const handleEndSignature = () => {
+    if (signatureRef.current) {
+      setSignatureData(signatureRef.current.toDataURL());
+    }
+  };
+
+  // Restore signature when component renders
+  useEffect(() => {
+    if (signatureRef.current && signatureData) {
+      signatureRef.current.fromDataURL(signatureData);
+    }
+  }, [signatureData]);
+
+  // Force redraw on mobile after touch events
+  const redrawSignature = () => {
+    if (signatureRef.current && signatureData) {
+      signatureRef.current.fromDataURL(signatureData);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('touchend', redrawSignature);
+    return () => document.removeEventListener('touchend', redrawSignature);
+  }, [redrawSignature]);
+
   const clearSignature = () => {
     signatureRef.current.clear();
+    setSignatureData(null); // Clear stored signature
   };
+
+  
 
   const takeSelfie = async () => {
     if (!videoRef.current) return;
@@ -422,16 +452,8 @@ const PowerPledgeForm = () => {
             minWidth={2}
             maxWidth={4}
             throttle={16}  // For smoother drawing
-            onEnd={() => {
-              // Force canvas redraw after signature
-              const canvas = signatureRef.current;
-              if (canvas) {
-                const data = canvas.toData();
-                canvas.clear();
-                canvas.fromData(data);
-              }
-            }}
-          />
+            onEnd={handleEndSignature}
+            />
                     </Box>
           <Button 
             variant="outlined" 

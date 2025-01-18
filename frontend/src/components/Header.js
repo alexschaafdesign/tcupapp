@@ -36,6 +36,8 @@ const Header = () => {
     { text: "VENUES", path: "/venues" },
     { text: "BANDS", path: "/bands" },
     { text: "VENUE REPORT CARD", path: "/vrc" },
+    { text: "POWER PLEDGES", path: "/powerpledge" },
+
 
   ];
 
