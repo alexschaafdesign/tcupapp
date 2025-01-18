@@ -39,10 +39,6 @@ const PowerPledgeForm = () => {
 
   const startCamera = async () => {
     try {
-      if (!videoRef.current) {
-        throw new Error('Video element not initialized');
-      }
-      
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
           facingMode: 'user',
@@ -50,14 +46,21 @@ const PowerPledgeForm = () => {
           height: { ideal: 720 }
         } 
       });
-      
-      videoRef.current.srcObject = stream;
+  
+      // Wait for video element to be ready
       await new Promise((resolve) => {
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current.play().then(resolve);
+        const checkVideoRef = () => {
+          if (videoRef.current) {
+            resolve();
+          } else {
+            setTimeout(checkVideoRef, 100);
+          }
         };
+        checkVideoRef();
       });
-      
+  
+      videoRef.current.srcObject = stream;
+      videoRef.current.play();
       setIsCameraActive(true);
     } catch (err) {
       console.error('Camera error:', err);
