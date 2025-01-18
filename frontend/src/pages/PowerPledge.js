@@ -279,10 +279,12 @@ const PowerPledgeForm = () => {
         formCtx.fillRect(fieldValueStartX, bandY + underlineOffset, fieldLineWidth, 1);
 
         // Signature field
-        const signatureImage = signatureRef.current.toDataURL();
+        const signatureImage = signatureRef.current.toDataURL('image/png', 1.0);  // Maximum quality
         const sigImg = new Image();
-        await new Promise((resolve) => {
+        sigImg.crossOrigin = "anonymous";
+        await new Promise((resolve, reject) => {
           sigImg.onload = resolve;
+          sigImg.onerror = reject;
           sigImg.src = signatureImage;
         });
         const signatureY = startY + fieldSpacing * 2 + 10;
@@ -406,16 +408,31 @@ const PowerPledgeForm = () => {
             Signature
           </Typography>
           <Box sx={{ border: 1, borderColor: 'grey.300', mb: 1 }}>
-            <SignatureCanvas
-              ref={signatureRef}
-              canvasProps={{
-                style: { 
-                  width: '100%', 
-                  height: '200px'
-                }
-              }}
-            />
-          </Box>
+          <SignatureCanvas
+            ref={signatureRef}
+            canvasProps={{
+              style: { 
+                width: '100%', 
+                height: '200px',
+                touchAction: 'none'  // Prevent scrolling while signing
+              },
+              className: 'signature-canvas'  // For potential CSS targeting
+            }}
+            dotSize={2}  // Adjust based on screen density
+            minWidth={2}
+            maxWidth={4}
+            throttle={16}  // For smoother drawing
+            onEnd={() => {
+              // Force canvas redraw after signature
+              const canvas = signatureRef.current;
+              if (canvas) {
+                const data = canvas.toData();
+                canvas.clear();
+                canvas.fromData(data);
+              }
+            }}
+          />
+                    </Box>
           <Button 
             variant="outlined" 
             onClick={clearSignature}

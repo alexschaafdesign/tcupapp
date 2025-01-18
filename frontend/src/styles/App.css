@@ -40,6 +40,11 @@
   }
 }
 
+.signature-canvas {
+  touch-action: none;
+  -ms-touch-action: none;
+}
+
 /* Modal and Scrim */
 .scrim {
   position: fixed;
