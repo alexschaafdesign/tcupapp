@@ -27,26 +27,42 @@ const PowerPledgeForm = () => {
   const signatureRef = useRef();
   const videoRef = useRef();
   const fileInputRef = useRef();
-  const [videoElement, setVideoElement] = useState(null);
-
 
   useEffect(() => {
-    if (videoRef.current) {
-      setVideoElement(videoRef.current);
-    }
+    return () => {
+      if (videoRef.current?.srcObject) {
+        const tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+    };
   }, []);
-  
+
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      const video = videoRef.current;
-      video.srcObject = stream;
-      video.onloadedmetadata = () => {
-        video.play();
-      };
+      if (!videoRef.current) {
+        throw new Error('Video element not initialized');
+      }
+      
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'user',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        } 
+      });
+      
+      videoRef.current.srcObject = stream;
+      await new Promise((resolve) => {
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current.play().then(resolve);
+        };
+      });
+      
       setIsCameraActive(true);
     } catch (err) {
-      setError(err.message);
+      console.error('Camera error:', err);
+      setError(err.message || 'Failed to start camera');
+      setIsCameraActive(false);
     }
   };
 
@@ -59,8 +75,6 @@ const PowerPledgeForm = () => {
       const metrics = context.measureText(testLine);
       const testWidth = metrics.width;
   
-      // If adding this word would exceed the max line width,
-      // draw the current line and move to the next line.
       if (testWidth > maxWidth && n > 0) {
         context.fillText(line, x, y);
         line = words[n] + ' ';
@@ -69,8 +83,8 @@ const PowerPledgeForm = () => {
         line = testLine;
       }
     }
-    // Draw the remainder of the line
     context.fillText(line, x, y);
+    return y;  // Return the final y position
   }
   
   const uploadToCloudinary = async (file) => {
@@ -119,17 +133,15 @@ const PowerPledgeForm = () => {
     signatureRef.current.clear();
   };
 
-
   const takeSelfie = async () => {
-    const video = videoRef.current;
-    if (!video) return;
+    if (!videoRef.current) return;
   
     const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
+    canvas.width = videoRef.current.videoWidth || 640;
+    canvas.height = videoRef.current.videoHeight || 480;
     
     const context = canvas.getContext('2d');
-    context.drawImage(video, 0, 0);
+    context.drawImage(videoRef.current, 0, 0);
     
     canvas.toBlob(async (blob) => {
       try {
@@ -224,69 +236,58 @@ const PowerPledgeForm = () => {
         "using intentional language to confirm details around compensation, amenities " +
         "and hospitality, and performance logistics.";
 
-
         const paragraph2 = "I commit to building power for myself and fellow artists by " +
         "demanding fair compensation and transparency, rejecting the 'starving artist' " +
         "narrative. I will embrace collective action, working with my peers to raise " +
         "industry standards and ensure our work is valued. Together, we will build a " +
         "stronger, more respected artistic community.";
 
-        const lineHeight = 24; // Adjust this for line spacing within paragraphs
-        const paragraphSpacing = 40; // Adjust this for the spacing between paragraphs        
+        const lineHeight = 24;
+        const paragraphSpacing = 40;
 
-        // Draw the first paragraph starting near (x=60, y=200) with a maxWidth of 880
-        // (assuming about 60px of left margin and 60px of right margin on a 1000px canvas)
-        wrapText(formCtx, paragraph1, 60, 200, 880, lineHeight);
+        let currentY = 200;
+        currentY = wrapText(formCtx, paragraph1, 60, currentY, 880, lineHeight);
+        currentY += paragraphSpacing;
+        currentY = wrapText(formCtx, paragraph2, 60, currentY, 880, lineHeight);
 
-        const paragraph1Height = Math.ceil(formCtx.measureText(paragraph1).width / 880) * lineHeight;
-
-
-        // Increase y by however many lines ended up for paragraph1. 
-        // For simplicity, guess ~80px vertical space
-        const paragraph2StartY = 200 + paragraph1Height + paragraphSpacing;
-        wrapText(formCtx, paragraph2, 60, paragraph2StartY, 880, lineHeight);
-
-        // Ensure `date` is defined
         const date = new Date().toLocaleDateString();
 
-        // Define starting coordinates and spacing for form fields
-        const fieldStartX = 60; // X position for labels
-        const fieldValueStartX = 200; // X position for values (left side)
-        const fieldDateStartX = 500; // X position for Date label and value (right side)
-        const fieldLineWidth = 300; // Width of underlines
-        const fieldSpacing = 70; // Vertical spacing between each field
-        const underlineOffset = 8; // Offset for the underline below text
-        const startY = 500; // Starting Y position for fields
+        const fieldStartX = 60;
+        const fieldValueStartX = 200;
+        const fieldDateStartX = 500;
+        const fieldLineWidth = 300;
+        const fieldSpacing = 70;
+        const underlineOffset = 8;
+        const startY = 500;
 
-        // Name and Date field (aligned horizontally)
+        // Name and Date field
         formCtx.fillText('Name:', fieldStartX, startY);
         formCtx.fillText(formData.name, fieldValueStartX, startY);
-        formCtx.fillRect(fieldValueStartX, startY + underlineOffset, fieldLineWidth, 1); // Underline
+        formCtx.fillRect(fieldValueStartX, startY + underlineOffset, fieldLineWidth, 1);
 
         formCtx.fillText('Date:', fieldDateStartX, startY);
         formCtx.fillText(date, fieldDateStartX + 50, startY);
-        formCtx.fillRect(fieldDateStartX + 50, startY + underlineOffset, 150, 1); // Underline
+        formCtx.fillRect(fieldDateStartX + 50, startY + underlineOffset, 150, 1);
 
         // Band(s) field
-        const bandY = startY + fieldSpacing; // Y position for Band(s)
+        const bandY = startY + fieldSpacing;
         formCtx.fillText('Band(s):', fieldStartX, bandY);
         formCtx.fillText(formData.bands, fieldValueStartX, bandY);
-        formCtx.fillRect(fieldValueStartX, bandY + underlineOffset, fieldLineWidth, 1); // Underline
+        formCtx.fillRect(fieldValueStartX, bandY + underlineOffset, fieldLineWidth, 1);
 
         // Signature field
-        // Load the signature image
         const signatureImage = signatureRef.current.toDataURL();
         const sigImg = new Image();
         await new Promise((resolve) => {
-        sigImg.onload = resolve;
-        sigImg.src = signatureImage;
+          sigImg.onload = resolve;
+          sigImg.src = signatureImage;
         });
-        const signatureY = startY + fieldSpacing * 2 + 10; // Adjust Y position for signature
+        const signatureY = startY + fieldSpacing * 2 + 10;
         formCtx.drawImage(sigImg, fieldValueStartX, signatureY, 300, 80);
 
         // Create final composite
         canvas.width = formCanvas.width;
-        canvas.height = formCanvas.height;  // Remove the extra height
+        canvas.height = formCanvas.height;
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -294,22 +295,21 @@ const PowerPledgeForm = () => {
         ctx.drawImage(formCanvas, 0, 0);
 
         // Calculate photo dimensions and position
-        const maxPhotoWidth = 300;  // Adjust size as needed
+        const maxPhotoWidth = 300;
         const maxPhotoHeight = 200;
         const aspectRatio = img.width / img.height;
         let photoWidth, photoHeight;
 
         if (aspectRatio > maxPhotoWidth/maxPhotoHeight) {
-        photoWidth = maxPhotoWidth;
-        photoHeight = photoWidth / aspectRatio;
+          photoWidth = maxPhotoWidth;
+          photoHeight = photoWidth / aspectRatio;
         } else {
-        photoHeight = maxPhotoHeight;
-        photoWidth = photoHeight * aspectRatio;
+          photoHeight = maxPhotoHeight;
+          photoWidth = photoHeight * aspectRatio;
         }
 
-        // Position photo in bottom right with padding
-        const photoX = canvas.width - photoWidth - 60;  // 60px padding from right
-        const photoY = canvas.height - photoHeight - 60; // 60px padding from bottom
+        const photoX = canvas.width - photoWidth - 60;
+        const photoY = canvas.height - photoHeight - 60;
 
         // Draw photo
         ctx.drawImage(img, photoX, photoY, photoWidth, photoHeight);
@@ -328,24 +328,24 @@ const PowerPledgeForm = () => {
         };
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/pledges`, {
-              method: 'POST',
-              headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-              },
-              credentials: 'include',
-              body: JSON.stringify(pledgeData)
-            });
-            
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || 'Failed to save pledge');
-            
-          } catch (err) {
-            console.error('Save error:', err);
-            setError(`Failed to save pledge: ${err.message}`);
-            throw err;
-          }
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/pledges`, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify(pledgeData)
+          });
+          
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || 'Failed to save pledge');
+          
+        } catch (err) {
+          console.error('Save error:', err);
+          setError(`Failed to save pledge: ${err.message}`);
+          throw err;
+        }
         
       } catch (error) {
         console.error('Error:', error);
@@ -361,27 +361,25 @@ const PowerPledgeForm = () => {
   return (
     <Card sx={{ maxWidth: 800, mx: 'auto', mt: 4, mb: 4 }}>
       <CardContent>
-
-
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {error}
           </Alert>
         )}
    
-    <Box sx={{ width: '100%', mb: 4 }}>
-        <Typography variant="h4" gutterBottom sx={{ width: '100%' }}>
-        TCUP Power Pledge
-        </Typography>
+        <Box sx={{ width: '100%', mb: 4 }}>
+          <Typography variant="h4" gutterBottom sx={{ width: '100%' }}>
+            TCUP Power Pledge
+          </Typography>
 
-        <Typography variant="body1" paragraph sx={{ width: '100%' }}>
-        <strong>I pledge to build solidarity with my fellow musicians. I will adhere to a shared set of communication standards between musicians and venues, by using the TCUP advance when booking my shows. This includes using intentional language to confirm details around compensation, amenities and hospitality, and performance logistics.</strong>
-        </Typography>
+          <Typography variant="body1" paragraph sx={{ width: '100%' }}>
+            <strong>I pledge to build solidarity with my fellow musicians. I will adhere to a shared set of communication standards between musicians and venues, by using the TCUP advance when booking my shows. This includes using intentional language to confirm details around compensation, amenities and hospitality, and performance logistics.</strong>
+          </Typography>
 
-        <Typography variant="body1" paragraph sx={{ width: '100%' }}>
-        <strong>I commit to building power for myself and fellow artists by demanding fair compensation and transparency, rejecting the 'starving artist' narrative. I will embrace collective action, working with my peers to raise industry standards and ensure our work is valued. Together, we will build a stronger, more respected artistic community.</strong>
-        </Typography>
-    </Box>
+          <Typography variant="body1" paragraph sx={{ width: '100%' }}>
+            <strong>I commit to building power for myself and fellow artists by demanding fair compensation and transparency, rejecting the 'starving artist' narrative. I will embrace collective action, working with my peers to raise industry standards and ensure our work is valued. Together, we will build a stronger, more respected artistic community.</strong>
+          </Typography>
+        </Box>
 
         <Box sx={{ mb: 3 }}>
           <TextField
@@ -455,31 +453,36 @@ const PowerPledgeForm = () => {
             </Box>
           )}
 
-                {isCameraActive && videoRef.current && (
-
-             <Box sx={{ mb: 3, display: isCameraActive ? 'block' : 'none' }}>
-             <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                style={{ 
-                    width: '100%',
-                    maxHeight: '480px',
-                    backgroundColor: '#000',
-                    display: isCameraActive ? 'block' : 'none'
-                }}
-                />
-             <Box sx={{ mt: 2 }}>
-               <Button variant="contained" onClick={takeSelfie} disabled={isUploading}>
-                 {isUploading ? 'Uploading...' : 'Capture'}
-               </Button>
-               <Button variant="outlined" onClick={stopCamera} sx={{ ml: 1 }}>
-                 Cancel
-               </Button>
-             </Box>
-           </Box>
-          )}
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              style={{ 
+                width: '100%',
+                maxHeight: '480px',
+                backgroundColor: '#000',
+                display: isCameraActive ? 'block' : 'none'
+              }}
+            />
+              {isCameraActive && (
+                <Box sx={{ mt: 2 }}>
+                  <Button 
+                    variant="contained" 
+                    onClick={takeSelfie} 
+                    disabled={isUploading}
+                  >
+                    {isUploading ? 'Uploading...' : 'Capture'}
+                  </Button>
+                  <Button 
+                    variant="outlined" 
+                    onClick={stopCamera} 
+                    sx={{ ml: 1 }}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              )}
 
           {imageData && !isCameraActive && (
             <Box>
