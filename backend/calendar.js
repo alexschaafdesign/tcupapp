@@ -1,13 +1,8 @@
 import { google } from 'googleapis';
 import fs from 'fs/promises';
 
-// Load the service account key from an environment variable
-const credentialsPath = process.env.GOOGLE_CREDENTIALS_PATH; // Path to the JSON file
-if (!credentialsPath) {
-  throw new Error('GOOGLE_CREDENTIALS_PATH is not set');
-}
+const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
 
-const credentials = JSON.parse(await fs.readFile(credentialsPath, 'utf8'));
 
 // Authenticate with the service account
 const auth = new google.auth.GoogleAuth({

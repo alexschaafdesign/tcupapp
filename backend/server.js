@@ -39,6 +39,12 @@ dotenv.config({
   path: path.resolve(__dirname, `.env.${process.env.NODE_ENV || 'development'}`)
 });
 
+console.log('Server env loaded:', {
+  SENDGRID_API_KEY: !!process.env.SENDGRID_API_KEY,
+  NOTIFICATION_EMAIL: process.env.NOTIFICATION_EMAIL,
+  NODE_ENV: process.env.NODE_ENV
+});
+
 // Helpful logs
 console.log('Using environment file:', `.env.${process.env.NODE_ENV || 'development'}`);
 console.log('Environment variables loaded:', {
