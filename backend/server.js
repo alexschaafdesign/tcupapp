@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import pg from 'pg';
 import fetch from 'node-fetch'; // if still needed
 import authMiddleware from './middleware/auth.js'; // if still in use
+import sgMail from '@sendgrid/mail';
 
 // Route imports
 import venuesRoutes from './routes/venues.js';
