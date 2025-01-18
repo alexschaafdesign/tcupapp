@@ -28,37 +28,37 @@ const __dirname = path.dirname(__filename);
 
 // Load environment variables
   dotenv.config({ 
-    path: path.resolve(__dirname, `.env.${process.env.ENV || 'local'}`)
+    path: path.resolve(__dirname, `.env.${process.env.ENV || 'development'}`)
   });
 
 // Log environment variables to check what's being loaded
 console.log('Environment:', {
   ENV: process.env.ENV,
-  DB_NAME: process.env.LOCAL_DB_NAME,
-  DB_USER: process.env.LOCAL_DB_USER,
-  DB_HOST: process.env.LOCAL_DB_HOST,
-  DB_PORT: process.env.LOCAL_DB_PORT
+  DB_NAME: process.env.development_DB_NAME,
+  DB_USER: process.env.development_DB_USER,
+  DB_HOST: process.env.development_DB_HOST,
+  DB_PORT: process.env.development_DB_PORT
 });
 
 // Add after dotenv.config()
 console.log({
   ENV: process.env.ENV,
   isProduction: process.env.ENV === 'production',
-  isLocalEnv: process.env.ENV === 'local',
-  DB_NAME: process.env.LOCAL_DB_NAME
+  isdevelopmentEnv: process.env.ENV === 'development',
+  DB_NAME: process.env.development_DB_NAME
 });
 
 // Add right after dotenv.config()
-console.log('Env file path:', path.resolve(__dirname, `.env.${process.env.ENV || 'local'}`));
+console.log('Env file path:', path.resolve(__dirname, `.env.${process.env.ENV || 'development'}`));
 
 // Database configuration based on environment
 const isProduction = process.env.ENV === 'production';
 const dbConfig = {
-  user: isProduction ? process.env.PROD_DB_USER : process.env.LOCAL_DB_USER,
-  password: isProduction ? process.env.PROD_DB_PASSWORD : process.env.LOCAL_DB_PASSWORD,
-  host: isProduction ? process.env.PROD_DB_HOST : process.env.LOCAL_DB_HOST,
-  port: isProduction ? process.env.PROD_DB_PORT : process.env.LOCAL_DB_PORT,
-  database: isProduction ? process.env.PROD_DB_NAME : process.env.LOCAL_DB_NAME,
+  user: isProduction ? process.env.PROD_DB_USER : process.env.development_DB_USER,
+  password: isProduction ? process.env.PROD_DB_PASSWORD : process.env.development_DB_PASSWORD,
+  host: isProduction ? process.env.PROD_DB_HOST : process.env.development_DB_HOST,
+  port: isProduction ? process.env.PROD_DB_PORT : process.env.development_DB_PORT,
+  database: isProduction ? process.env.PROD_DB_NAME : process.env.development_DB_NAME,
   ssl: isProduction ? { rejectUnauthorized: false } : false
 };
 
@@ -81,7 +81,7 @@ const PORT = process.env.PORT || 3001;
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? 'https://portal.tcupboard.org' 
-    : 'http://localhost:3002',
+    : 'http://developmenthost:3002',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
@@ -173,7 +173,7 @@ app.post('/index.php?api/oauth2/token', async (req, res) => {
   const CLIENT_ID = process.env.REACT_APP_XENFORO_CLIENT_ID;
   const REDIRECT_URI = process.env.NODE_ENV === 'production'
     ? 'https://portal.tcupboard.org/callback'
-    : 'http://localhost:3002/callback';
+    : 'http://developmenthost:3002/callback';
 
   try {
     console.log('Attempting token exchange with code:', code);

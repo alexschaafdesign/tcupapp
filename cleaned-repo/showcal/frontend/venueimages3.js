@@ -24,11 +24,11 @@ cloudinary.config({
 
 // PostgreSQL Configuration for Local Development
 const pool = new Pool({
-  user: process.env.LOCAL_DB_USER,
-  host: process.env.LOCAL_DB_HOST,
-  database: process.env.LOCAL_DB_NAME,
-  password: process.env.LOCAL_DB_PASSWORD,
-  port: parseInt(process.env.LOCAL_DB_PORT, 10),
+  user: process.env.development_DB_USER,
+  host: process.env.development_DB_HOST,
+  database: process.env.development_DB_NAME,
+  password: process.env.development_DB_PASSWORD,
+  port: parseInt(process.env.development_DB_PORT, 10),
   ssl: false, // No SSL for local
 });
 

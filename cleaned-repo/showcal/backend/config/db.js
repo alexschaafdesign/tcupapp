@@ -8,29 +8,29 @@ const __dirname = path.dirname(__filename);
 
 // Load environment variables
 dotenv.config({ 
-  path: path.resolve(path.join(__dirname, '..'), `.env.${process.env.ENV || 'local'}`)
+  path: path.resolve(path.join(__dirname, '..'), `.env.${process.env.ENV || 'development'}`)
 });
 
 // Log environment variables to check what's being loaded
 console.log('Environment in db js file:', {
   ENV: process.env.ENV,
-  DB_NAME: process.env.LOCAL_DB_NAME,
-  DB_USER: process.env.LOCAL_DB_USER,
-  DB_HOST: process.env.LOCAL_DB_HOST,
-  DB_PORT: process.env.LOCAL_DB_PORT
+  DB_NAME: process.env.development_DB_NAME,
+  DB_USER: process.env.development_DB_USER,
+  DB_HOST: process.env.development_DB_HOST,
+  DB_PORT: process.env.development_DB_PORT
 });
 
 const { Pool } = pkg;
-const isLocalEnv = process.env.ENV === 'local';
+const isdevelopmentEnv = process.env.ENV === 'development';
 
 // Configure database pool
 const pool = new Pool({
-  user: isLocalEnv ? process.env.LOCAL_DB_USER : process.env.PROD_DB_USER,
-  host: isLocalEnv ? process.env.LOCAL_DB_HOST : process.env.PROD_DB_HOST,
-  database: isLocalEnv ? process.env.LOCAL_DB_NAME : process.env.PROD_DB_NAME,
-  password: isLocalEnv ? process.env.LOCAL_DB_PASSWORD : process.env.PROD_DB_PASSWORD,
-  port: isLocalEnv ? parseInt(process.env.LOCAL_DB_PORT, 10) : parseInt(process.env.PROD_DB_PORT, 10),
-  ssl: isLocalEnv ? false : { rejectUnauthorized: false },
+  user: isdevelopmentEnv ? process.env.development_DB_USER : process.env.PROD_DB_USER,
+  host: isdevelopmentEnv ? process.env.development_DB_HOST : process.env.PROD_DB_HOST,
+  database: isdevelopmentEnv ? process.env.development_DB_NAME : process.env.PROD_DB_NAME,
+  password: isdevelopmentEnv ? process.env.development_DB_PASSWORD : process.env.PROD_DB_PASSWORD,
+  port: isdevelopmentEnv ? parseInt(process.env.development_DB_PORT, 10) : parseInt(process.env.PROD_DB_PORT, 10),
+  ssl: isdevelopmentEnv ? false : { rejectUnauthorized: false },
 });
 
 // Handle pool errors

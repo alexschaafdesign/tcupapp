@@ -1,23 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Container, Typography, TextField, Button, Avatar, Box, CircularProgress, Paper, IconButton, Dialog } from '@mui/material';
-import { FormatQuote as QuoteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { Container, Typography, Button, Avatar, Box, CircularProgress, Paper, IconButton, Dialog } from '@mui/material';
+import { Edit as EditIcon } from '@mui/icons-material';
+import { Editor, EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import ReactionBar from './ReactionBar';
 import EditHistoricalPost from './EditHistoricalPost.js';
 import HistoricalReplyForm from './HistoricalReplyForm.js';
+import EditorWithFormatting from './EditorWithFormatting';
+import 'draft-js/dist/Draft.css';
 
 export const ThreadView = () => {
   const { threadId } = useParams();
   const { getAccessTokenSilently } = useAuth0();
   const [threadData, setThreadData] = useState(null);
-  const [replyContent, setReplyContent] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editingPost, setEditingPost] = useState(null);
   const replyBoxRef = useRef(null);
-  const textFieldRef = useRef(null);
   const [showHistoricalReplyModal, setShowHistoricalReplyModal] = useState(false);
+  const [replyEditorState, setReplyEditorState] = useState(EditorState.createEmpty());
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const fetchThread = async () => {
@@ -39,26 +41,38 @@ export const ThreadView = () => {
     fetchThread();
   }, [threadId, getAccessTokenSilently, apiUrl]);
 
+  const renderContent = (content) => {
+    try {
+      const contentState = convertFromRaw(JSON.parse(content));
+      const editorState = EditorState.createWithContent(contentState);
+      return (
+        <Box sx={{ 
+          '& .DraftEditor-root': { padding: 1 },
+          '& .public-DraftStyleDefault-block': { margin: 0 }
+        }}>
+          <Editor 
+            editorState={editorState} 
+            onChange={() => {}} 
+            readOnly={true}
+          />
+        </Box>
+      );
+    } catch {
+      return <Typography variant="body1">{content}</Typography>;
+    }
+  };
+
   const handleReplyClick = (reply) => {
     setReplyingTo(reply);
-    const content = reply.content.match(/\[quote="[^"]+"\](.*?)\[\/quote\]\s*(.*)/s);
-    const textToQuote = content ? content[2] : reply.content;
-    setReplyContent(`[quote="${reply.username}"]${textToQuote}[/quote]\n\n`);
-    
     replyBoxRef.current?.scrollIntoView({ behavior: 'smooth' });
-    
-    setTimeout(() => {
-      const textField = textFieldRef.current?.querySelector('textarea');
-      if (textField) {
-        textField.focus();
-        textField.setSelectionRange(textField.value.length, textField.value.length);
-      }
-    }, 100);
   };
 
   const handleReply = async (parentId = null) => {
     try {
       const token = await getAccessTokenSilently();
+      const contentState = replyEditorState.getCurrentContent();
+      const rawContent = JSON.stringify(convertToRaw(contentState));
+      
       const response = await fetch(`${apiUrl}/posts/${threadId}/reply`, {
         method: 'POST',
         headers: {
@@ -66,7 +80,7 @@ export const ThreadView = () => {
           Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
-          content: replyContent,
+          content: rawContent,
           parent_id: parentId || (replyingTo?.id || null)
         })
       });
@@ -75,7 +89,7 @@ export const ThreadView = () => {
         ...prev,
         replies: [...prev.replies, newReply]
       }));
-      setReplyContent('');
+      setReplyEditorState(EditorState.createEmpty());
       setReplyingTo(null);
     } catch (error) {
       console.error('Error:', error);
@@ -127,7 +141,7 @@ export const ThreadView = () => {
         display: 'flex', 
         gap: 2,
         p: 2,
-        bgcolor: isReply ? 'background.gray' : 'background.paper',
+        bgcolor: isReply ? 'background.default' : 'background.paper',
       }}>
         <Box sx={{ width: 100, flexShrink: 0 }}>
           <Avatar 
@@ -145,17 +159,8 @@ export const ThreadView = () => {
         
         <Box sx={{ flexGrow: 1 }}>
           {renderPostHeader(post, isReply)}
-
-          {post.content.includes('[quote="') ? (
-            <Box>
-              {renderQuotedContent(post.content)}
-              {renderMainContent(post.content)}
-            </Box>
-          ) : (
-            <Typography variant="body1">{post.content}</Typography>
-          )}
-
-          <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+          {renderContent(post.content)}
+          <Box sx={{ mt: 2 }}>
             <ReactionBar 
               postId={post.id} 
               postAuthor={post.username}
@@ -166,35 +171,6 @@ export const ThreadView = () => {
       </Box>
     </Paper>
   );
-
-  const renderQuotedContent = (content) => {
-    const match = content.match(/\[quote="([^"]+)"\](.*?)\[\/quote\]/s);
-    if (!match) return null;
-    
-    return (
-      <Box sx={{ 
-        bgcolor: 'action.hover',
-        borderLeft: '4px solid',
-        borderColor: 'primary.main',
-        p: 2,
-        mb: 2,
-        borderRadius: 1
-      }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-          <QuoteIcon fontSize="small" color="primary" />
-          <Typography variant="caption">
-            {match[1]} wrote:
-          </Typography>
-        </Box>
-        <Typography variant="body2">{match[2]}</Typography>
-      </Box>
-    );
-  };
-
-  const renderMainContent = (content) => {
-    const mainContent = content.replace(/\[quote="[^"]+"\].*?\[\/quote\]/s, '').trim();
-    return <Typography variant="body1">{mainContent}</Typography>;
-  };
 
   if (loading) return <CircularProgress />;
   if (!threadData?.post) return <Typography>Thread not found</Typography>;
@@ -209,7 +185,6 @@ export const ThreadView = () => {
         </Box>
       ))}
 
-      {/* Adding 'historical reply' */}
       <Box ref={replyBoxRef} sx={{ mt: 3 }}>
         {replyingTo && (
           <Box sx={{ mb: 2 }}>
@@ -219,7 +194,7 @@ export const ThreadView = () => {
                 size="small" 
                 onClick={() => {
                   setReplyingTo(null);
-                  setReplyContent('');
+                  setReplyEditorState(EditorState.createEmpty());
                 }}
                 sx={{ ml: 1 }}
               >
@@ -228,22 +203,17 @@ export const ThreadView = () => {
             </Typography>
           </Box>
         )}
-        <TextField
-          ref={textFieldRef}
-          fullWidth
-          multiline
-          rows={3}
-          placeholder="Write your reply..."
-          value={replyContent}
-          onChange={(e) => setReplyContent(e.target.value)}
-          variant="outlined"
-          sx={{ mb: 2 }}
+        
+        <EditorWithFormatting 
+          editorState={replyEditorState}
+          setEditorState={setReplyEditorState}
         />
+
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Button 
             variant="contained"
             onClick={() => handleReply(threadData.post.id)}
-            disabled={!replyContent.trim()}
+            disabled={!replyEditorState.getCurrentContent().hasText()}
           >
             Post Reply
           </Button>

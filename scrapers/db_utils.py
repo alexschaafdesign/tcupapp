@@ -1,20 +1,30 @@
 import psycopg2
 import json
+from dotenv import load_dotenv
+import os
+from pathlib import Path
 
-# Database connection parameters
-DB_NAME = "tcup_db"
-DB_USER = "aschaaf"
-DB_PASSWORD = "notthesame"
-DB_HOST = "localhost"
+backend_dir = Path(__file__).parents[1] / 'backend'
+load_dotenv(backend_dir / '.env')
+env = os.getenv('NODE_ENV', 'development')
+load_dotenv(backend_dir / f'.env.{env}')
 
 def connect_to_db():
     """Establish a connection to the database."""
-    return psycopg2.connect(
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        host=DB_HOST
+    conn = psycopg2.connect(
+        dbname=os.getenv('DB_NAME'),
+        user=os.getenv('DB_USER'),
+        password=os.getenv('DB_PASSWORD'),
+        host=os.getenv('DB_HOST'),
+        port=os.getenv('DB_PORT'),
+        sslmode='require'
     )
+    
+    # Set the search path to the development schema
+    with conn.cursor() as cur:
+        cur.execute("SET search_path TO development")
+    
+    return conn
 
 def get_venue_id(cursor, venue_name):
     """Fetch the venue_id for a given venue name."""

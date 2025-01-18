@@ -30,11 +30,15 @@ const Header = () => {
   };
 
   const navLinks = [
-    { text: "TCUP CALENDAR", path: "/calendar"},
-    { text: "MESSAGE BOARD", path: "/forum" },
+    { text: "CALENDAR", path: "/calendar"},
+    { text: "CHAT", path: "/forum" },
     { text: "SHOWS", path: "/shows" },
     { text: "VENUES", path: "/venues" },
     { text: "BANDS", path: "/bands" },
+    { text: "VENUE REPORT CARD", path: "/vrc" },
+    { text: "POWER PLEDGES", path: "/powerpledge" },
+
+
   ];
 
   const AuthButtons = () => (

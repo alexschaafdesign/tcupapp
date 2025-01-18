@@ -6,51 +6,33 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load environment variables
-dotenv.config({ 
-  path: path.resolve(path.join(__dirname, '..'), `.env.${process.env.ENV || 'local'}`)
-});
-
-// Log environment variables to check what's being loaded
-console.log('Environment in db js file:', {
-  ENV: process.env.ENV,
-  DB_NAME: process.env.LOCAL_DB_NAME,
-  DB_USER: process.env.LOCAL_DB_USER,
-  DB_HOST: process.env.LOCAL_DB_HOST,
-  DB_PORT: process.env.LOCAL_DB_PORT
+// Load environment variables from .env.development if NODE_ENV=development
+dotenv.config({
+  path: path.resolve(path.join(__dirname, '..'), `.env.${process.env.NODE_ENV || 'development'}`)
 });
 
 const { Pool } = pkg;
-const isLocalEnv = process.env.ENV === 'local';
-
-// Configure database pool
 const pool = new Pool({
-  user: isLocalEnv ? process.env.LOCAL_DB_USER : process.env.PROD_DB_USER,
-  host: isLocalEnv ? process.env.LOCAL_DB_HOST : process.env.PROD_DB_HOST,
-  database: isLocalEnv ? process.env.LOCAL_DB_NAME : process.env.PROD_DB_NAME,
-  password: isLocalEnv ? process.env.LOCAL_DB_PASSWORD : process.env.PROD_DB_PASSWORD,
-  port: isLocalEnv ? parseInt(process.env.LOCAL_DB_PORT, 10) : parseInt(process.env.PROD_DB_PORT, 10),
-  ssl: isLocalEnv ? false : { rejectUnauthorized: false },
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: parseInt(process.env.DB_PORT, 10),
+  schema: process.env.DB_SCHEMA,
+  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
 });
 
-// Handle pool errors
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle client:', err);
-  process.exit(-1);
+// Whenever a brand-new connection is created, set the search_path
+pool.on('connect', (client) => {
+  const schema = process.env.DB_SCHEMA || 'public';
+  client
+    .query(`SET search_path TO ${schema}, public`)
+    .then(() => {
+      console.log(`search_path set to ${schema}, public`);
+    })
+    .catch((err) => {
+      console.error('Error setting search_path:', err);
+    });
 });
-
-// Test database connection function
-export const testConnection = async () => {
-  try {
-    const client = await pool.connect();
-    const result = await client.query('SELECT current_database()');
-    client.release();
-    console.log('Connected to database:', result.rows[0].current_database);
-    return true;
-  } catch (err) {
-    console.error('Database connection error:', err);
-    throw err;
-  }
-};
 
 export default pool;

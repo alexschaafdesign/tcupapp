@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import ShowsTable from "./pages/Shows/ShowsTable.js";
 import "./styles/App.css";
+import 'draft-js/dist/Draft.css';
 import VenuesTable from "./pages/Venues/VenuesTable.js";
 import VenueProfile from "./pages/Venues/VenueProfile.js";
 import { Box } from "@mui/material";
@@ -40,6 +41,12 @@ import ThreadView from "./components/forum/ThreadView.js";
 import LandingPage from "./pages/LandingPage.js";
 import Privacy from "./pages/Privacy.js";
 import AdminImportPost from "./pages/AdminImportPost.js";
+import VRCForm from "./pages/VRC/VRCForm.js";
+import PowerPledgeForm from "./pages/PowerPledge.js";
+import ImageDisplayPage from "./pages/ImageDisplayPage.js";
+import FlyeringForm from "./pages/Flyering/FlyeringForm.js";
+import FlyeringTable from "./pages/Flyering/FlyeringTable.js";
+import EditFlyeringForm from "./pages/Flyering/EditFlyeringForm.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -50,7 +57,11 @@ function App() {
     return location.pathname === '/sessionmusicians' ? false : 'md';
   };
 
+  console.log("NODE_ENV:", process.env.NODE_ENV);
+
   const hasAttemptedRegistration = React.useRef(false);
+
+  const showHeader = process.env.NODE_ENV === 'development';
 
   useEffect(() => {
       console.log('Auth state changed:', {
@@ -82,7 +93,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       {/* Conditionally render Header based on the current route */}
-      {!location.pathname.match(/\/minimal($|\/)/) && <Header />}
+      {showHeader && <Header />}
 
       <RootLayout maxWidth={getMaxWidth()}>
      
@@ -109,6 +120,9 @@ function App() {
           <Route path="/thread/:threadId" element={<ThreadView />} />
           <Route path="/import" element={<AdminImportPost />} />
 
+          <Route path="/vrc" element={<VRCForm />} />
+          <Route path="/powerpledge" element={<PowerPledgeForm />} />
+
 
 
 
@@ -121,6 +135,12 @@ function App() {
           <Route path="/callback" element={<Callback />} />
 
           <Route path="/privacy" element={<Privacy />} />
+
+
+          {/* Flyering */}
+          <Route path="/flyering/" element={<FlyeringTable />} />
+          <Route path="/flyering/add" element={<FlyeringForm />} />
+          <Route path="/flyering/edit/:id" element={<EditFlyeringForm />} />
 
 
 
@@ -139,6 +159,7 @@ function App() {
           <Route path="/venues/add" element={<VenueForm />} />
           <Route path="/venues/edit/:id" element={<VenueForm />} />
 
+          <Route path="/interviewtest" element={<ImageDisplayPage />} />
 
 
           {/* People */}

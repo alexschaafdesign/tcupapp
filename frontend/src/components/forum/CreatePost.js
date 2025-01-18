@@ -1,34 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import EditorWithFormatting from './EditorWithFormatting';
+import { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js';
+import 'draft-js/dist/Draft.css';
 import { 
   TextField, 
   Button, 
-  Box, 
+  Box,
   Chip,
   Paper,
   Typography,
+  ToggleButton,
+  ToggleButtonGroup
 } from '@mui/material';
-import { Send as SendIcon } from '@mui/icons-material';
+import { 
+  Send as SendIcon,
+  FormatBold,
+  FormatItalic,
+  FormatUnderlined,
+  FormatQuote,
+  Code,
+  Link as LinkIcon,
+  FormatListBulleted,
+  FormatListNumbered
+} from '@mui/icons-material';
 
 export const CreatePost = ({ onPostCreated, tags }) => {
   const { getAccessTokenSilently } = useAuth0();
-  const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    tags: []
-  });
+  const [title, setTitle] = useState('');
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  
 
   const handleTagToggle = (tagId) => {
-    setFormData(prev => ({
-      ...prev,
-      tags: prev.tags.includes(tagId)
-        ? prev.tags.filter(id => id !== tagId)
-        : [...prev.tags, tagId]
-    }));
+    setSelectedTags(prev => 
+      prev.includes(tagId) ? prev.filter(id => id !== tagId) : [...prev, tagId]
+    );
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const contentState = editorState.getCurrentContent();
+    const rawContent = convertToRaw(contentState);
+    
     try {
       const token = await getAccessTokenSilently();
       const response = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
@@ -37,10 +53,19 @@ export const CreatePost = ({ onPostCreated, tags }) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          title,
+          content: JSON.stringify(rawContent),
+          tags: selectedTags
+        })
       });
       const newPost = await response.json();
       onPostCreated(newPost);
+      
+      // Reset form
+      setTitle('');
+      setSelectedTags([]);
+      setEditorState(EditorState.createEmpty());
     } catch (error) {
       console.error('Error creating post:', error);
     }
@@ -51,29 +76,22 @@ export const CreatePost = ({ onPostCreated, tags }) => {
       <TextField
         fullWidth
         label="Title"
-        value={formData.title}
-        onChange={(e) => setFormData({...formData, title: e.target.value})}
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
         variant="outlined"
         sx={{ mb: 3 }}
         placeholder="What's on your mind?"
         autoFocus
       />
-      
-      <TextField
-        fullWidth
-        multiline
-        rows={6}
-        label="Content"
-        value={formData.content}
-        onChange={(e) => setFormData({...formData, content: e.target.value})}
-        variant="outlined"
-        sx={{ mb: 3 }}
-        placeholder="Share your thoughts..."
-      />
+
+<EditorWithFormatting 
+    editorState={editorState}
+    setEditorState={setEditorState}
+  />
       
       <Paper variant="outlined" sx={{ p: 2, mb: 3 }}>
         <Typography variant="subtitle2" sx={{ mb: 1 }}>
-          Select Tags (as many as you'd like!)
+          Select Tags
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
           {tags.map((tag) => (
@@ -81,12 +99,12 @@ export const CreatePost = ({ onPostCreated, tags }) => {
               key={tag.id}
               label={tag.name}
               onClick={() => handleTagToggle(tag.id)}
-              color={formData.tags.includes(tag.id) ? "primary" : "default"}
-              variant={formData.tags.includes(tag.id) ? "filled" : "outlined"}
+              color={selectedTags.includes(tag.id) ? "primary" : "default"}
+              variant={selectedTags.includes(tag.id) ? "filled" : "outlined"}
               sx={{ 
                 transition: 'all 0.2s ease',
                 '&:hover': {
-                  bgcolor: formData.tags.includes(tag.id) 
+                  bgcolor: selectedTags.includes(tag.id) 
                     ? 'primary.dark' 
                     : 'action.hover'
                 }
@@ -101,7 +119,7 @@ export const CreatePost = ({ onPostCreated, tags }) => {
           type="submit" 
           variant="contained" 
           color="primary"
-          disabled={!formData.title.trim() || !formData.content.trim()}
+          disabled={!title.trim() || !editorState.getCurrentContent().hasText()}
           endIcon={<SendIcon />}
           sx={{ px: 4, py: 1 }}
         >

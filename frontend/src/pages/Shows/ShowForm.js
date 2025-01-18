@@ -112,25 +112,32 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
   };
 
   const handleSubmit = async (e) => {
+    console.log("Starting form submission...");
+    console.log("Current formData:", formData);
     e.preventDefault();
-    
+      
     if (!isReadyToSubmit) {
       setErrorMessage("Please fill out all required fields.");
       return;
     }
-
+  
     const bandsFormatted = formData.bands.map((band) => band.name).join(", ");
-    
+      
     const dataToSubmit = {
       ...formData,
       bands: bandsFormatted,
     };
-
+  
+    console.log("Submitting data:", dataToSubmit);
+  
     const endpoint = isEdit
       ? `${apiUrl}/shows/${id}`
       : `${apiUrl}/shows/add`;
-
+  
     try {
+      console.log("Making fetch request to:", endpoint);
+      console.log("With data:", dataToSubmit);
+      
       const response = await fetch(endpoint, {
         method: isEdit ? "PUT" : "POST",
         headers: {
@@ -138,16 +145,21 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
         },
         body: JSON.stringify(dataToSubmit),
       });
-
+  
+      console.log("Response received:", response);
+      
       if (!response.ok) {
-        throw new Error("Failed to submit show data");
+        console.log("Response not OK, status:", response.status);
+        const errorData = await response.json();
+        console.log("Error data:", errorData);
+        throw new Error(errorData.details || "Failed to submit show data");
       }
-
-      // Only navigate after successful submission
+  
       navigate(returnUrl);
     } catch (err) {
-      console.error(err);
-      setErrorMessage("An error occurred while submitting the form.");
+      console.error("Form submission error:", err);
+      console.error("Full error object:", err);
+      setErrorMessage(`Error: ${err.message}. Please check the console for more details.`);
     }
   };
 

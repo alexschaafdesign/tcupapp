@@ -1,33 +1,51 @@
-
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Box, Typography, Button, Modal, Stack } from "@mui/material";
 import Grid from "@mui/material/Grid";
+import { useAuth0 } from "@auth0/auth0-react";
 import formatBandData from "../../utils/formatBandData";
 import AppBreadcrumbs from "../../components/Breadcrumbs";
 import ProfilePhotoCard from "../../components/bands/ProfilePhotoCard";
 import ShowsTableCore from "../Shows/ShowsTableCore";
+import BandClaim from "../../components/bands/BandClaim";
 
 const TCUPBandProfile = ({ allShows = [] }) => {
   const { bandid } = useParams();
   const { bandSlug } = useParams();
   const navigate = useNavigate();
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0();  
   const [band, setBand] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isOwner, setIsOwner] = useState(false);
 
-  const apiUrl = process.env.REACT_APP_API_URL;  // The backend API URL from the .env file
+  const apiUrl = process.env.REACT_APP_API_URL;
 
-  // Fetch band data on mount
+  // Fetch band data and check ownership on mount
   useEffect(() => {
-    const fetchBand = async () => {
+    const fetchBandAndOwnership = async () => {
       try {
-        const response = await fetch(`${apiUrl}/bands/${bandSlug}`);
-        if (!response.ok) throw new Error("Failed to fetch band data");
-        const data = await response.json();
-        setBand(formatBandData(data.data));
+        // Fetch band data
+        const bandResponse = await fetch(`${apiUrl}/bands/${bandSlug}`);
+        if (!bandResponse.ok) throw new Error("Failed to fetch band data");
+        const bandData = await bandResponse.json();
+        const formattedBand = formatBandData(bandData.data);
+        setBand(formattedBand);
+
+        // Check ownership if authenticated
+        if (isAuthenticated) {
+          const ownershipResponse = await fetch(`${apiUrl}/bands/${bandSlug}/check-ownership`, {
+            headers: {
+              Authorization: `Bearer ${await getAccessTokenSilently()}`
+            }
+          });
+          if (ownershipResponse.ok) {
+            const ownershipData = await ownershipResponse.json();
+            setIsOwner(ownershipData.isOwner);
+          }
+        }
       } catch (err) {
         console.error("Error fetching band:", err);
         setError(err.message);
@@ -36,8 +54,8 @@ const TCUPBandProfile = ({ allShows = [] }) => {
       }
     };
 
-    fetchBand();
-  }, [bandSlug, apiUrl]);
+    fetchBandAndOwnership();
+  }, [bandSlug, apiUrl, isAuthenticated]);
 
   // Fetch shows for this band
   const [bandShows, setBandShows] = useState([]);
@@ -48,7 +66,6 @@ const TCUPBandProfile = ({ allShows = [] }) => {
         const response = await fetch(`${apiUrl}/bands/${bandSlug}/shows`);
         if (!response.ok) throw new Error("Failed to fetch shows");
         const data = await response.json();
-        console.log("Fetched Band Shows:", data); // Debug log
         setBandShows(data);
       } catch (err) {
         console.error("Error fetching shows:", err);
@@ -61,6 +78,11 @@ const TCUPBandProfile = ({ allShows = [] }) => {
     }
   }, [bandSlug, apiUrl]);
 
+  // Handle claim status change
+  const handleClaimStatusChange = (newOwnerStatus) => {
+    setIsOwner(newOwnerStatus);
+  };
+
   // Conditional rendering for loading, errors, and missing band data
   if (loading) return <Typography>Loading...</Typography>;
   if (error) return <Typography color="error">{error}</Typography>;
@@ -68,35 +90,20 @@ const TCUPBandProfile = ({ allShows = [] }) => {
 
   // Spotify Embed URL Conversion
   const spotifyEmbedUrl = band?.music_links?.spotify
-  ? band.music_links.spotify.includes("/embed/")
-    ? band.music_links.spotify // Already an embed link
-    : band.music_links.spotify.replace(
-        /open\.spotify\.com\/(track|album|playlist|artist)\//,
-        "open.spotify.com/embed/$1/"
-      )
-  : null;
+    ? band.music_links.spotify.includes("/embed/")
+      ? band.music_links.spotify
+      : band.music_links.spotify.replace(
+          /open\.spotify\.com\/(track|album|playlist|artist)\//,
+          "open.spotify.com/embed/$1/"
+        )
+    : null;
 
-  const getBandcampEmbedUrl = (url) => {
-    // Matches typical album or track URLs
-    const match = url.match(/https:\/\/([\w-]+)\.bandcamp\.com\/(album|track)\/([\w-]+)/);
-    if (match) {
-      const artist = match[1];
-      const type = match[2];
-      const slug = match[3];
-      return `https://${artist}.bandcamp.com/${type}/${slug}`;
-    }
-    return null; // Invalid URL
-  };
-
-    // Convert filtered links back into an object
-    const validSocialLinks = Object.fromEntries(
-      Object.entries(band.social_links || {}).filter(
-        ([_, link]) => typeof link === "string" && link.trim() !== ""
-      )
-    );
-
-    // Debugging to confirm the structure
-    console.log("Valid Social Links Object:", validSocialLinks);
+  // Convert filtered links back into an object
+  const validSocialLinks = Object.fromEntries(
+    Object.entries(band.social_links || {}).filter(
+      ([_, link]) => typeof link === "string" && link.trim() !== ""
+    )
+  );
 
   const getYouTubeEmbedUrl = (url) => {
     if (!url) return null;
@@ -104,7 +111,6 @@ const TCUPBandProfile = ({ allShows = [] }) => {
     if (url.includes("youtu.be/")) return `https://www.youtube.com/embed/${url.split("youtu.be/")[1]}`;
     return url;
   };
-
 
   // Handle modal image
   const handleOpen = (image) => {
@@ -127,194 +133,158 @@ const TCUPBandProfile = ({ allShows = [] }) => {
   };
 
   // Band profile image handling
-  const profileImageUrl = band.profile_image || ""; // Fallback if no profile image
-  const otherImages = Array.isArray(band.other_images) ? band.other_images : []; // Ensure it's an array
-
-  console.log("ProfilePhotoCard Props:", {
-    name: band.name,
-    imageUrl: profileImageUrl,
-    location: band.location || "",
-    genre: band.genre,
-    socialLinks: validSocialLinks,
-  });
-
-  console.log('play_shows value:', band.play_shows);
-
-
-  
+  const profileImageUrl = band.profile_image || "";
+  const otherImages = Array.isArray(band.other_images) ? band.other_images : [];
 
   return (
-
-    // OVERALL BOX 
-
     <Box sx={{ paddingLeft: 0, paddingRight: 0, paddingTop: 1, paddingBottom: 4 }}>
+      {/* Top bar with breadcrumbs, claim button, and edit button */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <AppBreadcrumbs />
+        
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <BandClaim 
+            bandSlug={bandSlug}
+            onClaimStatusChange={handleClaimStatusChange}
+          />
+          
+          {isOwner && (
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleEdit}
+              sx={{ textTransform: "none" }}
+            >
+              Edit Band
+            </Button>
+          )}
+        </Box>
+      </Box>
 
-    {/* Box holding the two columns */}
-
-        <Box
+      {/* Rest of your existing JSX code remains the same */}
+      <Grid
+        container
+        spacing={3}
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        {/* Left Column */}
+        <Grid
+          item
+          xs={12}
+          md={6}
           sx={{
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 3, // Add some margin below the row
+            flexDirection: "column",
+            flex: 1,
           }}
         >
+          <ProfilePhotoCard
+            name={band.name}
+            bandId={band.id}
+            imageUrl={profileImageUrl}
+            location={band.location || ""}
+            genre={band.genre}
+            socialLinks={validSocialLinks}
+            play_shows={band.play_shows}
+          />
 
-          {/* Breadcrumbs on the top left */}
-          <AppBreadcrumbs />
-
-          {/* Edit button on the top right */}
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handleEdit}
-            sx={{
-              textTransform: "none", // Optional: Disable uppercase if undesired
-            }}
-          >
-            Edit your band
-          </Button>
-        </Box>
-          
-          {/* Main two-column container */}
-
-              <Grid
-            container
-            spacing={3}
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >        
-            {/* Left Column */}
-            <Grid
-              item
-              xs={12}
-              md={6}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                flex: 1,
-              }}
-            >       
-            <ProfilePhotoCard
-              name={band.name}
-              bandId={band.id}
-              imageUrl={profileImageUrl}
-              location={band.location || ""}
-              genre={band.genre}
-              socialLinks={validSocialLinks}
-              play_shows={band.play_shows}
-            />
-
-            
-
-            {/* Bio */}
-            <Box sx={{ marginTop: 4 }}>
-            {/* Bio Header */}
-            {/* Bio */}
-            <Typography variant="body
-            " sx={{ whiteSpace: 'pre-wrap' }}>
-              {band.bio || "No bio"} {/* Fallback if location is missing */}
+          {/* Bio */}
+          <Box sx={{ marginTop: 4 }}>
+            <Typography variant="body" sx={{ whiteSpace: 'pre-wrap' }}>
+              {band.bio || "No bio"}
             </Typography>
-            </Box>
+          </Box>
 
-             {/* Links */}
-             <Box sx={{ marginTop: 4 }}>
-
-
-            {/* Links Content - a two column sub-section */}
+          {/* Links */}
+          <Box sx={{ marginTop: 4 }}>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, marginBottom: 2 }}>
-              {/* First sub-Column */}
               <Box sx={{ flex: 1, minWidth: '45%' }}>
-              <Typography>
-                <a
-                  href="https://drive.google.com/file/d/1mDjatch2BQOje0g0sV5YzYhChjN5Oei8/view?usp=sharing"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    color: '#8E6CD1',
-                    textDecoration: 'none',
-                    fontSize: '1.25rem', // Adjust the font size as needed
-                    fontWeight: 'bold', // Makes the font bold
-                  }}
-                >
-                  Stage Plot (pdf)
-                </a>
-              </Typography>
+                <Typography>
+                  <a
+                    href="https://drive.google.com/file/d/1mDjatch2BQOje0g0sV5YzYhChjN5Oei8/view?usp=sharing"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: '#8E6CD1',
+                      textDecoration: 'none',
+                      fontSize: '1.25rem',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    Stage Plot (pdf)
+                  </a>
+                </Typography>
               </Box>
-
-                {/* Second sub-Column */}
-                <Box sx={{ flex: 1, minWidth: '45%' }}>
-                  
-                </Box>
+              <Box sx={{ flex: 1, minWidth: '45%' }}></Box>
             </Box>
-              <Grid item xs={12} md={8}>
-         
-            {/* Other Images */}
-            <Box>
-              {Array.isArray(otherImages) && otherImages.length > 0 ? (
-                <Stack
-                  direction={{ xs: "column", sm: "row" }}
-                  spacing={2}
-                  alignItems="center"
-                  justifyContent="flex-start"
-                >
-                  {otherImages.map((image, index) => (
-                    <Box
-                      key={index}
-                      component="img"
-                      src={image || "/default-placeholder.jpg"} // Fallback to a placeholder image
-                      alt={`Band Photo ${index + 1}`}
-                      onClick={() => {
-                        if (handleOpen && typeof handleOpen === "function") {
-                          handleOpen(image);
-                        } else {
-                          console.error("handleOpen is not a valid function");
-                        }
-                      }}
-                      sx={{
-                        width: "100px",
-                        height: "100px",
-                        objectFit: "cover",
-                        borderRadius: "8px",
-                        boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-                        cursor: "pointer",
-                        transition: "transform 0.2s",
-                        "&:hover": {
-                          transform: "scale(1.05)",
-                        },
-                      }}
-                    />
-                  ))}
-                </Stack>
-              ) : (
-                <Typography>No additional images available.</Typography>
-              )}
-            </Box>
-               </Grid>
-            </Box>
-           </Grid>
+            
+            <Grid item xs={12} md={8}>
+              {/* Other Images */}
+              <Box>
+                {Array.isArray(otherImages) && otherImages.length > 0 ? (
+                  <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={2}
+                    alignItems="center"
+                    justifyContent="flex-start"
+                  >
+                    {otherImages.map((image, index) => (
+                      <Box
+                        key={index}
+                        component="img"
+                        src={image || "/default-placeholder.jpg"}
+                        alt={`Band Photo ${index + 1}`}
+                        onClick={() => handleOpen(image)}
+                        sx={{
+                          width: "100px",
+                          height: "100px",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                          boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                          cursor: "pointer",
+                          transition: "transform 0.2s",
+                          "&:hover": {
+                            transform: "scale(1.05)",
+                          },
+                        }}
+                      />
+                    ))}
+                  </Stack>
+                ) : (
+                  <Typography>No additional images available.</Typography>
+                )}
+              </Box>
+            </Grid>
+          </Box>
+        </Grid>
 
-          {/* End of left main column */}
-
-          {/* Right main Column */}
-          <Grid
-            item
-            xs={12}
-            md={6}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              flex: 1,
-              gap: 4
-            }}
-          >
-            {/* Spotify Embed */}
-            {spotifyEmbedUrl && (
+        {/* Right Column */}
+        <Grid
+          item
+          xs={12}
+          md={6}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            flex: 1,
+            gap: 4
+          }}
+        >
+          {/* Spotify Embed */}
+          {spotifyEmbedUrl && (
             <Box
               sx={{
-                flexGrow: 1, // Allow it to grow and take up available space
+                flexGrow: 1,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -332,12 +302,12 @@ const TCUPBandProfile = ({ allShows = [] }) => {
                   borderRadius: "8px",
                   border: "none",
                 }}
-              ></iframe>
+              />
             </Box>
           )}
 
-            {/* YouTube Music Embed */}
-            {band.music_links?.youtube && (
+          {/* YouTube Music Embed */}
+          {band.music_links?.youtube && (
             <Box sx={{ position: "relative", overflow: "hidden", paddingTop: "56.25%" }}>
               <iframe
                 src={getYouTubeEmbedUrl(band.music_links.youtube)}
@@ -350,66 +320,47 @@ const TCUPBandProfile = ({ allShows = [] }) => {
           )}
         </Grid>
 
+        {/* Bottom show section */}
+        <Box sx={{ marginTop: 4, width: '100%' }}>
+          {bandShows.length > 0 ? (
+            <ShowsTableCore data={bandShows} onShowClick={(id) => console.log("Show clicked:", id)} />
+          ) : (
+            <Typography>No upcoming shows for this band.</Typography>
+          )}
+        </Box>
+      </Grid>
 
-          {/* Bandcamp Embed
-          {band?.music_links?.bandcamp && (
-            <Box mt={2}>
-              <iframe
-                src={band.music_links.bandcamp}
-                width="100%" // Adjust width as needed
-                height="100px" // Keep the height consistent with the standard
-                frameBorder="0"
-                seamless
-                style={{
-                  border: "none",
-                  borderRadius: "8px",
-                }}
-                title="Bandcamp Player"
-              ></iframe>
-            </Box>
-          )} */}
-        </Grid>
-
-          {/* Bottom show section that spans full width*/}
-          <Box sx={{ marginTop: 4 }}>
-        {bandShows.length > 0 ? (
-          <ShowsTableCore data={bandShows} onShowClick={(id) => console.log("Show clicked:", id)} />
-        ) : (
-          <Typography>No upcoming shows for this band.</Typography>
-        )}
-      </Box>
-        
-        {/* Image Modal */}
-        <Modal open={open} onClose={handleClose}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              maxWidth: "90vw",
-              maxHeight: "90vh",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              bgcolor: "transparent",
-              boxShadow: "none",
-            }}
-          >
-            {selectedImage && (
-              <img
-                src={selectedImage}
-                alt="Expanded Image"
-                style={{
-                  maxWidth: "calc(100vw - 32px)",
-                  maxHeight: "calc(100vh - 32px)",
-                  objectFit: "contain",
-                  borderRadius: "8px",
-                }}
-              />
-            )}
-          </Box>
-        </Modal>
+      {/* Image Modal */}
+      <Modal open={open} onClose={handleClose}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            maxWidth: "90vw",
+            maxHeight: "90vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            bgcolor: "transparent",
+            boxShadow: "none",
+          }}
+        >
+          {selectedImage && (
+            <img
+              src={selectedImage}
+              alt="Expanded Image"
+              style={{
+                maxWidth: "calc(100vw - 32px)",
+                maxHeight: "calc(100vh - 32px)",
+                objectFit: "contain",
+                borderRadius: "8px",
+              }}
+            />
+          )}
+        </Box>
+      </Modal>
     </Box>
   );
 };
