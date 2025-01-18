@@ -185,12 +185,13 @@ const ShowProfile = () => {
           }}>
             <LocationOnIcon sx={{ color: 'primary.main', fontSize: 28 }} />
             <Link 
-              href={`/venues/${show.venue_id}`}
-              sx={{ 
+              to={`/venues/${show.venue_id}`}
+              style={{ 
                 textDecoration: 'none',
-                color: 'primary.main',
+                color: 'var(--mui-palette-primary-main)',
                 '&:hover': { textDecoration: 'underline' }
               }}
+              className="hover:underline"
             >
               <Typography variant="h6" sx={{ fontWeight: 500 }}>
                 {show.venue_name}
@@ -205,20 +206,21 @@ const ShowProfile = () => {
             gap: 0.5
           }}>
             <ConfirmationNumberIcon sx={{ color: 'primary.main', fontSize: 28 }} />
-            <Link
+            <a 
               href={show.event_link}
               target="_blank"
               rel="noopener noreferrer"
-              sx={{ 
+              style={{ 
                 textDecoration: 'none',
-                color: 'primary.main',
+                color: 'var(--mui-palette-primary-main)',
                 '&:hover': { textDecoration: 'underline' }
               }}
+              className="hover:underline"
             >
               <Typography variant="h6" sx={{ fontWeight: 500 }}>
                 Tickets / More info
               </Typography>
-            </Link>
+            </a>
           </Box>
         )}
       </Box>

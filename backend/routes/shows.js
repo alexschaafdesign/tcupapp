@@ -160,14 +160,23 @@ router.get('/:id', async (req, res) => {
 // Add a new show
 router.post("/add", async (req, res) => {
   try {
+    console.log("Received request body:", req.body);
     const { flyer_image, event_link, start, venue_id, bands } = req.body;
 
-    console.log("Bands received in backend:", bands); // Debugging log
+    console.log("Extracted values:", {
+      flyer_image,
+      event_link,
+      start,
+      venue_id,
+      bands
+    });
 
     // Convert bands to a string if it's an array
-      const bandsFormatted = Array.isArray(bands)
-      ? bands.map((band) => band.name).join(", ") // Ensure we only join band names
-      : bands; // If it's already a string, use it as-is
+    const bandsFormatted = Array.isArray(bands)
+      ? bands.map((band) => band.name).join(", ")
+      : bands;
+
+    console.log("Formatted bands:", bandsFormatted);
 
     const query = `
       INSERT INTO shows (flyer_image, event_link, start, venue_id, bands)
@@ -176,12 +185,41 @@ router.post("/add", async (req, res) => {
     `;
 
     const values = [flyer_image, event_link, start, venue_id, bandsFormatted];
+    console.log("Query values:", values);
+
     const result = await pool.query(query, values);
+    console.log("Query result:", result.rows[0]);
 
     res.json(result.rows[0]);
   } catch (error) {
     console.error("Error adding new show:", error);
-    res.status(500).json({ error: "Failed to add new show." });
+    console.error("Error details:", {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+      detail: error.detail
+    });
+    // Log the entire error object
+    console.error("Full error object:", {
+      message: error.message,
+      name: error.name,
+      stack: error.stack,
+      code: error.code,
+      detail: error.detail,
+      schema: error.schema,
+      table: error.table,
+      constraint: error.constraint,
+      column: error.column,
+      dataType: error.dataType
+    });
+
+    // Send back detailed error information
+    res.status(500).json({ 
+      error: "Failed to add new show.",
+      details: error.message,
+      code: error.code,
+      detail: error.detail
+    });
   }
 });
 

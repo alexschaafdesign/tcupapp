@@ -44,6 +44,9 @@ import AdminImportPost from "./pages/AdminImportPost.js";
 import VRCForm from "./pages/VRC/VRCForm.js";
 import PowerPledgeForm from "./pages/PowerPledge.js";
 import ImageDisplayPage from "./pages/ImageDisplayPage.js";
+import FlyeringForm from "./pages/Flyering/FlyeringForm.js";
+import FlyeringTable from "./pages/Flyering/FlyeringTable.js";
+import EditFlyeringForm from "./pages/Flyering/EditFlyeringForm.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -132,6 +135,12 @@ function App() {
           <Route path="/callback" element={<Callback />} />
 
           <Route path="/privacy" element={<Privacy />} />
+
+
+          {/* Flyering */}
+          <Route path="/flyering/" element={<FlyeringTable />} />
+          <Route path="/flyering/add" element={<FlyeringForm />} />
+          <Route path="/flyering/edit/:id" element={<EditFlyeringForm />} />
 
 
 
