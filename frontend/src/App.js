@@ -61,7 +61,10 @@ function App() {
 
   const hasAttemptedRegistration = React.useRef(false);
 
-  const showHeader = process.env.NODE_ENV === 'development';
+  const isDevMode = process.env.NODE_ENV === 'development';
+
+  const showHeader = isDevMode;
+
 
   useEffect(() => {
       console.log('Auth state changed:', {
@@ -93,7 +96,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       {/* Conditionally render Header based on the current route */}
-      {showHeader && <Header />}
+      { showHeader && <Header isDevMode={isDevMode} /> }
 
       <RootLayout maxWidth={getMaxWidth()}>
      

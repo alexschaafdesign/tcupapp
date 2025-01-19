@@ -12,41 +12,51 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth0 } from "@auth0/auth0-react";
 import HeaderUserProfile from "./HeaderUserProfile";
 import { Link } from "react-router-dom";
 
 const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+
   const navigate = useNavigate();
   const { isAuthenticated, isLoading, loginWithRedirect, logout, user } = useAuth0();
 
-  console.log('Header auth state:', { isAuthenticated, isLoading, user });
+  // Determine if we're in development mode
+  const isDevMode = process.env.NODE_ENV === "development";
 
+  // Define your links; use `devOnly: true` to indicate "dev mode only" links
+  const navLinks = [
+    { text: "CALENDAR", path: "/calendar" },
+    { text: "CHAT", path: "/forum", devOnly: true },
+    { text: "SHOWS", path: "/shows" },
+    { text: "VENUES", path: "/venues" },
+    { text: "BANDS", path: "/bands", devOnly: true },
+    { text: "VENUE REPORT CARD", path: "/vrc", devOnly: true },
+    { text: "POWER PLEDGES", path: "/powerpledge" },
+  ];
+
+  // Create a version of navLinks that sets link.disabled if devOnly & not dev
+  const displayedLinks = navLinks.map((link) => ({
+    ...link,
+    disabled: !isDevMode && link.devOnly,
+  }));
+
+  console.log("Header auth state:", { isAuthenticated, isLoading, user });
+  console.log("Header isDevMode:", isDevMode);
 
   const toggleDrawer = (open) => () => {
     setDrawerOpen(open);
   };
 
-  const navLinks = [
-    { text: "CALENDAR", path: "/calendar"},
-    { text: "CHAT", path: "/forum" },
-    { text: "SHOWS", path: "/shows" },
-    { text: "VENUES", path: "/venues" },
-    { text: "BANDS", path: "/bands" },
-    { text: "VENUE REPORT CARD", path: "/vrc" },
-    { text: "POWER PLEDGES", path: "/powerpledge" },
-
-
-  ];
-
   const AuthButtons = () => (
     <ListItem
       button
-      onClick={() => isAuthenticated ? 
-        logout({ returnTo: window.location.origin }) : 
-        loginWithRedirect()
+      onClick={() =>
+        isAuthenticated
+          ? logout({ returnTo: window.location.origin })
+          : loginWithRedirect()
       }
       sx={{
         color: "white",
@@ -56,9 +66,9 @@ const Header = () => {
         },
       }}
     >
-      <ListItemText 
-        primary={isAuthenticated ? "LOGOUT" : "LOGIN"} 
-        primaryTypographyProps={{ fontWeight: 'bold' }}
+      <ListItemText
+        primary={isAuthenticated ? "LOGOUT" : "LOGIN"}
+        primaryTypographyProps={{ fontWeight: "bold" }}
       />
     </ListItem>
   );
@@ -103,32 +113,43 @@ const Header = () => {
           </Link>
         </Box>
 
-        <List sx={{ 
-          width: "100%",
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%'
-        }}>
-          {navLinks.map((link, index) => (
+        <List
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+          }}
+        >
+          {displayedLinks.map((link, index) => (
             <ListItem
               button
               key={index}
-              onClick={() => navigate(link.path)}
+              disabled={link.disabled}
+              onClick={() => {
+                // Only navigate if not disabled
+                if (!link.disabled) {
+                  navigate(link.path);
+                }
+              }}
               sx={{
                 color: "white",
-                cursor: "pointer",
+                cursor: link.disabled ? "not-allowed" : "pointer",
+                opacity: link.disabled ? 0.5 : 1,
                 "&:hover": {
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  backgroundColor: link.disabled
+                    ? "transparent"
+                    : "rgba(255, 255, 255, 0.1)",
                 },
               }}
             >
-              <ListItemText 
-                primary={link.text} 
-                primaryTypographyProps={{ fontWeight: 'bold' }}
+              <ListItemText
+                primary={link.text}
+                primaryTypographyProps={{ fontWeight: "bold" }}
               />
             </ListItem>
           ))}
-          
+
           <ListItem
             button
             onClick={() => setIsExpanded(!isExpanded)}
@@ -140,13 +161,13 @@ const Header = () => {
               },
             }}
           >
-            <ListItemText 
-              primary="PEOPLE" 
-              primaryTypographyProps={{ fontWeight: 'bold' }}
+            <ListItemText
+              primary="PEOPLE"
+              primaryTypographyProps={{ fontWeight: "bold" }}
             />
             <ExpandMoreIcon />
           </ListItem>
-          
+
           {isExpanded && (
             <ListItem
               button
@@ -160,21 +181,25 @@ const Header = () => {
                 },
               }}
             >
-              <ListItemText 
-                primary="SESSION MUSICIANS" 
-                primaryTypographyProps={{ fontWeight: 'bold' }}
+              <ListItemText
+                primary="SESSION MUSICIANS"
+                primaryTypographyProps={{ fontWeight: "bold" }}
               />
             </ListItem>
           )}
 
-          <Box sx={{ mt: 'auto' }}>
+          <Box sx={{ mt: "auto" }}>
             {isAuthenticated && (
               <>
-                <Divider sx={{ my: 2, backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
+                <Divider
+                  sx={{ my: 2, backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+                />
                 <HeaderUserProfile />
               </>
             )}
-            <Divider sx={{ my: 2, backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
+            <Divider
+              sx={{ my: 2, backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+            />
             <AuthButtons />
           </Box>
         </List>
@@ -203,7 +228,7 @@ const Header = () => {
             objectFit: "cover",
           }}
         />
-        
+
         <IconButton
           sx={{
             marginLeft: "auto",
@@ -218,21 +243,25 @@ const Header = () => {
       {/* Mobile Drawer */}
       <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
         <List>
-          {navLinks.map((link, index) => (
+          {displayedLinks.map((link, index) => (
             <ListItem
               button
               key={index}
+              disabled={link.disabled}
               onClick={() => {
-                navigate(link.path);
+                if (!link.disabled) {
+                  navigate(link.path);
+                }
                 setDrawerOpen(false);
               }}
               sx={{
-                cursor: "pointer"
+                cursor: link.disabled ? "not-allowed" : "pointer",
+                opacity: link.disabled ? 0.5 : 1,
               }}
             >
-              <ListItemText 
+              <ListItemText
                 primary={link.text}
-                primaryTypographyProps={{ fontWeight: 'bold' }}
+                primaryTypographyProps={{ fontWeight: "bold" }}
               />
             </ListItem>
           ))}
@@ -241,16 +270,16 @@ const Header = () => {
             button
             onClick={() => setIsExpanded(!isExpanded)}
             sx={{
-              cursor: "pointer"
+              cursor: "pointer",
             }}
           >
-            <ListItemText 
+            <ListItemText
               primary="PEOPLE"
-              primaryTypographyProps={{ fontWeight: 'bold' }}
+              primaryTypographyProps={{ fontWeight: "bold" }}
             />
             <ExpandMoreIcon />
           </ListItem>
-          
+
           {isExpanded && (
             <ListItem
               button
@@ -260,16 +289,16 @@ const Header = () => {
               }}
               sx={{
                 cursor: "pointer",
-                paddingLeft: 1
+                paddingLeft: 1,
               }}
             >
-              <ListItemText 
+              <ListItemText
                 primary="SESSION MUSICIANS"
-                primaryTypographyProps={{ fontWeight: 'bold' }}
+                primaryTypographyProps={{ fontWeight: "bold" }}
               />
             </ListItem>
           )}
-          
+
           {isAuthenticated && (
             <>
               <Divider sx={{ my: 2 }} />
@@ -281,7 +310,7 @@ const Header = () => {
         </List>
       </Drawer>
 
-      {/* Content Margin Offset */}
+      {/* Content Margin Offset (so content isn't behind the vertical header) */}
       <Box sx={{ marginLeft: { xs: 0, md: "250px" } }} />
     </>
   );
