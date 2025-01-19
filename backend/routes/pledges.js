@@ -6,8 +6,12 @@ import dotenv from 'dotenv';
 
 const router = express.Router();
 
-dotenv.config({ path: '.env.production' });
+// Determine the correct .env file
+const envFile = `.env.${process.env.NODE_ENV || "development"}`; // Defaults to development
 
+dotenv.config({ path: envFile });
+
+console.log(`Loaded environment file: ${envFile}`);
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -19,7 +23,7 @@ router.post('/', async (req, res) => {
     SENDGRID_VERIFIED_SENDER: process.env.SENDGRID_VERIFIED_SENDER,
     NODE_ENV: process.env.NODE_ENV
   });
-  const { name, bands, signatureUrl, photoUrl, finalImageUrl } = req.body;
+  const { name, bands, signatureUrl, photoUrl, finalImageUrl, contactName, contactEmail, contactPhone } = req.body;
 
 try {
   // Download images
@@ -37,15 +41,23 @@ try {
     const photoBuffer = Buffer.from(photoArrayBuffer);
     const finalImageBuffer = Buffer.from(finalImageArrayBuffer);
 
+    const recipients = [
+      ...(process.env.NOTIFICATION_EMAIL ? process.env.NOTIFICATION_EMAIL.split(',') : [])
+    ];
+
     const msg = {
-      to: process.env.NOTIFICATION_EMAIL,
+      to: recipients,
       from: process.env.SENDGRID_VERIFIED_SENDER,
       subject: 'New Power Pledge Submission',
       html: `
-        <h2>New Power Pledge Submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Bands:</strong> ${bands}</p>
-      `,
+      <h2>New Power Pledge Submission</h2>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Bands:</strong> ${bands}</p>
+      <h3>Contact Information</h3>
+      <p><strong>Name:</strong> ${contactName || 'N/A'}</p>
+      <p><strong>Email:</strong> ${contactEmail || 'N/A'}</p>
+      <p><strong>Phone:</strong> ${contactPhone || 'N/A'}</p>
+    `,
       attachments: [
         {
           content: photoBuffer.toString('base64'),
@@ -79,8 +91,8 @@ try {
     // Database insert and email send in parallel
     const [dbResult] = await Promise.all([
       pool.query(
-        'INSERT INTO pledges (name, bands, signature_url, photo_url, final_image_url) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-        [name, bands, signatureUrl, photoUrl, finalImageUrl]
+        'INSERT INTO pledges (name, bands, signature_url, photo_url, final_image_url, contact_name, contact_email, contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+        [name, bands, signatureUrl, photoUrl, finalImageUrl, contactName || null, contactEmail || null, contactPhone || null]
       ),
       sgMail.send(msg)
     ]);
