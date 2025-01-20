@@ -146,21 +146,45 @@ const Header = () => {
             <NavLink key={index} link={link} />
           ))}
 
-          <ListItem
-            button
-            onClick={() => setIsExpanded(!isExpanded)}
-            sx={{
-              color: "white",
-              cursor: "pointer",
-              "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
-            }}
-          >
-            <ListItemText
-              primary="PEOPLE"
-              primaryTypographyProps={{ fontWeight: "bold" }}
-            />
-            <ExpandMoreIcon />
-          </ListItem>
+          {/* People section with devMode handling */}
+          {(!isDevMode ? (
+            <Tooltip title="Coming Soon" arrow placement="right">
+              <Box>
+                <ListItem
+                  button
+                  disabled={true}
+                  sx={{
+                    color: "white",
+                    cursor: "not-allowed",
+                    opacity: 0.5,
+                    "&:hover": { backgroundColor: "transparent" },
+                  }}
+                >
+                  <ListItemText
+                    primary="PEOPLE"
+                    primaryTypographyProps={{ fontWeight: "bold" }}
+                  />
+                  <ExpandMoreIcon />
+                </ListItem>
+              </Box>
+            </Tooltip>
+          ) : (
+            <ListItem
+              button
+              onClick={() => setIsExpanded(!isExpanded)}
+              sx={{
+                color: "white",
+                cursor: "pointer",
+                "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
+              }}
+            >
+              <ListItemText
+                primary="PEOPLE"
+                primaryTypographyProps={{ fontWeight: "bold" }}
+              />
+              <ExpandMoreIcon />
+            </ListItem>
+          ))}
 
           {isExpanded && (
             <ListItem
