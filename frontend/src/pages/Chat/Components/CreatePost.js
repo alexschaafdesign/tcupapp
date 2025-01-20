@@ -25,7 +25,7 @@ import {
   FormatListNumbered
 } from '@mui/icons-material';
 
-export const CreatePost = ({ onPostCreated, tags }) => {
+const CreatePost = ({ onPostCreated, tags }) => {
   const { getAccessTokenSilently } = useAuth0();
   const [title, setTitle] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);

@@ -6,7 +6,7 @@ import supabase from '../lib/supabase.js';
 const router = express.Router();
 
 
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const { tags } = req.query;
         const tagIds = tags ? tags.split(',').map(Number) : [];

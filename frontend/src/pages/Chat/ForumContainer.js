@@ -15,8 +15,8 @@ import {
 import { Edit as EditIcon, Close as CloseIcon, History as HistoryIcon } from '@mui/icons-material';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
-import CreatePost from '../components/forum/CreatePost';
-import PostList from '../components/forum/PostList';
+import CreatePost from './Components/CreatePost';
+import PostList from './Components/PostList';
 import { height } from '@mui/system';
 
 export const ForumContainer = () => {
@@ -41,15 +41,13 @@ export const ForumContainer = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const token = await getAccessTokenSilently();
         let url = `${apiUrl}/posts`;
         if (selectedTags.length > 0) {
           url += `?tags=${selectedTags.join(',')}`;
         }
-        const response = await fetch(url, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await fetch(url); 
         const data = await response.json();
+        console.log('Posts response:', data); // Add in fetchPosts after json()
         setPosts(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Error fetching posts:', error);
@@ -59,7 +57,7 @@ export const ForumContainer = () => {
       }
     };
     fetchPosts();
-  }, [getAccessTokenSilently, apiUrl, selectedTags]);
+  }, [apiUrl, selectedTags]);
 
   const handlePostCreated = (newPost) => {
     setPosts([newPost, ...posts]);

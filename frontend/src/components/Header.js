@@ -8,6 +8,7 @@ import {
   ListItemText,
   AppBar,
   Divider,
+  Tooltip,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -22,11 +23,8 @@ const Header = () => {
 
   const navigate = useNavigate();
   const { isAuthenticated, isLoading, loginWithRedirect, logout, user } = useAuth0();
-
-  // Determine if we're in development mode
   const isDevMode = process.env.NODE_ENV === "development";
 
-  // Define your links; use `devOnly: true` to indicate "dev mode only" links
   const navLinks = [
     { text: "CALENDAR", path: "/calendar" },
     { text: "CHAT", path: "/forum", devOnly: true },
@@ -37,17 +35,55 @@ const Header = () => {
     { text: "POWER PLEDGES", path: "/powerpledge" },
   ];
 
-  // Create a version of navLinks that sets link.disabled if devOnly & not dev
   const displayedLinks = navLinks.map((link) => ({
     ...link,
     disabled: !isDevMode && link.devOnly,
   }));
 
-  console.log("Header auth state:", { isAuthenticated, isLoading, user });
-  console.log("Header isDevMode:", isDevMode);
-
-  const toggleDrawer = (open) => () => {
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event?.type === 'keydown' &&
+      (event?.key === 'Tab' || event?.key === 'Shift')
+    ) {
+      return;
+    }
     setDrawerOpen(open);
+  };
+
+  const NavLink = ({ link }) => {
+    const content = (
+      <ListItem
+        button
+        disabled={link.disabled}
+        onClick={() => {
+          if (!link.disabled) {
+            navigate(link.path);
+            setDrawerOpen(false);
+          }
+        }}
+        sx={{
+          color: "white",
+          cursor: link.disabled ? "not-allowed" : "pointer",
+          opacity: link.disabled ? 0.5 : 1,
+          "&:hover": {
+            backgroundColor: link.disabled ? "transparent" : "rgba(255, 255, 255, 0.1)",
+          },
+        }}
+      >
+        <ListItemText
+          primary={link.text}
+          primaryTypographyProps={{ fontWeight: "bold" }}
+        />
+      </ListItem>
+    );
+
+    return link.disabled ? (
+      <Tooltip title="Coming Soon" arrow placement="right">
+        <Box>{content}</Box>
+      </Tooltip>
+    ) : (
+      content
+    );
   };
 
   const AuthButtons = () => (
@@ -61,9 +97,7 @@ const Header = () => {
       sx={{
         color: "white",
         cursor: "pointer",
-        "&:hover": {
-          backgroundColor: "rgba(255, 255, 255, 0.1)",
-        },
+        "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
       }}
     >
       <ListItemText
@@ -90,13 +124,7 @@ const Header = () => {
           boxShadow: 4,
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: "30px",
-          }}
-        >
+        <Box sx={{ display: "flex", justifyContent: "center", mb: "30px" }}>
           <Link to="/shows">
             <Box
               component="img"
@@ -113,41 +141,9 @@ const Header = () => {
           </Link>
         </Box>
 
-        <List
-          sx={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-          }}
-        >
+        <List sx={{ width: "100%", display: "flex", flexDirection: "column", height: "100%" }}>
           {displayedLinks.map((link, index) => (
-            <ListItem
-              button
-              key={index}
-              disabled={link.disabled}
-              onClick={() => {
-                // Only navigate if not disabled
-                if (!link.disabled) {
-                  navigate(link.path);
-                }
-              }}
-              sx={{
-                color: "white",
-                cursor: link.disabled ? "not-allowed" : "pointer",
-                opacity: link.disabled ? 0.5 : 1,
-                "&:hover": {
-                  backgroundColor: link.disabled
-                    ? "transparent"
-                    : "rgba(255, 255, 255, 0.1)",
-                },
-              }}
-            >
-              <ListItemText
-                primary={link.text}
-                primaryTypographyProps={{ fontWeight: "bold" }}
-              />
-            </ListItem>
+            <NavLink key={index} link={link} />
           ))}
 
           <ListItem
@@ -156,9 +152,7 @@ const Header = () => {
             sx={{
               color: "white",
               cursor: "pointer",
-              "&:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-              },
+              "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
             }}
           >
             <ListItemText
@@ -171,14 +165,15 @@ const Header = () => {
           {isExpanded && (
             <ListItem
               button
-              onClick={() => navigate("/sessionmusicians")}
+              onClick={() => {
+                navigate("/sessionmusicians");
+                setDrawerOpen(false);
+              }}
               sx={{
                 color: "white",
                 cursor: "pointer",
                 paddingLeft: 3,
-                "&:hover": {
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                },
+                "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
               }}
             >
               <ListItemText
@@ -191,15 +186,11 @@ const Header = () => {
           <Box sx={{ mt: "auto" }}>
             {isAuthenticated && (
               <>
-                <Divider
-                  sx={{ my: 2, backgroundColor: "rgba(255, 255, 255, 0.2)" }}
-                />
+                <Divider sx={{ my: 2, backgroundColor: "rgba(255, 255, 255, 0.2)" }} />
                 <HeaderUserProfile />
               </>
             )}
-            <Divider
-              sx={{ my: 2, backgroundColor: "rgba(255, 255, 255, 0.2)" }}
-            />
+            <Divider sx={{ my: 2, backgroundColor: "rgba(255, 255, 255, 0.2)" }} />
             <AuthButtons />
           </Box>
         </List>
@@ -230,10 +221,7 @@ const Header = () => {
         />
 
         <IconButton
-          sx={{
-            marginLeft: "auto",
-            color: "white",
-          }}
+          sx={{ marginLeft: "auto", color: "white" }}
           onClick={toggleDrawer(true)}
         >
           <MenuIcon />
@@ -244,34 +232,13 @@ const Header = () => {
       <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
         <List>
           {displayedLinks.map((link, index) => (
-            <ListItem
-              button
-              key={index}
-              disabled={link.disabled}
-              onClick={() => {
-                if (!link.disabled) {
-                  navigate(link.path);
-                }
-                setDrawerOpen(false);
-              }}
-              sx={{
-                cursor: link.disabled ? "not-allowed" : "pointer",
-                opacity: link.disabled ? 0.5 : 1,
-              }}
-            >
-              <ListItemText
-                primary={link.text}
-                primaryTypographyProps={{ fontWeight: "bold" }}
-              />
-            </ListItem>
+            <NavLink key={index} link={link} />
           ))}
 
           <ListItem
             button
             onClick={() => setIsExpanded(!isExpanded)}
-            sx={{
-              cursor: "pointer",
-            }}
+            sx={{ cursor: "pointer" }}
           >
             <ListItemText
               primary="PEOPLE"
@@ -287,10 +254,7 @@ const Header = () => {
                 navigate("/sessionmusicians");
                 setDrawerOpen(false);
               }}
-              sx={{
-                cursor: "pointer",
-                paddingLeft: 1,
-              }}
+              sx={{ cursor: "pointer", paddingLeft: 1 }}
             >
               <ListItemText
                 primary="SESSION MUSICIANS"
@@ -310,7 +274,7 @@ const Header = () => {
         </List>
       </Drawer>
 
-      {/* Content Margin Offset (so content isn't behind the vertical header) */}
+      {/* Content Margin Offset */}
       <Box sx={{ marginLeft: { xs: 0, md: "250px" } }} />
     </>
   );

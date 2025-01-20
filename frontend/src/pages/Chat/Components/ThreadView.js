@@ -10,7 +10,7 @@ import HistoricalReplyForm from './HistoricalReplyForm.js';
 import EditorWithFormatting from './EditorWithFormatting';
 import 'draft-js/dist/Draft.css';
 
-export const ThreadView = () => {
+const ThreadView = () => {
   const { threadId } = useParams();
   const { getAccessTokenSilently } = useAuth0();
   const [threadData, setThreadData] = useState(null);

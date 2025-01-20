@@ -36,11 +36,11 @@ import { useAuth0 } from "@auth0/auth0-react";
 import VenueForm from "./pages/Venues/VenueForm.js";
 import CalendarEvents from "./components/CalendarEvents.js";
 import ThreadList from "./components/messageboard/ThreadList.js";
-import ForumContainer from "./pages/ForumContainer.js";
-import ThreadView from "./components/forum/ThreadView.js";
+import ForumContainer from "./pages/Chat/ForumContainer.js";
+import ThreadView from "./pages/Chat/Components/ThreadView.js";
 import LandingPage from "./pages/LandingPage.js";
 import Privacy from "./pages/Privacy.js";
-import AdminImportPost from "./pages/AdminImportPost.js";
+import AdminImportPost from "./pages/Chat/AdminImportPost.js";
 import VRCForm from "./pages/VRC/VRCForm.js";
 import PowerPledgeForm from "./pages/PowerPledge.js";
 import ImageDisplayPage from "./pages/ImageDisplayPage.js";
@@ -116,19 +116,20 @@ function App() {
           <Route path="/shows/:id/minimal" element={<ShowProfileMinimal />} />
           <Route path="/shows/:id/edit/minimal" element={<EditShowPageMinimal />} />
 
+          {/* Chat */}
           <Route path="/forum" element={<ForumContainer />} />
-          <Route path="/test-auth" element={<AuthTest />} />
-
           <Route path="/messages" element={<ThreadList category="General" />} />
           <Route path="/thread/:threadId" element={<ThreadView />} />
           <Route path="/import" element={<AdminImportPost />} />
+          <Route path="/test-auth" element={<AuthTest />} />
 
+          {/* VRC */}
           <Route path="/vrc" element={<VRCForm />} />
+
+           {/* Power Pledges */}
           <Route path="/powerpledge" element={<PowerPledgeForm />} />
 
-
-
-
+           {/* Calendar */}
           <Route path="/calendar" element={<CalendarEvents />} />
 
 
@@ -153,7 +154,6 @@ function App() {
           <Route path="/bands" element={<TCUPBandsGrid />} />
           <Route path="/bands/:bandSlug" element={<TCUPBandProfile />} />
           <Route path="/bands/add" element={<TCUPBandForm isEdit={false} />} />
-
           <Route path="/bands/:bandid/edit" element={<TCUPBandForm isEdit={true} />} />
 
           {/* Venues */}
