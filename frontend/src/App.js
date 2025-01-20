@@ -95,9 +95,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      {/* Conditionally render Header based on the current route */}
-      { showHeader && <Header isDevMode={isDevMode} /> }
-
+      <Header />
       <RootLayout maxWidth={getMaxWidth()}>
      
         <Routes>
