@@ -1,28 +1,39 @@
+import dotenv from 'dotenv';
 import { google } from 'googleapis';
-import fs from 'fs/promises';
+
+const environment = process.env.NODE_ENV || 'development';
+dotenv.config({ path: `.env.${environment}` });
 
 const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
 
-
-// Authenticate with the service account
 const auth = new google.auth.GoogleAuth({
-  credentials,
-  scopes: ['https://www.googleapis.com/auth/calendar.readonly'],
+ credentials,
+ scopes: [
+   'https://www.googleapis.com/auth/calendar.readonly',
+   'https://www.googleapis.com/auth/calendar'
+ ]
 });
 
 const calendar = google.calendar({ version: 'v3', auth });
 
-// Function to fetch events
 export async function listEvents() {
-  const res = await calendar.events.list({
-    calendarId: process.env.GOOGLE_CALENDAR_ID, // Use environment variable for calendar ID
-    timeMin: new Date().toISOString(),
-    maxResults: 10,
-    singleEvents: true,
-    orderBy: 'startTime',
-  });
+ try {
+   console.log('Service Account:', {
+     email: credentials.client_email,
+     project: credentials.project_id
+   });
 
-  return res.data.items;
+   const res = await calendar.events.list({
+     calendarId: 'tcupminnesota@gmail.com',
+     timeMin: new Date().toISOString(),
+     maxResults: 10,
+     singleEvents: true,
+     orderBy: 'startTime'
+   });
+
+   return res.data.items;
+ } catch (error) {
+   console.error('Calendar API Error:', error);
+   throw error;
+ }
 }
-
-

@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
+import AuthWrapper from '../../components/auth/AuthWrapper';
 
 const ShowsTableCore = ({ data }) => {
   const navigate = useNavigate();
@@ -51,7 +52,6 @@ const ShowsTableCore = ({ data }) => {
   const handleRowClick = (showId) => {
     navigate(`/shows/${showId}`);
   };
-
 
   return (
     <TableContainer 
@@ -178,23 +178,32 @@ const ShowsTableCore = ({ data }) => {
                               display: { xs: 'block', sm: 'none' }
                             }}
                           >
-                            <Tooltip title="Edit Show">
-                              <IconButton 
-                                onClick={(e) => handleEdit(e, item.show_id)}
-                                sx={{
-                                  color: 'action.active',
-                                  bgcolor: 'background.paper',
-                                  boxShadow: 1,
-                                  '&:hover': {
-                                    color: 'primary.main',
-                                    bgcolor: 'background.paper'
-                                  }
-                                }}
-                                size="small"
-                              >
-                                <EditIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
+                            <AuthWrapper
+                              renderContent={({ showAuth }) => (
+                                <Tooltip title="Edit Show">
+                                  <IconButton 
+                                    onClick={(e, { showAuth }) => {
+                                      e.stopPropagation();
+                                      if (!showAuth()) {
+                                        handleEdit(e, item.show_id);
+                                      }
+                                    }}
+                                    sx={{
+                                      color: 'action.active',
+                                      bgcolor: 'background.paper',
+                                      boxShadow: 1,
+                                      '&:hover': {
+                                        color: 'primary.main',
+                                        bgcolor: 'background.paper'
+                                      }
+                                    }}
+                                    size="small"
+                                  >
+                                    <EditIcon fontSize="small" />
+                                  </IconButton>
+                                </Tooltip>
+                              )}
+                            />
                           </Box>
                         </Box>
                       </TableCell>
@@ -240,8 +249,8 @@ const ShowsTableCore = ({ data }) => {
                               <Typography
                                 sx={{
                                   fontWeight: 600,
-                                  color: band.id ? 'primary.main' : 'text.primary', // Highlight TCUP bands
-                                  cursor: band.slug ? 'pointer' : 'default', // Only make clickable if slug exists
+                                  color: band.id ? 'primary.main' : 'text.primary',
+                                  cursor: band.slug ? 'pointer' : 'default',
                                   '&:hover': band.slug ? { textDecoration: 'underline' } : {},
                                 }}
                                 onClick={(e) => {
@@ -253,7 +262,7 @@ const ShowsTableCore = ({ data }) => {
                               >
                                 {band.name}
                               </Typography>
-                              {band.id && ( // Only show TCUP chip for TCUP bands
+                              {band.id && (
                                 <Chip
                                   label="TCUP BAND"
                                   size="small"
@@ -277,20 +286,29 @@ const ShowsTableCore = ({ data }) => {
                           display: { xs: 'none', sm: 'table-cell' }
                         }}
                       >
-                        <Tooltip title="Edit Show">
-                          <IconButton 
-                            onClick={(e) => handleEdit(e, item.show_id)}
-                            sx={{
-                              color: 'action.active',
-                              '&:hover': {
-                                color: 'primary.main',
-                                bgcolor: 'action.hover'
-                              }
-                            }}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
+                        <AuthWrapper
+                          renderContent={({ handleShowAuth }) => (
+                            <Tooltip title="Edit Show">
+                              <IconButton 
+                                onClick={(e, { showAuth }) => {
+                                  e.stopPropagation();
+                                  if (!showAuth()) {
+                                    handleEdit(e, item.show_id);
+                                  }
+                                }}
+                                sx={{
+                                  color: 'action.active',
+                                  '&:hover': {
+                                    color: 'primary.main',
+                                    bgcolor: 'action.hover'
+                                  }
+                                }}
+                              >
+                                <EditIcon />
+                              </IconButton>
+                            </Tooltip>
+                          )}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
