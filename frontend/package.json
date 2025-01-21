@@ -62,7 +62,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build:staging": "REACT_APP_ENV=staging react-scripts build && rm -rf staging-build/* && mv build/* staging-build/",
+    "build:production": "REACT_APP_ENV=production react-scripts build",
+    "deploy:staging": "npm run build:staging && sudo cp -r staging-build/* /var/www/tcup/staging/build/",
+    "deploy:production": "npm run build:production && sudo cp -r build/* /var/www/tcup/frontend/build/"
   },
   "eslintConfig": {
     "extends": [
