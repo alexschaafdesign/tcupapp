@@ -11,9 +11,9 @@
     "migrate:up": "node-pg-migrate up",
     "migrate:down": "node-pg-migrate down",
     "build:staging": "REACT_APP_ENV=staging react-scripts build && rm -rf staging-build/* && mv build/* staging-build/",
-    "build:production": "REACT_APP_ENV=production react-scripts build",
-    "deploy:staging": "npm run build:staging && sudo cp -r staging-build/* /var/www/tcup/staging/build/",
-    "deploy:production": "npm run build:production && sudo cp -r build/* /var/www/tcup/frontend/build/"
+    "build:production": "REACT_APP_ENV=production react-scripts build && rm -rf build-prod/* && mv build/* build-prod/",
+    "deploy:staging": "npm run build:staging && sudo mkdir -p /var/www/tcup/frontend/staging-build-temp && sudo cp -r staging-build/* /var/www/tcup/frontend/staging-build-temp/ && sudo rm -rf /var/www/tcup/frontend/staging-build && sudo mv /var/www/tcup/frontend/staging-build-temp /var/www/tcup/frontend/staging-build",
+    "deploy:production": "npm run build:production && sudo cp -r build-prod/* /var/www/tcup/frontend/build/"
   },
   "keywords": [],
   "author": "",
