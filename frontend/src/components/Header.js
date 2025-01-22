@@ -26,6 +26,7 @@ const Header = () => {
   const isDevMode = process.env.NODE_ENV === "development";
 
   const navLinks = [
+    { text: "CUPBOARD 1.0", path: "https:/tcupboard.org", external: true },
     { text: "CALENDAR", path: "/calendar" },
     { text: "CHAT", path: "/forum", devOnly: true },
     { text: "SHOWS", path: "/shows" },
@@ -51,7 +52,24 @@ const Header = () => {
   };
 
   const NavLink = ({ link }) => {
-    const content = (
+    const content = link.external ? (
+      <ListItem
+        component="a"
+        href={link.path}
+        target="_blank"
+        rel="noopener noreferrer"
+        sx={{
+          color: "white",
+          cursor: "pointer",
+          "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
+        }}
+      >
+        <ListItemText
+          primary={link.text}
+          primaryTypographyProps={{ fontWeight: "bold" }}
+        />
+      </ListItem>
+    ) : (
       <ListItem
         button
         disabled={link.disabled}
@@ -76,7 +94,7 @@ const Header = () => {
         />
       </ListItem>
     );
-
+  
     return link.disabled ? (
       <Tooltip title="Coming Soon" arrow placement="right">
         <Box>{content}</Box>
@@ -85,6 +103,8 @@ const Header = () => {
       content
     );
   };
+
+
 
   const AuthButtons = () => (
     <ListItem
