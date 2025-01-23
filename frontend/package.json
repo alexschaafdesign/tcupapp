@@ -67,7 +67,7 @@
     "eject": "react-scripts eject",
     "build:staging": "REACT_APP_ENV=staging react-scripts build && rm -rf staging-build/* && mv build/* staging-build/",
     "build:production": "REACT_APP_ENV=production react-scripts build",
-    "deploy:staging": "pm2 stop tcup-backend-staging && npm ci && npm run build:staging && sudo cp -r staging-build/* /var/www/tcup/frontend/staging-build/ && pm2 restart tcup-backend-staging",
+    "deploy:staging": "pm2 stop tcup-backend-staging && npm ci && npm run build:staging && sudo cp -r staging-build/* /var/www/tcup/frontend/staging-build/ && pm2 start server.js --name tcup-backend-staging --env staging",
     "deploy:production": "pm2 stop tcup-backend-prod && npm ci && npm run build:production && sudo cp -r build/* /var/www/tcup/frontend/build/ && pm2 restart tcup-backend-prod"
   },
   "eslintConfig": {
