@@ -14,7 +14,10 @@ function parseBandList(bandList) {
 }
 
 async function crossReferenceBands(bandsString) {
-  const bandNames = parseBandList(bandsString).map((band) => band.toLowerCase());
+  // Keep original names for return value
+  const originalNames = parseBandList(bandsString);
+  // Use lowercase only for comparison
+  const bandNames = originalNames.map(band => band.toLowerCase());
 
   if (bandNames.length === 0) return [];
 
@@ -30,9 +33,9 @@ async function crossReferenceBands(bandsString) {
     return map;
   }, {});
 
-  return bandNames.map((name) => ({
+  return originalNames.map((name, i) => ({
     name,
-    id: tcupBandMap[name] || null,
+    id: tcupBandMap[bandNames[i]] || null,
   }));
 }
 

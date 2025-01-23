@@ -179,13 +179,15 @@ const ShowsTableCore = ({ data }) => {
                             }}
                           >
                             <AuthWrapper
-                              renderContent={({ showAuth }) => (
+                              renderContent={({ showAuth, openAuthModal }) => (
                                 <Tooltip title="Edit Show">
                                   <IconButton 
-                                    onClick={(e, { showAuth }) => {
+                                    onClick={(e) => {
                                       e.stopPropagation();
-                                      if (!showAuth()) {
+                                      if (showAuth) {
                                         handleEdit(e, item.show_id);
+                                      } else {
+                                        openAuthModal();
                                       }
                                     }}
                                     sx={{
@@ -287,13 +289,15 @@ const ShowsTableCore = ({ data }) => {
                         }}
                       >
                         <AuthWrapper
-                          renderContent={({ handleShowAuth }) => (
+                          renderContent={({ showAuth, openAuthModal }) => (
                             <Tooltip title="Edit Show">
                               <IconButton 
-                                onClick={(e, { showAuth }) => {
+                                onClick={(e) => {
                                   e.stopPropagation();
-                                  if (!showAuth()) {
+                                  if (showAuth) {
                                     handleEdit(e, item.show_id);
+                                  } else {
+                                    openAuthModal();
                                   }
                                 }}
                                 sx={{

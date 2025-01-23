@@ -21,11 +21,11 @@ const EditShowPage = () => {
         const data = await response.json();
         
         // Handle bands data whether it comes as array or string
-        const bandsArray = Array.isArray(data.bands)
-          ? data.bands.map(band => typeof band === 'string' ? { name: band } : band)
-          : typeof data.bands === 'string'
-          ? data.bands.split(',').map(band => ({ name: band.trim() }))
-          : [];
+        const bandsArray = typeof data.bands === 'string'
+        ? data.bands.split(/\s*,\s*/).map(band => ({ name: band })) // Removed trim()
+        : Array.isArray(data.bands)
+        ? data.bands.map(band => typeof band === 'string' ? { name: band } : band)
+        : [];
 
         // Format the show data for the form
         const formattedShow = {
