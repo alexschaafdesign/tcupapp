@@ -36,28 +36,37 @@ def get_event_details(event_url):
     response = requests.get(event_url)
     if response.status_code == 200:
         event_soup = BeautifulSoup(response.content, 'html.parser')
-
-        # Extract event time
         show_details = event_soup.find('div', class_='show_details text-center')
         event_time = None
+        age_restriction = None
+        
         if show_details:
             for item in show_details.find_all('div', class_='col-6 col-md'):
                 header = item.find('h6')
-                if header and "Show Starts" in header.get_text(strip=True):
-                    time_tag = item.find('h2')
-                    event_time = (
-                        convert_time_to_24_hour_format(time_tag.get_text(strip=True))
-                        if time_tag else '00:00'
-                    )
-        
+                if header:
+                    header_text = header.get_text(strip=True)
+                    if "Show Starts" in header_text:
+                        time_tag = item.find('h2')
+                        event_time = (
+                            convert_time_to_24_hour_format(time_tag.get_text(strip=True))
+                            if time_tag else '00:00'
+                        )
+            
+            # Extract age restriction
+            age_div = show_details.find('div', class_='col')
+            if age_div:
+                age_text = age_div.find('h2', class_='mt-1')
+                if age_text:
+                    age_restriction = age_text.get_text(strip=True)
+
         # Extract flyer image
         flyer_img_tag = event_soup.find('img', class_='gig_poster no-lazy')
         flyer_image = flyer_img_tag['src'] if flyer_img_tag else None
 
-        return event_time, flyer_image
+        return event_time, age_restriction, flyer_image
     else:
         print(f"Failed to fetch event details from {event_url}. Status code: {response.status_code}")
-        return None, None
+        return None, None, None
 
 # Function to fetch and extract social media links for a specific band
 def get_links_for_band(band_element):
