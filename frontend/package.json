@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://portal.tcupboard.org",
+  "homepage": "https://tcupmn.org",
   "proxy": "https://tcupboard.org",
   "dependencies": {
     "-": "^0.0.1",
