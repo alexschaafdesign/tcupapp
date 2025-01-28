@@ -9,8 +9,14 @@ console.log('DB_USER:', process.env.DB_USER);
 
 function parseBandList(bandList) {
   if (!bandList) return [];
-  // Split by commas and trim whitespace
-  return bandList.split(',').map((band) => band.trim());
+  // Split by commas, extract order and name, then trim whitespace
+  return bandList
+    .split(',')
+    .map(band => band.trim())
+    .map(band => {
+      const match = band.match(/^\d+:(.+)$/);
+      return match ? match[1].trim() : band.trim();
+    });
 }
 
 async function crossReferenceBands(bandsString) {
@@ -55,14 +61,28 @@ router.get('/', async (req, res) => {
         venues.venue AS venue_name,
         venues.location,
         bands.name AS band_name,
+        bands.order_num AS band_order,
         tcupbands.id AS tcupband_id,
         tcupbands.slug AS tcupband_slug
       FROM 
         shows
       LEFT JOIN 
         venues ON shows.venue_id = venues.id
-      LEFT JOIN 
-        LATERAL unnest(string_to_array(shows.bands, ',')) AS bands(name) ON TRUE
+      LEFT JOIN LATERAL (
+        SELECT 
+          CASE 
+            WHEN position(':' in unnested.band) > 0 
+            THEN TRIM(substring(unnested.band from position(':' in unnested.band) + 1))
+            ELSE TRIM(unnested.band)
+          END as name,
+          CASE 
+            WHEN position(':' in unnested.band) > 0 
+            THEN CAST(substring(unnested.band from '^\d+') as integer)
+            ELSE row_number() OVER (PARTITION BY shows.id ORDER BY unnested.band)
+          END as order_num
+        FROM unnest(string_to_array(shows.bands, ',')) as unnested(band)
+        WHERE unnested.band IS NOT NULL
+      ) bands ON true
       LEFT JOIN 
         tcupbands ON LOWER(TRIM(bands.name)) = LOWER(TRIM(tcupbands.name))
     `;
@@ -76,8 +96,6 @@ router.get('/', async (req, res) => {
 
     // Execute the query
     const { rows: rawResults } = await pool.query(query, venueId ? [venueId] : []);
-
-  //  console.log('Raw Query Results:', rawResults);
 
     // Process the results to group by show_id
     const processedShows = rawResults.reduce((acc, row) => {
@@ -102,15 +120,19 @@ router.get('/', async (req, res) => {
       if (row.band_name) {
         show.bands.push({
           name: row.band_name,
-          id: row.tcupband_id || null, // TCUP band ID (null if not a TCUP band)
-          slug: row.tcupband_slug || null, // TCUP band slug (null if not a TCUP band)
+          order: row.band_order,
+          id: row.tcupband_id || null,
+          slug: row.tcupband_slug || null,
         });
       }
 
       return acc;
     }, []);
 
-   // console.log('Processed Shows:', processedShows);
+    // Sort bands by order for each show
+    processedShows.forEach(show => {
+      show.bands.sort((a, b) => a.order - b.order);
+    });
 
     // Send the structured response
     res.json(processedShows);
@@ -127,33 +149,63 @@ router.get('/:id', async (req, res) => {
   try {
     const query = `
       SELECT 
-        shows.id AS show_id,
-        shows.start,
-        shows.flyer_image,
-        shows.event_link,
-        shows.venue_id,
-        shows.bands AS band_list,
-        venues.venue AS venue_name,
-        venues.location
-      FROM 
-        shows
-      LEFT JOIN 
-        venues ON shows.venue_id = venues.id
-      WHERE 
-        shows.id = $1;
-    `;
-    const { rows } = await pool.query(query, [showId]);
+      shows.id AS show_id,
+      shows.start,
+      shows.flyer_image,
+      shows.event_link,
+      shows.venue_id,
+      shows.bands AS band_list,
+      venues.venue AS venue_name,
+      venues.location,
+      bands.band as raw_band,
+      tcupbands.id AS tcupband_id,
+      tcupbands.slug AS tcupband_slug
+    FROM 
+      shows
+    LEFT JOIN 
+      venues ON shows.venue_id = venues.id
+    LEFT JOIN LATERAL (
+      SELECT TRIM(unnest) as band
+      FROM unnest(string_to_array(shows.bands, ',')) 
+    ) bands ON true
+    LEFT JOIN 
+      tcupbands ON LOWER(TRIM(bands.band)) = LOWER(TRIM(tcupbands.name))
+  `;
+  const { rows: rawResults } = await pool.query(query, venueId ? [venueId] : []);
+  console.log('First few results:', rawResults.slice(0, 5));
+  console.log('Band strings:', rawResults.map(row => row.raw_band));
 
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Show not found' });
     }
 
-    const show = rows[0];
-    const linkedBands = await crossReferenceBands(show.band_list || '');
-    res.json({
-      ...show,
-      bands: linkedBands,
+    // Process and group bands
+    const show = {
+      show_id: rows[0].show_id,
+      start: rows[0].start,
+      flyer_image: rows[0].flyer_image,
+      event_link: rows[0].event_link,
+      venue_id: rows[0].venue_id,
+      venue_name: rows[0].venue_name,
+      location: rows[0].location,
+      bands: []
+    };
+
+    // Add bands and sort by order
+    rows.forEach(row => {
+      if (row.band_name) {
+        show.bands.push({
+          name: row.band_name,
+          order: row.band_order,
+          id: row.tcupband_id || null,
+          slug: row.tcupband_slug || null
+        });
+      }
     });
+
+    show.bands.sort((a, b) => a.order - b.order);
+
+    res.json(show);
   } catch (error) {
     console.error('Error fetching show:', error);
     res.status(500).json({ error: 'Failed to fetch show' });

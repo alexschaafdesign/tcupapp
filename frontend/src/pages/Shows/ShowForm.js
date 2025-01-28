@@ -121,8 +121,10 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
       return;
     }
   
-    const bandsFormatted = formData.bands.map((band) => band.name).join(", ");
-      
+    const bandsFormatted = formData.bands
+    .map((band, index) => `${index + 1}:${band.name}`)
+    .join(", ");
+          
     const dataToSubmit = {
       ...formData,
       bands: bandsFormatted,
