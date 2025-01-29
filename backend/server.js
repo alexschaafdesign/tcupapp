@@ -23,6 +23,7 @@ import tagsRouter from './routes/tags.js';
 import tcupgcalRouter from './routes/tcupgcal.js';
 import pledgesRouter from './routes/pledges.js';
 import flyeringRouter from './routes/flyering.js';
+import imagesRouter from './routes/images.js';
 
 const { Pool } = pg;
 
@@ -115,6 +116,8 @@ app.use('/api/tags', tagsRouter);
 app.use('/api/tcupgcal', tcupgcalRouter);
 app.use('/api/pledges', pledgesRouter);
 app.use('/api/flyering', flyeringRouter);
+app.use('/api/images', imagesRouter);
+
 
 
 // Example database test route
