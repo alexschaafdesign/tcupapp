@@ -33,16 +33,11 @@
     "react-app-rewired": "^2.2.1"
   },
   "scripts": {
-    "client": "npm start --prefix frontend",
-    "server": "NODE_ENV=development nodemon backend/server.js",
-    "dev": "concurrently \"npm run dev-backend\" \"npm run dev-frontend\"",
-    "start": "concurrently \"npm run start-backend\" \"npm run start-frontend\"",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start-backend": "npm --prefix ./backend start",
-    "start-frontend": "npm --prefix ./frontend start",
-    "dev-backend": "npm --prefix ./backend run dev",
-    "dev-frontend": "npm --prefix ./frontend start"
+    "build:staging": "REACT_APP_ENV=staging react-scripts build",
+    "build:production": "REACT_APP_ENV=production react-scripts build"
   }
 }
