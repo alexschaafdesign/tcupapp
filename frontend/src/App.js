@@ -47,6 +47,7 @@ import ImageDisplayPage from "./pages/ImageDisplayPage.js";
 import FlyeringForm from "./pages/Flyering/FlyeringForm.js";
 import FlyeringTable from "./pages/Flyering/FlyeringTable.js";
 import EditFlyeringForm from "./pages/Flyering/EditFlyeringForm.js";
+import PledgePhotos from "./pages/PledgePhotos.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -126,6 +127,8 @@ function App() {
 
            {/* Power Pledges */}
           <Route path="/powerpledge" element={<PowerPledgeForm />} />
+          <Route path="/pledgephotos" element={<PledgePhotos />} />
+
 
            {/* Calendar */}
           <Route path="/calendar" element={<CalendarEvents />} />

@@ -34,6 +34,8 @@ const Header = () => {
     { text: "BANDS", path: "/bands", devOnly: true },
     { text: "VENUE REPORT CARD", path: "/vrc", devOnly: true },
     { text: "POWER PLEDGES", path: "/powerpledge" },
+    { text: "PLEDGE PHOTOS", path: "/pledgephotos" },
+
   ];
 
   const displayedLinks = navLinks.map((link) => ({
