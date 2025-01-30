@@ -65,9 +65,8 @@
     "start": "PORT=3003 react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build:production": "REACT_APP_ENV=production react-scripts build",
-    "build:staging": "REACT_APP_ENV=staging react-scripts build",
-    "deploy:production": "npm install && pm2 stop tcup-backend-prod && npm ci && npm run build:production && sudo rm -rf /var/www/tcup/frontend/build/* && sudo cp -r build/* /var/www/tcup/frontend/build/ && pm2 start ecosystem.config.cjs --only tcup-backend-prod"
+    "build:staging": "cross-env NODE_ENV=staging react-scripts build",
+    "build:production": "cross-env NODE_ENV=production react-scripts build"
   },
   "eslintConfig": {
     "extends": [
