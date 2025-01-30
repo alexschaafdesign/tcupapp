@@ -80,7 +80,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // 2) CORS configuration
-let allowedOrigin = 'http://localhost:3002';
+let allowedOrigin = 'http://localhost:3003';
 if (process.env.NODE_ENV === 'production') {
   allowedOrigin = 'https://portal.tcupboard.org';
 } else if (process.env.NODE_ENV === 'staging') {
