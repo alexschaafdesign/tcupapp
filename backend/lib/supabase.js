@@ -6,19 +6,26 @@ import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const envPath = process.env.NODE_ENV === 'production' 
-  ? path.resolve(__dirname, '../.env.production')
-  : path.resolve(__dirname, '../.env.development');
+
+// Dynamically pick which .env file to load
+let envFile = '.env.development';
+if (process.env.NODE_ENV === 'production') {
+  envFile = '.env.production';
+} else if (process.env.NODE_ENV === 'staging') {
+  envFile = '.env.staging';
+}
+
+const envPath = path.resolve(__dirname, `../${envFile}`);
 dotenv.config({ path: envPath });
 
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;  // This will be different from your anon key
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
-    console.error('Missing Supabase configuration:', {
-        url: !!supabaseUrl,
-        serviceKey: !!supabaseServiceKey
-    });
+  console.error('Missing Supabase configuration:', {
+    url: !!supabaseUrl,
+    serviceKey: !!supabaseServiceKey
+  });
 }
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
