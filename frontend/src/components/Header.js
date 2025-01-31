@@ -9,6 +9,7 @@ import {
   AppBar,
   Divider,
   Tooltip,
+  Collapse,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -20,25 +21,33 @@ import { Link } from "react-router-dom";
 const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isTcupExpanded, setIsTcupExpanded] = useState(false);
 
   const navigate = useNavigate();
   const { isAuthenticated, isLoading, loginWithRedirect, logout, user } = useAuth0();
   const isDevMode = process.env.NODE_ENV === "development";
 
   const navLinks = [
+    { text: "TCUP", isDropdown: true },
     { text: "CUPBOARD 1.0", path: "https://tcupboard.org", external: true },
-    { text: "CALENDAR", path: "/calendar" },
     { text: "CHAT", path: "/forum", devOnly: true },
     { text: "SHOWS", path: "/shows" },
     { text: "VENUES", path: "/venues" },
     { text: "BANDS", path: "/bands", devOnly: true },
-    { text: "VENUE REPORT CARD", path: "/vrc", devOnly: true },
-    { text: "POWER PLEDGES", path: "/powerpledge" },
-    { text: "PLEDGE PHOTOS", path: "/pledgephotos" },
+  ];
 
+  const tcupLinks = [
+    { text: "CALENDAR", path: "/calendar" },
+    { text: "VENUE REPORT CARD", path: "/vrc", devOnly: true },
+    { text: "PLEDGE PHOTOS", path: "/pledgephotos" },
   ];
 
   const displayedLinks = navLinks.map((link) => ({
+    ...link,
+    disabled: !isDevMode && link.devOnly,
+  }));
+
+  const displayedTcupLinks = tcupLinks.map((link) => ({
     ...link,
     disabled: !isDevMode && link.devOnly,
   }));
@@ -106,7 +115,44 @@ const Header = () => {
     );
   };
 
-
+  const TcupMenu = () => (
+    <>
+      <ListItem
+        button
+        onClick={() => setIsTcupExpanded(!isTcupExpanded)}
+        sx={{
+          color: "white",
+          cursor: "pointer",
+          "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
+        }}
+      >
+        <ListItemText
+          primary="TCUP"
+          primaryTypographyProps={{ fontWeight: "bold" }}
+        />
+        <ExpandMoreIcon />
+      </ListItem>
+      <Collapse in={isTcupExpanded}>
+        <Box sx={{ 
+          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+          borderLeft: '3px solid rgba(255, 255, 255, 0.2)',
+          mx: 2,
+          borderRadius: '4px',
+          overflow: 'hidden'
+        }}>
+          {displayedTcupLinks.map((link, index) => (
+            <NavLink
+              key={index}
+              link={{
+                ...link,
+                text: link.text
+              }}
+            />
+          ))}
+        </Box>
+      </Collapse>
+    </>
+  );
 
   const AuthButtons = () => (
     <ListItem
@@ -164,7 +210,8 @@ const Header = () => {
         </Box>
 
         <List sx={{ width: "100%", display: "flex", flexDirection: "column", height: "100%" }}>
-          {displayedLinks.map((link, index) => (
+          <TcupMenu />
+          {displayedLinks.filter(link => !link.isDropdown).map((link, index) => (
             <NavLink key={index} link={link} />
           ))}
 
@@ -209,24 +256,31 @@ const Header = () => {
           ))}
 
           {isExpanded && (
-            <ListItem
-              button
-              onClick={() => {
-                navigate("/sessionmusicians");
-                setDrawerOpen(false);
-              }}
-              sx={{
-                color: "white",
-                cursor: "pointer",
-                paddingLeft: 3,
-                "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
-              }}
-            >
-              <ListItemText
-                primary="SESSION MUSICIANS"
-                primaryTypographyProps={{ fontWeight: "bold" }}
-              />
-            </ListItem>
+            <Box sx={{ 
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              borderLeft: '3px solid rgba(255, 255, 255, 0.2)',
+              mx: 2,
+              borderRadius: '4px',
+              overflow: 'hidden'
+            }}>
+              <ListItem
+                button
+                onClick={() => {
+                  navigate("/sessionmusicians");
+                  setDrawerOpen(false);
+                }}
+                sx={{
+                  color: "white",
+                  cursor: "pointer",
+                  "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
+                }}
+              >
+                <ListItemText
+                  primary="SESSION MUSICIANS"
+                  primaryTypographyProps={{ fontWeight: "bold" }}
+                />
+              </ListItem>
+            </Box>
           )}
 
           <Box sx={{ mt: "auto" }}>
@@ -277,7 +331,8 @@ const Header = () => {
       {/* Mobile Drawer */}
       <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
         <List>
-          {displayedLinks.map((link, index) => (
+          <TcupMenu />
+          {displayedLinks.filter(link => !link.isDropdown).map((link, index) => (
             <NavLink key={index} link={link} />
           ))}
 
