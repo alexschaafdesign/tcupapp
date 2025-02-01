@@ -80,31 +80,35 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // 2) CORS configuration
-let allowedOrigin = 'http://localhost:3003';
+let allowedOrigins;
 if (process.env.NODE_ENV === 'production') {
-  allowedOrigin = 'https://portal.tcupboard.org';
+  allowedOrigins = ['https://portal.tcupboard.org', 'https://tcupmn.org'];
 } else if (process.env.NODE_ENV === 'staging') {
-  allowedOrigin = 'https://staging.tcupboard.org';
+  allowedOrigins = ['https://staging.tcupboard.org'];
+} else {
+  allowedOrigins = ['http://localhost:3003'];
 }
 
 const corsOptions = {
-  origin: allowedOrigin,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests).
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  }
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 3) Create Xenforo API client (if still needed)
-const xenforoClient = axios.create({
-  baseURL: 'https://tcupboard.org/api',
-  headers: {
-    'XF-Api-Key': process.env.XENFORO_API_KEY,
-    'XF-Api-User': '1'
-  }
+// Debug request logging
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`, req.body);
+  next();
 });
 
 // 4) API routes
@@ -136,11 +140,7 @@ app.get('/api/test-db', async (req, res) => {
   }
 });
 
-// Debug request logging
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`, req.body);
-  next();
-});
+
 
 // Required backend endpoint (Express)
 app.post('/index.php?api/oauth2/token', async (req, res) => {
