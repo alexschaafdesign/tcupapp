@@ -1,17 +1,19 @@
+// db.js
 import pkg from 'pg';
-import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Load environment variables from .env.development if NODE_ENV=development
-dotenv.config({
-  path: path.resolve(path.join(__dirname, '..'), `.env.${process.env.NODE_ENV || 'development'}`)
-});
+// You no longer need to load dotenv here, because loadEnv.js already did that.
+// Remove the following lines:
+// import dotenv from 'dotenv';
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+// dotenv.config({
+//   path: path.resolve(path.join(__dirname, '..'), `.env.${process.env.NODE_ENV || 'development'}`)
+// });
 
 const { Pool } = pkg;
+
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,

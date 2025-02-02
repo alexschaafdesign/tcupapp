@@ -136,7 +136,7 @@ app.get('/api/test-db', async (req, res) => {
     res.status(500).json({ error: 'Database query failed' });
   }
 });
-
+ 
 // Required backend endpoint (Express)
 app.post('/index.php?api/oauth2/token', async (req, res) => {
   console.log('Token request received:', req.body);
