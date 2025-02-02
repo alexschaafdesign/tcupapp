@@ -1,7 +1,14 @@
+// server.js
+
+// Make sure to load environment variables first!
+import './loadEnv.js';
+// Optionally, if you want to use the exported currentEnv for logging:
+import currentEnv from './loadEnv.js';
+
 import express from 'express';
 import cors from 'cors';
 import axios from 'axios';
-import dotenv from 'dotenv';
+// Removed duplicate dotenv import and configuration since it's already done in loadEnv.js
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pg from 'pg';
@@ -27,26 +34,18 @@ import imagesRouter from './routes/images.js';
 
 const { Pool } = pg;
 
+// __filename and __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-/**
- * 1) Load environment variables
- *    - If NODE_ENV=development, loads .env.development
- *    - If NODE_ENV=production, loads .env.production
- *    - Defaults to .env.development if NODE_ENV is not set
- */
-dotenv.config({
-  path: path.resolve(__dirname, `.env.${process.env.NODE_ENV || 'development'}`)
-});
+// (The dotenv.config call has been removed because it's already handled in loadEnv.js)
 
+// Optional logging to verify that environment variables are loaded:
 console.log('Server env loaded:', {
   SENDGRID_API_KEY: !!process.env.SENDGRID_API_KEY,
   NOTIFICATION_EMAIL: process.env.NOTIFICATION_EMAIL,
   NODE_ENV: process.env.NODE_ENV
 });
-
-// Helpful logs
 console.log('Using environment file:', `.env.${process.env.NODE_ENV || 'development'}`);
 console.log('Environment variables loaded:', {
   NODE_ENV: process.env.NODE_ENV,
@@ -63,7 +62,7 @@ const pool = new Pool({
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   port: parseInt(process.env.DB_PORT, 10),
-  // If you want SSL in production only, you can do:
+  // Use SSL if DB_SSL is set to 'true'
   ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
 });
 
@@ -127,8 +126,6 @@ app.use('/api/pledges', pledgesRouter);
 app.use('/api/flyering', flyeringRouter);
 app.use('/api/images', imagesRouter);
 
-
-
 // Example database test route
 app.get('/api/test-db', async (req, res) => {
   try {
@@ -139,8 +136,6 @@ app.get('/api/test-db', async (req, res) => {
     res.status(500).json({ error: 'Database query failed' });
   }
 });
-
-
 
 // Required backend endpoint (Express)
 app.post('/index.php?api/oauth2/token', async (req, res) => {
