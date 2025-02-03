@@ -46,9 +46,19 @@ async function crossReferenceBands(bandsString) {
 }
 
 router.get('/', async (req, res) => {
-  const { venueId } = req.query; // Get venueId from query parameter
-
   try {
+    let { venueId } = req.query;
+    
+    // Validate venueId if it exists
+    if (venueId) {
+      // Check if venueId is a valid integer
+      if (!/^\d+$/.test(venueId)) {
+        return res.status(400).json({ error: 'Invalid venue ID format' });
+      }
+      // Convert to integer
+      venueId = parseInt(venueId, 10);
+    }
+
     // Base query with LEFT JOINs
     let query = `
       SELECT 
@@ -70,32 +80,26 @@ router.get('/', async (req, res) => {
         venues ON shows.venue_id = venues.id
       LEFT JOIN LATERAL (
         SELECT 
-          CASE 
-            WHEN position(':' in unnested.band) > 0 
-            THEN TRIM(substring(unnested.band from position(':' in unnested.band) + 1))
-            ELSE TRIM(unnested.band)
-          END as name,
-          CASE 
-            WHEN position(':' in unnested.band) > 0 
-            THEN CAST(substring(unnested.band from '^\d+') as integer)
-            ELSE row_number() OVER (PARTITION BY shows.id ORDER BY unnested.band)
-          END as order_num
-        FROM unnest(string_to_array(shows.bands, ',')) as unnested(band)
-        WHERE unnested.band IS NOT NULL
+          TRIM(COALESCE(unnested.band, '')) as name,
+          row_number() OVER (PARTITION BY shows.id ORDER BY unnested.band) as order_num
+        FROM unnest(string_to_array(COALESCE(shows.bands, ''), ',')) as unnested(band)
+        WHERE unnested.band IS NOT NULL AND TRIM(unnested.band) != ''
       ) bands ON true
       LEFT JOIN 
         tcupbands ON LOWER(TRIM(bands.name)) = LOWER(TRIM(tcupbands.name))
     `;
 
     // If venueId is provided, add a WHERE clause
+    const queryParams = [];
     if (venueId) {
+      queryParams.push(venueId);
       query += ` WHERE shows.venue_id = $1`;
     }
 
     query += ` ORDER BY shows.start ASC`;
 
     // Execute the query
-    const { rows: rawResults } = await pool.query(query, venueId ? [venueId] : []);
+    const { rows: rawResults } = await pool.query(query, queryParams);
 
     // Process the results to group by show_id
     const processedShows = rawResults.reduce((acc, row) => {
@@ -118,12 +122,20 @@ router.get('/', async (req, res) => {
 
       // Add the band information to the bands array
       if (row.band_name) {
-        show.bands.push({
-          name: row.band_name,
-          order: row.band_order,
-          id: row.tcupband_id || null,
-          slug: row.tcupband_slug || null,
-        });
+        // Check if band already exists to avoid duplicates
+        const existingBand = show.bands.find(b => 
+          b.name === row.band_name && 
+          b.order === row.band_order
+        );
+        
+        if (!existingBand) {
+          show.bands.push({
+            name: row.band_name,
+            order: row.band_order,
+            id: row.tcupband_id || null,
+            slug: row.tcupband_slug || null,
+          });
+        }
       }
 
       return acc;
@@ -138,7 +150,11 @@ router.get('/', async (req, res) => {
     res.json(processedShows);
   } catch (error) {
     console.error('Error fetching shows:', error);
-    res.status(500).json({ error: 'Failed to fetch shows' });
+    res.status(500).json({ 
+      error: 'Failed to fetch shows',
+      details: error.message,
+      code: error.code 
+    });
   }
 });
 
@@ -165,15 +181,18 @@ router.get('/:id', async (req, res) => {
     LEFT JOIN 
       venues ON shows.venue_id = venues.id
     LEFT JOIN LATERAL (
-      SELECT TRIM(unnest) as band
-      FROM unnest(string_to_array(shows.bands, ',')) 
+      SELECT TRIM(COALESCE(unnested.band, '')) as band
+      FROM unnest(string_to_array(COALESCE(shows.bands, ''), ',')) as unnested(band)
+      WHERE unnested.band IS NOT NULL AND TRIM(unnested.band) != ''
     ) bands ON true
     LEFT JOIN 
       tcupbands ON LOWER(TRIM(bands.band)) = LOWER(TRIM(tcupbands.name))
-  `;
-  const { rows: rawResults } = await pool.query(query, venueId ? [venueId] : []);
-  console.log('First few results:', rawResults.slice(0, 5));
-  console.log('Band strings:', rawResults.map(row => row.raw_band));
+    WHERE shows.id = $1
+    `;
+    
+    const { rows } = await pool.query(query, [showId]);  // Use showId here
+    console.log('First few results:', rows.slice(0, 5));
+    console.log('Band strings:', rows.map(row => row.raw_band));
 
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Show not found' });
