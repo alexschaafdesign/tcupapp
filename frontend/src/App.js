@@ -39,6 +39,7 @@ import ThreadList from "./components/messageboard/ThreadList.js";
 import ForumContainer from "./pages/Chat/ForumContainer.js";
 import ThreadView from "./pages/Chat/Components/ThreadView.js";
 import LandingPage from "./pages/LandingPage.js";
+import LandingPage2 from "./pages/LandingPage2.js";
 import Privacy from "./pages/Privacy.js";
 import AdminImportPost from "./pages/Chat/AdminImportPost.js";
 import VRCForm from "./pages/VRC/VRCForm.js";
@@ -94,108 +95,64 @@ function App() {
     }, [isAuthenticated, user, isLoading, callApi]);
   
 
-  return (
-    <ThemeProvider theme={theme}>
-      <Header />
-      <RootLayout maxWidth={getMaxWidth()}>
-     
+    return (
+      <ThemeProvider theme={theme}>
         <Routes>
-          
-          {/* Home */}
-          <Route path="/" element={<ShowsTable />} />
-          <Route path="/home" element={<LandingPage />} />
-
-          {/* Shows */}
-          <Route path="/shows" element={<ShowsTable allShows={allShows} />} />
-          <Route path="/shows/minimal" element={<ShowsMinimal />} />
-          <Route path="/shows/add" element={<ShowForm />} />
-          <Route path="/shows/add/minimal" element={<ShowFormMinimal />} />
-          <Route path="/shows/:id/edit" element={<EditShowPage />} />
-          <Route path="/shows/:id" element={<ShowProfile />} />
-          <Route path="/shows/:id/minimal" element={<ShowProfileMinimal />} />
-          <Route path="/shows/:id/edit/minimal" element={<EditShowPageMinimal />} />
-
-          {/* Chat */}
-          <Route path="/forum" element={<ForumContainer />} />
-          <Route path="/messages" element={<ThreadList category="General" />} />
-          <Route path="/thread/:threadId" element={<ThreadView />} />
-          <Route path="/import" element={<AdminImportPost />} />
-          <Route path="/test-auth" element={<AuthTest />} />
-
-          {/* VRC */}
-          <Route path="/vrc" element={<VRCForm />} />
-
-           {/* Power Pledges */}
-          <Route path="/powerpledge" element={<PowerPledgeForm />} />
-          <Route path="/pledgephotos" element={<PledgePhotos />} />
-
-
-           {/* Calendar */}
-          <Route path="/calendar" element={<CalendarEvents />} />
-
-
-          {/* Organize */}
-          <Route path="/organize" element={<Organize />} />
-
-          <Route path="/callback" element={<Callback />} />
-
-          <Route path="/privacy" element={<Privacy />} />
-
-
-          {/* Flyering */}
-          <Route path="/flyering/" element={<FlyeringTable />} />
-          <Route path="/flyering/add" element={<FlyeringForm />} />
-          <Route path="/flyering/edit/:id" element={<EditFlyeringForm />} />
-
-
-
-
-
-          {/* TCUP Bands */}
-          <Route path="/bands" element={<TCUPBandsGrid />} />
-          <Route path="/bands/:bandSlug" element={<TCUPBandProfile />} />
-          <Route path="/bands/add" element={<TCUPBandForm isEdit={false} />} />
-          <Route path="/bands/:bandid/edit" element={<TCUPBandForm isEdit={true} />} />
-
-          {/* Venues */}
-          <Route path="/venues" element={<VenuesTable />} />
-          <Route path="/venues/:id" element={<VenueProfile />} />
-          <Route path="/venues/add" element={<VenueForm />} />
-          <Route path="/venues/edit/:id" element={<VenueForm />} />
-
-          <Route path="/interviewtest" element={<ImageDisplayPage />} />
-
-
-          {/* People */}
-          <Route path="/people/add" element={<TCUPPeopleForm />} />
-          <Route
-            path="/people/:personId/edit"
-            element={<TCUPPeopleForm isEdit />}
-          />
-          <Route 
-            path="/people/:personID"
-            element={<TCUPPeopleProfile />}
-          />
-          <Route path="/people" element={<TCUPPeopleTable />} />
-
-          <Route path="/profile" element={<UserProfile />} />
-
-          <Route path="/sessionmusicians" element={<SessionMusiciansTable />} />
-          <Route path="/sessionmusicians/:id" element={<SessionMusicianProfile />} />
-
-
-
-
-
-          {/* Catch-All */}
-          <Route
-            path="*"
-            element={<div style={{ textAlign: "center", padding: "20px" }}>Page Not Found</div>}
-          />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/*" element={
+            <>
+              <Header />
+              <RootLayout maxWidth={getMaxWidth()}>
+                <Routes>
+                  <Route path="/landingold" element={<LandingPage2 />} />
+                  <Route path="/home" element={<ShowsTable />} />
+                  <Route path="/shows" element={<ShowsTable allShows={allShows} />} />
+                  <Route path="/shows/minimal" element={<ShowsMinimal />} />
+                  <Route path="/shows/add" element={<ShowForm />} />
+                  <Route path="/shows/add/minimal" element={<ShowFormMinimal />} />
+                  <Route path="/shows/:id/edit" element={<EditShowPage />} />
+                  <Route path="/shows/:id" element={<ShowProfile />} />
+                  <Route path="/shows/:id/minimal" element={<ShowProfileMinimal />} />
+                  <Route path="/shows/:id/edit/minimal" element={<EditShowPageMinimal />} />
+                  <Route path="/forum" element={<ForumContainer />} />
+                  <Route path="/messages" element={<ThreadList category="General" />} />
+                  <Route path="/thread/:threadId" element={<ThreadView />} />
+                  <Route path="/import" element={<AdminImportPost />} />
+                  <Route path="/test-auth" element={<AuthTest />} />
+                  <Route path="/vrc" element={<VRCForm />} />
+                  <Route path="/powerpledge" element={<PowerPledgeForm />} />
+                  <Route path="/pledgephotos" element={<PledgePhotos />} />
+                  <Route path="/calendar" element={<CalendarEvents />} />
+                  <Route path="/organize" element={<Organize />} />
+                  <Route path="/callback" element={<Callback />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/flyering/" element={<FlyeringTable />} />
+                  <Route path="/flyering/add" element={<FlyeringForm />} />
+                  <Route path="/flyering/edit/:id" element={<EditFlyeringForm />} />
+                  <Route path="/bands" element={<TCUPBandsGrid />} />
+                  <Route path="/bands/:bandSlug" element={<TCUPBandProfile />} />
+                  <Route path="/bands/add" element={<TCUPBandForm isEdit={false} />} />
+                  <Route path="/bands/:bandid/edit" element={<TCUPBandForm isEdit={true} />} />
+                  <Route path="/venues" element={<VenuesTable />} />
+                  <Route path="/venues/:id" element={<VenueProfile />} />
+                  <Route path="/venues/add" element={<VenueForm />} />
+                  <Route path="/venues/edit/:id" element={<VenueForm />} />
+                  <Route path="/interviewtest" element={<ImageDisplayPage />} />
+                  <Route path="/people/add" element={<TCUPPeopleForm />} />
+                  <Route path="/people/:personId/edit" element={<TCUPPeopleForm isEdit />} />
+                  <Route path="/people/:personID" element={<TCUPPeopleProfile />} />
+                  <Route path="/people" element={<TCUPPeopleTable />} />
+                  <Route path="/profile" element={<UserProfile />} />
+                  <Route path="/sessionmusicians" element={<SessionMusiciansTable />} />
+                  <Route path="/sessionmusicians/:id" element={<SessionMusicianProfile />} />
+                  <Route path="*" element={<div style={{ textAlign: "center", padding: "20px" }}>Page Not Found</div>} />
+                </Routes>
+              </RootLayout>
+            </>
+          } />
         </Routes>
-      </RootLayout>
-    </ThemeProvider>
-  );
-}
+      </ThemeProvider>
+    );
+   }
 
 export default App;

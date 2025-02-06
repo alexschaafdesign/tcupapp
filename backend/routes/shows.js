@@ -80,10 +80,19 @@ router.get('/', async (req, res) => {
         venues ON shows.venue_id = venues.id
       LEFT JOIN LATERAL (
         SELECT 
-          TRIM(COALESCE(unnested.band, '')) as name,
-          row_number() OVER (PARTITION BY shows.id ORDER BY unnested.band) as order_num
-        FROM unnest(string_to_array(COALESCE(shows.bands, ''), ',')) as unnested(band)
-        WHERE unnested.band IS NOT NULL AND TRIM(unnested.band) != ''
+          CASE 
+            WHEN position(':' in unnested.band) > 0 
+            THEN TRIM(substring(unnested.band from position(':' in unnested.band) + 1))
+            ELSE TRIM(unnested.band)
+          END as name,
+          CASE 
+          WHEN unnested.band ~ '^[0-9]+:' THEN
+            CAST(substring(unnested.band from '^\d+') AS integer)
+          ELSE
+            row_number() OVER (PARTITION BY shows.id ORDER BY unnested.band)
+          END as order_num
+        FROM unnest(string_to_array(shows.bands, ',')) as unnested(band)
+        WHERE unnested.band IS NOT NULL
       ) bands ON true
       LEFT JOIN 
         tcupbands ON LOWER(TRIM(bands.name)) = LOWER(TRIM(tcupbands.name))

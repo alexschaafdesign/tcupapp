@@ -1,43 +1,40 @@
-import { createClient } from '@supabase/supabase-js'
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import path from 'path';
+// lib/supabase.js
+import { createClient } from '@supabase/supabase-js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Dynamically pick which .env file to load
-let envFile = '.env.development';
-if (process.env.NODE_ENV === 'production') {
-  envFile = '.env.production';
-} else if (process.env.NODE_ENV === 'staging') {
-  envFile = '.env.staging';
-}
-
-const envPath = path.resolve(__dirname, `../${envFile}`);
-dotenv.config({ path: envPath });
-
+// Use environment variables already loaded by loadEnv.js (or server.js)
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error('Missing Supabase configuration:', {
-    url: !!supabaseUrl,
-    serviceKey: !!supabaseServiceKey
+    supabaseUrl: !!supabaseUrl,
+    supabaseServiceKey: !!supabaseServiceKey,
   });
 }
 
+// Create the Supabase client
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
     autoRefreshToken: false,
-    persistSession: false
-  }
+    persistSession: false,
+  },
 });
 
-// Add connection test
-const { data, error } = await supabase.from('forum_messages').select('count');
-if (error) {
-  console.error('Supabase connection error:', error);
-}
+// Optional: Test the Supabase connection
+// (This IIFE uses top-level await; if your Node version supports it, this is fine.)
+(async () => {
+  try {
+    // Replace 'forum_messages' and 'count' with a table/column that exists in your DB,
+    // or remove this block if you don't want to test the connection here.
+    const { data, error } = await supabase.from('forum_messages').select('count');
+    if (error) {
+      console.error('Supabase connection test error:', error);
+    } else {
+      console.log('Supabase connection test succeeded:', data);
+    }
+  } catch (err) {
+    console.error('Supabase connection test failed:', err);
+  }
+})();
+
 export default supabase;

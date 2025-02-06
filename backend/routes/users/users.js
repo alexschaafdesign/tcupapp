@@ -2,6 +2,7 @@
 import express from 'express';
 import pool from '../../config/db.js';
 import authMiddleware from '../../middleware/auth.js';
+import cloudinary from '../../config/cloudinary.js';
 
 const router = express.Router();
 
@@ -109,38 +110,48 @@ router.get('/shows', authMiddleware, async (req, res) => {
 });
 
 // Update user's avatars
+// In your users.js route file
 router.put('/avatar', authMiddleware, async (req, res) => {
   const { avatarUrl } = req.body;
   const userId = req.user.sub;
-
-  console.log('Updating avatar for user:', userId); // Debug log
-  console.log('New avatar URL:', avatarUrl); // Debug log
+  
+  console.log('\n=== Avatar Update Request ===');
+  console.log('User ID:', userId);
+  console.log('Avatar URL:', avatarUrl);
   
   try {
-      const result = await pool.query(
-          'UPDATE users SET avatar_url = $1 WHERE auth0_id = $2 RETURNING *',
-          [avatarUrl, userId]
-      );
+    const result = await pool.query(
+      'UPDATE users SET avatar_url = $1 WHERE auth0_id = $2 RETURNING *',
+      [avatarUrl, userId]
+    );
 
-      console.log('Query result:', result.rows); // Debug log
+    console.log('\nDatabase Result:', result.rows[0]);
+    console.log('=== End Avatar Update ===\n');
 
-      if (result.rows.length === 0) {
-          console.log('No user found with auth0_id:', userId); // Debug log
-          return res.status(404).json({ error: 'User not found' });
-      }
+    if (result.rows.length === 0) {
+      console.log('No user found with ID:', userId);
+      return res.status(404).json({ error: 'User not found' });
+    }
 
-      res.json(result.rows[0]);
+    res.json(result.rows[0]);
   } catch (error) {
-      console.error('Detailed error:', {
-          message: error.message,
-          detail: error.detail,
-          code: error.code
-      });
-      res.status(500).json({ 
-          error: 'Failed to update avatar',
-          details: error.message 
-      });
+    console.error('\nError updating avatar:', error);
+    res.status(500).json({ error: 'Failed to update avatar' });
   }
+});
+
+// Expects query parameters: publicId and zoom (and optionally x, y for cropping)
+router.get('/transformed-avatar', (req, res) => {
+  const { publicId, zoom } = req.query;
+  
+  // You can add more transformation options as needed:
+  const transformedUrl = cloudinary.url(publicId, {
+    transformation: [
+      { width: 400, height: 400, crop: 'fill', gravity: 'center', zoom: Number(zoom) }
+    ]
+  });
+  
+  res.json({ url: transformedUrl });
 });
 
 // Add this to routes/users.js

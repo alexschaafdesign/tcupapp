@@ -159,7 +159,11 @@ const Header = () => {
       button
       onClick={() =>
         isAuthenticated
-          ? logout({ returnTo: window.location.origin })
+          ? logout({ 
+              logoutParams: {
+                returnTo: process.env.REACT_APP_AUTH0_REDIRECT_URI || window.location.origin
+              }
+            })
           : loginWithRedirect()
       }
       sx={{
@@ -329,50 +333,104 @@ const Header = () => {
       </AppBar>
 
       {/* Mobile Drawer */}
-      <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
-        <List>
-          <TcupMenu />
-          {displayedLinks.filter(link => !link.isDropdown).map((link, index) => (
-            <NavLink key={index} link={link} />
-          ))}
+      <Drawer 
+        anchor="right" 
+        open={drawerOpen} 
+        onClose={toggleDrawer(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: "primary.main",
+            width: "250px",
+            color: "white",
+          }
+        }}
+      >
+        <Box sx={{ py: 2 }}>
+          <List>
+            <TcupMenu />
+            {displayedLinks.filter(link => !link.isDropdown).map((link, index) => (
+              <NavLink key={index} link={link} />
+            ))}
 
-          <ListItem
-            button
-            onClick={() => setIsExpanded(!isExpanded)}
-            sx={{ cursor: "pointer" }}
-          >
-            <ListItemText
-              primary="PEOPLE"
-              primaryTypographyProps={{ fontWeight: "bold" }}
-            />
-            <ExpandMoreIcon />
-          </ListItem>
+            {/* People Section */}
+            {!isDevMode ? (
+              <Tooltip title="Coming Soon" arrow placement="right">
+                <Box>
+                  <ListItem
+                    button
+                    disabled={true}
+                    sx={{
+                      color: "white",
+                      cursor: "not-allowed",
+                      opacity: 0.5,
+                      "&:hover": { backgroundColor: "transparent" },
+                    }}
+                  >
+                    <ListItemText
+                      primary="PEOPLE"
+                      primaryTypographyProps={{ fontWeight: "bold" }}
+                    />
+                    <ExpandMoreIcon />
+                  </ListItem>
+                </Box>
+              </Tooltip>
+            ) : (
+              <>
+                <ListItem
+                  button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  sx={{
+                    color: "white",
+                    cursor: "pointer",
+                    "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
+                  }}
+                >
+                  <ListItemText
+                    primary="PEOPLE"
+                    primaryTypographyProps={{ fontWeight: "bold" }}
+                  />
+                  <ExpandMoreIcon />
+                </ListItem>
+                <Collapse in={isExpanded}>
+                  <Box sx={{ 
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    borderLeft: '3px solid rgba(255, 255, 255, 0.2)',
+                    mx: 2,
+                    borderRadius: '4px',
+                    overflow: 'hidden'
+                  }}>
+                    <ListItem
+                      button
+                      onClick={() => {
+                        navigate("/sessionmusicians");
+                        setDrawerOpen(false);
+                      }}
+                      sx={{
+                        color: "white",
+                        cursor: "pointer",
+                        "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
+                      }}
+                    >
+                      <ListItemText
+                        primary="SESSION MUSICIANS"
+                        primaryTypographyProps={{ fontWeight: "bold" }}
+                      />
+                    </ListItem>
+                  </Box>
+                </Collapse>
+              </>
+            )}
 
-          {isExpanded && (
-            <ListItem
-              button
-              onClick={() => {
-                navigate("/sessionmusicians");
-                setDrawerOpen(false);
-              }}
-              sx={{ cursor: "pointer", paddingLeft: 1 }}
-            >
-              <ListItemText
-                primary="SESSION MUSICIANS"
-                primaryTypographyProps={{ fontWeight: "bold" }}
-              />
-            </ListItem>
-          )}
-
-          {isAuthenticated && (
-            <>
-              <Divider sx={{ my: 2 }} />
-              <HeaderUserProfile />
-            </>
-          )}
-          <Divider sx={{ my: 2 }} />
-          <AuthButtons />
-        </List>
+            {isAuthenticated && (
+              <>
+                <Divider sx={{ my: 2, backgroundColor: "rgba(255, 255, 255, 0.2)" }} />
+                <HeaderUserProfile />
+              </>
+            )}
+            <Divider sx={{ my: 2, backgroundColor: "rgba(255, 255, 255, 0.2)" }} />
+            <AuthButtons />
+          </List>
+        </Box>
       </Drawer>
 
       {/* Content Margin Offset */}

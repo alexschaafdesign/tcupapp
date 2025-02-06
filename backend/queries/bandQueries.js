@@ -12,20 +12,19 @@ export const getBandBySlugQuery = `
 `;
 
 export const updateBandQuery = `
-  UPDATE tcupbands
-  SET 
-    name = $1, 
-    slug = $2,
-    genre = $3, 
-    bandemail = $4, 
-    play_shows = $5, 
-    group_size = $6, 
-    social_links = $7, 
-    music_links = $8, 
-    profile_image = $9,
-    other_images = $10,
-    location = $11,
-    bio = $12
+  UPDATE tcupbands 
+  SET name = $1,
+      slug = $2,
+      genre = $3::jsonb,
+      bandemail = $4,
+      play_shows = $5,
+      group_size = $6::jsonb,
+      social_links = $7::jsonb,
+      music_links = $8::jsonb,
+      profile_image = $9,
+      other_images = $10::jsonb,
+      location = $11,
+      bio = $12
   WHERE id = $13
   RETURNING *;
 `;
