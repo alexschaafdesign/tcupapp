@@ -77,12 +77,14 @@ pool.connect((err, client, release) => {
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const currentAppEnv = process.env.APP_ENV;
+
 
 // 2) CORS configuration
 let allowedOrigins;
-if (process.env.NODE_ENV === 'production') {
+if (process.env.APP_ENV === 'production') {
   allowedOrigins = ['https://portal.tcupboard.org', 'https://tcupmn.org'];
-} else if (process.env.NODE_ENV === 'staging') {
+} else if (process.env.APP_ENV === 'staging') {
   allowedOrigins = ['https://staging.tcupboard.org'];
 } else {
   allowedOrigins = ['http://localhost:3003'];

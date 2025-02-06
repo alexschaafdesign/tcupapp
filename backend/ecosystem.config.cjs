@@ -5,6 +5,7 @@ module.exports = {
       script: './server.js',
       env: {
         NODE_ENV: 'production',
+        APP_ENV: 'production',
         DOTENV_CONFIG_PATH: '/var/www/tcup-production/backend/.env.production',
         PORT: 3002
       }
@@ -14,6 +15,7 @@ module.exports = {
       script: './server.js',
       env: {
         NODE_ENV: 'production',
+        APP_ENV: 'staging',
         DOTENV_CONFIG_PATH: '/var/www/tcup-staging/backend/.env.production',
         PORT: 3001
       }

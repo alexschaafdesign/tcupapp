@@ -15,6 +15,8 @@ console.log('loadEnv.js: process.env.DOTENV_CONFIG_PATH =', process.env.DOTENV_C
 // Default to 'development' if NODE_ENV is not set.
 const currentEnv = process.env.NODE_ENV || 'development';
 
+
+
 // Use DOTENV_CONFIG_PATH if provided, otherwise use .env.<currentEnv>
 const envFilePath =
   process.env.DOTENV_CONFIG_PATH ||

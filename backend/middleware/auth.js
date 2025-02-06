@@ -9,13 +9,13 @@ import path from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Log the current directory and env file path
-// Update this part in auth.js
-const envFile = process.env.NODE_ENV === 'production' 
-  ? '.env.production' 
-  : process.env.NODE_ENV === 'staging'
-    ? '.env.staging'
-    : '.env.development';
+// If Node is in production mode, load .env.production.
+// Otherwise, default to .env.development.
+// (We do not have a .env.staging path at all now.)
+const envFile = process.env.NODE_ENV === 'production'
+  ? '.env.production'
+  : '.env.development';
+  
 const envPath = path.resolve(__dirname, `../${envFile}`);console.log('Current directory:', __dirname);
 console.log('Looking for env file at:', envPath);
 
