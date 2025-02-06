@@ -76,9 +76,10 @@ router.get('/', async (req, res) => {
             ELSE TRIM(unnested.band)
           END as name,
           CASE 
-            WHEN position(':' in unnested.band) > 0 
-            THEN CAST(substring(unnested.band from '^\d+') as integer)
-            ELSE row_number() OVER (PARTITION BY shows.id ORDER BY unnested.band)
+          WHEN unnested.band ~ '^[0-9]+:' THEN
+            CAST(substring(unnested.band from '^\d+') AS integer)
+          ELSE
+            row_number() OVER (PARTITION BY shows.id ORDER BY unnested.band)
           END as order_num
         FROM unnest(string_to_array(shows.bands, ',')) as unnested(band)
         WHERE unnested.band IS NOT NULL
