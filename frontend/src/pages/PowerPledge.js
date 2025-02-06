@@ -15,7 +15,7 @@ import {
   DialogContent,
   DialogActions
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom'; // If you're using React Router
+import { useNavigate } from 'react-router-dom';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -58,7 +58,7 @@ async function uploadToCloudinary(file) {
 }
 
 const PowerPledgeForm = () => {
-  const navigate = useNavigate(); // If you use React Router
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({ name: '', bands: '' });
   const [imageData, setImageData] = useState(null);       // base64 user photo
@@ -69,9 +69,8 @@ const PowerPledgeForm = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-
-  // NEW: State to control our success modal
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showAdvanceModal, setShowAdvanceModal] = useState(false);
 
   const signatureRef = useRef();
   const videoRef = useRef();
@@ -86,9 +85,6 @@ const PowerPledgeForm = () => {
     };
   }, []);
 
-  /********************************************************
-   * CAMERA HANDLING
-   ********************************************************/
   const startCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -122,9 +118,6 @@ const PowerPledgeForm = () => {
     stopCamera();
   };
 
-  /********************************************************
-   * FILE UPLOAD (LOCAL BASE64 ONLY)
-   ********************************************************/
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -133,7 +126,7 @@ const PowerPledgeForm = () => {
 
     const reader = new FileReader();
     reader.onload = () => {
-      setImageData(reader.result); // base64 data
+      setImageData(reader.result);
       setIsUploading(false);
     };
     reader.onerror = (err) => {
@@ -144,9 +137,6 @@ const PowerPledgeForm = () => {
     reader.readAsDataURL(file);
   };
 
-  /********************************************************
-   * SIGNATURE HANDLING
-   ********************************************************/
   const handleEndSignature = () => {
     if (signatureRef.current) {
       setSignatureData(signatureRef.current.toDataURL());
@@ -164,6 +154,7 @@ const PowerPledgeForm = () => {
       signatureRef.current.fromDataURL(signatureData);
     }
   };
+
   useEffect(() => {
     document.addEventListener('touchend', redrawSignature);
     return () => document.removeEventListener('touchend', redrawSignature);
@@ -174,9 +165,6 @@ const PowerPledgeForm = () => {
     setSignatureData(null);
   };
 
-  /********************************************************
-   * HELPER: WRAP TEXT IN CANVAS
-   ********************************************************/
   function wrapText(context, text, x, y, maxWidth, lineHeight) {
     const words = text.split(' ');
     let line = '';
@@ -197,9 +185,6 @@ const PowerPledgeForm = () => {
     return y;
   }
 
-  /********************************************************
-   * GENERATE FINAL IMAGE (LOCAL PREVIEW, NO UPLOAD)
-   ********************************************************/
   const generateFinalImage = async () => {
     if (!imageData || !signatureData) {
       alert("Please upload/capture a photo and sign the pledge first.");
@@ -214,20 +199,17 @@ const PowerPledgeForm = () => {
       await new Promise((resolve, reject) => {
         img.onload = resolve;
         img.onerror = reject;
-        img.src = imageData; // base64 user photo
+        img.src = imageData;
       });
 
-      // Canvas for text, border, etc.
       const formCanvas = document.createElement('canvas');
       const formCtx = formCanvas.getContext('2d');
       formCanvas.width = 1000;
       formCanvas.height = 800;
 
-      // 1) White background
       formCtx.fillStyle = 'white';
       formCtx.fillRect(0, 0, formCanvas.width, formCanvas.height);
 
-      // 2) Checkerboard border
       const squareSize = 20;
       const borderWidth = squareSize * 2;
       for (let x = 0; x < formCanvas.width; x += squareSize) {
@@ -259,7 +241,6 @@ const PowerPledgeForm = () => {
         }
       }
 
-      // 3) Title & Pledge text
       formCtx.fillStyle = 'black';
       formCtx.font = 'bold 38px Arial';
       formCtx.textAlign = 'left';
@@ -287,9 +268,8 @@ const PowerPledgeForm = () => {
       currentY = wrapText(formCtx, paragraph1, 60, currentY, 880, 30);
       currentY += 40;
       currentY = wrapText(formCtx, paragraph2, 60, currentY, 880, 30);
-      currentY += 60; // extra spacing
+      currentY += 60;
 
-      // 4) Name / Date / Band(s)
       const date = new Date().toLocaleDateString();
       const fieldStartX = 60;
       const fieldValueStartX = 200;
@@ -297,7 +277,7 @@ const PowerPledgeForm = () => {
       const fieldLineWidth = 300;
       const fieldSpacing = 70;
       const underlineOffset = 8;
-      const startY = currentY; // place fields under the paragraphs
+      const startY = currentY;
 
       formCtx.fillText('Name:', fieldStartX, startY);
       formCtx.fillText(formData.name, fieldValueStartX, startY);
@@ -312,27 +292,23 @@ const PowerPledgeForm = () => {
       formCtx.fillText(formData.bands, fieldValueStartX, bandY);
       formCtx.fillRect(fieldValueStartX, bandY + underlineOffset, fieldLineWidth, 1);
 
-      // 5) Signature
       const signatureY = bandY + fieldSpacing;
       formCtx.fillText('Signature:', fieldStartX, signatureY);
 
       const sigImg = new Image();
-      const signatureImage = signatureData; // already base64
       await new Promise((resolve, reject) => {
         sigImg.onload = resolve;
         sigImg.onerror = reject;
-        sigImg.src = signatureImage;
+        sigImg.src = signatureData;
       });
       formCtx.drawImage(sigImg, fieldValueStartX, signatureY - 30, 300, 80);
 
-      // 6) Combine photo
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       canvas.width = formCanvas.width;
       canvas.height = formCanvas.height;
       ctx.drawImage(formCanvas, 0, 0);
 
-      // Scale & draw user photo in bottom-right
       const maxPhotoWidth = 300;
       const maxPhotoHeight = 200;
       const aspectRatio = img.width / img.height;
@@ -350,7 +326,6 @@ const PowerPledgeForm = () => {
       const photoY = canvas.height - photoHeight - 60;
       ctx.drawImage(img, photoX, photoY, photoWidth, photoHeight);
 
-      // Convert to base64 for local preview
       const previewDataURL = canvas.toDataURL('image/jpeg');
       setFinalImage(previewDataURL);
 
@@ -362,9 +337,6 @@ const PowerPledgeForm = () => {
     }
   };
 
-  /********************************************************
-   * SUBMIT PLEDGE
-   ********************************************************/
   const submitPledge = async () => {
     if (!finalImage) {
       alert("Please generate the pledge first!");
@@ -374,21 +346,18 @@ const PowerPledgeForm = () => {
     setError(null);
 
     try {
-      // 1) Upload the original photo
       let photoUrl = null;
       if (imageData) {
         const photoBlob = dataURLtoBlob(imageData);
         photoUrl = await uploadToCloudinary(photoBlob);
       }
 
-      // 2) Upload the final composite
       let finalImageUrl = null;
       if (finalImage) {
         const finalBlob = dataURLtoBlob(finalImage);
         finalImageUrl = await uploadToCloudinary(finalBlob);
       }
 
-      // 3) POST to your API
       const response = await fetch(`${process.env.REACT_APP_API_URL}/pledges`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -407,7 +376,6 @@ const PowerPledgeForm = () => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Failed to save pledge');
       
-      // Instead of alert, show success modal
       setShowSuccessModal(true);
     } catch (err) {
       console.error('Submission error:', err);
@@ -417,37 +385,68 @@ const PowerPledgeForm = () => {
     }
   };
 
-  /********************************************************
-   * MODAL: SUCCESS
-   ********************************************************/
-  // Close the modal => go back to homepage
   const handleCloseModal = () => {
     setShowSuccessModal(false);
-    navigate('/'); // or window.location.href = '/';
+    navigate('/');
   };
 
-  // Download the final pledge composite
   const handleDownloadImage = () => {
     if (!finalImage) return;
-    // Download the finalImage (base64)
     const link = document.createElement('a');
     link.href = finalImage;
     link.download = 'pledge.jpg';
     link.click();
   };
 
-  /********************************************************
-   * FIELD HANDLERS
-   ********************************************************/
   const handleNameChange = (e) => {
     setFormData({ ...formData, name: e.target.value });
   };
+
   const handleBandChange = (e) => {
     setFormData({ ...formData, bands: e.target.value });
   };
 
   return (
     <>
+      {/* TCUP Advance Modal */}
+      <Dialog
+        open={showAdvanceModal}
+        onClose={() => setShowAdvanceModal(false)}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: { 
+            height: '90vh',
+            maxHeight: '90vh'
+          }
+        }}
+      >
+        <DialogTitle>TCUP Advance</DialogTitle>
+        <DialogContent sx={{ p: 0, overflow: 'auto' }}>
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 2,
+            p: 2
+          }}>
+            <img 
+              src="https://res.cloudinary.com/dsll3ms2c/image/upload/v1738884304/tcup-pledge-1_kqablv.png" 
+              alt="TCUP Advance Page 1"
+              style={{ width: '100%', height: 'auto', maxWidth: '800px' }}
+            />
+            <img 
+              src="https://res.cloudinary.com/dsll3ms2c/image/upload/v1738884304/tcup-pledge-2_nkoz1n.png" 
+              alt="TCUP Advance Page 2"
+              style={{ width: '100%', height: 'auto', maxWidth: '800px' }}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowAdvanceModal(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
       <Card sx={{ maxWidth: 800, mx: 'auto', mt: 4, mb: 4 }}>
         <CardContent>
           {error && (
@@ -458,18 +457,26 @@ const PowerPledgeForm = () => {
       
           {/* Title & Pledge Text */}
           <Box sx={{ width: '100%', mb: 4 }}>
-            <Typography variant="h2" gutterBottom sx={{ width: '100%' }}>
-              TCUP Power Pledge
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+              <Typography variant="h2" gutterBottom>
+                TCUP Power Pledge
+              </Typography>
+              <Button 
+                variant="outlined"
+                onClick={() => setShowAdvanceModal(true)}
+                sx={{ whiteSpace: 'nowrap' }}
+              >
+                View TCUP Advance
+              </Button>
+            </Box>
             
             <Typography variant="body2" gutterBottom sx={{ width: '100%' }}>
-              Join the hundreds of Twin Cities performers who have already signed the pledge, by filling out the form below!  You will fill out the fields, digitally sign your name, preview the image, and then finally submit.  
+              Join the hundreds of Twin Cities performers who have already signed the pledge, by filling out the form below! You will fill out the fields, digitally sign your name, preview the image, and then finally submit.  
               <p>We ask for a photo (live selfie or an uploaded image) because the rest of the pledge signings
               have been in person, and we take a photo of the person holding the pledge, which we will then use as part of our final document, to visually demonstrate how many performers have signed on to this.</p>
             </Typography>
 
             <hr />
-
 
             <Typography variant="body1" paragraph sx={{ width: '100%' }}>
               <strong>
@@ -543,15 +550,14 @@ const PowerPledgeForm = () => {
 
           {/* Photo Section */}
           <Paper elevation={1} sx={{ p: 2, mb: 3 }}>
-          <Typography variant="h3" gutterBottom>
-            Photo*
+            <Typography variant="h3" gutterBottom>
+              Photo*
             </Typography>
             
             <Typography variant="subtitle1" gutterBottom>
-            If you click the 'take selfie' button, a photo section will appear below the buttons. 
+              If you click the 'take selfie' button, a photo section will appear below the buttons. 
             </Typography>
 
-            {/* If no photo, user can take or upload */}
             {!isCameraActive && !imageData && (
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <Button
@@ -578,7 +584,6 @@ const PowerPledgeForm = () => {
               </Box>
             )}
 
-            {/* Camera Preview */}
             <video
               ref={videoRef}
               autoPlay
@@ -592,7 +597,6 @@ const PowerPledgeForm = () => {
               }}
             />
 
-            {/* Camera Controls */}
             {isCameraActive && (
               <Box sx={{ mt: 2 }}>
                 <Button
@@ -612,7 +616,6 @@ const PowerPledgeForm = () => {
               </Box>
             )}
 
-            {/* Show selected/captured image */}
             {imageData && !isCameraActive && (
               <Box>
                 <Box 
@@ -665,7 +668,7 @@ const PowerPledgeForm = () => {
             />
           </Box>
 
-          {/* Generate local preview */}
+          {/* Generate Preview Button */}
           <Button
             variant="contained"
             fullWidth
@@ -683,7 +686,7 @@ const PowerPledgeForm = () => {
             )}
           </Button>
 
-          {/* Final Preview (removed "View Full Size" button) */}
+          {/* Final Preview */}
           {finalImage && (
             <Paper elevation={1} sx={{ p: 2 }}>
               <Typography variant="subtitle1" gutterBottom>
@@ -726,12 +729,10 @@ const PowerPledgeForm = () => {
         </CardContent>
       </Card>
 
-      {/* SUCCESS MODAL */}
+      {/* Success Modal */}
       <Dialog 
         open={showSuccessModal} 
         onClose={handleCloseModal}
-        // If you want to close on outside click, 
-        // MUI does it by default with "backdropClick"
       >
         <DialogTitle>Success!</DialogTitle>
         <DialogContent>
