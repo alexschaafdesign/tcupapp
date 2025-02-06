@@ -18,7 +18,7 @@ root.render(
     authorizationParams={{
       redirect_uri: `${window.location.origin}/callback`,
       audience: process.env.REACT_APP_AUTH0_API_IDENTIFIER,
-      scope: 'openid profile email'
+      scope: 'openid profile email offline_access'
     }}
     cacheLocation="localstorage"  // Add this
     useRefreshTokens={true}       // Add this

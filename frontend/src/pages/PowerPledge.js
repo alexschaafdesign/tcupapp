@@ -261,14 +261,14 @@ const PowerPledgeForm = () => {
 
       // 3) Title & Pledge text
       formCtx.fillStyle = 'black';
-      formCtx.font = 'bold 38px Arimo';
+      formCtx.font = 'bold 38px Arial';
       formCtx.textAlign = 'left';
       formCtx.fillText('TWIN CITIES UNITED PERFORMERS', 60, 100);
 
-      formCtx.font = 'bold 52px Arimo';
+      formCtx.font = 'bold 52px Arial';
       formCtx.fillText('POWER PLEDGE', 60, 150);
 
-      formCtx.font = '24px Arimo';
+      formCtx.font = '24px Arial';
       const paragraph1 = 
         "I pledge to build solidarity with my fellow musicians. " +
         "I will adhere to a shared set of communication standards between musicians " +
