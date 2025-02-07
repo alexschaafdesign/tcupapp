@@ -100,22 +100,25 @@ const PowerPledgeForm = () => {
         perPage: '100',
         ...(cursor && { nextCursor: cursor }),
       });
-
+   
       const response = await fetch(`${apiUrl}/images/pledge-photos?${queryParams}`);
       if (!response.ok) throw new Error('Failed to fetch images');
       
       const data = await response.json();
       
-      setGalleryImages(prev => cursor ? [...prev, ...data.images] : data.images);
-      setHasMore(data.hasMore);
-      setNextCursor(data.nextCursor);
+      // Repeat images to fill viewport if needed
+      const repeatCount = Math.ceil((window.innerWidth * window.innerHeight) / (100 * 100)) / 2; // Estimate needed repeats
+      const repeatedImages = Array(repeatCount).fill(data.images).flat();
+      
+      setGalleryImages(repeatedImages);
+      setHasMore(false); // Disable infinite scroll since we're repeating
       setTotalImages(data.total);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, [apiUrl]);
+   }, [apiUrl]);
 
   // Initial load of background images
   useEffect(() => {
