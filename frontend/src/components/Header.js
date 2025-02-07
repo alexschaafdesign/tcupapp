@@ -39,7 +39,8 @@ const Header = () => {
   const tcupLinks = [
     { text: "CALENDAR", path: "/calendar" },
     { text: "VENUE REPORT CARD", path: "/vrc", devOnly: true },
-    { text: "PLEDGE PHOTOS", path: "/pledgephotos" },
+    { text: "POWER PLEDGE", path: "/powerpledge" },
+    { text: "PLEDGE PHOTOS", path: "/pledgephotos", devOnly: true },
   ];
 
   const displayedLinks = navLinks.map((link) => ({

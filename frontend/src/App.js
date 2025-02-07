@@ -49,6 +49,7 @@ import FlyeringForm from "./pages/Flyering/FlyeringForm.js";
 import FlyeringTable from "./pages/Flyering/FlyeringTable.js";
 import EditFlyeringForm from "./pages/Flyering/EditFlyeringForm.js";
 import PledgePhotos from "./pages/PledgePhotos.js";
+import TCUPNewsletter from "./pages/Newsletter.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -99,6 +100,8 @@ function App() {
       <ThemeProvider theme={theme}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/powerpledge" element={<PowerPledgeForm />} />
+
           <Route path="/*" element={
             <>
               <Header />
@@ -120,7 +123,7 @@ function App() {
                   <Route path="/import" element={<AdminImportPost />} />
                   <Route path="/test-auth" element={<AuthTest />} />
                   <Route path="/vrc" element={<VRCForm />} />
-                  <Route path="/powerpledge" element={<PowerPledgeForm />} />
+                  <Route path="/newsletter" element={<TCUPNewsletter />} />
                   <Route path="/pledgephotos" element={<PledgePhotos />} />
                   <Route path="/calendar" element={<CalendarEvents />} />
                   <Route path="/organize" element={<Organize />} />
