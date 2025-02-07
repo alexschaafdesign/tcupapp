@@ -105,13 +105,10 @@ const PowerPledgeForm = () => {
       if (!response.ok) throw new Error('Failed to fetch images');
       
       const data = await response.json();
-      
-      // Repeat images to fill viewport if needed
-      const repeatCount = Math.ceil((window.innerWidth * window.innerHeight) / (100 * 100)) / 2; // Estimate needed repeats
-      const repeatedImages = Array(repeatCount).fill(data.images).flat();
+      const repeatedImages = [...data.images, ...data.images];
       
       setGalleryImages(repeatedImages);
-      setHasMore(false); // Disable infinite scroll since we're repeating
+      setHasMore(false);
       setTotalImages(data.total);
     } catch (err) {
       setError(err.message);
