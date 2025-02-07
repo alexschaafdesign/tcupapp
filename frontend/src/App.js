@@ -39,7 +39,7 @@ import ThreadList from "./components/messageboard/ThreadList.js";
 import ForumContainer from "./pages/Chat/ForumContainer.js";
 import ThreadView from "./pages/Chat/Components/ThreadView.js";
 import LandingPage from "./pages/LandingPage.js";
-import LandingPage2 from "./pages/LandingPage2.js";
+import LandingPageTemp from "./pages/LandingPage2.js";
 import Privacy from "./pages/Privacy.js";
 import AdminImportPost from "./pages/Chat/AdminImportPost.js";
 import VRCForm from "./pages/VRC/VRCForm.js";
@@ -99,7 +99,7 @@ function App() {
     return (
       <ThemeProvider theme={theme}>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<LandingPageTemp />} />
           <Route path="/powerpledge" element={<PowerPledgeForm />} />
 
           <Route path="/*" element={
@@ -107,7 +107,6 @@ function App() {
               <Header />
               <RootLayout maxWidth={getMaxWidth()}>
                 <Routes>
-                  <Route path="/landingold" element={<LandingPage2 />} />
                   <Route path="/home" element={<ShowsTable />} />
                   <Route path="/shows" element={<ShowsTable allShows={allShows} />} />
                   <Route path="/shows/minimal" element={<ShowsMinimal />} />
