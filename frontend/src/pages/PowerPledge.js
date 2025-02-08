@@ -81,6 +81,8 @@ const PowerPledgeForm = () => {
   const [formError, setFormError] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showAdvanceModal, setShowAdvanceModal] = useState(false);
+  const [pledgeImage, setPledgeImage] = useState(null);
+  const [compositeImage, setCompositeImage] = useState(null);
 
   const signatureRef = useRef();
   const videoRef = useRef();
@@ -356,31 +358,52 @@ const PowerPledgeForm = () => {
       });
       formCtx.drawImage(sigImg, fieldValueStartX, signatureY - 30, 300, 80);
 
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = formCanvas.width;
-      canvas.height = formCanvas.height;
-      ctx.drawImage(formCanvas, 0, 0);
+      // Create composite image with photo as base and pledge card overlay
+      const finalCanvas = document.createElement('canvas');
+      const finalCtx = finalCanvas.getContext('2d');
 
-      const maxPhotoWidth = 300;
-      const maxPhotoHeight = 200;
+      // Set canvas size based on photo dimensions
+      const minWidth = 1200;
+      const minHeight = 800;
       const aspectRatio = img.width / img.height;
-      let photoWidth, photoHeight;
 
-      if (aspectRatio > maxPhotoWidth / maxPhotoHeight) {
-        photoWidth = maxPhotoWidth;
-        photoHeight = photoWidth / aspectRatio;
+      let canvasWidth = Math.max(minWidth, img.width);
+      let canvasHeight = Math.max(minHeight, img.height);
+
+      if (canvasWidth / canvasHeight > aspectRatio) {
+        canvasWidth = canvasHeight * aspectRatio;
       } else {
-        photoHeight = maxPhotoHeight;
-        photoWidth = photoHeight * aspectRatio;
+        canvasHeight = canvasWidth / aspectRatio;
       }
 
-      const photoX = canvas.width - photoWidth - 60;
-      const photoY = canvas.height - photoHeight - 60;
-      ctx.drawImage(img, photoX, photoY, photoWidth, photoHeight);
+      finalCanvas.width = canvasWidth;
+      finalCanvas.height = canvasHeight;
 
-      const previewDataURL = canvas.toDataURL('image/jpeg');
-      setFinalImage(previewDataURL);
+      // Draw photo at full size
+      finalCtx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+
+      // Calculate pledge card size (1/3 of photo width)
+      const pledgeWidth = canvasWidth / 3;
+      const pledgeHeight = (pledgeWidth / formCanvas.width) * formCanvas.height;
+
+      // Position pledge card in bottom right with padding
+      const padding = 20;
+      finalCtx.drawImage(
+        formCanvas, 
+        canvasWidth - pledgeWidth - padding,
+        canvasHeight - pledgeHeight - padding,
+        pledgeWidth,
+        pledgeHeight
+      );
+
+      // Generate all three versions
+      const photoURL = imageData;
+      const pledgeURL = formCanvas.toDataURL('image/jpeg');
+      const compositeURL = finalCanvas.toDataURL('image/jpeg');
+
+      setPledgeImage(pledgeURL);
+      setCompositeImage(compositeURL);
+      setFinalImage(compositeURL);
 
     } catch (err) {
       console.error('Error generating final image:', err);
@@ -391,52 +414,53 @@ const PowerPledgeForm = () => {
   };
 
   const submitPledge = async () => {
-    if (!finalImage) {
-      alert("Please generate the pledge first!");
-      return;
-    }
-    setIsSubmitting(true);
-    setError(null);
+  if (!finalImage) {
+    alert("Please generate the pledge first!");
+    return;
+  }
+  setIsSubmitting(true);
+  setError(null);
 
-    try {
-      let photoUrl = null;
-      if (imageData) {
-        const photoBlob = dataURLtoBlob(imageData);
-        photoUrl = await uploadToCloudinary(photoBlob);
-      }
+  try {
+    // Upload all three images
+    const photoBlob = dataURLtoBlob(imageData);
+    const pledgeBlob = dataURLtoBlob(pledgeImage);
+    const compositeBlob = dataURLtoBlob(compositeImage);
 
-      let finalImageUrl = null;
-      if (finalImage) {
-        const finalBlob = dataURLtoBlob(finalImage);
-        finalImageUrl = await uploadToCloudinary(finalBlob);
-      }
+    const [photoUrl, pledgeUrl, compositeUrl] = await Promise.all([
+      uploadToCloudinary(photoBlob),
+      uploadToCloudinary(pledgeBlob),
+      uploadToCloudinary(compositeBlob)
+    ]);
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/pledges`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          name: formData.name,
-          bands: formData.bands,
-          signatureUrl: signatureData,
-          photoUrl,
-          finalImageUrl,
-          contactName: formData.contactName || '',
-          contactEmail: formData.contactEmail || '',
-          contactPhone: formData.contactPhone || ''
-        })
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Failed to save pledge');
-      
-      setShowSuccessModal(true);
-    } catch (err) {
-      console.error('Submission error:', err);
-      setError(`Failed to submit pledge: ${err.message}`);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/pledges`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        name: formData.name,
+        bands: formData.bands,
+        signatureUrl: signatureData,
+        photoUrl,
+        pledgeUrl,
+        compositeUrl,
+        contactName: formData.contactName || '',
+        contactEmail: formData.contactEmail || '',
+        contactPhone: formData.contactPhone || ''
+      })
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Failed to save pledge');
+    
+    setShowSuccessModal(true);
+  } catch (err) {
+    console.error('Submission error:', err);
+    setError(`Failed to submit pledge: ${err.message}`);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const handleCloseModal = () => {
     setShowSuccessModal(false);
@@ -851,26 +875,50 @@ const PowerPledgeForm = () => {
               )}
             </Button>
    
-            {/* Final Preview */}
+            {/* Final Previews */}
             {finalImage && (
               <Paper elevation={1} sx={{ p: 2 }}>
-                <Typography variant="subtitle1" gutterBottom>
-                  Your Power Pledge
+                <Typography variant="h6" gutterBottom>
+                  Preview Your Pledge
                 </Typography>
-                <Box 
-                  sx={{ 
-                    border: 1, 
-                    borderColor: 'grey.300', 
-                    mb: 2,
-                    overflow: 'hidden'
-                  }}
-                >
-                  <img
-                    src={finalImage}
-                    alt="Final Power Pledge"
-                    style={{ width: '100%', display: 'block' }}
-                  />
-                </Box>
+                <Grid container spacing={2}>
+                  {/* Pledge Card */}
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle1" gutterBottom>
+                      Pledge Card
+                    </Typography>
+                    <Box sx={{ 
+                      border: 1, 
+                      borderColor: 'grey.300', 
+                      mb: 2,
+                      overflow: 'hidden'
+                    }}>
+                      <img
+                        src={pledgeImage}
+                        alt="Power Pledge Card"
+                        style={{ width: '100%', display: 'block' }}
+                      />
+                    </Box>
+                  </Grid>
+                  {/* Composite Image */}
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle1" gutterBottom>
+                      Final Image
+                    </Typography>
+                    <Box sx={{ 
+                      border: 1, 
+                      borderColor: 'grey.300', 
+                      mb: 2,
+                      overflow: 'hidden'
+                    }}>
+                      <img
+                        src={compositeImage}
+                        alt="Final Power Pledge"
+                        style={{ width: '100%', display: 'block' }}
+                      />
+                    </Box>
+                  </Grid>
+                </Grid>
               </Paper>
             )}
    
@@ -895,26 +943,30 @@ const PowerPledgeForm = () => {
         </Card>
    
         {/* Success Modal */}
-        <Dialog 
-          open={showSuccessModal} 
-          onClose={handleCloseModal}
-        >
-          <DialogTitle>Success!</DialogTitle>
-          <DialogContent>
-            <Typography variant="h6" gutterBottom>
-              Your pledge card has been submitted!
-            </Typography>
-            <Box sx={{ mt: 2 }}>
-              <Button variant="contained" onClick={handleDownloadImage}>
-                Download Image
-              </Button>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseModal}>Close</Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
+        <DialogContent>
+          <Typography variant="h6" gutterBottom>
+            Your pledge card has been submitted!
+          </Typography>
+          <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+            <Button variant="contained" onClick={() => {
+              const link = document.createElement('a');
+              link.href = pledgeImage;
+              link.download = 'pledge-card.jpg';
+              link.click();
+            }}>
+              Download Pledge Card
+            </Button>
+            <Button variant="contained" onClick={() => {
+              const link = document.createElement('a');
+              link.href = compositeImage;
+              link.download = 'final-pledge.jpg';
+              link.click();
+            }}>
+              Download Final Image
+            </Button>
+          </Box>
+        </DialogContent>
+              </Box>
     </Box>
    );
 };
