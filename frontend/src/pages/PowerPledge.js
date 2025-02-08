@@ -132,6 +132,10 @@ const PowerPledgeForm = () => {
   }, [inView, hasMore, loading, fetchImages, nextCursor]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     return () => {
       if (videoRef.current?.srcObject) {
         const tracks = videoRef.current.srcObject.getTracks();
@@ -162,34 +166,71 @@ const PowerPledgeForm = () => {
     setIsCameraActive(false);
   };
 
-  const takeSelfie = () => {
+  const processImage = (imgData) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        
+        const targetWidth = 1080;
+        const targetHeight = 1440;
+        tempCanvas.width = targetWidth;
+        tempCanvas.height = targetHeight;
+  
+        const scale = Math.max(targetWidth / img.width, targetHeight / img.height);
+        const scaledWidth = img.width * scale;
+        const scaledHeight = img.height * scale;
+        
+        const offsetX = (targetWidth - scaledWidth) / 2;
+        const offsetY = (targetHeight - scaledHeight) / 2;
+  
+        tempCtx.fillStyle = 'black';
+        tempCtx.fillRect(0, 0, targetWidth, targetHeight);
+        tempCtx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight);
+        
+        resolve(tempCanvas.toDataURL('image/jpeg'));
+      };
+      img.src = imgData;
+    });
+  };
+
+  const takeSelfie = async () => {
     if (!videoRef.current) return;
     const canvas = document.createElement('canvas');
-    canvas.width = videoRef.current.videoWidth || 640;
-    canvas.height = videoRef.current.videoHeight || 480;
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
     const context = canvas.getContext('2d');
     context.drawImage(videoRef.current, 0, 0);
-    setImageData(canvas.toDataURL('image/jpeg'));
+    
+    const rawImage = canvas.toDataURL('image/jpeg');
+    const processedImage = await processImage(rawImage);
+    setImageData(processedImage);
     stopCamera();
   };
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setIsUploading(true);
     setError(null);
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImageData(reader.result);
-      setIsUploading(false);
-    };
-    reader.onerror = (err) => {
+  
+    try {
+      const reader = new FileReader();
+      const imageData = await new Promise((resolve, reject) => {
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      
+      const processedImage = await processImage(imageData);
+      setImageData(processedImage);
+    } catch (err) {
       console.error('File reading error:', err);
       setError('Failed to read the file. Please try again.');
+    } finally {
       setIsUploading(false);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   const handleEndSignature = () => {
@@ -247,7 +288,7 @@ const PowerPledgeForm = () => {
     }
     setIsUploading(true);
     setError(null);
-
+  
     try {
       const img = new Image();
       img.crossOrigin = "anonymous";
@@ -256,17 +297,21 @@ const PowerPledgeForm = () => {
         img.onerror = reject;
         img.src = imageData;
       });
-
+  
+      // Create form canvas (pledge card)
       const formCanvas = document.createElement('canvas');
       const formCtx = formCanvas.getContext('2d');
       formCanvas.width = 1000;
       formCanvas.height = 800;
-
+  
+      // Fill white background and add checkerboard border
       formCtx.fillStyle = 'white';
       formCtx.fillRect(0, 0, formCanvas.width, formCanvas.height);
-
+  
       const squareSize = 20;
       const borderWidth = squareSize * 2;
+      
+      // Draw top and bottom borders
       for (let x = 0; x < formCanvas.width; x += squareSize) {
         for (let y = 0; y < borderWidth; y += squareSize) {
           if ((x + y) / squareSize % 2 === 0) {
@@ -281,6 +326,8 @@ const PowerPledgeForm = () => {
           }
         }
       }
+
+      // Draw left and right borders
       for (let y = 0; y < formCanvas.height; y += squareSize) {
         for (let x = 0; x < borderWidth; x += squareSize) {
           if ((x + y) / squareSize % 2 === 0) {
@@ -295,15 +342,16 @@ const PowerPledgeForm = () => {
           }
         }
       }
-
+  
+      // Add text content
       formCtx.fillStyle = 'black';
       formCtx.font = 'bold 38px Arial';
       formCtx.textAlign = 'left';
       formCtx.fillText('TWIN CITIES UNITED PERFORMERS', 60, 100);
-
       formCtx.font = 'bold 52px Arial';
       formCtx.fillText('POWER PLEDGE', 60, 150);
-
+  
+      // Add pledge text
       formCtx.font = '24px Arial';
       const paragraph1 = 
         "I pledge to build solidarity with my fellow musicians. " +
@@ -318,93 +366,93 @@ const PowerPledgeForm = () => {
         "narrative. I will embrace collective action, working with my peers to raise " +
         "industry standards and ensure our work is valued. Together, we will build a " +
         "stronger, more respected artistic community.";
-
+  
       let currentY = 200;
       currentY = wrapText(formCtx, paragraph1, 60, currentY, 880, 30);
       currentY += 40;
       currentY = wrapText(formCtx, paragraph2, 60, currentY, 880, 30);
       currentY += 60;
-
+  
+      // Form fields with new layout
       const date = new Date().toLocaleDateString();
       const fieldStartX = 60;
       const fieldValueStartX = 200;
-      const fieldDateStartX = 500;
-      const fieldLineWidth = 300;
+      const fullWidthLineWidth = 880;
+      const twoThirdsWidth = 580;
+      const oneThirdWidth = 280;
       const fieldSpacing = 70;
       const underlineOffset = 8;
-      const startY = currentY;
-
-      formCtx.fillText('Name:', fieldStartX, startY);
-      formCtx.fillText(formData.name, fieldValueStartX, startY);
-      formCtx.fillRect(fieldValueStartX, startY + underlineOffset, fieldLineWidth, 1);
-
-      formCtx.fillText('Date:', fieldDateStartX, startY);
-      formCtx.fillText(date, fieldDateStartX + 50, startY);
-      formCtx.fillRect(fieldDateStartX + 50, startY + underlineOffset, 150, 1);
-
-      const bandY = startY + fieldSpacing;
-      formCtx.fillText('Band(s):', fieldStartX, bandY);
-      formCtx.fillText(formData.bands, fieldValueStartX, bandY);
-      formCtx.fillRect(fieldValueStartX, bandY + underlineOffset, fieldLineWidth, 1);
-
-      const signatureY = bandY + fieldSpacing;
+  
+      // Name (full width)
+      formCtx.fillText('Name:', fieldStartX, currentY);
+      formCtx.fillText(formData.name, fieldValueStartX, currentY);
+      formCtx.fillRect(fieldValueStartX, currentY + underlineOffset, 
+        fullWidthLineWidth - (fieldValueStartX - fieldStartX), 1);
+  
+      // Signature (2/3) and Date (1/3)
+      const signatureY = currentY + fieldSpacing;
       formCtx.fillText('Signature:', fieldStartX, signatureY);
-
+      const dateX = fieldStartX + twoThirdsWidth;
+      formCtx.fillText('Date:', dateX, signatureY);
+      formCtx.fillText(date, dateX + 60, signatureY);
+      formCtx.fillRect(dateX + 60, signatureY + underlineOffset, oneThirdWidth - 60, 1);
+  
+      // Draw signature
       const sigImg = new Image();
       await new Promise((resolve, reject) => {
         sigImg.onload = resolve;
         sigImg.onerror = reject;
         sigImg.src = signatureData;
       });
-      formCtx.drawImage(sigImg, fieldValueStartX, signatureY - 30, 300, 80);
-
-      // Create composite image with photo as base and pledge card overlay
+      formCtx.drawImage(sigImg, fieldValueStartX, signatureY - 30, twoThirdsWidth - 200, 80);
+  
+      // Performer(s) (full width)
+      const performerY = signatureY + fieldSpacing;
+      formCtx.fillText('Performer(s):', fieldStartX, performerY);
+      formCtx.fillText(formData.bands, fieldValueStartX, performerY);
+      formCtx.fillRect(fieldValueStartX, performerY + underlineOffset,
+        fullWidthLineWidth - (fieldValueStartX - fieldStartX), 1);
+  
+      // Create final canvas with phone aspect ratio
       const finalCanvas = document.createElement('canvas');
       const finalCtx = finalCanvas.getContext('2d');
-
-      // Set canvas size based on photo dimensions
-      const minWidth = 1200;
-      const minHeight = 800;
-      const aspectRatio = img.width / img.height;
-
-      let canvasWidth = Math.max(minWidth, img.width);
-      let canvasHeight = Math.max(minHeight, img.height);
-
-      if (canvasWidth / canvasHeight > aspectRatio) {
-        canvasWidth = canvasHeight * aspectRatio;
-      } else {
-        canvasHeight = canvasWidth / aspectRatio;
-      }
-
-      finalCanvas.width = canvasWidth;
-      finalCanvas.height = canvasHeight;
-
-      // Draw photo at full size
-      finalCtx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
-
-      // Calculate pledge card size (1/3 of photo width)
-      const pledgeWidth = canvasWidth / 3;
+      const phoneWidth = 3024;
+      const phoneHeight = 4032;
+      finalCanvas.width = phoneWidth;
+      finalCanvas.height = phoneHeight;
+  
+      // Fill with black background
+      finalCtx.fillStyle = 'black';
+      finalCtx.fillRect(0, 0, phoneWidth, phoneHeight);
+  
+      // Calculate scaling to fill frame while maintaining aspect ratio
+      const scale = Math.max(phoneWidth / img.width, phoneHeight / img.height);
+      const scaledWidth = img.width * scale;
+      const scaledHeight = img.height * scale;
+      const offsetX = (phoneWidth - scaledWidth) / 2;
+      const offsetY = (phoneHeight - scaledHeight) / 2;
+  
+      // Draw scaled and centered image
+      finalCtx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight);
+  
+      // Calculate pledge card size and position
+      const pledgeWidth = phoneWidth * 0.45; // 
       const pledgeHeight = (pledgeWidth / formCanvas.width) * formCanvas.height;
-
-      // Position pledge card in bottom right with padding
-      const padding = 20;
-      finalCtx.drawImage(
-        formCanvas, 
-        canvasWidth - pledgeWidth - padding,
-        canvasHeight - pledgeHeight - padding,
-        pledgeWidth,
-        pledgeHeight
-      );
-
-      // Generate all three versions
+      const pledgeX = (phoneWidth - pledgeWidth) / -40;
+      const pledgeY = phoneHeight - pledgeHeight - 40; // 40px from bottom
+  
+      // Draw pledge card
+      finalCtx.drawImage(formCanvas, pledgeX, pledgeY, pledgeWidth, pledgeHeight);
+  
+      // Generate URLs
       const photoURL = imageData;
       const pledgeURL = formCanvas.toDataURL('image/jpeg');
       const compositeURL = finalCanvas.toDataURL('image/jpeg');
-
+  
       setPledgeImage(pledgeURL);
       setCompositeImage(compositeURL);
       setFinalImage(compositeURL);
-
+  
     } catch (err) {
       console.error('Error generating final image:', err);
       setError(err.message);
@@ -775,19 +823,70 @@ const PowerPledgeForm = () => {
               If you click the 'take selfie' button, a photo section will appear below the buttons.              
               </Typography>
    
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                style={{ 
-                  width: '100%',
-                  maxHeight: '480px',
-                  backgroundColor: '#000',
-                  display: isCameraActive ? 'block' : 'none'
-                }}
-              />
-   
+              {/* Camera Preview Container */}
+              <Box sx={{ 
+                width: '100%',
+                maxWidth: '360px',
+                aspectRatio: '3/4',
+                margin: '20px auto',
+                backgroundColor: 'black',
+                overflow: 'hidden',
+                position: 'relative',
+                display: isCameraActive ? 'block' : 'none'
+              }}>
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  style={{ 
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    position: 'absolute',
+                    left: '50%',
+                    top: '50%',
+                    transform: 'translate(-50%, -50%)'
+                  }}
+                />
+                
+                {/* Face Position Guide */}
+                <Box sx={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: '33.333%',
+                  background: 'rgba(0, 0, 0, 0.5)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 2,
+                  borderTop: '2px solid rgba(255, 255, 255, 0.5)'
+                }}>
+                  <Typography 
+                    variant="body2" 
+                    sx={{ 
+                      color: 'white',
+                      textAlign: 'center',
+                      textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
+                    }}
+                  >
+                    Position your face in the upper two-thirds of the frame
+                  </Typography>
+                </Box>
+                
+                {/* Optional: Top guide line */}
+                <Box sx={{
+                  position: 'absolute',
+                  top: '33.333%',
+                  left: 0,
+                  right: 0,
+                  height: '1px',
+                  background: 'rgba(255, 255, 255, 0.3)'
+                }} />
+              </Box>
+                
               {isCameraActive && (
                 <Box sx={{ mt: 2 }}>
                   <Button
@@ -808,30 +907,35 @@ const PowerPledgeForm = () => {
               )}
    
               {imageData && !isCameraActive && (
-                <Box>
-                  <Box 
-                    sx={{ 
-                      border: 1, 
-                      borderColor: 'grey.300', 
-                      mb: 1,
-                      overflow: 'hidden'
+              <Box>
+                <Box sx={{ 
+                  width: '100%',
+                  maxWidth: '360px',
+                  aspectRatio: '9/16',
+                  margin: '20px auto',
+                  backgroundColor: 'black',
+                  overflow: 'hidden',
+                  position: 'relative'
+                }}>
+                  <img
+                    src={imageData}
+                    alt="User Photo"
+                    style={{ 
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain'
                     }}
-                  >
-                    <img
-                      src={imageData}
-                      alt="User Photo"
-                      style={{ width: '100%', display: 'block' }}
-                    />
-                  </Box>
-                  <Button
-                    variant="outlined"
-                    onClick={() => setImageData(null)}
-                    startIcon={<DeleteIcon />}
-                  >
-                    Remove Photo
-                  </Button>
+                  />
                 </Box>
-              )}
+                <Button
+                  variant="outlined"
+                  onClick={() => setImageData(null)}
+                  startIcon={<DeleteIcon />}
+                >
+                  Remove Photo
+                </Button>
+              </Box>
+            )}
             </Paper>
    
             {/* Optional Contact Info */}
