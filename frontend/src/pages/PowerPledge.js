@@ -304,8 +304,8 @@ const PowerPledgeForm = () => {
 
       formCtx.font = '24px Arial';
       const paragraph1 = 
-        "I pledge to build solidarity with my fellow musicians. " +
-        "I will adhere to a shared set of communication standards between musicians " +
+        "I pledge to build solidarity with my fellow performers. " +
+        "I will adhere to a shared set of communication standards between performers " +
         "and venues, by using the TCUP advance when booking my shows. This includes " +
         "using intentional language to confirm details around compensation, amenities " +
         "and hospitality, and performance logistics.";
@@ -641,8 +641,8 @@ const PowerPledgeForm = () => {
                 }}>
                 <Typography variant="body1" paragraph sx={{ width: '100%' }}>
                   <strong>
-                    I pledge to build solidarity with my fellow musicians. I will adhere to a shared set 
-                    of communication standards between musicians and venues, by using the TCUP advance 
+                    I pledge to build solidarity with my fellow performers. I will adhere to a shared set 
+                    of communication standards between performers and venues, by using the TCUP advance 
                     when booking my shows. This includes using intentional language to confirm details 
                     around compensation, amenities and hospitality, and performance logistics.
                   </strong>
@@ -731,7 +731,7 @@ const PowerPledgeForm = () => {
                     Take Selfie
                   </Button>
                   <Button
-                    variant="secondary"
+                    variant="outlined"
                     onClick={() => fileInputRef.current.click()}
                     startIcon={<FileUploadIcon />}
                   >

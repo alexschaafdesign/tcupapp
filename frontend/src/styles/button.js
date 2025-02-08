@@ -15,13 +15,15 @@ export const buttonStyles = {
           fontWeight: "bold",
           textTransform: "uppercase",
           '&:hover': {
-            backgroundColor: palette.primary.light,
+            backgroundColor: palette.secondary.dark,
           },
         },
         outlined: {
           borderColor: palette.primary.main,
           '&:hover': {
             borderColor: palette.primary.light,
+            backgroundColor: palette.primary.main,
+            color: palette.neutral.white
           },
         },
         text: {
