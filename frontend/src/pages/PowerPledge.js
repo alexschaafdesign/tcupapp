@@ -809,7 +809,7 @@ const PowerPledgeForm = () => {
                     Take Selfie
                   </Button>
                   <Button
-                    variant="secondary"
+                    variant="outlined"
                     onClick={() => fileInputRef.current.click()}
                     startIcon={<FileUploadIcon />}
                   >
