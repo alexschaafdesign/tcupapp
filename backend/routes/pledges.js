@@ -3,18 +3,14 @@ import pool from '../config/db.js';
 import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
 
-
 const router = express.Router();
 
 // Determine the correct .env file
-const envFile = `.env.${process.env.NODE_ENV || "development"}`; // Defaults to development
-
+const envFile = `.env.${process.env.NODE_ENV || "development"}`;
 dotenv.config({ path: envFile });
-
 console.log(`Loaded environment file: ${envFile}`);
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
 
 router.post('/', async (req, res) => {
   console.log('Environment variables for email test:', {
@@ -23,41 +19,58 @@ router.post('/', async (req, res) => {
     SENDGRID_VERIFIED_SENDER: process.env.SENDGRID_VERIFIED_SENDER,
     NODE_ENV: process.env.NODE_ENV
   });
-  const { name, bands, signatureUrl, photoUrl, finalImageUrl, contactName, contactEmail, contactPhone } = req.body;
 
-try {
-  // Download images
-    const [photoResponse, finalImageResponse] = await Promise.all([
+  // Include pledgeUrl along with the other properties
+  const { 
+    name, 
+    bands, 
+    signatureUrl, 
+    photoUrl, 
+    compositeUrl,  // final composite image
+    pledgeUrl,     // pledge card image only
+    contactName, 
+    contactEmail, 
+    contactPhone 
+  } = req.body;
+
+  try {
+    // Fetch all three images in parallel
+    const [photoResponse, finalImageResponse, pledgeResponse] = await Promise.all([
       fetch(photoUrl),
-      fetch(finalImageUrl)
+      fetch(compositeUrl),
+      fetch(pledgeUrl)
     ]);
     
-    // Convert to buffers
-    const [photoArrayBuffer, finalImageArrayBuffer] = await Promise.all([
+    // Convert each response to an ArrayBuffer
+    const [photoArrayBuffer, finalImageArrayBuffer, pledgeArrayBuffer] = await Promise.all([
       photoResponse.arrayBuffer(),
-      finalImageResponse.arrayBuffer()
+      finalImageResponse.arrayBuffer(),
+      pledgeResponse.arrayBuffer()
     ]);
 
+    // Create buffers from the array buffers
     const photoBuffer = Buffer.from(photoArrayBuffer);
     const finalImageBuffer = Buffer.from(finalImageArrayBuffer);
+    const pledgeBuffer = Buffer.from(pledgeArrayBuffer);
 
-    const recipients = [
-      ...(process.env.NOTIFICATION_EMAIL ? process.env.NOTIFICATION_EMAIL.split(',') : [])
-    ];
+    // Split and trim the list of recipient emails
+    const recipients = process.env.NOTIFICATION_EMAIL
+      ? process.env.NOTIFICATION_EMAIL.split(',').map(email => email.trim())
+      : [];
 
     const msg = {
       to: recipients,
       from: process.env.SENDGRID_VERIFIED_SENDER,
       subject: 'New Power Pledge Submission',
       html: `
-      <h2>New Power Pledge Submission</h2>
-      <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Bands:</strong> ${bands}</p>
-      <h3>Contact Information</h3>
-      <p><strong>Name:</strong> ${contactName || 'N/A'}</p>
-      <p><strong>Email:</strong> ${contactEmail || 'N/A'}</p>
-      <p><strong>Phone:</strong> ${contactPhone || 'N/A'}</p>
-    `,
+        <h2>New Power Pledge Submission</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Performer(s):</strong> ${bands}</p>
+        <h3>Contact Information</h3>
+        <p><strong>Name:</strong> ${contactName || 'N/A'}</p>
+        <p><strong>Email:</strong> ${contactEmail || 'N/A'}</p>
+        <p><strong>Phone:</strong> ${contactPhone || 'N/A'}</p>
+      `,
       attachments: [
         {
           content: photoBuffer.toString('base64'),
@@ -70,6 +83,12 @@ try {
           filename: 'final-pledge.png',
           type: 'image/png',
           disposition: 'attachment'
+        },
+        {
+          content: pledgeBuffer.toString('base64'),
+          filename: 'pledge-card.png',
+          type: 'image/png',
+          disposition: 'attachment'
         }
       ]
     };
@@ -80,19 +99,19 @@ try {
       subject: msg.subject,
       attachmentsPresent: msg.attachments?.length,
       photoBufferSize: photoBuffer.length,
-      finalImageBufferSize: finalImageBuffer.length
+      finalImageBufferSize: finalImageBuffer.length,
+      pledgeBufferSize: pledgeBuffer.length
     });
 
     console.log('Attempting to send email...');
     console.log('SendGrid API Key exists:', !!process.env.SENDGRID_API_KEY);
-    console.log('Notification emails:', process.env.NOTIFICATION_EMAIL);  
+    console.log('Notification emails:', process.env.NOTIFICATION_EMAIL);
 
-
-    // Database insert and email send in parallel
+    // Execute the database insert and email send in parallel
     const [dbResult] = await Promise.all([
       pool.query(
         'INSERT INTO pledges (name, bands, signature_url, photo_url, final_image_url, contact_name, contact_email, contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-        [name, bands, signatureUrl, photoUrl, finalImageUrl, contactName || null, contactEmail || null, contactPhone || null]
+        [name, bands, signatureUrl, photoUrl, compositeUrl, contactName || null, contactEmail || null, contactPhone || null]
       ),
       sgMail.send(msg)
     ]);
@@ -104,5 +123,4 @@ try {
   }
 });
 
-
-  export default router;
+export default router;
