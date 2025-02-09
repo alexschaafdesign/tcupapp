@@ -23,13 +23,13 @@ router.post('/', async (req, res) => {
     SENDGRID_VERIFIED_SENDER: process.env.SENDGRID_VERIFIED_SENDER,
     NODE_ENV: process.env.NODE_ENV
   });
-  const { name, bands, signatureUrl, photoUrl, finalImageUrl, contactName, contactEmail, contactPhone } = req.body;
+  const { name, bands, signatureUrl, photoUrl, compositeUrl, contactName, contactEmail, contactPhone } = req.body;
 
 try {
   // Download images
     const [photoResponse, finalImageResponse] = await Promise.all([
       fetch(photoUrl),
-      fetch(finalImageUrl)
+      fetch(compositeUrl)
     ]);
     
     // Convert to buffers
@@ -92,7 +92,7 @@ try {
     const [dbResult] = await Promise.all([
       pool.query(
         'INSERT INTO pledges (name, bands, signature_url, photo_url, final_image_url, contact_name, contact_email, contact_phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-        [name, bands, signatureUrl, photoUrl, finalImageUrl, contactName || null, contactEmail || null, contactPhone || null]
+        [name, bands, signatureUrl, photoUrl, compositeUrl, contactName || null, contactEmail || null, contactPhone || null]
       ),
       sgMail.send(msg)
     ]);
