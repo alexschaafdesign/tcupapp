@@ -41,9 +41,9 @@ try {
     const photoBuffer = Buffer.from(photoArrayBuffer);
     const finalImageBuffer = Buffer.from(finalImageArrayBuffer);
 
-    const recipients = [
-      ...(process.env.NOTIFICATION_EMAIL ? process.env.NOTIFICATION_EMAIL.split(',') : [])
-    ];
+    const recipients = process.env.NOTIFICATION_EMAIL
+    ? process.env.NOTIFICATION_EMAIL.split(',').map(email => email.trim())
+    : [];
 
     const msg = {
       to: recipients,
@@ -52,7 +52,7 @@ try {
       html: `
       <h2>New Power Pledge Submission</h2>
       <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Bands:</strong> ${bands}</p>
+      <p><strong>Performer(s):</strong> ${bands}</p>
       <h3>Contact Information</h3>
       <p><strong>Name:</strong> ${contactName || 'N/A'}</p>
       <p><strong>Email:</strong> ${contactEmail || 'N/A'}</p>
