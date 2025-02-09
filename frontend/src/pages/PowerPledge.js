@@ -354,8 +354,8 @@ const PowerPledgeForm = () => {
       // Add pledge text
       formCtx.font = '24px Arial';
       const paragraph1 = 
-        "I pledge to build solidarity with my fellow musicians. " +
-        "I will adhere to a shared set of communication standards between musicians " +
+        "I pledge to build solidarity with my fellow performers. " +
+        "I will adhere to a shared set of communication standards between performers " +
         "and venues, by using the TCUP advance when booking my shows. This includes " +
         "using intentional language to confirm details around compensation, amenities " +
         "and hospitality, and performance logistics.";
@@ -376,7 +376,7 @@ const PowerPledgeForm = () => {
       // Form fields with new layout
       const date = new Date().toLocaleDateString();
       const fieldStartX = 60;
-      const fieldValueStartX = 200;
+      const fieldValueStartX = 220;
       const fullWidthLineWidth = 880;
       const twoThirdsWidth = 580;
       const oneThirdWidth = 280;
@@ -404,8 +404,14 @@ const PowerPledgeForm = () => {
         sigImg.onerror = reject;
         sigImg.src = signatureData;
       });
-      formCtx.drawImage(sigImg, fieldValueStartX, signatureY - 30, twoThirdsWidth - 200, 80);
-  
+      // For the signature rendering
+      formCtx.drawImage(
+        sigImg, 
+        fieldValueStartX,
+        signatureY - 40, // Adjusted from -30 to align better
+        twoThirdsWidth - 300, // Adjusted width
+        60 // Reduced height from 80 to 60 for better proportion
+      );  
       // Performer(s) (full width)
       const performerY = signatureY + fieldSpacing;
       formCtx.fillText('Performer(s):', fieldStartX, performerY);
@@ -438,7 +444,7 @@ const PowerPledgeForm = () => {
       // Calculate pledge card size and position
       const pledgeWidth = phoneWidth * 0.45; // 
       const pledgeHeight = (pledgeWidth / formCanvas.width) * formCanvas.height;
-      const pledgeX = (phoneWidth - pledgeWidth) / -40;
+      const pledgeX = phoneWidth - pledgeWidth - 40; // Right align with 40px padding
       const pledgeY = phoneHeight - pledgeHeight - 40; // 40px from bottom
   
       // Draw pledge card
@@ -713,8 +719,8 @@ const PowerPledgeForm = () => {
                 }}>
                 <Typography variant="body1" paragraph sx={{ width: '100%' }}>
                   <strong>
-                    I pledge to build solidarity with my fellow musicians. I will adhere to a shared set 
-                    of communication standards between musicians and venues, by using the TCUP advance 
+                    I pledge to build solidarity with my fellow performers. I will adhere to a shared set 
+                    of communication standards between performers and venues, by using the TCUP advance 
                     when booking my shows. This includes using intentional language to confirm details 
                     around compensation, amenities and hospitality, and performance logistics.
                   </strong>
@@ -1047,29 +1053,38 @@ const PowerPledgeForm = () => {
         </Card>
    
         {/* Success Modal */}
-        <DialogContent>
-          <Typography variant="h6" gutterBottom>
-            Your pledge card has been submitted!
-          </Typography>
-          <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
-            <Button variant="contained" onClick={() => {
-              const link = document.createElement('a');
-              link.href = pledgeImage;
-              link.download = 'pledge-card.jpg';
-              link.click();
-            }}>
-              Download Pledge Card
-            </Button>
-            <Button variant="contained" onClick={() => {
-              const link = document.createElement('a');
-              link.href = compositeImage;
-              link.download = 'final-pledge.jpg';
-              link.click();
-            }}>
-              Download Final Image
-            </Button>
-          </Box>
-        </DialogContent>
+        {/* Success Modal */}
+          <Dialog open={showSuccessModal} onClose={handleCloseModal}>
+            <DialogTitle>Success!</DialogTitle>
+            <DialogContent>
+              <Typography variant="h6" gutterBottom>
+                Your pledge card has been submitted!
+              </Typography>
+              <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+                <Button variant="contained" onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = pledgeImage;
+                  link.download = 'pledge-card.jpg';
+                  link.click();
+                }}>
+                  Download Pledge Card
+                </Button>
+                <Button variant="contained" onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = compositeImage;
+                  link.download = 'final-pledge.jpg';
+                  link.click();
+                }}>
+                  Download Final Image
+                </Button>
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseModal} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
               </Box>
     </Box>
    );
