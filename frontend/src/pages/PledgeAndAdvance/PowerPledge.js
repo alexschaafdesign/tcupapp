@@ -214,6 +214,16 @@ const PowerPledgeForm = () => {
     stopCamera();
   };
 
+  const handleSuccess = () => {
+    navigate('/pledgesuccess', {
+      state: {
+        pledgeImage,
+        compositeImage
+      }
+    });
+  };
+  
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -1045,7 +1055,10 @@ const handleCopy = async () => {
             <Button
               variant="contained"
               fullWidth
-              onClick={submitPledge}
+              onClick={() => {
+                submitPledge();
+                handleSuccess();
+              }}
               disabled={!finalImage || isUploading || isSubmitting}
               sx={{ mt: 2 }}
             >
@@ -1057,43 +1070,11 @@ const handleCopy = async () => {
               ) : (
                 'Submit Pledge'
               )}
-            </Button>
+            </Button>;
           </CardContent>
         </Card>
    
-        {/* Success Modal */}
-        {/* Success Modal */}
-          <Dialog open={showSuccessModal} onClose={handleCloseModal}>
-            <DialogTitle>Success!</DialogTitle>
-            <DialogContent>
-              <Typography variant="h6" gutterBottom>
-                Your pledge card has been submitted!
-              </Typography>
-              <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
-                <Button variant="contained" onClick={() => {
-                  const link = document.createElement('a');
-                  link.href = pledgeImage;
-                  link.download = 'pledge-card.jpg';
-                  link.click();
-                }}>
-                  Download Pledge Card
-                </Button>
-                <Button variant="contained" onClick={() => {
-                  const link = document.createElement('a');
-                  link.href = compositeImage;
-                  link.download = 'final-pledge.jpg';
-                  link.click();
-                }}>
-                  Download Final Image
-                </Button>
-              </Box>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCloseModal} color="primary">
-                Close
-              </Button>
-            </DialogActions>
-          </Dialog>
+        
               </Box>
     </Box>
    );

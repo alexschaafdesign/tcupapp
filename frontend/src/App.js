@@ -51,6 +51,7 @@ import EditFlyeringForm from "./pages/Flyering/EditFlyeringForm.js";
 import PledgePhotos from "./pages/PledgeAndAdvance/PledgePhotos.js";
 import TCUPNewsletter from "./pages/Newsletter.js";
 import TCUPAdvance from "./pages/PledgeAndAdvance/TCUPAdvance.js";
+import PledgeSuccess from "./pages/PledgeAndAdvance/PledgeSuccess.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -103,6 +104,8 @@ function App() {
           <Route path="/" element={<LandingPageTemp />} />
           <Route path="/powerpledge" element={<PowerPledgeForm />} />
           <Route path="/advance" element={<TCUPAdvance />} />
+          <Route path="/pledgesuccess" element={<PledgeSuccess />} />
+
           
 
           <Route path="/*" element={
