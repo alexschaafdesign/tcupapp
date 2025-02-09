@@ -43,13 +43,14 @@ import LandingPageTemp from "./pages/LandingPage2.js";
 import Privacy from "./pages/Privacy.js";
 import AdminImportPost from "./pages/Chat/AdminImportPost.js";
 import VRCForm from "./pages/VRC/VRCForm.js";
-import PowerPledgeForm from "./pages/PowerPledge.js";
+import PowerPledgeForm from "./pages/PledgeAndAdvance/PowerPledge.js";
 import ImageDisplayPage from "./pages/ImageDisplayPage.js";
 import FlyeringForm from "./pages/Flyering/FlyeringForm.js";
 import FlyeringTable from "./pages/Flyering/FlyeringTable.js";
 import EditFlyeringForm from "./pages/Flyering/EditFlyeringForm.js";
-import PledgePhotos from "./pages/PledgePhotos.js";
+import PledgePhotos from "./pages/PledgeAndAdvance/PledgePhotos.js";
 import TCUPNewsletter from "./pages/Newsletter.js";
+import TCUPAdvance from "./pages/PledgeAndAdvance/TCUPAdvance.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -101,6 +102,8 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPageTemp />} />
           <Route path="/powerpledge" element={<PowerPledgeForm />} />
+          <Route path="/advance" element={<TCUPAdvance />} />
+          
 
           <Route path="/*" element={
             <>

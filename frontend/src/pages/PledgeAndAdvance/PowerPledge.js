@@ -23,6 +23,8 @@ import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import '@fontsource/arimo';
+import EmailTemplateModal from './Components/AdvanceModal';
+import { emailTemplateMarkdown, htmlContent } from './Components/Advance';
 
 /** Helper to convert a base64 dataURL to a Blob */
 function dataURLtoBlob(dataurl) {
@@ -80,9 +82,10 @@ const PowerPledgeForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showAdvanceModal, setShowAdvanceModal] = useState(false);
   const [pledgeImage, setPledgeImage] = useState(null);
   const [compositeImage, setCompositeImage] = useState(null);
+  const [showAdvanceModal, setShowAdvanceModal] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const signatureRef = useRef();
   const videoRef = useRef();
@@ -93,6 +96,8 @@ const PowerPledgeForm = () => {
     threshold: 0,
     rootMargin: '100px',
   });
+
+  
 
   // Fetch background images
   const fetchImages = useCallback(async (cursor = null) => {
@@ -516,6 +521,23 @@ const PowerPledgeForm = () => {
   }
 };
 
+const handleCopy = async () => {
+  try {
+    const blobHtml = new Blob([htmlContent], { type: 'text/html' });
+    const blobText = new Blob([emailTemplateMarkdown], { type: 'text/plain' });
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        'text/html': blobHtml,
+        'text/plain': blobText,
+      }),
+    ]);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 3000);
+  } catch (err) {
+    console.error('Failed to copy text: ', err);
+  }
+};
+
   const handleCloseModal = () => {
     setShowSuccessModal(false);
     navigate('/');
@@ -592,43 +614,26 @@ const PowerPledgeForm = () => {
         bgcolor: 'transparent'
       }}>
         {/* TCUP Advance Modal */}
-        <Dialog
-          open={showAdvanceModal}
-          onClose={() => setShowAdvanceModal(false)}
-          maxWidth="md"
-          fullWidth
-          PaperProps={{
-            sx: { 
-              height: '90vh',
-              maxHeight: '90vh'
-            }
-          }}
-        >
-          <DialogTitle>See the TCUP Advance</DialogTitle>
-          <DialogContent sx={{ p: 0, overflow: 'auto' }}>
-            <Box sx={{ 
-              display: 'flex', 
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 2,
-              p: 2
-            }}>
-              <img 
-                src="https://res.cloudinary.com/dsll3ms2c/image/upload/v1738884304/tcup-pledge-1_kqablv.png" 
-                alt="TCUP Advance Page 1"
-                style={{ width: '100%', height: 'auto', maxWidth: '800px' }}
-              />
-              <img 
-                src="https://res.cloudinary.com/dsll3ms2c/image/upload/v1738884304/tcup-pledge-2_nkoz1n.png" 
-                alt="TCUP Advance Page 2"
-                style={{ width: '100%', height: 'auto', maxWidth: '800px' }}
-              />
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setShowAdvanceModal(false)}>Close</Button>
-          </DialogActions>
-        </Dialog>
+      <Dialog
+        open={showAdvanceModal}
+        onClose={() => setShowAdvanceModal(false)}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: { 
+            height: '90vh',
+            maxHeight: '90vh'
+          }
+        }}
+      >
+        <DialogContent sx={{ p: 0, overflow: 'auto' }}>
+          {/* Replace the image-based content with your EmailTemplateModal */}
+          <EmailTemplateModal handleCopy={handleCopy} copied={copied} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowAdvanceModal(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
    
         <Card sx={{ maxWidth: 800, mx: 'auto', mt: 4, mb: 4 }}>
           <CardContent>
@@ -708,6 +713,9 @@ const PowerPledgeForm = () => {
                 >
                 View the TCUP Advance →
                 </Button>
+                <Typography variant="body2" gutterBottom sx={{ mt: 2, fontStyle: "italic" }}>
+                After completing this form, we will show you to how to access the advance for your future use.
+              </Typography>
               </Box>
    
    
@@ -984,6 +992,7 @@ const PowerPledgeForm = () => {
                 'Preview Power Pledge'
               )}
             </Button>
+
    
             {/* Final Previews */}
             {finalImage && (
