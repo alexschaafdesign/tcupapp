@@ -90,7 +90,7 @@ const PledgeSuccess = () => {
             {/* Links */}
             <Box mt={3} display="flex" flexDirection="column" gap={1}>
               <Link
-                href="https://www.tcupmn.org/advance"
+                href="/advance"
                 color="primary.dark"
                 variant="body"
                 underline="hover"

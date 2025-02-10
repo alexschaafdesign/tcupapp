@@ -1,16 +1,24 @@
 import React from 'react';
-import { Box, Typography, Paper } from '@mui/material';
-import { emailTemplateMarkdown, htmlContent } from './Advance';
+import { Box, Paper, useTheme, useMediaQuery } from '@mui/material';
+import { htmlContent } from './Advance';
 
 const EmailTemplateModal = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Detect mobile screens
+
   return (
-    <Box sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
-      {/* Render the shared HTML content without extra elevation */}
+    <Box
+      sx={{
+        maxWidth: 800,
+        mx: 'auto',
+        p: { xs: 1, sm: 2, md: 3 }, // Less padding on smaller screens
+      }}
+    >
       <Paper
         elevation={0} // Removes extra shadow
         sx={{
-          p: 3,
-          bgcolor: '#ffffff', // Keeps white background without elevation
+          p: { xs: 1, sm: 3 }, // Reduce padding for smaller screens
+          bgcolor: '#ffffff',
         }}
       >
         <Box
@@ -18,19 +26,19 @@ const EmailTemplateModal = () => {
           dangerouslySetInnerHTML={{ __html: htmlContent }}
           sx={{
             '& h1, & h2, & h3, & h4, & h5, & h6': {
-              marginTop: '12px',
-              marginBottom: '8px',
+              marginTop: { xs: '8px', sm: '12px' }, // Smaller top margin on mobile
+              marginBottom: { xs: '6px', sm: '8px' },
               lineHeight: 1.2,
             },
             '& p': {
-              marginTop: '4px',
-              marginBottom: '8px',
+              marginTop: { xs: '2px', sm: '4px' },
+              marginBottom: { xs: '6px', sm: '8px' },
               lineHeight: 1.3,
             },
             '& ul, & ol': {
-              marginTop: '8px',
-              marginBottom: '12px',
-              paddingLeft: '1em',
+              marginTop: { xs: '6px', sm: '8px' },
+              marginBottom: { xs: '10px', sm: '12px' },
+              paddingLeft: { xs: '0.8em', sm: '1em' },
             },
           }}
         />
