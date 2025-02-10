@@ -722,9 +722,10 @@ const handleCopy = async () => {
               </Box>
             
                <Typography variant="body" gutterBottom sx={{ width: '100%' }}>
-               One of the first steps that TCUP is taking to improve the relationship between venues and performers is to help establish a consistent standard of communication, in the form of our TCUP Advance. 
-
-              <p>The pledge is a way that we can organize collectively and relationally to hold each other up as performers. We trust that you will use this advance in the best way you see fit, understanding that not all situations are the same, and that you will have different needs for every show/performance. Copy + paste what you need from this advance to your email!</p>
+               As we work to improve the relationship between venues and performers, TCUP is taking an initial step to establish a consistent standard of communication and transparency through our TCUP Advance.
+              <p>Adding your name to the Power Pledge is a way to organize collectively, build relationships, and hold each other up as performers. 
+                We trust that you will use the Advance in the best way you see fit, understanding that not all situations are the same and you will have different needs for every show. 
+              </p>
               </Typography>
               <Typography 
                 variant="h4" 
@@ -765,7 +766,7 @@ const handleCopy = async () => {
                   }
                 }}
                 >
-                View the TCUP Advance →
+                Preview the TCUP Advance →
                 </Button>
                 <Typography variant="body2" gutterBottom sx={{ mt: 2, fontStyle: "italic" }}>
                 After completing this form, we will show you to how to access the advance for your future use.
