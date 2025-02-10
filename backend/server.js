@@ -1,5 +1,8 @@
 // server.js
 
+process.env.NODE_OPTIONS = '--openssl-legacy-provider';
+
+
 // Make sure to load environment variables first!
 import './loadEnv.js';
 // Optionally, if you want to use the exported currentEnv for logging:

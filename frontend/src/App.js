@@ -52,6 +52,7 @@ import PledgePhotos from "./pages/PledgeAndAdvance/PledgePhotos.js";
 import TCUPNewsletter from "./pages/Newsletter.js";
 import TCUPAdvance from "./pages/PledgeAndAdvance/TCUPAdvance.js";
 import PledgeSuccess from "./pages/PledgeAndAdvance/PledgeSuccess.js";
+import PledgeTracker from "./pages/PledgeAndAdvance/PledgeTracker.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -105,6 +106,8 @@ function App() {
           <Route path="/powerpledge" element={<PowerPledgeForm />} />
           <Route path="/advance" element={<TCUPAdvance />} />
           <Route path="/pledgesuccess" element={<PledgeSuccess />} />
+          <Route path="/pledgetracker" element={<PledgeTracker />} />
+
 
           
 

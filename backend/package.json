@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "server": "NODE_ENV=development nodemon server.js",
-    "start": "node server.js",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider node server.js",
     "dev": "nodemon -r dotenv/config server.js",
     "migrate": "node-pg-migrate",
     "migrate:up": "node-pg-migrate up",

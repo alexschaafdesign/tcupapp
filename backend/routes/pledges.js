@@ -2,6 +2,13 @@ import express from "express";
 import pool from '../config/db.js';
 import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
+import { google } from 'googleapis';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 
 const router = express.Router();
 
@@ -119,6 +126,40 @@ router.post('/', async (req, res) => {
     res.json(dbResult.rows[0]);
   } catch (error) {
     console.error('Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// In your route file (e.g., routes/pledges.js or similar)
+router.get('/count', async (req, res) => {
+  try {
+    // Build the path to your credentials file.
+    const credsPath = path.join(__dirname, '../config/google-credentials.json');
+    
+    // Read and parse the file.
+    const credsContent = fs.readFileSync(credsPath, 'utf8');
+    const creds = JSON.parse(credsContent);
+    
+    // Replace any escaped newline sequences with actual newlines.
+    creds.private_key = creds.private_key.replace(/\\n/g, '\n');
+
+    // Create a GoogleAuth instance using the processed credentials.
+    const auth = new google.auth.GoogleAuth({
+      credentials: creds,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
+    });
+    
+    // Initialize the Sheets API.
+    const sheets = google.sheets({ version: 'v4', auth });
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: '1ReJOtYibvoz2-cqgs1K1LFyctmM9yTWLXvACORMnc3c',
+      range: "'TOTAL PLEDGES'!A:B"    });
+ 
+    // Use your logic for counting (adjust if needed).
+    const count = Math.max(0, response.data.values.length - 2);
+    res.json({ count });
+  } catch (error) {
+    console.error('Sheet API Error:', error);
     res.status(500).json({ error: error.message });
   }
 });
