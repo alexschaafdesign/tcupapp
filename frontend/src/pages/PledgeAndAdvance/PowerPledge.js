@@ -335,14 +335,14 @@ const PowerPledgeForm = () => {
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       setFormError('Please fill in all required fields');
-      // Highlight invalid fields with red outline
       Object.keys(errors).forEach(field => {
         setTouched(prev => ({ ...prev, [field]: true }));
       });
       return;
     }
+    setFormError(null); // Clear the error message when validation passes
+    
     setIsUploading(true);
-    setError(null);
   
     try {
       const img = new Image();
