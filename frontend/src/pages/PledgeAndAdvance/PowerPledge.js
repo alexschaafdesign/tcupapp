@@ -86,6 +86,8 @@ const PowerPledgeForm = () => {
   const [compositeImage, setCompositeImage] = useState(null);
   const [showAdvanceModal, setShowAdvanceModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+  const [touched, setTouched] = useState({});
 
   const signatureRef = useRef();
   const videoRef = useRef();
@@ -97,6 +99,32 @@ const PowerPledgeForm = () => {
     rootMargin: '100px',
   });
 
+  const validateForm = () => {
+    const errors = {};
+    
+    if (!formData.name?.trim()) {
+      errors.name = 'Name is required';
+    }
+    if (!formData.bands?.trim()) {
+      errors.bands = 'Performer name(s) is required';
+    }
+    if (!formData.contactEmail?.trim()) {
+      errors.contactEmail = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.contactEmail)) {
+      errors.contactEmail = 'Invalid email format';
+    }
+    if (!formData.contactPhone?.trim()) {
+      errors.contactPhone = 'Phone number is required';
+    }
+    if (!signatureData) {
+      errors.signature = 'Signature is required';
+    }
+    if (!imageData) {
+      errors.photo = 'Photo is required';
+    }
+  
+    return errors;
+  };
   
 
   // Fetch background images
@@ -296,9 +324,21 @@ const PowerPledgeForm = () => {
     return y;
   }
 
+  const handleBlur = (field) => {
+    setTouched({ ...touched, [field]: true });
+    const errors = validateForm();
+    setFormErrors(errors);
+  };
+
   const generateFinalImage = async () => {
-    if (!imageData || !signatureData) {
-      alert("Please upload/capture a photo and sign the pledge first.");
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      setFormError('Please fill in all required fields');
+      // Highlight invalid fields with red outline
+      Object.keys(errors).forEach(field => {
+        setTouched(prev => ({ ...prev, [field]: true }));
+      });
       return;
     }
     setIsUploading(true);
@@ -483,10 +523,15 @@ const PowerPledgeForm = () => {
   };
 
   const submitPledge = async () => {
-  if (!finalImage) {
-    alert("Please generate the pledge first!");
-    return;
-  }
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      setFormError('Please fill in all required fields');
+      Object.keys(errors).forEach(field => {
+        setTouched(prev => ({ ...prev, [field]: true }));
+      });
+      return;
+    }
   setIsSubmitting(true);
   setError(null);
 
@@ -513,7 +558,6 @@ const PowerPledgeForm = () => {
         photoUrl,
         pledgeUrl,
         compositeUrl,
-        contactName: formData.contactName || '',
         contactEmail: formData.contactEmail || '',
         contactPhone: formData.contactPhone || ''
       })
@@ -757,21 +801,27 @@ const handleCopy = async () => {
    
             {/* Name & Band Fields */}
             <Box sx={{ mb: 3 }}>
+            <TextField
+              fullWidth
+              label="Your name"
+              value={formData.name}
+              onChange={handleNameChange}
+              onBlur={() => handleBlur('name')}
+              error={touched.name && !!formErrors.name}
+              helperText={touched.name && formErrors.name}
+              required
+              sx={{ mb: 2 }}
+            />
               <TextField
-                fullWidth
-                label="Your name"
-                value={formData.name}
-                onChange={handleNameChange}
-                sx={{ mb: 2 }}
-                required
-              />
-              <TextField
-                fullWidth
-                label="Performer name(s) you are associated with"
-                value={formData.bands}
-                onChange={handleBandChange}
-                required
-              />
+              fullWidth
+              label="Performer name(s) you are associated with"
+              value={formData.bands}
+              onChange={handleBandChange}
+              onBlur={() => handleBlur('bands')}
+              error={touched.bands && !!formErrors.bands}
+              helperText={touched.bands && formErrors.bands}
+              required
+            />
             </Box>
    
             {/* Signature */}
@@ -970,20 +1020,46 @@ const handleCopy = async () => {
               
               <TextField
                 fullWidth
-                label="Email address*"
+                label="Email address"
                 type="email"
                 value={formData.contactEmail || ''}
                 onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
+                onBlur={() => handleBlur('contactEmail')}
+                error={touched.contactEmail && !!formErrors.contactEmail}
+                helperText={touched.contactEmail && formErrors.contactEmail}
+                required
                 sx={{ mb: 2 }}
               />
               <TextField
                 fullWidth
-                label="Phone number*"
+                label="Phone number"
                 type="tel"
                 value={formData.contactPhone || ''}
                 onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
+                onBlur={() => handleBlur('contactPhone')}
+                error={touched.contactPhone && !!formErrors.contactPhone}
+                helperText={touched.contactPhone && formErrors.contactPhone}
+                required
               />
             </Box>
+
+            {formErrors.signature && touched.signature && (
+              <Typography color="error" variant="caption">
+                {formErrors.signature}
+              </Typography>
+            )}
+
+            {formErrors.photo && touched.photo && (
+              <Typography color="error" variant="caption">
+                {formErrors.photo}
+              </Typography>
+            )}
+
+            {formError && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {formError}
+              </Alert>
+            )}
    
             {/* Generate Preview Button */}
             <Button
@@ -1070,7 +1146,7 @@ const handleCopy = async () => {
               ) : (
                 'Submit Pledge'
               )}
-            </Button>;
+            </Button>
           </CardContent>
         </Card>
    
