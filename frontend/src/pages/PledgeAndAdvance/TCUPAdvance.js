@@ -157,15 +157,18 @@ const SimplePledgePage = () => {
             </Typography>
 
             <Typography variant="body1" paragraph>
-            By launching our TCUP Advance, TCUP is taking an initial step to improve the relationship between venues and performers, establishing a consistent standard of communication and transparency.
+            As we strive to foster stronger, more equitable partnerships between venues and performers, TCUP is leading the charge by establishing a new standard of open communication and transparency through our TCUP Advance initiative.
             </Typography>
 
             <Typography variant="body1" paragraph>
-            We understand that not all situations are the same and you will have different needs for every show, so we trust that you will use this resource in the best way you see fit. 
+            We understand that every show is unique. Use the Advance in the way that best fits your needs, trusting that you'll make the right call for each situation.
             </Typography>
 
             <Typography variant="body1" paragraph>
-Hit "Copy text" and then paste into your email. <b>Don't forget to fill out the second section with your own information before sending!</b>            </Typography>
+            Hit "Copy text" and then paste into your email.         </Typography>
+
+            <Typography variant="body1" paragraph>
+            <b>Don't forget to fill out the second section with your own information before sending!</b>            </Typography>
 
             {/* "Copy Text" Button with Icon */}
             <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 1 }}>

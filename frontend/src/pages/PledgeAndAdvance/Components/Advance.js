@@ -33,8 +33,7 @@ I'm writing to advance our upcoming show at ***VENUE*** on ***DATE***. Please fo
 - Preferred soundcheck time/length (or open to fitting DOS schedule)
 - Gear Sharing for the performance
 - Preferred method of payment and DOS contact for payment
-- What accommodations does the venue have for accessibility? Is the venue ADA-accessible? If not, what are some notices we should put out for accessibility?
-  - Does the stage have ramp access?
+
 
 **Attachments**
 - Stage Plot (if applicable)
@@ -52,6 +51,10 @@ I'm writing to advance our upcoming show at ***VENUE*** on ***DATE***. Please fo
   - If so, where in the building?
   - Is there a private bathroom?
   - Is the Wifi login the same?
+- What accommodations does the venue have for accessibility? 
+  - Is the venue ADA-accessible? 
+  -  If not, what are some notices we should put out for accessibility?
+  - Does the stage have ramp access?
 - What is our guest list and hospitality package for the night?
 - Are there any age restrictions at this venue?
 - Merch Commission/Tax: is there any? If so, amounts?
