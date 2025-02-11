@@ -722,9 +722,9 @@ const handleCopy = async () => {
               </Box>
             
                <Typography variant="body" gutterBottom sx={{ width: '100%' }}>
-               As we work to improve the relationship between venues and performers, TCUP is taking an initial step to establish a consistent standard of communication and transparency through our TCUP Advance.
-              <p>Adding your name to the Power Pledge is a way to organize collectively, build relationships, and hold each other up as performers. 
-                We trust that you will use the Advance in the best way you see fit, understanding that not all situations are the same and you will have different needs for every show. 
+               As we strive to foster stronger, more equitable partnerships between venues and performers, TCUP is leading the charge by establishing a new standard of open communication and transparency through our TCUP Advance initiative.
+               <p>By adding your name to the Power Pledge, you can help amplify our collective voice, demonstrating to the industry that a critical mass of performers (500+) demands change. Together, we can take a meaningful step towards improving the conditions we all operate under and building a more supportive environment for live performance to thrive.</p>
+               <p>We understand that every show is unique. Use the Advance in the way that best fits your needs, trusting that you'll make the right call for each situation.
               </p>
               </Typography>
               <Typography 
@@ -746,7 +746,7 @@ const handleCopy = async () => {
                   animation: 'pulse 3s 2'
                 }}
               >
-                We are building towards <span style={{ fontSize: '120%' }}>real collective power</span> and it takes all of us!
+                Real change takes <span style={{ fontSize: '120%' }}>all of us</span>. Join forces and let's build our  <span style={{ fontSize: '120%' }}>collective power</span> together! 
               </Typography>       
 
               <Box sx={{ textAlign: 'center', mb: 4, mt: 4 }}>
@@ -864,7 +864,7 @@ const handleCopy = async () => {
               </Typography>
               
               <Typography variant="body" gutterBottom>
-              An important part of this campaign is being able to demonstrate visually the number of performers that are organizing together. We will display your photo in a banner as a part of a public announcement alongside 500 other pledge signers!
+              Help us visually demonstrate our growing performer solidarity. After signing the pledge, your photo will be prominently featured alongside 500 other musicians in a powerful public banner announcing our collective action.
               </Typography>
    
           
