@@ -864,7 +864,7 @@ const handleCopy = async () => {
               </Typography>
               
               <Typography variant="body" gutterBottom>
-              Help us visually demonstrate our growing performer solidarity. After signing the pledge, your photo will be prominently featured alongside 500 other musicians in a powerful public banner announcing our collective action.
+              Help us visually demonstrate our growing performer solidarity. After signing the pledge, your photo will be prominently featured alongside 500+ other musicians in a powerful public banner announcing our collective action.
               </Typography>
    
           
