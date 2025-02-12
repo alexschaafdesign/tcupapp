@@ -2,22 +2,14 @@
 
 process.env.NODE_OPTIONS = '--openssl-legacy-provider';
 
-
-// Make sure to load environment variables first!
-import './loadEnv.js';
-// Optionally, if you want to use the exported currentEnv for logging:
-import currentEnv from './loadEnv.js';
+// 1) Load environment variables before anything else
+import './loadEnv.js'; // This presumably calls dotenv.config() internally
 
 import express from 'express';
 import cors from 'cors';
-import axios from 'axios';
-// Removed duplicate dotenv import and configuration since it's already done in loadEnv.js
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pg from 'pg';
-import fetch from 'node-fetch'; // if still needed
-import authMiddleware from './middleware/auth.js'; // if still in use
-import sgMail from '@sendgrid/mail';
 
 // Route imports
 import venuesRoutes from './routes/venues.js';
@@ -35,41 +27,23 @@ import pledgesRouter from './routes/pledges.js';
 import flyeringRouter from './routes/flyering.js';
 import imagesRouter from './routes/images.js';
 
+// 2) Optional debugging/logging to confirm environment vars are loaded
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('APP_ENV (or ENV):', process.env.APP_ENV || process.env.ENV);
+console.log('DB_NAME:', process.env.DB_NAME);
+console.log('SENDGRID_API_KEY:', !!process.env.SENDGRID_API_KEY);
+
+// 3) Set up the database
 const { Pool } = pg;
-
-// __filename and __dirname for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// (The dotenv.config call has been removed because it's already handled in loadEnv.js)
-
-// Optional logging to verify that environment variables are loaded:
-console.log('Server env loaded:', {
-  SENDGRID_API_KEY: !!process.env.SENDGRID_API_KEY,
-  NOTIFICATION_EMAIL: process.env.NOTIFICATION_EMAIL,
-  NODE_ENV: process.env.NODE_ENV
-});
-console.log('Using environment file:', `.env.${process.env.NODE_ENV || 'development'}`);
-console.log('Environment variables loaded:', {
-  NODE_ENV: process.env.NODE_ENV,
-  DB_NAME: process.env.DB_NAME,
-  DB_USER: process.env.DB_USER,
-  DB_HOST: process.env.DB_HOST,
-  DB_PORT: process.env.DB_PORT,
-  // Add any others you care about
-});
-
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   port: parseInt(process.env.DB_PORT, 10),
-  // Use SSL if DB_SSL is set to 'true'
   ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
 });
 
-// Test database connection
 pool.connect((err, client, release) => {
   if (err) {
     return console.error('Error acquiring client', err.stack);
@@ -78,45 +52,60 @@ pool.connect((err, client, release) => {
   release();
 });
 
+// 4) Create the Express app
 const app = express();
 const PORT = process.env.PORT || 3001;
-const currentAppEnv = process.env.APP_ENV;
 
+// 5) Define allowed origins per environment
+const allowedOriginsMap = {
+  development: [
+    'http://localhost:3003'
+  ],
+  staging: [
+    'https://staging.tcupboard.org'
+  ],
+  production: [
+    'https://portal.tcupboard.org',
+    'https://tcupmn.org'
+  ]
+};
 
-// 2) CORS configuration
-let allowedOrigins;
-if (process.env.APP_ENV === 'production') {
-  allowedOrigins = ['https://portal.tcupboard.org', 'https://tcupmn.org'];
-} else if (process.env.APP_ENV === 'staging') {
-  allowedOrigins = ['https://staging.tcupboard.org'];
-} else {
-  allowedOrigins = ['http://localhost:3003'];
-}
+// 6) Figure out which environment we’re in
+//    (pick one: APP_ENV, ENV, or NODE_ENV)
+const currentEnv = process.env.NODE_ENV
+  || 'development';
 
-const corsOptions = {
-  origin: function(origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests).
+const allowedOrigins = allowedOriginsMap[currentEnv] 
+  || allowedOriginsMap.development;
+
+// 7) Configure CORS
+//    If you need credentials (cookies, etc.), you must set credentials: true
+//    and cannot use a wildcard (*) for origin.
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
     } else {
-      return callback(new Error('Not allowed by CORS'));
+      callback(new Error(`Not allowed by CORS: ${origin}`));
     }
   },
   credentials: true
-};
+}));
 
-app.use(cors(corsOptions));
+// 8) Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Debug request logging
+// 9) Debug request logging
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`, req.body);
   next();
 });
 
-// 4) API routes
+// 10) Mount your routes (make sure these come after the CORS and body-parser middleware)
 app.use('/api/venues', venuesRoutes);
 app.use('/api/bands', tcupbandsRouter);
 app.use('/api/shows', showsRouter);
@@ -132,7 +121,7 @@ app.use('/api/pledges', pledgesRouter);
 app.use('/api/flyering', flyeringRouter);
 app.use('/api/images', imagesRouter);
 
-// Example database test route
+// Example test route
 app.get('/api/test-db', async (req, res) => {
   try {
     const result = await pool.query('SELECT NOW()');
@@ -195,7 +184,7 @@ app._router.stack.forEach((r) => {
 // Export pool for reuse in other modules (if needed)
 export const db = pool;
 
-// Start server
+// 11) Start the server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}, environment: ${currentEnv}`);
 });

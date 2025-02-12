@@ -103,6 +103,8 @@ function App() {
       <ThemeProvider theme={theme}>
         <Routes>
           <Route path="/" element={<LandingPageTemp />} />
+          <Route path="/landing" element={<LandingPage />} />
+
           <Route path="/powerpledge" element={<PowerPledgeForm />} />
           <Route path="/advance" element={<TCUPAdvance />} />
           <Route path="/pledgesuccess" element={<PledgeSuccess />} />
