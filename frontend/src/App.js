@@ -53,6 +53,9 @@ import TCUPNewsletter from "./pages/Newsletter.js";
 import TCUPAdvance from "./pages/PledgeAndAdvance/TCUPAdvance.js";
 import PledgeSuccess from "./pages/PledgeAndAdvance/PledgeSuccess.js";
 import PledgeTracker from "./pages/PledgeAndAdvance/PledgeTracker.js";
+import * as Sentry from "@sentry/react";
+import ErrorBoundary from "./components/ErrorBoundary.js";
+
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -101,6 +104,7 @@ function App() {
 
     return (
       <ThemeProvider theme={theme}>
+
         <Routes>
           <Route path="/" element={<LandingPageTemp />} />
           <Route path="/landing" element={<LandingPage />} />
@@ -119,7 +123,14 @@ function App() {
               <RootLayout maxWidth={getMaxWidth()}>
                 <Routes>
                   <Route path="/home" element={<ShowsTable />} />
-                  <Route path="/shows" element={<ShowsTable allShows={allShows} />} />
+                  <Route
+                    path="/shows"
+                    element={
+                      <ErrorBoundary>
+                        <ShowsTable />
+                      </ErrorBoundary>
+                    }
+                  />           
                   <Route path="/shows/minimal" element={<ShowsMinimal />} />
                   <Route path="/shows/add" element={<ShowForm />} />
                   <Route path="/shows/add/minimal" element={<ShowFormMinimal />} />

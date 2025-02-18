@@ -1,5 +1,6 @@
 // src/hooks/useApi.js
 import { useAuth0 } from '@auth0/auth0-react';
+import * as Sentry from "@sentry/react";
 
 export const useApi = () => {
   const { getAccessTokenSilently } = useAuth0();
@@ -12,8 +13,8 @@ export const useApi = () => {
           scope: 'openid profile email'
         }
       });
-      
-      // Create a new headers object instead of spreading existing headers
+
+      // Set up headers for the request
       const headers = new Headers({
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -26,14 +27,35 @@ export const useApi = () => {
       });
 
       if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error || `HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        const error = new Error(errorText || `HTTP error! status: ${response.status}`);
+        
+        // Capture API errors in Sentry
+        Sentry.captureException(error, {
+          extra: {
+            url,
+            options,
+            status: response.status,
+            responseText: errorText,
+          }
+        });
+
+        throw error;
       }
 
       return await response.json();
     } catch (error) {
       console.error('API call failed:', error);
-      throw error;
+
+      // Capture unexpected errors (e.g., network issues, token errors)
+      Sentry.captureException(error, {
+        extra: {
+          url,
+          options,
+        }
+      });
+
+      throw error; // Re-throw for UI error handling
     }
   };
 

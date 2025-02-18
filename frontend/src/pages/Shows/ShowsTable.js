@@ -10,7 +10,14 @@ import DynamicFilterComponent from '../../components/DynamicFilterComponent';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import DateRangeFilter from '../../components/DateRangeFilter';
 
+
 function ShowsTable() {
+  console.log("✅ ShowsTable is being rendered"); // Confirm this logs
+
+  if (window.location.search.includes("testerror")) {
+    console.log("🔥 Triggering test error"); // Confirm this logs
+    throw new Error("Test error for Sentry!");
+  }
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   
@@ -69,6 +76,8 @@ function ShowsTable() {
     setPage(0);
   }, [searchTerm, selectedVenue, showTCUPBandsOnly]);
 
+  
+
   // Filter logic remains the same
   const filterEvents = () => {
     const today = dayjs().startOf('day');
@@ -98,6 +107,10 @@ function ShowsTable() {
   
       return matchesSearch && matchesVenue && matchesTCUP && isUpcomingEvent && matchesDateRange;
     });
+  };
+
+  const triggerError = () => {
+    throw new Error("Test error for Sentry!");
   };
 
   const filteredData = filterEvents();
@@ -146,6 +159,11 @@ function ShowsTable() {
 
   return (
     <Box sx={{ paddingBottom: '150px', paddingTop: 1, overflowY: 'auto' }}>
+      
+      <button onClick={() => { throw new Error("Test error for Sentry!"); }}>
+        Trigger Test Error
+      </button>
+      
       <DynamicFilterComponent 
         filters={filters}
         navigate={navigate} />

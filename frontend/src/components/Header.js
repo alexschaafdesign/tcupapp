@@ -28,7 +28,7 @@ const Header = () => {
   const isDevMode = process.env.NODE_ENV === "development";
 
   const navLinks = [
-    { text: "TCUP", isDropdown: true },
+    { text: "TCUP", devOnly: true, isDropdown: true },
     { text: "CUPBOARD 1.0", path: "https://tcupboard.org", external: true },
     { text: "CHAT", path: "/forum", devOnly: true },
     { text: "SHOWS", path: "/shows" },
