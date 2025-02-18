@@ -37,7 +37,7 @@ const Header = () => {
   ];
 
   const tcupLinks = [
-    { text: "CALENDAR", path: "/calendar" },
+    { text: "CALENDAR", path: "/calendar", devOnly:true },
     { text: "VENUE REPORT CARD", path: "/vrc", devOnly: true },
     { text: "POWER PLEDGE", path: "/powerpledge" },
     { text: "PLEDGE PHOTOS", path: "/pledgephotos", devOnly: true },
