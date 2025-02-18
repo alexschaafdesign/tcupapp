@@ -14,10 +14,6 @@ import DateRangeFilter from '../../components/DateRangeFilter';
 function ShowsTable() {
   console.log("✅ ShowsTable is being rendered"); // Confirm this logs
 
-  if (window.location.search.includes("testerror")) {
-    console.log("🔥 Triggering test error"); // Confirm this logs
-    throw new Error("Test error for Sentry!");
-  }
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   
@@ -159,10 +155,6 @@ function ShowsTable() {
 
   return (
     <Box sx={{ paddingBottom: '150px', paddingTop: 1, overflowY: 'auto' }}>
-      
-      <button onClick={() => { throw new Error("Test error for Sentry!"); }}>
-        Trigger Test Error
-      </button>
       
       <DynamicFilterComponent 
         filters={filters}
