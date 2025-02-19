@@ -29,6 +29,11 @@ Sentry.init({
   replaysOnErrorSampleRate: 1.0,
 });
 
+const redirectUri = {
+  development: 'http://localhost:3000/callback',
+  staging: 'https://staging.tcupboard.org/callback',
+  production: 'https://portal.tcupboard.org/callback'
+}[process.env.REACT_APP_APP_ENV || process.env.NODE_ENV];
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -37,23 +42,23 @@ console.log('Client ID:', process.env.REACT_APP_AUTH0_CLIENT_ID);
 
 root.render(
   <Auth0Provider
-    domain={process.env.REACT_APP_AUTH0_DOMAIN}
-    clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
-    authorizationParams={{
-      redirect_uri: `${window.location.origin}/callback`,
-      audience: process.env.REACT_APP_AUTH0_API_IDENTIFIER,
-      scope: 'openid profile email offline_access'
-    }}
-    cacheLocation="localstorage"
-    useRefreshTokens={true}
-    onRedirectCallback={(appState) => {
-      window.history.replaceState(
-        {},
-        document.title,
-        appState?.returnTo || window.location.pathname
-      );
-    }}
-  >
+  domain={process.env.REACT_APP_AUTH0_DOMAIN}
+  clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+  authorizationParams={{
+    redirect_uri: redirectUri,
+    audience: process.env.REACT_APP_AUTH0_API_IDENTIFIER,
+    scope: 'openid profile email offline_access'
+  }}
+  cacheLocation="localstorage"
+  useRefreshTokens={true}
+  onRedirectCallback={(appState) => {
+    window.history.replaceState(
+      {},
+      document.title,
+      appState?.returnTo || window.location.pathname
+    );
+  }}
+>
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
