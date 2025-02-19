@@ -6,7 +6,7 @@
   "proxy": "https://tcupboard.org",
   "dependencies": {
     "-": "^0.0.1",
-    "@auth0/auth0-react": "^2.2.4",
+    "@auth0/auth0-react": "^2.3.0",
     "@cloudinary/url-gen": "^1.21.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
