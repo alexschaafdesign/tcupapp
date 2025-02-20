@@ -5,6 +5,7 @@ import { buttonStyles } from './button';
 import { textFieldStyles } from './textfield';
 import { components } from './components';
 import { tables } from './tables'
+import { AppBarStyles } from './AppBar';
 
 const theme = createTheme({
   palette,
@@ -14,6 +15,7 @@ const theme = createTheme({
     ...textFieldStyles,
     ...components,
     ...tables,
+    ...AppBarStyles,
   },
 });
 

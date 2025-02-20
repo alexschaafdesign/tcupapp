@@ -18,6 +18,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import HeaderUserProfile from "./HeaderUserProfile";
 import { Link } from "react-router-dom";
 
+
+
 const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -183,25 +185,13 @@ const Header = () => {
   return (
     <>
       {/* Desktop Vertical Header */}
-      <AppBar
-        position="fixed"
-        sx={{
-          backgroundColor: "primary.main",
-          width: { xs: "0px", md: "200px" },
-          height: "100vh",
-          left: 0,
-          right: "auto",
-          display: { xs: "none", md: "flex" },
-          flexDirection: "column",
-          padding: "20px",
-          boxShadow: 4,
-        }}
-      >
+      <AppBar position="fixed">
+
         <Box sx={{ display: "flex", justifyContent: "center", mb: "30px" }}>
           <Link to="/shows">
             <Box
               component="img"
-              src="https://res.cloudinary.com/dsll3ms2c/image/upload/v1735343525/LOGO_512_3x_t11sld.png"
+              src="https://res.cloudinary.com/dsll3ms2c/image/upload/v1740082499/TCUPlogo-traced_BLACK_a0wwot.png"
               alt="TCUP Logo"
               sx={{
                 width: "140px",
