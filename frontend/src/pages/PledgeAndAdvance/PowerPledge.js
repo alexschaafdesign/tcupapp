@@ -523,6 +523,7 @@ const PowerPledgeForm = () => {
   };
 
   const submitPledge = async () => {
+    console.log('Submission started');
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
@@ -542,12 +543,15 @@ const PowerPledgeForm = () => {
       const photoBlob = dataURLtoBlob(imageData);
       const pledgeBlob = dataURLtoBlob(pledgeImage);
       const compositeBlob = dataURLtoBlob(compositeImage);
+      console.log('Uploading images...');
   
       const [photoUrl, pledgeUrl, compositeUrl] = await Promise.all([
         uploadToCloudinary(photoBlob),
         uploadToCloudinary(pledgeBlob),
         uploadToCloudinary(compositeBlob)
       ]);
+      console.log('Image uploads complete');
+
   
       const response = await fetch(`${process.env.REACT_APP_API_URL}/pledges`, {
         method: 'POST',
@@ -567,7 +571,8 @@ const PowerPledgeForm = () => {
   
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Failed to save pledge');
-      
+      console.log('API call complete');
+
       setShowSuccessModal(true);
       return { success: true };
     } catch (err) {
