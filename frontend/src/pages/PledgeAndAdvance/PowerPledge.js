@@ -530,50 +530,56 @@ const PowerPledgeForm = () => {
       Object.keys(errors).forEach(field => {
         setTouched(prev => ({ ...prev, [field]: true }));
       });
-      return;
+      return { success: false };
     }
-  setIsSubmitting(true);
-  setError(null);
+    setIsSubmitting(true);
+    setError(null);
 
-  try {
-    // Upload all three images
-    const photoBlob = dataURLtoBlob(imageData);
-    const pledgeBlob = dataURLtoBlob(pledgeImage);
-    const compositeBlob = dataURLtoBlob(compositeImage);
 
-    const [photoUrl, pledgeUrl, compositeUrl] = await Promise.all([
-      uploadToCloudinary(photoBlob),
-      uploadToCloudinary(pledgeBlob),
-      uploadToCloudinary(compositeBlob)
-    ]);
-
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/pledges`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
-        name: formData.name,
-        bands: formData.bands,
-        signatureUrl: signatureData,
-        photoUrl,
-        pledgeUrl,
-        compositeUrl,
-        contactEmail: formData.contactEmail || '',
-        contactPhone: formData.contactPhone || ''
-      })
-    });
-
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Failed to save pledge');
-    
-    setShowSuccessModal(true);
-  } catch (err) {
-    console.error('Submission error:', err);
-    setError(`Failed to submit pledge: ${err.message}`);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  
+    try {
+      // Upload all three images
+      const photoBlob = dataURLtoBlob(imageData);
+      const pledgeBlob = dataURLtoBlob(pledgeImage);
+      const compositeBlob = dataURLtoBlob(compositeImage);
+  
+      const [photoUrl, pledgeUrl, compositeUrl] = await Promise.all([
+        uploadToCloudinary(photoBlob),
+        uploadToCloudinary(pledgeBlob),
+        uploadToCloudinary(compositeBlob)
+      ]);
+  
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/pledges`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          name: formData.name,
+          bands: formData.bands,
+          signatureUrl: signatureData,
+          photoUrl,
+          pledgeUrl,
+          compositeUrl,
+          contactEmail: formData.contactEmail || '',
+          contactPhone: formData.contactPhone || ''
+        })
+      });
+  
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Failed to save pledge');
+      
+      setShowSuccessModal(true);
+      return { success: true };
+    } catch (err) {
+      console.error('Submission error:', err);
+      setError(
+        `Oops, the upload failed for some reason! Please try again, and if it still doesn't work, save the images from the "Preview" above and email to laurak@takeactionminnesota.org. Thanks!`
+      );
+      return { success: false };
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
 const handleCopy = async () => {
   try {
@@ -706,11 +712,7 @@ const handleCopy = async () => {
               }}
             />
           </Box>
-            {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {error}
-              </Alert>
-            )}
+            
         
             {/* Title & Pledge Text */}
             <Box sx={{ width: '100%', mb: 4 }}>
@@ -1127,14 +1129,22 @@ const handleCopy = async () => {
                 </Grid>
               </Paper>
             )}
+
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
    
             {/* Submit Button */}
             <Button
               variant="contained"
               fullWidth
-              onClick={() => {
-                submitPledge();
-                handleSuccess();
+              onClick={async () => {
+                const result = await submitPledge();
+                if (result.success) {
+                  handleSuccess();
+                }
               }}
               disabled={!finalImage || isUploading || isSubmitting}
               sx={{ mt: 2 }}
