@@ -72,8 +72,7 @@ const allowedOriginsMap = {
 
 // 6) Figure out which environment we’re in
 //    (pick one: APP_ENV, ENV, or NODE_ENV)
-const currentEnv = process.env.NODE_ENV
-  || 'development';
+const currentEnv = process.env.APP_ENV || process.env.NODE_ENV || 'development';
 
 const allowedOrigins = allowedOriginsMap[currentEnv] 
   || allowedOriginsMap.development;
