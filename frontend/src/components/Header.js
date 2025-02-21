@@ -18,8 +18,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 import HeaderUserProfile from "./HeaderUserProfile";
 import { Link } from "react-router-dom";
 
-
-
 const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -30,19 +28,17 @@ const Header = () => {
   const isDevMode = process.env.NODE_ENV === "development";
 
   const navLinks = [
-    { text: "TCUP", devOnly: true, isDropdown: true },
-    { text: "CUPBOARD 1.0", path: "https://tcupboard.org", external: true },
-    { text: "CHAT", path: "/forum", devOnly: true },
-    { text: "SHOWS", path: "/shows" },
-    { text: "VENUES", path: "/venues" },
-    { text: "BANDS", path: "/bands", devOnly: true },
+    { text: "chat", path: "/forum", devOnly: true },
+    { text: "show list", path: "/shows" },
+    { text: "resources", path: "/resources", isDropdown: true, devOnly: true },
   ];
 
-  const tcupLinks = [
-    { text: "CALENDAR", path: "/calendar", devOnly:true },
-    { text: "VENUE REPORT CARD", path: "/vrc", devOnly: true },
-    { text: "POWER PLEDGE", path: "/powerpledge" },
-    { text: "PLEDGE PHOTOS", path: "/pledgephotos", devOnly: true },
+  const resourceLinks = [
+    { text: "venues", path: "/venues" },
+    { text: "bands", path: "/bands", devOnly: true },
+    { text: "session musicians", path: "/sessionmusicians", devOnly: true },
+    { text: "venue report card", path: "/vrc", devOnly: true },
+    { text: "power pledge", path: "/powerpledge" },
   ];
 
   const displayedLinks = navLinks.map((link) => ({
@@ -50,7 +46,7 @@ const Header = () => {
     disabled: !isDevMode && link.devOnly,
   }));
 
-  const displayedTcupLinks = tcupLinks.map((link) => ({
+  const displayedResourceLinks = resourceLinks.map((link) => ({
     ...link,
     disabled: !isDevMode && link.devOnly,
   }));
@@ -73,14 +69,21 @@ const Header = () => {
         target="_blank"
         rel="noopener noreferrer"
         sx={{
-          color: "white",
+          color: "#000000",
           cursor: "pointer",
-          "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
+          fontFamily: "'Geist Mono', 'SF Mono', Menlo, monospace",
+          textTransform: "lowercase",
+          "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
+          py: 1,
         }}
       >
         <ListItemText
           primary={link.text}
-          primaryTypographyProps={{ fontWeight: "bold" }}
+          primaryTypographyProps={{ 
+            fontFamily: "'Geist Mono', 'SF Mono', Menlo, monospace",
+            textTransform: "lowercase",
+            fontSize: "16px",
+          }}
         />
       </ListItem>
     ) : (
@@ -94,17 +97,25 @@ const Header = () => {
           }
         }}
         sx={{
-          color: "white",
+          color: "#000000",
           cursor: link.disabled ? "not-allowed" : "pointer",
           opacity: link.disabled ? 0.5 : 1,
+          fontFamily: "'Courier New', monospace",
+          textTransform: "lowercase",
           "&:hover": {
-            backgroundColor: link.disabled ? "transparent" : "rgba(255, 255, 255, 0.1)",
+            backgroundColor: link.disabled ? "transparent" : "rgba(0, 0, 0, 0.04)",
           },
+          py: .5,
+          
         }}
       >
         <ListItemText
           primary={link.text}
-          primaryTypographyProps={{ fontWeight: "bold" }}
+          primaryTypographyProps={{ 
+            fontFamily: "'Courier New', monospace",
+            textTransform: "lowercase",
+            fontSize: "16px",
+          }}
         />
       </ListItem>
     );
@@ -118,32 +129,40 @@ const Header = () => {
     );
   };
 
-  const TcupMenu = () => (
+  const ResourcesMenu = () => (
     <>
       <ListItem
         button
         onClick={() => setIsTcupExpanded(!isTcupExpanded)}
         sx={{
-          color: "white",
+          color: "#000000",
           cursor: "pointer",
-          "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
+          fontFamily: "'Courier New', monospace",
+          textTransform: "lowercase",
+          "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
+          py: 0,
         }}
       >
         <ListItemText
-          primary="TCUP"
-          primaryTypographyProps={{ fontWeight: "bold" }}
+          primary="resources"
+          primaryTypographyProps={{ 
+            fontFamily: "'Courier New', monospace",
+            textTransform: "lowercase",
+            fontSize: "16px",
+          }}
         />
-        <ExpandMoreIcon />
+        {isTcupExpanded ? <ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} /> : <ExpandMoreIcon />}
       </ListItem>
       <Collapse in={isTcupExpanded}>
         <Box sx={{ 
-          backgroundColor: 'rgba(255, 255, 255, 0.05)',
-          borderLeft: '3px solid rgba(255, 255, 255, 0.2)',
-          mx: 2,
-          borderRadius: '4px',
+          backgroundColor: 'rgba(0, 0, 0, 0.02)',
+          borderLeft: '2px solid rgba(0, 0, 0, 0.1)',
+          ml: 2,
+          mr: 1,
+          borderRadius: '2px',
           overflow: 'hidden'
         }}>
-          {displayedTcupLinks.map((link, index) => (
+          {displayedResourceLinks.map((link, index) => (
             <NavLink
               key={index}
               link={{
@@ -170,14 +189,21 @@ const Header = () => {
           : loginWithRedirect()
       }
       sx={{
-        color: "white",
+        color: "#000000",
         cursor: "pointer",
-        "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
+        fontFamily: "'Courier New', monospace",
+        textTransform: "lowercase",
+        "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
+        py: 1.5,
       }}
     >
       <ListItemText
-        primary={isAuthenticated ? "LOGOUT" : "LOGIN"}
-        primaryTypographyProps={{ fontWeight: "bold" }}
+        primary={isAuthenticated ? "logout" : "login"}
+        primaryTypographyProps={{ 
+          fontFamily: "'Courier New', monospace",
+          textTransform: "lowercase",
+          fontSize: "16px",
+        }}
       />
     </ListItem>
   );
@@ -185,247 +211,241 @@ const Header = () => {
   return (
     <>
       {/* Desktop Vertical Header */}
-      <AppBar position="fixed">
-
-        <Box sx={{ display: "flex", justifyContent: "center", mb: "30px" }}>
-          <Link to="/shows">
+      <AppBar 
+        position="fixed"
+        sx={{
+          width: '224px',
+          height: '100vh',
+          left: 0,
+          top: 0,
+          background: 'linear-gradient(180deg, #ECECEC 0%, #FFFFFF 100%)',
+          boxShadow: '1px 0px 3px rgba(0, 0, 0, 0.1)',
+          color: '#000000',
+          display: { xs: "none", md: "block" }, // Hide on mobile
+          "& *": { zIndex: 2 },
+          "&::before": {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'url("https://res.cloudinary.com/dsll3ms2c/image/upload/v1740149767/noisebg2_for_header_mf37pv.png")',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            opacity: 0.4,
+            zIndex: 1,
+          },
+        }}
+      >
+        {/* Desktop header content remains the same */}
+        <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+          {/* Logo Section */}
+          <Box sx={{ pt: 2, pb: 1, px: 2, textAlign: "center" }}>
+            <Link to="/">
+              <Box
+                component="img"
+                src="https://res.cloudinary.com/dsll3ms2c/image/upload/v1740082499/TCUPlogo-traced_BLACK_a0wwot.png"
+                alt="TCUP Logo"
+                sx={{
+                  width: "140px",
+                  height: "auto",
+                  mb: 1,
+                }}
+              />
+            </Link>
             <Box
-              component="img"
-              src="https://res.cloudinary.com/dsll3ms2c/image/upload/v1740082499/TCUPlogo-traced_BLACK_a0wwot.png"
-              alt="TCUP Logo"
               sx={{
-                width: "140px",
-                height: "140px",
-                borderRadius: "50%",
-                objectFit: "cover",
-                cursor: "pointer",
-              }}
-            />
-          </Link>
-        </Box>
-
-        <List sx={{ width: "100%", display: "flex", flexDirection: "column", height: "100%" }}>
-          <TcupMenu />
-          {displayedLinks.filter(link => !link.isDropdown).map((link, index) => (
-            <NavLink key={index} link={link} />
-          ))}
-
-          {/* People section with devMode handling */}
-          {(!isDevMode ? (
-            <Tooltip title="Coming Soon" arrow placement="right">
-              <Box>
-                <ListItem
-                  button
-                  disabled={true}
-                  sx={{
-                    color: "white",
-                    cursor: "not-allowed",
-                    opacity: 0.5,
-                    "&:hover": { backgroundColor: "transparent" },
-                  }}
-                >
-                  <ListItemText
-                    primary="PEOPLE"
-                    primaryTypographyProps={{ fontWeight: "bold" }}
-                  />
-                  <ExpandMoreIcon />
-                </ListItem>
-              </Box>
-            </Tooltip>
-          ) : (
-            <ListItem
-              button
-              onClick={() => setIsExpanded(!isExpanded)}
-              sx={{
-                color: "white",
-                cursor: "pointer",
-                "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
+                fontFamily: "'Geist Mono', monospace",
+                textAlign: "center",
+                mb: 0
               }}
             >
-              <ListItemText
-                primary="PEOPLE"
-                primaryTypographyProps={{ fontWeight: "bold" }}
-              />
-              <ExpandMoreIcon />
-            </ListItem>
-          ))}
-
-          {isExpanded && (
-            <Box sx={{ 
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
-              borderLeft: '3px solid rgba(255, 255, 255, 0.2)',
-              mx: 2,
-              borderRadius: '4px',
-              overflow: 'hidden'
-            }}>
-              <ListItem
-                button
-                onClick={() => {
-                  navigate("/sessionmusicians");
-                  setDrawerOpen(false);
-                }}
-                sx={{
-                  color: "white",
-                  cursor: "pointer",
-                  "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
-                }}
-              >
-                <ListItemText
-                  primary="SESSION MUSICIANS"
-                  primaryTypographyProps={{ fontWeight: "bold" }}
-                />
-              </ListItem>
+              <Box sx={{ fontSize: "16px", fontWeight: 400, lineHeight: 1 }}>
+                the
+              </Box>
+              <Box sx={{ fontSize: "25px", fontWeight: 900 }}>
+                CUPBOARD
+              </Box>
             </Box>
-          )}
-
+          </Box>
+          
+          <Divider sx={{ mx: 2, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
+  
+          {/* Navigation Links */}
+          <List sx={{ width: "100%", px: 2, py: 1 }}>
+            {displayedLinks.filter(link => !link.isDropdown).map((link, index) => (
+              <NavLink key={index} link={link} />
+            ))}
+            <Divider sx={{ mx: 0, my: 2, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
+            <ResourcesMenu />
+          </List>
+  
+          {/* Auth Section */}
           <Box sx={{ mt: "auto" }}>
             {isAuthenticated && (
               <>
-                <Divider sx={{ my: 2, backgroundColor: "rgba(255, 255, 255, 0.2)" }} />
+                <Divider sx={{ mx: 3, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
                 <HeaderUserProfile />
               </>
             )}
-            <Divider sx={{ my: 2, backgroundColor: "rgba(255, 255, 255, 0.2)" }} />
-            <AuthButtons />
+            <Divider sx={{ mx: 3, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
+            <List sx={{ px: 2 }}>
+              <AuthButtons />
+            </List>
           </Box>
-        </List>
+        </Box>
       </AppBar>
-
+  
       {/* Mobile Header */}
       <AppBar
         position="sticky"
         sx={{
-          backgroundColor: "primary.main",
-          display: { xs: "flex", md: "none" },
+          backgroundColor: "#F5F5F5",
+          display: { xs: "flex", md: "none" }, // Show only on mobile
           flexDirection: "row",
           padding: "10px 20px",
-          height: "80px",
+          height: "60px",
+          width: "100%",
           alignItems: "center",
+          boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1)',
+          color: '#000000',
+          "&::before": {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'url("https://res.cloudinary.com/dsll3ms2c/image/upload/v1740072216/noisebg_for_header_xyr0ou.png")',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            opacity: 0.15,
+            zIndex: 1,
+          },
         }}
       >
         <Box
           component="img"
-          src={`${process.env.PUBLIC_URL}/assets/icons/tcuplogo.png`}
+          src="https://res.cloudinary.com/dsll3ms2c/image/upload/v1740082499/TCUPlogo-traced_BLACK_a0wwot.png"
           alt="TCUP Logo"
           sx={{
-            width: "60px",
-            height: "60px",
-            borderRadius: "50%",
-            objectFit: "cover",
+            width: "40px",
+            height: "40px",
+            zIndex: 2,
           }}
         />
-
+        <Box 
+          sx={{ 
+            ml: 2, 
+            zIndex: 2,
+            fontFamily: "'Geist Mono', monospace",
+          }}
+        >
+          <Box sx={{ fontSize: "12px", fontWeight: 400, lineHeight: 1 }}>
+            the
+          </Box>
+          <Box sx={{ fontSize: "18px", fontWeight: 900 }}>
+            CUPBOARD
+          </Box>
+        </Box>
+  
         <IconButton
-          sx={{ marginLeft: "auto", color: "white" }}
+          sx={{ marginLeft: "auto", color: "#000000", zIndex: 2 }}
           onClick={toggleDrawer(true)}
         >
           <MenuIcon />
         </IconButton>
       </AppBar>
-
-      {/* Mobile Drawer */}
+  
+      {/* Mobile Drawer - Update mobile drawer to match desktop styling */}
       <Drawer 
-        anchor="right" 
+        anchor="left" 
         open={drawerOpen} 
         onClose={toggleDrawer(false)}
         PaperProps={{
           sx: {
-            backgroundColor: "primary.main",
             width: "250px",
-            color: "white",
+            background: 'linear-gradient(180deg, #ECECEC 0%, #FFFFFF 100%)',
+            color: '#000000',
+            "&::before": {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background: 'url("https://res.cloudinary.com/dsll3ms2c/image/upload/v1740072216/noisebg_for_header_xyr0ou.png")',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              opacity: 0.15,
+              zIndex: 1,
+            },
           }
         }}
       >
-        <Box sx={{ py: 2 }}>
-          <List>
-            <TcupMenu />
+        <Box sx={{ py: 2, display: "flex", flexDirection: "column", height: "100%" }}>
+          <Box sx={{ px: 2, textAlign: "center", mb: 2 }}>
+            <Link to="/" onClick={() => setDrawerOpen(false)}>
+              <Box
+                component="img"
+                src="https://res.cloudinary.com/dsll3ms2c/image/upload/v1740082499/TCUPlogo-traced_BLACK_a0wwot.png"
+                alt="TCUP Logo"
+                sx={{
+                  width: "100px",
+                  height: "auto",
+                  mb: 1,
+                  zIndex: 2,
+                }}
+              />
+            </Link>
+            <Box
+              sx={{
+                fontFamily: "'Geist Mono', monospace",
+                textAlign: "center",
+                mb: 0,
+                zIndex: 2,
+              }}
+            >
+              <Box sx={{ fontSize: "16px", fontWeight: 400, lineHeight: 1 }}>
+                the
+              </Box>
+              <Box sx={{ fontSize: "25px", fontWeight: 900 }}>
+                CUPBOARD
+              </Box>
+            </Box>
+          </Box>
+          
+          <Divider sx={{ mx: 2, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
+          
+          <List sx={{ px: 2, py: 1, zIndex: 2 }}>
             {displayedLinks.filter(link => !link.isDropdown).map((link, index) => (
               <NavLink key={index} link={link} />
             ))}
-
-            {/* People Section */}
-            {!isDevMode ? (
-              <Tooltip title="Coming Soon" arrow placement="right">
-                <Box>
-                  <ListItem
-                    button
-                    disabled={true}
-                    sx={{
-                      color: "white",
-                      cursor: "not-allowed",
-                      opacity: 0.5,
-                      "&:hover": { backgroundColor: "transparent" },
-                    }}
-                  >
-                    <ListItemText
-                      primary="PEOPLE"
-                      primaryTypographyProps={{ fontWeight: "bold" }}
-                    />
-                    <ExpandMoreIcon />
-                  </ListItem>
-                </Box>
-              </Tooltip>
-            ) : (
-              <>
-                <ListItem
-                  button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  sx={{
-                    color: "white",
-                    cursor: "pointer",
-                    "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
-                  }}
-                >
-                  <ListItemText
-                    primary="PEOPLE"
-                    primaryTypographyProps={{ fontWeight: "bold" }}
-                  />
-                  <ExpandMoreIcon />
-                </ListItem>
-                <Collapse in={isExpanded}>
-                  <Box sx={{ 
-                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    borderLeft: '3px solid rgba(255, 255, 255, 0.2)',
-                    mx: 2,
-                    borderRadius: '4px',
-                    overflow: 'hidden'
-                  }}>
-                    <ListItem
-                      button
-                      onClick={() => {
-                        navigate("/sessionmusicians");
-                        setDrawerOpen(false);
-                      }}
-                      sx={{
-                        color: "white",
-                        cursor: "pointer",
-                        "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
-                      }}
-                    >
-                      <ListItemText
-                        primary="SESSION MUSICIANS"
-                        primaryTypographyProps={{ fontWeight: "bold" }}
-                      />
-                    </ListItem>
-                  </Box>
-                </Collapse>
-              </>
-            )}
-
+            <Divider sx={{ mx: 0, my: 2, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
+            <ResourcesMenu />
+          </List>
+  
+          <Box sx={{ mt: "auto", zIndex: 2 }}>
             {isAuthenticated && (
               <>
-                <Divider sx={{ my: 2, backgroundColor: "rgba(255, 255, 255, 0.2)" }} />
+                <Divider sx={{ mx: 2, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
                 <HeaderUserProfile />
               </>
             )}
-            <Divider sx={{ my: 2, backgroundColor: "rgba(255, 255, 255, 0.2)" }} />
-            <AuthButtons />
-          </List>
+            <Divider sx={{ mx: 2, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
+            <List sx={{ px: 2 }}>
+              <AuthButtons />
+            </List>
+          </Box>
         </Box>
       </Drawer>
-
+  
       {/* Content Margin Offset */}
-      <Box sx={{ marginLeft: { xs: 0, md: "250px" } }} />
+      <Box sx={{ marginLeft: { xs: 0, md: "224px" } }} />
     </>
   );
 };

@@ -1418,6 +1418,11 @@
   resolved "https://registry.npmjs.org/@fontsource/arimo/-/arimo-5.1.1.tgz"
   integrity sha512-D0pn+VveLnBhVllkb17KQCeDrN6VSyv0xD3mxAJbd9/nvQfRDQwYWm9Ct1TRXnA9DgQ//7KXXEptWWGP11DqlA==
 
+"@fontsource/geist-mono@^5.1.1":
+  version "5.1.1"
+  resolved "https://registry.npmjs.org/@fontsource/geist-mono/-/geist-mono-5.1.1.tgz"
+  integrity sha512-Rr/VXX3qyRsLgEFwFUqhDS7PORzQUBDLoQc8bONbBz+hZ+SD8U0nEzHqRFBzT3zFcsf/0bMyCQPZUktKwPt3GQ==
+
 "@fullcalendar/core@~6.1.15":
   version "6.1.15"
   resolved "https://registry.npmjs.org/@fullcalendar/core/-/core-6.1.15.tgz"
