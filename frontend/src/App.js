@@ -55,6 +55,7 @@ import PledgeSuccess from "./pages/PledgeAndAdvance/PledgeSuccess.js";
 import PledgeTracker from "./pages/PledgeAndAdvance/PledgeTracker.js";
 import * as Sentry from "@sentry/react";
 import ErrorBoundary from "./components/ErrorBoundary.js";
+import Layout from "./components/layout/Layout.js";
 
 
 function App() {
@@ -104,7 +105,7 @@ function App() {
 
     return (
       <ThemeProvider theme={theme}>
-
+      <Layout>
         <Routes>
           <Route path="/" element={<LandingPageTemp />} />
           <Route path="/landing" element={<LandingPage />} />
@@ -119,8 +120,6 @@ function App() {
 
           <Route path="/*" element={
             <>
-              <Header />
-              <RootLayout maxWidth={getMaxWidth()}>
                 <Routes>
                   <Route path="/home" element={<ShowsTable />} />
                   <Route
@@ -171,10 +170,10 @@ function App() {
                   <Route path="/sessionmusicians/:id" element={<SessionMusicianProfile />} />
                   <Route path="*" element={<div style={{ textAlign: "center", padding: "20px" }}>Page Not Found</div>} />
                 </Routes>
-              </RootLayout>
             </>
           } />
         </Routes>
+        </Layout>
       </ThemeProvider>
     );
    }

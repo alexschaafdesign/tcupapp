@@ -5,15 +5,19 @@ import { buttonStyles } from './button';
 import { textFieldStyles } from './textfield';
 import { components } from './components';
 import { tables } from './tables'
+import { AppBarStyles } from './AppBar';
 
 const theme = createTheme({
   palette,
-  typography,
-  components: {
+  typography: {
+    fontFamily: "'Geist Mono', 'SF Mono', Menlo, monospace",
+  },
+    components: {
     ...buttonStyles,
     ...textFieldStyles,
     ...components,
     ...tables,
+    ...AppBarStyles,
   },
 });
 
