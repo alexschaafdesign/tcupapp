@@ -219,7 +219,7 @@ const Header = () => {
           left: 0,
           top: 0,
           background: 'linear-gradient(180deg, #ECECEC 0%, #FFFFFF 100%)',
-          boxShadow: '1px 0px 3px rgba(0, 0, 0, 0.1)',
+          boxShadow: '1px 0px 4px rgba(0, 0, 0, 0.1)',
           color: '#000000',
           display: { xs: "none", md: "block" }, // Hide on mobile
           "& *": { zIndex: 2 },
