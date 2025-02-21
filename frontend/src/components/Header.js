@@ -265,7 +265,7 @@ const Header = () => {
               <Box sx={{ fontSize: "16px", fontWeight: 400, lineHeight: 1 }}>
                 the
               </Box>
-              <Box sx={{ fontSize: "25px", fontWeight: 900 }}>
+              <Box sx={{ fontSize: "25px", fontWeight: 900, color: "#6138B3" }}>
                 CUPBOARD
               </Box>
             </Box>

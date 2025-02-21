@@ -137,7 +137,7 @@ function App() {
                   <Route path="/shows/:id" element={<ShowProfile />} />
                   <Route path="/shows/:id/minimal" element={<ShowProfileMinimal />} />
                   <Route path="/shows/:id/edit/minimal" element={<EditShowPageMinimal />} />
-                  <Route path="/forum" element={<ForumContainer />} />
+                  <Route path="/chat" element={<ForumContainer />} />
                   <Route path="/messages" element={<ThreadList category="General" />} />
                   <Route path="/thread/:threadId" element={<ThreadView />} />
                   <Route path="/import" element={<AdminImportPost />} />
