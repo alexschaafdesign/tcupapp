@@ -10,14 +10,24 @@ import {
   Typography,
   CircularProgress,
   Chip,
-  Stack
+  Stack,
+  Collapse,
+  Divider,
+  Badge,
+  Card,
+  CardContent
 } from '@mui/material';
-import { Edit as EditIcon, Close as CloseIcon, History as HistoryIcon } from '@mui/icons-material';
+import { 
+  Edit as EditIcon, 
+  Close as CloseIcon, 
+  History as HistoryIcon,
+  FilterList as FilterIcon,
+  Add as AddIcon
+} from '@mui/icons-material';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 import CreatePost from './Components/CreatePost';
 import PostList from './Components/PostList';
-import { height } from '@mui/system';
 
 export const ForumContainer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,6 +35,7 @@ export const ForumContainer = () => {
   const [tags, setTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -47,7 +58,6 @@ export const ForumContainer = () => {
         }
         const response = await fetch(url); 
         const data = await response.json();
-        console.log('Posts response:', data); // Add in fetchPosts after json()
         setPosts(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Error fetching posts:', error);
@@ -74,33 +84,79 @@ export const ForumContainer = () => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Tag Filter */}
-      <Paper sx={{ p: 2, mb: 4, }}>
-        <Typography variant="subtitle2" gutterBottom>
-          Filter by tags:
-        </Typography>
-        <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
-          {tags.map(tag => (
-            <Chip
-              key={tag.id}
-              label={tag.name}
-              onClick={() => handleTagClick(tag.id)}
-              color={selectedTags.includes(tag.id) ? "primary" : "default"}
-              sx={{ m: 0.5 }}
-            />
-          ))}
-        </Stack>
+      {/* Collapsible Tag Filter */}
+      <Paper 
+        elevation={1}
+        sx={{ 
+          p: 2, 
+          mb: 4, 
+          borderRadius: '8px'
+        }}
+      >
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            cursor: 'pointer',
+            mb: showFilters ? 2 : 0
+          }}
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <FilterIcon sx={{ mr: 1, color: 'text.secondary' }} />
+            <Typography variant="subtitle1" fontWeight={500}>
+              Filters
+              {selectedTags.length > 0 && (
+                <Badge 
+                  badgeContent={selectedTags.length} 
+                  color="primary" 
+                  sx={{ ml: 1 }}
+                />
+              )}
+            </Typography>
+          </Box>
+          <IconButton size="small">
+            {showFilters ? <CloseIcon fontSize="small" /> : <FilterIcon fontSize="small" />}
+          </IconButton>
+        </Box>
+        <Collapse in={showFilters}>
+          <Divider sx={{ my: 1 }} />
+          <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary' }}>
+            Select tags to filter discussions:
+          </Typography>
+          <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
+            {tags.map(tag => (
+              <Chip
+                key={tag.id}
+                label={tag.name}
+                onClick={() => handleTagClick(tag.id)}
+                color={selectedTags.includes(tag.id) ? "primary" : "default"}
+                variant={selectedTags.includes(tag.id) ? "filled" : "outlined"}
+                sx={{ 
+                  m: 0.5,
+                  borderRadius: '4px',
+                  fontWeight: selectedTags.includes(tag.id) ? 500 : 400,
+                }}
+              />
+            ))}
+          </Stack>
+        </Collapse>
       </Paper>
 
       {/* Create Post Trigger */}
       <Paper 
+        elevation={2}
         sx={{ 
           p: 2, 
-          mb: 2, 
+          mb: 4, 
           display: 'flex', 
           alignItems: 'center',
           cursor: 'pointer',
-          '&:hover': { bgcolor: 'action.hover' }
+          '&:hover': { bgcolor: 'action.hover' },
+          borderRadius: '8px',
+          border: '1px solid',
+          borderColor: 'divider'
         }}
         onClick={() => setIsModalOpen(true)}
       >
@@ -111,32 +167,70 @@ export const ForumContainer = () => {
           placeholder="Start a new discussion..."
           InputProps={{ 
             disableUnderline: true,
-            readOnly: true
+            readOnly: true,
+            sx: { fontSize: '1rem' }
           }}
           sx={{ mr: 2 }}
         />
         <Stack direction="row" spacing={1}>
-          <Button variant="contained" size="small"
-            sx={{ height: '42px' }}
-
-          
+          <Button 
+            variant="contained" 
+            size="medium"
+            color="primary"
+            startIcon={<AddIcon />}
+            sx={{ 
+              height: '42px',
+              textTransform: 'none',
+              fontWeight: 500,
+              borderRadius: '6px',
+              boxShadow: 2
+            }}
           >
             New thread
           </Button>
           <Button 
             variant="outlined" 
-            size="small" 
-
+            size="medium" 
             startIcon={<HistoryIcon />}
             onClick={(e) => {
               e.stopPropagation();
               navigate('/import');
             }}
-            sx={{}}
+            sx={{
+              height: '42px',
+              textTransform: 'none',
+              borderRadius: '6px'
+            }}
           >
+            History
           </Button>
         </Stack>
       </Paper>
+
+      {/* Mobile Floating Action Button (visible on small screens) */}
+      <Box 
+        sx={{ 
+          position: 'fixed', 
+          bottom: 20, 
+          right: 20, 
+          display: { xs: 'block', sm: 'none' },
+          zIndex: 10
+        }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ 
+            borderRadius: '50%', 
+            width: 56, 
+            height: 56,
+            boxShadow: 3
+          }}
+          onClick={() => setIsModalOpen(true)}
+        >
+          <AddIcon />
+        </Button>
+      </Box>
 
       {/* Create Post Modal */}
       <Dialog 
@@ -144,6 +238,9 @@ export const ForumContainer = () => {
         onClose={() => setIsModalOpen(false)}
         maxWidth="md"
         fullWidth
+        PaperProps={{
+          sx: { borderRadius: '8px' }
+        }}
       >
         <Box sx={{ 
           display: 'flex', 
@@ -153,7 +250,7 @@ export const ForumContainer = () => {
           borderBottom: 1,
           borderColor: 'divider'
         }}>
-          <Typography variant="h6">Create New Post</Typography>
+          <Typography variant="h6" fontWeight={500}>Create New Post</Typography>
           <IconButton onClick={() => setIsModalOpen(false)}>
             <CloseIcon />
           </IconButton>
@@ -172,7 +269,61 @@ export const ForumContainer = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <PostList posts={posts} />
+        <Box sx={{ mb: 4 }}>
+          {/* This assumes your PostList component renders the posts.
+             If you want to enhance that component directly, you'll need to modify it separately */}
+          <PostList posts={posts} />
+          
+          {/* Alternatively, if you want to directly enhance posts here: */}
+          {/* {posts.map(post => (
+            <Card 
+              key={post.id} 
+              elevation={1}
+              sx={{ 
+                mb: 2, 
+                borderRadius: '8px',
+                transition: 'transform 0.2s',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: 2
+                }
+              }}
+            >
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
+                  <Avatar src={post.avatar_url} sx={{ mr: 2 }} />
+                  <Box>
+                    <Typography variant="subtitle1" fontWeight={500}>
+                      {post.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {post.author} • {new Date(post.created_at).toLocaleDateString()}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Typography variant="body1" sx={{ mb: 2 }}>
+                  {post.content}
+                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Stack direction="row" spacing={1}>
+                    {post.tags?.map(tag => (
+                      <Chip 
+                        key={tag.id} 
+                        label={tag.name} 
+                        size="small"
+                        variant="outlined" 
+                        sx={{ borderRadius: '4px' }}
+                      />
+                    ))}
+                  </Stack>
+                  <Typography variant="body2" color="text.secondary">
+                    {post.reply_count || 0} replies • {post.views || 0} views
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          ))} */}
+        </Box>
       )}
     </Container>
   );
