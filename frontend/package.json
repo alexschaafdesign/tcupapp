@@ -28,6 +28,8 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@tiptap/react": "^2.11.5",
+    "@tiptap/starter-kit": "^2.11.5",
     "assert": "^2.1.0",
     "auth0": "^4.15.0",
     "auth0-lock": "^13.0.0",

@@ -322,7 +322,7 @@ const ThreadView = () => {
 
       {/* Replies */}
       {threadData.replies.map((reply) => (
-        <Box key={reply.id} sx={{ ml: reply.parent_id ? 4 : 0 }}>
+        <Box key={reply.id}>
           {renderPost(reply, true)}
         </Box>
       ))}
