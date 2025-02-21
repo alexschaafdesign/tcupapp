@@ -105,8 +105,8 @@ export const ForumContainer = () => {
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <FilterIcon sx={{ mr: 1, color: 'text.secondary' }} />
-            <Typography variant="subtitle1" fontWeight={500}>
-              Filters
+            <Typography variant="subtitle1" fontWeight={400}>
+              Select a filter to sort conversations by category (or see the most recent ones below!)
               {selectedTags.length > 0 && (
                 <Badge 
                   badgeContent={selectedTags.length} 
@@ -274,55 +274,7 @@ export const ForumContainer = () => {
              If you want to enhance that component directly, you'll need to modify it separately */}
           <PostList posts={posts} />
           
-          {/* Alternatively, if you want to directly enhance posts here: */}
-          {/* {posts.map(post => (
-            <Card 
-              key={post.id} 
-              elevation={1}
-              sx={{ 
-                mb: 2, 
-                borderRadius: '8px',
-                transition: 'transform 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-2px)',
-                  boxShadow: 2
-                }
-              }}
-            >
-              <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
-                  <Avatar src={post.avatar_url} sx={{ mr: 2 }} />
-                  <Box>
-                    <Typography variant="subtitle1" fontWeight={500}>
-                      {post.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {post.author} • {new Date(post.created_at).toLocaleDateString()}
-                    </Typography>
-                  </Box>
-                </Box>
-                <Typography variant="body1" sx={{ mb: 2 }}>
-                  {post.content}
-                </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Stack direction="row" spacing={1}>
-                    {post.tags?.map(tag => (
-                      <Chip 
-                        key={tag.id} 
-                        label={tag.name} 
-                        size="small"
-                        variant="outlined" 
-                        sx={{ borderRadius: '4px' }}
-                      />
-                    ))}
-                  </Stack>
-                  <Typography variant="body2" color="text.secondary">
-                    {post.reply_count || 0} replies • {post.views || 0} views
-                  </Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          ))} */}
+         
         </Box>
       )}
     </Container>

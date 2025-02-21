@@ -9,9 +9,7 @@ import { AppBarStyles } from './AppBar';
 
 const theme = createTheme({
   palette,
-  typography: {
-    fontFamily: "'Geist Mono', 'SF Mono', Menlo, monospace",
-  },
+  typography,
     components: {
     ...buttonStyles,
     ...textFieldStyles,

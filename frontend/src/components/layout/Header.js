@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import HeaderUserProfile from "./HeaderUserProfile";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -62,70 +63,48 @@ const Header = () => {
   };
 
   const NavLink = ({ link }) => {
-    const content = link.external ? (
+    const location = useLocation(); // Get current route
+    const isActive = location.pathname === link.path; // Check if link is active
+  
+    return (
       <ListItem
-        component="a"
-        href={link.path}
-        target="_blank"
-        rel="noopener noreferrer"
-        sx={{
-          color: "#000000",
-          cursor: "pointer",
-          fontFamily: "'Geist Mono', 'SF Mono', Menlo, monospace",
-          textTransform: "lowercase",
-          "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
-          py: 1,
-        }}
-      >
-        <ListItemText
-          primary={link.text}
-          primaryTypographyProps={{ 
-            fontFamily: "'Geist Mono', 'SF Mono', Menlo, monospace",
-            textTransform: "lowercase",
-            fontSize: "16px",
-          }}
-        />
-      </ListItem>
-    ) : (
-      <ListItem
-        button
+        component={link.external ? "a" : "div"} // Use <a> for external links
+        href={link.external ? link.path : undefined}
+        target={link.external ? "_blank" : undefined}
+        rel={link.external ? "noopener noreferrer" : undefined}
+        button={!link.external} // Ensure button behavior only for internal links
         disabled={link.disabled}
         onClick={() => {
-          if (!link.disabled) {
+          if (!link.external && !link.disabled) {
             navigate(link.path);
             setDrawerOpen(false);
           }
         }}
         sx={{
-          color: "#000000",
+          color: isActive ? "#6138B3" : "#000000", // Purple text when active
+          backgroundColor: isActive ? "rgba(97, 56, 179, 0.15)" : "transparent", // Light purple background when active
+          borderRadius: "8px", // Optional: add rounded corners
           cursor: link.disabled ? "not-allowed" : "pointer",
           opacity: link.disabled ? 0.5 : 1,
           fontFamily: "'Courier New', monospace",
           textTransform: "lowercase",
+          px: 1.5, 
+          py: 0.5,
+          mb: 0.5,
           "&:hover": {
-            backgroundColor: link.disabled ? "transparent" : "rgba(0, 0, 0, 0.04)",
+            backgroundColor: "rgba(97, 56, 179, 0.15)", // Same light purple hover effect
           },
-          py: .5,
-          
         }}
       >
         <ListItemText
           primary={link.text}
-          primaryTypographyProps={{ 
+          sx={{
             fontFamily: "'Courier New', monospace",
             textTransform: "lowercase",
             fontSize: "16px",
           }}
         />
       </ListItem>
-    );
-  
-    return link.disabled ? (
-      <Tooltip title="Coming Soon" arrow placement="right">
-        <Box>{content}</Box>
-      </Tooltip>
-    ) : (
-      content
     );
   };
 
@@ -274,7 +253,7 @@ const Header = () => {
           <Divider sx={{ mx: 2, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
   
           {/* Navigation Links */}
-          <List sx={{ width: "100%", px: 2, py: 1 }}>
+          <List sx={{ width: "100%", px: 2, py: 2 }}>
             {displayedLinks.filter(link => !link.isDropdown).map((link, index) => (
               <NavLink key={index} link={link} />
             ))}
@@ -282,8 +261,8 @@ const Header = () => {
             <ResourcesMenu />
           </List>
   
-          {/* Auth Section */}
-          <Box sx={{ mt: "auto" }}>
+  {/* Auth Section */}
+  <Box sx={{ mt: "auto" }}>
             {isAuthenticated && (
               <>
                 <Divider sx={{ mx: 3, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
@@ -295,6 +274,7 @@ const Header = () => {
               <AuthButtons />
             </List>
           </Box>
+
         </Box>
       </AppBar>
   

@@ -11,7 +11,7 @@ import theme from "./styles/theme"; // Import your custom theme
 import TCUPBandForm from "./pages/Bands/TCUPBandForm.js";
 import TCUPBandsGrid from "./pages/Bands/TCUPBandsGrid.js";
 import TCUPBandProfile from "./pages/Bands/TCUPBandProfile.js";
-import Header from "./components/Header.js"; // Import your custom Header component
+import Header from "./components/layout/Header.js"; // Import your custom Header component
 import TCUPPeopleForm from "./pages/TCUPPeopleForm.js";
 import TCUPPeopleTable from "./pages/TCUPPeopleTable.js";
 import TCUPPeopleProfile from "./pages/TCUPPeopleProfile.js";
@@ -20,8 +20,6 @@ import ShowProfile from "./pages/Shows/ShowProfile.js";
 import ShowsMinimal from "./pages/WithoutHeader/ShowsMinimal.js";
 import ShowForm from "./pages/Shows/ShowForm.js";
 import EditShowPage from "./components/EditShowPage.js";
-import RootLayout from "./components/layout/RootLayout.js";
-import { Login, ProtectedRoute } from './auth/XenforoAuth';
 import OAuthCallback from "./components/OAuthCallback.js";
 import ShowFormMinimal from "./pages/WithoutHeader/ShowFormMinimal.js";
 import ShowProfileMinimal from "./pages/WithoutHeader/ShowProfileMinimal.js";
@@ -35,7 +33,6 @@ import useApi from "./hooks/useApi.js";
 import { useAuth0 } from "@auth0/auth0-react";
 import VenueForm from "./pages/Venues/VenueForm.js";
 import CalendarEvents from "./components/CalendarEvents.js";
-import ThreadList from "./components/messageboard/ThreadList.js";
 import ForumContainer from "./pages/Chat/ForumContainer.js";
 import ThreadView from "./pages/Chat/Components/ThreadView.js";
 import LandingPage from "./pages/LandingPage.js";
@@ -138,7 +135,6 @@ function App() {
                   <Route path="/shows/:id/minimal" element={<ShowProfileMinimal />} />
                   <Route path="/shows/:id/edit/minimal" element={<EditShowPageMinimal />} />
                   <Route path="/chat" element={<ForumContainer />} />
-                  <Route path="/messages" element={<ThreadList category="General" />} />
                   <Route path="/thread/:threadId" element={<ThreadView />} />
                   <Route path="/import" element={<AdminImportPost />} />
                   <Route path="/test-auth" element={<AuthTest />} />

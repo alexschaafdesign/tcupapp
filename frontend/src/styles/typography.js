@@ -1,5 +1,6 @@
 export const typography = {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: "'Geist', 'SF Mono', Menlo, monospace",
+
     h1: {
       fontSize: '2.5rem',
       fontWeight: 700,
@@ -9,6 +10,7 @@ export const typography = {
     },
     h3: {
       fontSize: '1.5rem',
+      fontFamily: "'Geist Mono', monospace",
     },
     h4: {
       fontSize: '1.25rem',

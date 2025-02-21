@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Box, Avatar, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import useApi from '../hooks/useApi';
-import { useUserProfile } from '../hooks/useUserProfile';
+import useApi from '../../hooks/useApi';
+import { useUserProfile } from '../../hooks/useUserProfile';
 
 function HeaderUserProfile() {
   const { user, isAuthenticated } = useAuth0();
@@ -54,7 +54,7 @@ function HeaderUserProfile() {
   return (
     <Box sx={{ 
       padding: 2,
-      color: 'white',
+      color: 'black',
       cursor: 'pointer'
     }}
     onClick={handleNavigation}

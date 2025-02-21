@@ -79,11 +79,30 @@ const PostList = ({ posts }) => {
                 <Typography 
                   variant="subtitle1" 
                   component="div" 
-                  sx={{ color: 'primary.main', mb: 0.5 }}
+                  sx={{ color: 'primary.main', mb: 0, fontWeight: '600' }}
                 >
                   {post.title}
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 0.5 }}>
+                <Typography 
+                  variant="body2" 
+                  color="text.secondary" 
+                  sx={{ 
+                    mb: 0.5,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 1,
+                    WebkitBoxOrient: 'vertical'
+                  }}
+                >
+                  {post.content ? (
+                    typeof post.content === 'string' && post.content.startsWith('{') 
+                      ? JSON.parse(post.content).blocks?.[0]?.text || 'No preview available'
+                      : post.content.substring(0, 100)
+                  ) : 'No preview available'}
+                </Typography>
+
+                <Box sx={{ display: 'flex', gap: 0.5, mt: 2 }}>
                   {post.tags?.map(tag => (
                     <Chip
                       key={tag.id}
@@ -121,7 +140,7 @@ const PostList = ({ posts }) => {
               {/* Notification bell */}
               <IconButton 
                 size="small" 
-                sx={{ ml: 1 }}
+                sx={{ ml: 1, }}
                 onClick={(e) => {
                   e.stopPropagation();
                   // Handle notification toggle

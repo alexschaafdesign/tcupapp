@@ -43,7 +43,69 @@ const ThreadView = () => {
 
   const renderContent = (content) => {
     try {
-      const contentState = convertFromRaw(JSON.parse(content));
+      // Parse content
+      const contentObj = JSON.parse(content);
+      const contentState = convertFromRaw(contentObj);
+      const text = contentState.getPlainText();
+      
+      // Check for quote blocks with regex
+      const quoteRegex = /\[QUOTE="([^"]+)"\]([\s\S]*?)\[\/QUOTE\]/g;
+      
+      if (quoteRegex.test(text)) {
+        // Reset regex position
+        quoteRegex.lastIndex = 0;
+        
+        // Break content into parts (quotes and regular text)
+        const parts = [];
+        let lastIndex = 0;
+        let match;
+        
+        while ((match = quoteRegex.exec(text)) !== null) {
+          // Text before quote
+          if (match.index > lastIndex) {
+            parts.push(
+              <Typography key={`text-${lastIndex}`} variant="body1">
+                {text.substring(lastIndex, match.index)}
+              </Typography>
+            );
+          }
+          
+          // Quote block
+          const author = match[1];
+          const quoteText = match[2];
+          parts.push(
+            <Paper 
+              key={`quote-${match.index}`} 
+              elevation={0}
+              sx={{ 
+                bgcolor: 'action.hover',
+                p: 2,
+                my: 1,
+                borderLeft: '4px solid',
+                borderColor: 'primary.main'
+              }}
+            >
+              <Typography variant="subtitle2" color="primary.main">{author} wrote:</Typography>
+              <Typography variant="body2">{quoteText}</Typography>
+            </Paper>
+          );
+          
+          lastIndex = match.index + match[0].length;
+        }
+        
+        // Text after last quote
+        if (lastIndex < text.length) {
+          parts.push(
+            <Typography key={`text-${lastIndex}`} variant="body1">
+              {text.substring(lastIndex)}
+            </Typography>
+          );
+        }
+        
+        return <Box>{parts}</Box>;
+      }
+      
+      // Regular content without quotes
       const editorState = EditorState.createWithContent(contentState);
       return (
         <Box sx={{ 
@@ -64,6 +126,26 @@ const ThreadView = () => {
 
   const handleReplyClick = (reply) => {
     setReplyingTo(reply);
+    
+    try {
+      // Parse content and create quote
+      const contentObj = JSON.parse(reply.content);
+      const contentState = convertFromRaw(contentObj);
+      const quoteText = contentState.getPlainText();
+      
+      // Format the quote with username
+      const quotedContent = `[QUOTE="${reply.username}"]${quoteText}[/QUOTE]\n\n`;
+      
+      // Create new editor state with the quote
+      const newContentState = EditorState.createEmpty().getCurrentContent();
+      const contentWithQuote = newContentState.createEntity('QUOTE', 'IMMUTABLE', {
+        text: quotedContent
+      });
+      setReplyEditorState(EditorState.createWithContent(contentWithQuote));
+    } catch (error) {
+      console.error('Error creating quote:', error);
+    }
+    
     replyBoxRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 

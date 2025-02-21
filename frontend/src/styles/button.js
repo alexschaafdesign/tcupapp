@@ -12,7 +12,6 @@ export const buttonStyles = {
         contained: {
           backgroundColor: palette.secondary.main, // Contained buttons use primary color
           color: palette.neutral.white,
-          fontWeight: "bold",
           textTransform: "uppercase",
           '&:hover': {
             backgroundColor: palette.secondary.dark,
