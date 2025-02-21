@@ -28,7 +28,7 @@ const Layout = ({ children }) => {
           width: '100%',
           minHeight: '100vh',
           marginLeft: { xs: 0, md: 0 },
-          paddingTop: '60px',
+          paddingTop: '20px',
         }}
       >
         {/* Centered content */}

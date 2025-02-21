@@ -28,7 +28,7 @@ const Header = () => {
   const isDevMode = process.env.NODE_ENV === "development";
 
   const navLinks = [
-    { text: "chat", path: "/forum", devOnly: true },
+    { text: "chat", path: "/chat", devOnly: true },
     { text: "show list", path: "/shows" },
     { text: "resources", path: "/resources", isDropdown: true, devOnly: true },
   ];

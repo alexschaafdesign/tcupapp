@@ -30,7 +30,7 @@ Sentry.init({
 });
 
 const redirectUri = {
-  development: 'http://localhost:3000/callback',
+  development: 'http://localhost:3003/callback',
   staging: 'https://staging.tcupboard.org/callback',
   production: 'https://portal.tcupboard.org/callback'
 }[process.env.REACT_APP_APP_ENV || process.env.NODE_ENV];
