@@ -85,37 +85,42 @@ export const ForumContainer = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       
-      {/* Create Post Trigger */}
-      <Paper 
-        elevation={2}
+      {/* Header with Latest Posts and Buttons */}
+      <Box 
         sx={{ 
-          p: 2, 
-          mb: 2, 
           display: 'flex', 
-          alignItems: 'center',
-          cursor: 'pointer',
-          '&:hover': { bgcolor: 'action.hover' },
-          borderRadius: '8px',
-          border: '1px solid',
-          borderColor: 'divider'
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          mb: 2 
         }}
-        onClick={() => setIsModalOpen(true)}
       >
-        <EditIcon sx={{ mr: 2, color: 'text.secondary' }} />
-        <TextField
-          fullWidth
-          variant="standard"
-          placeholder="Start a new thread..."
-          InputProps={{ 
-            disableUnderline: true,
-            readOnly: true,
-            sx: { fontSize: '1rem' }
-          }}
-          sx={{ mr: 2 }}
-        />
-       
-      </Paper>
-
+        {/* Left-aligned "LATEST POSTS" */}
+        <Typography variant="h3" sx={{ color: 'text.secondary' }}>
+          LATEST POSTS
+        </Typography>
+  
+        {/* Right-aligned buttons */}
+        <Stack direction="row" spacing={2}>
+          <Button 
+            variant="outlined" 
+            size="small"
+            startIcon={<FilterIcon />} 
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            Filter by tags
+          </Button>
+  
+          <Button 
+            variant="contained" 
+            size="small"
+            startIcon={<AddIcon />} 
+            onClick={() => setIsModalOpen(true)}
+          >
+            Start a new thread
+          </Button>
+        </Stack>
+      </Box>
+  
       {/* Create Post Modal */}
       <Dialog 
         open={isModalOpen}
@@ -136,7 +141,7 @@ export const ForumContainer = () => {
         }}>
           <Typography variant="h6" fontWeight={500}>Create New Post</Typography>
           <IconButton onClick={() => setIsModalOpen(false)}>
-            <CloseIcon  />
+            <CloseIcon />
           </IconButton>
         </Box>
         <Box sx={{ p: 3 }}>
@@ -147,28 +152,9 @@ export const ForumContainer = () => {
           />
         </Box>
       </Dialog>
-      
+  
       {/* Collapsible Tag Filter */}
-            
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          justifyContent: 'flex-end', 
-          alignItems: 'center', 
-          mb: 2 // some spacing below
-        }}
-      >
-        <Button 
-          variant="outlined" 
-          size="small"
-          startIcon={<FilterIcon />} 
-          onClick={() => setShowFilters(!showFilters)}
-        >
-          Filter by tags
-        </Button>
-      </Box>
-
-          <Collapse in={showFilters}>
+      <Collapse in={showFilters}>
         <Paper 
           elevation={1} 
           sx={{ 
@@ -193,9 +179,7 @@ export const ForumContainer = () => {
           </Stack>
         </Paper>
       </Collapse>
-
-      
-
+  
       {/* Post List */}
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
@@ -203,11 +187,7 @@ export const ForumContainer = () => {
         </Box>
       ) : (
         <Box sx={{ mb: 4 }}>
-          {/* This assumes your PostList component renders the posts.
-             If you want to enhance that component directly, you'll need to modify it separately */}
           <PostList posts={posts} />
-          
-         
         </Box>
       )}
     </Container>
