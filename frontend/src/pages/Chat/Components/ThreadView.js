@@ -495,7 +495,7 @@ const ThreadView = () => {
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
     {/* Thread Title */}
-    <Typography variant="h3" sx={{ mb: 2 }}>
+    <Typography variant="h1" sx={{ mb: 2, fontWeight: '400' }}>
       {threadData.post.title}
     </Typography>
 

@@ -4,6 +4,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useAuth0 } from '@auth0/auth0-react';
 import useApi from '../../hooks/useApi';
 import { useUserProfile } from '../../hooks/useUserProfile';
+import Breadcrumbs from './Breadcrumbs';
 
 const TopBar = () => {
   const { user, logout, isAuthenticated } = useAuth0();
@@ -99,36 +100,11 @@ const TopBar = () => {
   };
 
   return (
-    <Box 
-      sx={{
-        position: 'fixed',
-        top: 0,
-        right: 0,
-        left: { xs: 0, md: '224px' },
-        height: '60px',
-        background: 'linear-gradient(90deg, #7C60DD 0%, #9375FF 100%)',
-        zIndex: 90,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        padding: '0 20px',
-        "& *": { zIndex: 2 },
-        "&::before": {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          background: 'url("https://res.cloudinary.com/dsll3ms2c/image/upload/v1740149767/noisebg2_for_header_mf37pv.png")',
-          backgroundSize: '200px',
-          backgroundRepeat: 'repeat',
-          backgroundPosition: 'center',
-          opacity: 0.4,
-          zIndex: 1,
-        },
-      }}
-    >
+    <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 90, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'linear-gradient(90deg, #7C60DD 0%, #9375FF 100%)', padding: '0 20px', height: '60px' }}>
+    {/* Left-aligned Breadcrumbs, starting at the right edge of the nav bar */}
+    <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', marginLeft: '200px' }}>
+      <Breadcrumbs />
+    </Box>
       {/* Notification Section */}
       <Box sx={{ mr: 2 }}>
         <Tooltip title="Notifications">

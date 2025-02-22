@@ -2,8 +2,9 @@ import React from 'react';
 import { Box } from '@mui/material';
 import Header from './Header';
 import TopBar from './TopBar.js';
+import { Outlet } from 'react-router-dom';
 
-const Layout = ({ children }) => {
+const Layout = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       {/* TopBar component replaces the simple purple bar */}
@@ -33,7 +34,7 @@ const Layout = ({ children }) => {
             py: 3,
           }}
         >
-          {children}
+          <Outlet />
         </Box>
       </Box>
     </Box>

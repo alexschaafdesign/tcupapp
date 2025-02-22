@@ -60,12 +60,12 @@ router.get('/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         
-        const { data: post } = await supabase
-            .from('forum_messages')
-            .select('*')
-            .eq('id', id)
-            .single();
-
+        const { data: post, error } = await supabase
+        .from('forum_messages')
+        .select('id, title') // Fetch only `id` and `title`
+        .eq('id', id)
+        .single();
+        
         const { data: replies } = await supabase
             .from('forum_messages')
             .select('*')
