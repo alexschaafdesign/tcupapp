@@ -84,72 +84,13 @@ export const ForumContainer = () => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Collapsible Tag Filter */}
-      <Paper 
-        elevation={1}
-        sx={{ 
-          p: 2, 
-          mb: 4, 
-          borderRadius: '8px'
-        }}
-      >
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            cursor: 'pointer',
-            mb: showFilters ? 2 : 0
-          }}
-          onClick={() => setShowFilters(!showFilters)}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <FilterIcon sx={{ mr: 1, color: 'text.secondary' }} />
-            <Typography variant="subtitle1" fontWeight={400}>
-              Select a filter to sort conversations by category (or see the most recent ones below!)
-              {selectedTags.length > 0 && (
-                <Badge 
-                  badgeContent={selectedTags.length} 
-                  color="primary" 
-                  sx={{ ml: 1 }}
-                />
-              )}
-            </Typography>
-          </Box>
-          <IconButton size="small">
-            {showFilters ? <CloseIcon fontSize="small" /> : <FilterIcon fontSize="small" />}
-          </IconButton>
-        </Box>
-        <Collapse in={showFilters}>
-          <Divider sx={{ my: 1 }} />
-          <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary' }}>
-            Select tags to filter discussions:
-          </Typography>
-          <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
-            {tags.map(tag => (
-              <Chip
-                key={tag.id}
-                label={tag.name}
-                onClick={() => handleTagClick(tag.id)}
-                color={selectedTags.includes(tag.id) ? "primary" : "default"}
-                variant={selectedTags.includes(tag.id) ? "filled" : "outlined"}
-                sx={{ 
-                  m: 0.5,
-                  borderRadius: '4px',
-                  fontWeight: selectedTags.includes(tag.id) ? 500 : 400,
-                }}
-              />
-            ))}
-          </Stack>
-        </Collapse>
-      </Paper>
-
+      
       {/* Create Post Trigger */}
       <Paper 
         elevation={2}
         sx={{ 
           p: 2, 
-          mb: 4, 
+          mb: 2, 
           display: 'flex', 
           alignItems: 'center',
           cursor: 'pointer',
@@ -164,7 +105,7 @@ export const ForumContainer = () => {
         <TextField
           fullWidth
           variant="standard"
-          placeholder="Start a new discussion..."
+          placeholder="Start a new thread..."
           InputProps={{ 
             disableUnderline: true,
             readOnly: true,
@@ -172,65 +113,8 @@ export const ForumContainer = () => {
           }}
           sx={{ mr: 2 }}
         />
-        <Stack direction="row" spacing={1}>
-          <Button 
-            variant="contained" 
-            size="medium"
-            color="primary"
-            startIcon={<AddIcon />}
-            sx={{ 
-              height: '42px',
-              textTransform: 'none',
-              fontWeight: 500,
-              borderRadius: '6px',
-              boxShadow: 2
-            }}
-          >
-            New thread
-          </Button>
-          <Button 
-            variant="outlined" 
-            size="medium" 
-            startIcon={<HistoryIcon />}
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate('/import');
-            }}
-            sx={{
-              height: '42px',
-              textTransform: 'none',
-              borderRadius: '6px'
-            }}
-          >
-            History
-          </Button>
-        </Stack>
+       
       </Paper>
-
-      {/* Mobile Floating Action Button (visible on small screens) */}
-      <Box 
-        sx={{ 
-          position: 'fixed', 
-          bottom: 20, 
-          right: 20, 
-          display: { xs: 'block', sm: 'none' },
-          zIndex: 10
-        }}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ 
-            borderRadius: '50%', 
-            width: 56, 
-            height: 56,
-            boxShadow: 3
-          }}
-          onClick={() => setIsModalOpen(true)}
-        >
-          <AddIcon />
-        </Button>
-      </Box>
 
       {/* Create Post Modal */}
       <Dialog 
@@ -252,16 +136,65 @@ export const ForumContainer = () => {
         }}>
           <Typography variant="h6" fontWeight={500}>Create New Post</Typography>
           <IconButton onClick={() => setIsModalOpen(false)}>
-            <CloseIcon />
+            <CloseIcon  />
           </IconButton>
         </Box>
         <Box sx={{ p: 3 }}>
           <CreatePost 
             onPostCreated={handlePostCreated}
             tags={tags}
+            setTags={setTags}
           />
         </Box>
       </Dialog>
+      
+      {/* Collapsible Tag Filter */}
+            
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          justifyContent: 'flex-end', 
+          alignItems: 'center', 
+          mb: 2 // some spacing below
+        }}
+      >
+        <Button 
+          variant="outlined" 
+          size="small"
+          startIcon={<FilterIcon />} 
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          Filter by tags
+        </Button>
+      </Box>
+
+          <Collapse in={showFilters}>
+        <Paper 
+          elevation={1} 
+          sx={{ 
+            p: 2, 
+            mb: 4, 
+            borderRadius: '8px' 
+          }}
+        >
+          <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary' }}>
+            Select tags to filter discussions:
+          </Typography>
+          <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
+            {tags.map(tag => (
+              <Chip
+                key={tag.id}
+                label={tag.name}
+                onClick={() => handleTagClick(tag.id)}
+                color={selectedTags.includes(tag.id) ? "primary" : "default"}
+                variant={selectedTags.includes(tag.id) ? "filled" : "outlined"}
+              />
+            ))}
+          </Stack>
+        </Paper>
+      </Collapse>
+
+      
 
       {/* Post List */}
       {loading ? (

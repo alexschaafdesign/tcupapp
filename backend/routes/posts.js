@@ -65,7 +65,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
         .select('id, title') // Fetch only `id` and `title`
         .eq('id', id)
         .single();
-        
+
         const { data: replies } = await supabase
             .from('forum_messages')
             .select('*')
@@ -459,5 +459,44 @@ router.post('/:id/historical-reply', authMiddleware, async (req, res) => {
     }
 });
 
+// Create a new tag
+router.post('/tags', authMiddleware, async (req, res) => {
+    const { name } = req.body;
+
+    if (!name || name.trim() === '') {
+        return res.status(400).json({ error: 'Tag name is required' });
+    }
+
+    try {
+        // Check if the tag already exists
+        const { data: existingTag, error: fetchError } = await supabase
+            .from('tags')
+            .select('*')
+            .ilike('name', name.trim()) // Case-insensitive match
+            .single();
+
+        if (fetchError && fetchError.code !== 'PGRST116') {
+            throw fetchError;
+        }
+
+        if (existingTag) {
+            return res.status(409).json({ error: 'Tag already exists', tag: existingTag });
+        }
+
+        // Insert new tag
+        const { data: newTag, error: insertError } = await supabase
+            .from('tags')
+            .insert([{ name: name.trim() }])
+            .select()
+            .single();
+
+        if (insertError) throw insertError;
+
+        res.status(201).json(newTag);
+    } catch (error) {
+        console.error('Error creating tag:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 export default router;

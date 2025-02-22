@@ -45,6 +45,7 @@ const colorTokens = {
   text: {
     primary: colors.gray10,
     secondary: colors.gray40,
+    inverse: colors.gray94
   },
 };
 export default colorTokens;

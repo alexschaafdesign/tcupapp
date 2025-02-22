@@ -44,17 +44,17 @@ const PostList = ({ posts }) => {
             message="Please log in to view thread details"
             renderContent={(showModal) => (
               <ListItem
-  onClick={() => handleClick(post, showModal)}
-  sx={{
-    p: 0.5,
-    borderBottom: '1px solid',
-    borderColor: 'divider',
-    cursor: 'pointer',
-    '&:hover': { bgcolor: 'grey.50' },
-    display: 'flex',
-    gap: 2
-  }}
->
+                onClick={() => handleClick(post, showModal)}
+                sx={{
+                  p: 0.5,
+                  borderBottom: '1px solid',
+                  borderColor: 'divider',
+                  cursor: 'pointer',
+                  '&:hover': { bgcolor: 'grey.50' },
+                  display: 'flex',
+                  gap: 2
+                }}
+              >
   {/* Left Side: Avatar + Subtitle */}
   <Box 
     sx={{
