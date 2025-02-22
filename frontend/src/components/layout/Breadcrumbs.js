@@ -6,6 +6,7 @@ import useApi from "../../hooks/useApi";
 
 const routeNames = {
   thread: "Chat", // Map "thread" to "Chat"
+  chat: "Chat"
 };
 
 const Breadcrumbs = () => {
@@ -36,7 +37,7 @@ const Breadcrumbs = () => {
   }, [threadId, callApi]);
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1, ml: 3 }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 0, ml: 3 }}>
       <Typography
         variant="body2"
         component={Link}

@@ -29,7 +29,7 @@ const PostList = ({ posts }) => {
 
   const handleClick = (post, showAuthModal) => {
     if (isAuthenticated) {
-      navigate(`/thread/${post.id}`);
+      navigate(`/chat/${post.id}`);
     } else {
       showAuthModal();
     }

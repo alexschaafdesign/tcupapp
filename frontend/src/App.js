@@ -135,7 +135,7 @@ function App() {
     
             {/* Forum/Thread */}
             <Route path="chat" element={<ForumContainer />} />
-            <Route path="thread/:threadId" element={<ThreadView />} />
+            <Route path="chat/:threadId" element={<ThreadView />} />
             <Route path="import" element={<AdminImportPost />} />
             <Route path="test-auth" element={<AuthTest />} />
             <Route path="vrc" element={<VRCForm />} />

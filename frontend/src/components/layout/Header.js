@@ -265,8 +265,7 @@ const Header = () => {
   <Box sx={{ mt: "auto" }}>
             {isAuthenticated && (
               <>
-                <Divider sx={{ mx: 3, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
-                <HeaderUserProfile />
+               
               </>
             )}
             <Divider sx={{ mx: 3, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
