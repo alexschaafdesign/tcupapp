@@ -1,24 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { Box, IconButton, Menu, MenuItem, Avatar, Badge, Tooltip, Typography } from '@mui/material';
+import React, { useState, useEffect, useRef } from 'react';
+import { Box, IconButton, Avatar, Badge, Tooltip, Typography, Paper, ClickAwayListener } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import LogoutIcon from '@mui/icons-material/Logout';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useNavigate } from 'react-router-dom';
 import useApi from '../../hooks/useApi';
 import { useUserProfile } from '../../hooks/useUserProfile';
 
 const TopBar = () => {
   const { user, logout, isAuthenticated } = useAuth0();
-  const navigate = useNavigate();
   const { avatarUrl, setAvatarUrl } = useUserProfile();
   const { callApi } = useApi();
   const apiUrl = process.env.REACT_APP_API_URL;
   const [username, setUsername] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
   
-  // State for profile menu
-  const [profileAnchorEl, setProfileAnchorEl] = useState(null);
-  const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
+  // State for dropdowns
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  
+  // References to button elements
+  const profileBtnRef = useRef(null);
+  const notificationBtnRef = useRef(null);
+  
+  // References to dropdown elements
+  const profileDropdownRef = useRef(null);
+  const notificationDropdownRef = useRef(null);
   
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -41,7 +46,7 @@ const TopBar = () => {
     fetchUserProfile();
   }, [isAuthenticated, isLoaded, apiUrl, callApi, setAvatarUrl]);
   
-  // Sample notifications (replace with actual data)
+  // Sample notifications
   const notifications = [
     { id: 1, text: "New venue review submitted", read: false },
     { id: 2, text: "Someone replied to your post", read: false },
@@ -50,20 +55,22 @@ const TopBar = () => {
   
   const unreadCount = notifications.filter(n => !n.read).length;
   
-  const handleProfileClick = (event) => {
-    setProfileAnchorEl(event.currentTarget);
+  const handleProfileClick = () => {
+    setProfileOpen(prev => !prev);
+    setNotificationOpen(false); // Close other dropdown
+  };
+  
+  const handleNotificationClick = () => {
+    setNotificationOpen(prev => !prev);
+    setProfileOpen(false); // Close other dropdown
   };
   
   const handleProfileClose = () => {
-    setProfileAnchorEl(null);
-  };
-  
-  const handleNotificationClick = (event) => {
-    setNotificationAnchorEl(event.currentTarget);
+    setProfileOpen(false);
   };
   
   const handleNotificationClose = () => {
-    setNotificationAnchorEl(null);
+    setNotificationOpen(false);
   };
   
   const handleLogout = () => {
@@ -74,6 +81,23 @@ const TopBar = () => {
     });
   };
   
+  // Calculate dropdown positions using refs
+  const getDropdownStyle = (buttonRef) => {
+    if (!buttonRef.current) return {};
+    
+    const rect = buttonRef.current.getBoundingClientRect();
+    return {
+      position: 'fixed',
+      top: rect.bottom + 5,
+      right: window.innerWidth - rect.right,
+      zIndex: 9999,
+      boxShadow: '0 3px 10px rgba(0,0,0,0.2)',
+      backgroundColor: 'white',
+      borderRadius: '4px',
+      overflow: 'hidden'
+    };
+  };
+
   return (
     <Box 
       sx={{
@@ -108,50 +132,68 @@ const TopBar = () => {
       {/* Notification Section */}
       <Box sx={{ mr: 2 }}>
         <Tooltip title="Notifications">
-          <IconButton onClick={handleNotificationClick} sx={{ color: 'white' }}>
+          <IconButton 
+            onClick={handleNotificationClick} 
+            sx={{ color: 'white' }}
+            ref={notificationBtnRef}
+          >
             <Badge badgeContent={unreadCount} color="error">
               <NotificationsIcon />
             </Badge>
           </IconButton>
         </Tooltip>
-        <Menu
-          anchorEl={notificationAnchorEl}
-          open={Boolean(notificationAnchorEl)}
-          onClose={handleNotificationClose}
-          PaperProps={{
-            sx: { width: 320, maxHeight: 300 }
-          }}
-        >
-          <Typography variant="subtitle1" sx={{ px: 2, py: 1, fontWeight: 'bold' }}>
-            Notifications
-          </Typography>
-          {notifications.length > 0 ? (
-            notifications.map((notification) => (
-              <MenuItem 
-                key={notification.id} 
-                onClick={handleNotificationClose}
-                sx={{ 
-                  whiteSpace: 'normal',
-                  backgroundColor: notification.read ? 'transparent' : 'rgba(124, 96, 221, 0.1)',
-                  '&:hover': {
-                    backgroundColor: notification.read ? 'rgba(0, 0, 0, 0.04)' : 'rgba(124, 96, 221, 0.2)'
-                  }
-                }}
-              >
-                {notification.text}
-              </MenuItem>
-            ))
-          ) : (
-            <MenuItem disabled>No notifications</MenuItem>
-          )}
-        </Menu>
+        
+        {notificationOpen && (
+          <ClickAwayListener onClickAway={handleNotificationClose}>
+            <Paper 
+              ref={notificationDropdownRef}
+              sx={{
+                ...getDropdownStyle(notificationBtnRef),
+                width: '320px',
+                maxHeight: '300px',
+                overflowY: 'auto'
+              }}
+            >
+              <Typography variant="subtitle1" sx={{ px: 2, py: 1, fontWeight: 'bold', borderBottom: '1px solid #f0f0f0' }}>
+                Notifications
+              </Typography>
+              {notifications.length > 0 ? (
+                notifications.map((notification) => (
+                  <Box
+                    key={notification.id}
+                    onClick={handleNotificationClose}
+                    sx={{
+                      px: 2,
+                      py: 1,
+                      borderBottom: '1px solid #f0f0f0',
+                      cursor: 'pointer',
+                      whiteSpace: 'normal',
+                      bgcolor: notification.read ? 'transparent' : 'rgba(124, 96, 221, 0.1)',
+                      '&:hover': {
+                        bgcolor: notification.read ? 'rgba(0, 0, 0, 0.04)' : 'rgba(124, 96, 221, 0.2)'
+                      }
+                    }}
+                  >
+                    {notification.text}
+                  </Box>
+                ))
+              ) : (
+                <Box sx={{ px: 2, py: 1, color: 'text.secondary' }}>
+                  No notifications
+                </Box>
+              )}
+            </Paper>
+          </ClickAwayListener>
+        )}
       </Box>
     
-      
       {/* User Profile */}
       <Box>
         <Tooltip title={user?.name || "User Profile"}>
-          <IconButton onClick={handleProfileClick}>
+          <IconButton 
+            onClick={handleProfileClick}
+            ref={profileBtnRef}
+          >
             <Avatar 
               src={avatarUrl || user?.picture}
               alt={user?.name || "User"} 
@@ -161,24 +203,54 @@ const TopBar = () => {
             </Avatar>
           </IconButton>
         </Tooltip>
-        <Menu
-          anchorEl={profileAnchorEl}
-          open={Boolean(profileAnchorEl)}
-          onClose={handleProfileClose}
-        >
-          <Box sx={{ px: 2, py: 1 }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-              {username || user?.name}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {user?.email}
-            </Typography>
-          </Box>
-          <MenuItem onClick={() => { window.location.href = '/profile'; handleProfileClose(); }}>
-            My Profile
-          </MenuItem>
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </Menu>
+        
+        {profileOpen && (
+          <ClickAwayListener onClickAway={handleProfileClose}>
+            <Paper 
+              ref={profileDropdownRef}
+              sx={{
+                ...getDropdownStyle(profileBtnRef),
+                width: '240px'
+              }}
+            >
+              <Box sx={{ px: 2, py: 1, borderBottom: '1px solid #f0f0f0' }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                  {username || user?.name}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  {user?.email}
+                </Typography>
+              </Box>
+              
+              <Box 
+                sx={{ 
+                  px: 2, 
+                  py: 1, 
+                  cursor: 'pointer',
+                  '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.04)' }
+                }}
+                onClick={() => { 
+                  window.location.href = '/profile'; 
+                  handleProfileClose();
+                }}
+              >
+                My Profile
+              </Box>
+              
+              <Box 
+                sx={{ 
+                  px: 2, 
+                  py: 1, 
+                  cursor: 'pointer',
+                  '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.04)' }
+                }}
+                onClick={handleLogout}
+              >
+                Logout
+              </Box>
+            </Paper>
+          </ClickAwayListener>
+        )}
       </Box>
     </Box>
   );

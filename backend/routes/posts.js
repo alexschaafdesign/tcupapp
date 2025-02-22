@@ -32,30 +32,20 @@ router.get('/', async (req, res) => {
         // Get all auth0_ids including those from replies
         const allAuth0Ids = [...new Set([
             ...threadsData.map(post => post.auth0_id),
-            ...threadsData.flatMap(post => post.replies?.map(r => r.auth0_id) || [])
+            ...threadsData.map(post => post.last_reply_auth0_id).filter(Boolean)
         ])];
- 
-        // Get user data for posts and replies
+        
+        // Get user data
         const userData = await pool.query(
             'SELECT auth0_id, avatar_url, username FROM users WHERE auth0_id = ANY($1)',
             [allAuth0Ids]
         );
- 
-        const { data: postTags } = await supabase
-            .from('post_tags')
-            .select('post_id, tag:tags(*)')
-            .in('post_id', threadsData.map(p => p.id));
- 
+        
         const postsWithData = threadsData.map(post => ({
             ...post,
             avatar_url: userData.rows.find(u => u.auth0_id === post.auth0_id)?.avatar_url,
-            username: userData.rows.find(u => u.auth0_id === post.auth0_id)?.username,
-            tags: postTags?.filter(pt => pt.post_id === post.id).map(pt => pt.tag) || [],
-            replies: post.replies?.map(reply => ({
-                ...reply,
-                avatar_url: userData.rows.find(u => u.auth0_id === reply.auth0_id)?.avatar_url,
-                username: userData.rows.find(u => u.auth0_id === reply.auth0_id)?.username
-            }))
+            last_reply_avatar_url: userData.rows.find(u => u.auth0_id === post.last_reply_auth0_id)?.avatar_url,
+            username: userData.rows.find(u => u.auth0_id === post.auth0_id)?.username
         }));
  
         res.json(postsWithData);

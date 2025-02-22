@@ -1,13 +1,5 @@
 import React from 'react';
-import { 
-  Box, 
-  Typography, 
-  Avatar,
-  IconButton,
-  List,
-  ListItem,
-  Chip
-} from '@mui/material';
+import { Box, Typography, Avatar, IconButton, List, ListItem, Chip, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { NotificationsNone as BellIcon } from '@mui/icons-material';
 import AuthWrapper from '../../../components/auth/AuthWrapper';
@@ -44,115 +36,132 @@ const PostList = ({ posts }) => {
   };
 
   return (
-    <List sx={{ bgcolor: 'background.paper', borderRadius: 1 }}>
-      {posts.map((post) => (
-        <AuthWrapper 
-          key={post.id}
-          message="Please log in to view thread details"
-          renderContent={(showModal) => (
-            <ListItem
-              onClick={() => handleClick(post, showModal)}
-              sx={{
-                display: 'flex',
-                py: 2,
-                borderBottom: '1px solid',
-                borderColor: 'divider',
-                cursor: 'pointer',
-                '&:hover': { bgcolor: 'action.hover' }
-              }}
-            >
-              {/* Left side - Author info */}
-              <Box sx={{ display: 'flex', alignItems: 'center', width: '200px', mr: 2 }}>
-                <Avatar src={post.avatar_url} sx={{ width: 40, height: 40, mr: 1 }} />
-                <Box>
-                  <Typography variant="subtitle2" noWrap>
-                    {post.author}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary" noWrap>
-                    {formatDate(post.created_at)}
-                  </Typography>
-                </Box>
-              </Box>
-
-              {/* Middle - Post title and tags */}
-              <Box sx={{ flex: 1 }}>
-                <Typography 
-                  variant="subtitle1" 
-                  component="div" 
-                  sx={{ color: 'primary.main', mb: 0, fontWeight: '600' }}
-                >
-                  {post.title}
-                </Typography>
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary" 
-                  sx={{ 
-                    mb: 0.5,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    display: '-webkit-box',
-                    WebkitLineClamp: 1,
-                    WebkitBoxOrient: 'vertical'
-                  }}
-                >
-                  {post.content ? (
-                    typeof post.content === 'string' && post.content.startsWith('{') 
-                      ? JSON.parse(post.content).blocks?.[0]?.text || 'No preview available'
-                      : post.content.substring(0, 100)
-                  ) : 'No preview available'}
-                </Typography>
-
-                <Box sx={{ display: 'flex', gap: 0.5, mt: 2 }}>
-                  {post.tags?.map(tag => (
-                    <Chip
-                      key={tag.id}
-                      label={tag.name}
-                      size="small"
-                      variant="outlined"
-                      sx={{ height: 20 }}
-                    />
-                  ))}
-                </Box>
-              </Box>
-
-              {/* Right side - Stats */}
-              <Box sx={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'flex-end',
-                minWidth: '100px'
-              }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography variant="caption" color="text.secondary">
-                    Replies: {post.replies?.length || 0}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    Views: {post.views || 0}
-                  </Typography>
-                </Box>
-                {post.last_reply && (
-                  <Typography variant="caption" color="text.secondary" noWrap>
-                    Last reply {formatDate(post.last_reply.created_at)}
-                  </Typography>
-                )}
-              </Box>
-
-              {/* Notification bell */}
-              <IconButton 
-                size="small" 
-                sx={{ ml: 1, }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // Handle notification toggle
+    <Paper elevation={0} sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
+      <List sx={{ p: 0 }}>
+        {posts.map((post) => (
+          <AuthWrapper 
+            key={post.id}
+            message="Please log in to view thread details"
+            renderContent={(showModal) => (
+              <ListItem
+                onClick={() => handleClick(post, showModal)}
+                sx={{
+                  p: 0.5,
+                  borderBottom: '1px solid',
+                  borderColor: 'divider',
+                  cursor: 'pointer',
+                  '&:hover': { bgcolor: 'grey.50' },
+                  display: 'flex',
+                  gap: 2
                 }}
               >
-                <BellIcon fontSize="small" />
-              </IconButton>
-            </ListItem>
-          )}
-        />
-      ))}
-    </List>
+                {/* Avatar */}
+                <Avatar 
+                  src={post.avatar_url} 
+                  sx={{ width: 78, height: 78 }}
+                />
+
+                {/* Main Content */}
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  {/* Title and Tags Row */}
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mt: 1 }}>
+                    <Typography 
+                      sx={{ 
+                        color: 'primary.main',
+                        fontWeight: 600,
+                        fontSize: '1.2rem',
+                        flex: 1,
+                        mr: 2
+                      }}
+                    >
+                      {post.title}
+                    </Typography>
+
+                    <Box sx={{ display: 'flex', gap: 0.5, flexShrink: 0 }}>
+                      {post.tags?.map(tag => (
+                        <Chip
+                          key={tag.id}
+                          label={tag.name}
+                          size="small"
+                          sx={{ 
+                            height: 20,
+                            backgroundColor: 'grey.100',
+                            '& .MuiChip-label': {
+                              px: 1,
+                              fontSize: '0.75rem'
+                            }
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  </Box>
+
+                  {/* Preview Text */}
+                  <Typography 
+                    variant="body2" 
+                    color="text.secondary"
+                    sx={{ 
+                      fontSize: '0.875rem',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 1,
+                      WebkitBoxOrient: 'vertical',
+                      mb: 2
+                    }}
+                  >
+                    {post.content ? (
+                      typeof post.content === 'string' && post.content.startsWith('{') 
+                        ? JSON.parse(post.content).blocks?.[0]?.text || 'No preview available'
+                        : post.content.substring(0, 100)
+                    ) : 'No preview available'}
+                  </Typography>
+
+                  {/* Bottom Row */}
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {/* Author Info and Stats */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        by {post.author} · {formatDate(post.created_at)}
+                      </Typography>
+                      
+                      <Typography variant="caption">
+                        {post.reply_count || 0} replies
+                      </Typography>
+                    </Box>
+
+                    {/* Right side - Last post info */}
+                    {post.reply_count > 0 && post.last_reply_at && (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Box sx={{ textAlign: 'right' }}>
+                          <Typography 
+                            variant="caption" 
+                            sx={{ color: 'primary.main', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                          > last post ·  
+                            {formatDate(post.last_reply_at)}
+                          </Typography>
+                          <Typography 
+                            variant="caption" 
+                            display="block"
+                            sx={{ color: 'text.secondary' }}
+                          >
+                            {post.last_reply_author}
+                          </Typography>
+                        </Box>
+                        <Avatar 
+                          src={post.last_reply_avatar_url} 
+                          sx={{ width: 24, height: 24 }}
+                        />
+                      </Box>
+                    )}
+                  </Box>
+                </Box>
+              </ListItem>
+            )}
+          />
+        ))}
+      </List>
+    </Paper>
   );
 };
 
