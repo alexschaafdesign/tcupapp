@@ -59,6 +59,8 @@ export const ForumContainer = () => {
         const response = await fetch(url); 
         const data = await response.json();
         setPosts(Array.isArray(data) ? data : []);
+        console.log("Fetching posts with tags:", selectedTags);
+        console.log("API URL:", url);
       } catch (error) {
         console.error('Error fetching posts:', error);
         setPosts([]);
@@ -83,7 +85,7 @@ export const ForumContainer = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4, overflowY: 'scroll' }}>
       
       {/* Header with Latest Posts and Buttons */}
       <Box 
@@ -95,7 +97,7 @@ export const ForumContainer = () => {
         }}
       >
         {/* Left-aligned "LATEST POSTS" */}
-        <Typography variant="h3" sx={{ color: 'text.secondary' }}>
+        <Typography variant="h3" sx={{ color: 'text.primary' }}>
           LATEST POSTS
         </Typography>
   
@@ -166,14 +168,26 @@ export const ForumContainer = () => {
           <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary' }}>
             Select tags to filter discussions:
           </Typography>
-          <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
-            {tags.map(tag => (
+          <Stack
+            direction="row"
+            spacing={1}
+            flexWrap="wrap"
+            alignItems="center" // Ensures alignment stays even
+            sx={{ gap: 1 }} // Add consistent gap without causing shifts
+          >            {tags.map(tag => (
               <Chip
                 key={tag.id}
                 label={tag.name}
                 onClick={() => handleTagClick(tag.id)}
                 color={selectedTags.includes(tag.id) ? "primary" : "default"}
                 variant={selectedTags.includes(tag.id) ? "filled" : "outlined"}
+                sx={{
+                  minWidth: 80, // Ensure consistent width
+                  height: 32, // Keep height fixed
+                  fontWeight: selectedTags.includes(tag.id) ? 'normal' : 'normal', // Only bold the text
+                  borderWidth: selectedTags.includes(tag.id) ? 2 : 1, // Subtle border change
+                  transition: 'none', // Remove unwanted transitions
+                }}
               />
             ))}
           </Stack>
@@ -182,14 +196,19 @@ export const ForumContainer = () => {
   
       {/* Post List */}
       {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Box sx={{ mb: 4 }}>
-          <PostList posts={posts} />
-        </Box>
-      )}
+          <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+            <CircularProgress />
+          </Box>
+        ) : posts.length > 0 ? (
+          <Box sx={{ mb: 4 }}>
+            <PostList posts={posts} />
+          </Box>
+        ) : selectedTags.length > 0 ? null : (
+          <Typography sx={{ textAlign: 'center', mt: 4 }} variant="body1">
+            No posts available.
+          </Typography>
+        )}
+      
     </Container>
   );
 };

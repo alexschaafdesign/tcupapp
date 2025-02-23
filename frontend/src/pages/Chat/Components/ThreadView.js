@@ -19,11 +19,14 @@ import EditHistoricalPost from './EditHistoricalPost';
 import HistoricalReplyForm from './HistoricalReplyForm';
 import EditorWithFormatting from './EditorWithFormatting';
 import 'draft-js/dist/Draft.css';
+import { useSearchParams } from 'react-router-dom';
 
 const ThreadView = () => {
   const { threadId } = useParams();
   const { getAccessTokenSilently, user } = useAuth0();
-
+  const [searchParams] = useSearchParams();
+  const highlightedReplyId = searchParams.get('highlight');
+  const replyRef = useRef(null);
   const [threadData, setThreadData] = useState(null);
   const [likedPosts, setLikedPosts] = useState({}); // Track liked state for each post
   const [replyingTo, setReplyingTo] = useState(null);
@@ -39,6 +42,23 @@ const ThreadView = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const supabase = createClient(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_ANON_KEY);
+
+  useEffect(() => {
+    if (highlightedReplyId) {
+      setTimeout(() => {
+        if (replyRef.current) {
+          console.log("Scrolling to highlighted element", replyRef.current);
+          replyRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          console.log("No element found with the highlighted id");
+        }
+      }, 500); // Increase or decrease delay as needed
+    }
+  }, [highlightedReplyId, threadData]);
+
+  useEffect(() => {
+    console.log("highlightedReplyId:", highlightedReplyId);
+  }, [highlightedReplyId]);
 
   // Fetch the thread data
   const fetchThread = async () => {
@@ -344,17 +364,26 @@ const ThreadView = () => {
     const userAuth0Id = user?.sub; // Auth0 ID of logged-in user
     const likedUsers = postReactions[post.id] || [];
     const userHasLiked = likedUsers.some(reaction => reaction.id === userAuth0Id); // ✅ Fix the flipped logic
-  
+    const isHighlighted = post.id === Number(highlightedReplyId);
+    if (isHighlighted) {
+      console.log("Highlighting post:", post.id);
+    }
+
     return (
       <Paper
-        elevation={0}
-        sx={{
-          mb: 1,
-          borderBottom: '1px solid',
-          borderColor: 'divider',
-          borderRadius: 0,
-        }}
-      >
+      ref={isHighlighted ? replyRef : null} // Attach ref if this post is highlighted
+      elevation={0}
+      sx={{
+        mb: 1,
+        borderBottom: '1px solid',
+        borderColor: 'divider',
+        borderRadius: 0,
+        backgroundColor: isHighlighted ? 'rgba(124, 96, 221, 0.1)' : (isReply ? 'background.default' : 'background.paper'),
+
+        transition: 'background-color 0.3s ease',
+        scrollMarginTop: '100px', // Adjust based on your header height
+      }}
+    >
         <Box
           sx={{
             display: 'flex',
@@ -370,7 +399,7 @@ const ThreadView = () => {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              width: 100,
+              width: 160,
               bgcolor: 'grey.100',
               p: 1,
               borderRadius: '8px 0 0 8px',
@@ -385,7 +414,7 @@ const ThreadView = () => {
               alt={post.username}
               sx={{ width: 60, height: 60 }}
             />
-            <Typography variant="subtitle2" sx={{ textAlign: 'center', fontWeight: 600, mt: 1 }}>
+            <Typography variant="subtitle2" sx={{ textAlign: 'center', fontWeight: 600, mt: 1, wordBreak: 'break-word', overflowWrap: 'break-word', maxWidth: '100%', display: 'block' }}>
               {post.username}
             </Typography>
             <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center' }}>
@@ -493,9 +522,9 @@ const ThreadView = () => {
   if (!threadData?.post) return <Typography>Thread not found</Typography>;
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
     {/* Thread Title */}
-    <Typography variant="h1" sx={{ mb: 2, fontWeight: '400' }}>
+    <Typography variant="h3" sx={{ mb: 2, fontWeight: '400' }}>
       {threadData.post.title}
     </Typography>
 

@@ -45,6 +45,7 @@ const colorTokens = {
   text: {
     primary: colors.gray10,
     secondary: colors.gray40,
+    tertiary: colors.gray60,
     inverse: colors.gray94
   },
 };

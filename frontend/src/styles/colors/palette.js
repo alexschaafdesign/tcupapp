@@ -44,6 +44,7 @@ const palette = {
   text: {
     primary: colorTokens.text.primary,
     secondary: colorTokens.text.secondary,
+    tertiary: colorTokens.text.tertiary,
     inverse: colorTokens.text.inverse
   },
 };

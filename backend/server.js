@@ -26,6 +26,7 @@ import tcupgcalRouter from './routes/tcupgcal.js';
 import pledgesRouter from './routes/pledges.js';
 import flyeringRouter from './routes/flyering.js';
 import imagesRouter from './routes/images.js';
+import notificationsRouter, { createReplyNotification } from './routes/notifications.js';
 
 // 2) Optional debugging/logging to confirm environment vars are loaded
 console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -119,6 +120,7 @@ app.use('/api/tcupgcal', tcupgcalRouter);
 app.use('/api/pledges', pledgesRouter);
 app.use('/api/flyering', flyeringRouter);
 app.use('/api/images', imagesRouter);
+app.use('/api/notifications', notificationsRouter)
 
 // Example test route
 app.get('/api/test-db', async (req, res) => {

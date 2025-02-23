@@ -4,6 +4,8 @@ import authMiddleware from '../middleware/auth.js';
 import pool from "../config/db.js";
 import supabase from '../lib/supabase.js';
 const router = express.Router();
+import { createReplyNotification } from './notifications.js';
+
 
 
 router.get('/', async (req, res) => {
@@ -15,45 +17,58 @@ router.get('/', async (req, res) => {
             .from('thread_listings')
             .select('*')
             .order('created_at', { ascending: false });
- 
+
         if (tagIds.length > 0) {
-            const { data: taggedThreadIds } = await supabase
+            const { data: taggedThreadIds, error } = await supabase
                 .from('post_tags')
                 .select('post_id')
                 .in('tag_id', tagIds);
-            
-            if (taggedThreadIds?.length > 0) {
-                query = query.in('id', taggedThreadIds.map(t => t.post_id));
+
+            if (error) throw error; // Ensure errors don't go unnoticed
+
+            // Extract post IDs as an array
+            const postIds = taggedThreadIds.map(t => t.post_id);
+
+            if (postIds.length > 0) {
+                query = query.in('id', postIds);
+            } else {
+                return res.json([]); // Return empty array if no matching posts
             }
         }
- 
-        const { data: threadsData } = await query;
- 
+
+        const { data: threadsData, error: threadsError } = await query;
+
+        if (threadsError) throw threadsError;
+
+        if (!threadsData || threadsData.length === 0) {
+            return res.json([]); // Ensure the frontend receives an empty array
+        }
+
         // Get all auth0_ids including those from replies
         const allAuth0Ids = [...new Set([
             ...threadsData.map(post => post.auth0_id),
             ...threadsData.map(post => post.last_reply_auth0_id).filter(Boolean)
         ])];
-        
+
         // Get user data
-        const userData = await pool.query(
+        const { rows: userData } = await pool.query(
             'SELECT auth0_id, avatar_url, username FROM users WHERE auth0_id = ANY($1)',
             [allAuth0Ids]
         );
-        
+
         const postsWithData = threadsData.map(post => ({
             ...post,
-            avatar_url: userData.rows.find(u => u.auth0_id === post.auth0_id)?.avatar_url,
-            last_reply_avatar_url: userData.rows.find(u => u.auth0_id === post.last_reply_auth0_id)?.avatar_url,
-            username: userData.rows.find(u => u.auth0_id === post.auth0_id)?.username
+            avatar_url: userData.find(u => u.auth0_id === post.auth0_id)?.avatar_url,
+            last_reply_avatar_url: userData.find(u => u.auth0_id === post.last_reply_auth0_id)?.avatar_url,
+            username: userData.find(u => u.auth0_id === post.auth0_id)?.username
         }));
- 
+
         res.json(postsWithData);
     } catch (error) {
         console.error('Error fetching posts:', error);
         res.status(500).json({ error: error.message });
     }
- });
+});
 
 // Get single post/thread with replies
 router.get('/:id', authMiddleware, async (req, res) => {
@@ -62,7 +77,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
         
         const { data: post, error } = await supabase
         .from('forum_messages')
-        .select('id, title') // Fetch only `id` and `title`
+        .select('*') // Fetch only `id` and `title`
         .eq('id', id)
         .single();
 
@@ -189,6 +204,13 @@ router.post('/:id/reply', authMiddleware, async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
+        // Get original post author's auth0_id
+        const { data: parentPost } = await supabase
+            .from('forum_messages')
+            .select('auth0_id')
+            .eq('id', parentId)
+            .single();
+
         const { username, avatar_url } = user.rows[0];
         const finalAuthor = username || user.rows[0].email || 'Anonymous';
 
@@ -212,11 +234,24 @@ router.post('/:id/reply', authMiddleware, async (req, res) => {
 
         if (error) throw error;
 
+        // Create notification for original post author
+        if (parentPost?.auth0_id && parentPost.auth0_id !== auth0Id) {
+            await createReplyNotification(parentId, auth0Id, parentPost.auth0_id, reply.id);
+          }
+
         res.json({
             ...reply,
             avatar_url,
             username
         });
+
+        // After createReplyNotification
+        const checkNotif = await pool.query(
+            'SELECT * FROM notifications WHERE post_id = $1',
+            [parentId]
+        );
+        console.log('Created notification:', checkNotif.rows);
+
     } catch (error) {
         console.error('Error adding reply:', error);
         res.status(500).json({ error: error.message });

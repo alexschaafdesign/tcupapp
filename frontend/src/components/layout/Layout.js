@@ -27,10 +27,10 @@ const Layout = () => {
         {/* Centered content */}
         <Box
           sx={{
-            maxWidth: '1000px',
-            mx: 'auto', // This centers the box
+            maxWidth: { xs: '100%', sm: '90%', md: '1200px', lg: '1400px' }, // Wider on larger screens
+            mx: 'auto', // Centers the box
             width: '100%',
-            px: { xs: 2, sm: 3, md: 0 },
+            px: { xs: 2, sm: 3, md: 4, lg: 3 }, // Adds padding for different breakpoints
             py: 3,
           }}
         >

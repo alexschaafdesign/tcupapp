@@ -178,29 +178,42 @@ const PostList = ({ posts }) => {
                       </Box>
 
                       {/* Right side - Last post info */}
-                      {post.reply_count > 0 && post.last_reply_at && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                          <Box sx={{ textAlign: 'right' }}>
-                            <Typography 
-                              variant="caption" 
-                              sx={{ color: 'primary.main', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
-                            >
-                              {formatDate(post.last_reply_at)}
-                            </Typography>
-                            <Typography 
-                              variant="caption" 
-                              display="block"
-                              sx={{ color: 'text.secondary' }}
-                            >
-                              {post.last_reply_author}
-                            </Typography>
-                          </Box>
-                          <Avatar 
-                            src={post.last_reply_avatar_url} 
-                            sx={{ width: 24, height: 24 }}
-                          />
+{post.reply_count > 0 && post.last_reply_at && (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Box sx={{ textAlign: 'right', lineHeight: 1 }}>
+                          {/* LAST POST text inline without adding height */}
+                          <Typography 
+                            variant="caption" 
+                            color="text.tertiary" 
+                            sx={{ display: 'inline', fontSize: '0.7rem', mr: 0.5 }}
+                          >
+                            LAST POST
+                          </Typography>
+
+                          {/* Timestamp with link */}
+                          <Typography 
+                            variant="caption" 
+                            sx={{ color: 'primary.main', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                          >
+                            {formatDate(post.last_reply_at)}
+                          </Typography>
+
+                          {/* Username */}
+                          <Typography 
+                            variant="caption" 
+                            display="block"
+                            sx={{ color: 'text.secondary' }}
+                          >
+                            {post.last_reply_author}
+                          </Typography>
                         </Box>
-                      )}
+                        
+                        <Avatar 
+                          src={post.last_reply_avatar_url} 
+                          sx={{ width: 24, height: 24 }}
+                        />
+                      </Box>
+                    )}
                     </Box>
                   </Box>
                 </ListItem>
