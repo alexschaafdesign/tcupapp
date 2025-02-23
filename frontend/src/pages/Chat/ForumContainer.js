@@ -27,7 +27,7 @@ import {
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 import CreatePost from './Components/CreatePost';
-import PostList from './Components/PostList';
+import PostList from './PostList';
 
 export const ForumContainer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

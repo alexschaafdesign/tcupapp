@@ -37,6 +37,30 @@ router.get('/', async (req, res) => {
         }
 
         const { data: threadsData, error: threadsError } = await query;
+        if (threadsError) throw threadsError;
+        
+        if (!threadsData || threadsData.length === 0) {
+            return res.json([]);
+        }
+        
+        // Fetch tags for all posts in one query
+        const postIds = threadsData.map(post => post.id);
+        const { data: postTags, error: postTagsError } = await supabase
+            .from('post_tags')
+            .select('post_id, tag:tags(*)')
+            .in('post_id', postIds);
+        
+        if (postTagsError) throw postTagsError;
+        
+        // Group tags by post ID
+        const tagsByPostId = postTags.reduce((acc, { post_id, tag }) => {
+            if (!acc[post_id]) acc[post_id] = [];
+            acc[post_id].push(tag);
+            return acc;
+        }, {});
+        
+       
+        
 
         if (threadsError) throw threadsError;
 
@@ -60,7 +84,8 @@ router.get('/', async (req, res) => {
             ...post,
             avatar_url: userData.find(u => u.auth0_id === post.auth0_id)?.avatar_url,
             last_reply_avatar_url: userData.find(u => u.auth0_id === post.last_reply_auth0_id)?.avatar_url,
-            username: userData.find(u => u.auth0_id === post.auth0_id)?.username
+            username: userData.find(u => u.auth0_id === post.auth0_id)?.username,
+            tags: tagsByPostId[post.id] || [] // ✅ Attach tags here!
         }));
 
         res.json(postsWithData);
@@ -93,7 +118,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
         ])];
 
         const userData = await pool.query(
-            'SELECT auth0_id, avatar_url, username FROM users WHERE auth0_id = ANY($1)',
+            'SELECT auth0_id, avatar_url, username, title FROM users WHERE auth0_id = ANY($1)',
             [allAuth0Ids]
         );
 
@@ -112,7 +137,8 @@ router.get('/:id', authMiddleware, async (req, res) => {
         const repliesWithData = replies?.map(reply => ({
             ...reply,
             avatar_url: userData.rows.find(u => u.auth0_id === reply.auth0_id)?.avatar_url,
-            username: userData.rows.find(u => u.auth0_id === reply.auth0_id)?.username
+            username: userData.rows.find(u => u.auth0_id === reply.auth0_id)?.username,
+            title: userData.rows.find(u => u.auth0_id === reply.auth0_id)?.title // ✅ Add title here
         })) || [];
 
         res.json({

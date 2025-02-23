@@ -295,4 +295,32 @@ router.get('/test-auth', authMiddleware, (req, res) => {
     }
   });
 
+  // Update user title
+router.put('/title', authMiddleware, async (req, res) => {
+  try {
+      const { title } = req.body;
+      const auth0Id = req.user.sub; // Extract Auth0 ID from request
+
+      // Validate title length
+      if (!title || title.length > 16) {
+          return res.status(400).json({ error: 'Title must be between 1 and 16 characters.' });
+      }
+
+      // Update title in PostgreSQL
+      const result = await pool.query(
+          'UPDATE users SET title = $1 WHERE auth0_id = $2 RETURNING title',
+          [title, auth0Id]
+      );
+
+      if (result.rows.length === 0) {
+          return res.status(404).json({ error: 'User not found' });
+      }
+
+      res.json({ success: true, title: result.rows[0].title });
+  } catch (error) {
+      console.error('Error updating title:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 export default router;

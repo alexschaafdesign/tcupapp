@@ -37,13 +37,18 @@ function UserProfile() {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   // Profile info state
+
+  // Editing username
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [username, setUsername] = useState('');
   const [usernameError, setUsernameError] = useState(null);
 
-  const [isEditingEmail, setIsEditingEmail] = useState(false);
-  const [email, setEmail] = useState(user?.email || '');
-  const [emailError, setEmailError] = useState(null);
+  // Editing title
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [title, setTitle] = useState('');
+  const [titleError, setTitleError] = useState(null);
+
+
 
   // Password change state
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
@@ -60,6 +65,9 @@ function UserProfile() {
   // Email change state
   const [isChangingEmail, setIsChangingEmail] = useState(false);
   const [showEmailSuccess, setShowEmailSuccess] = useState(false);
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [email, setEmail] = useState(user?.email || '');
+  const [emailError, setEmailError] = useState(null);
 
 
   // Data arrays for bands and shows
@@ -73,6 +81,22 @@ function UserProfile() {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
+
+  const handleTitleUpdate = async () => {
+    try {
+      setTitleError(null);
+      const response = await callApi(`${apiUrl}/users/title`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title }),
+      });
+  
+      if (response.error) throw new Error(response.error);
+      setIsEditingTitle(false);
+    } catch (error) {
+      setTitleError('Failed to update title. Please try again.');
+    }
+  };
 
   // Requirements for changing password 
   const PasswordRequirements = ({ password }) => {
@@ -138,6 +162,7 @@ function UserProfile() {
             if (profileData.username) setUsername(profileData.username);
             if (profileData.avatar_url) setAvatarUrl(profileData.avatar_url);
             if (profileData.email) setEmail(profileData.email);
+            if (profileData.title) setTitle(profileData.title);
           }
           // Get additional user data
           const [bandsData, showsData, favoritesData, claimedData] = await Promise.all([
@@ -397,6 +422,36 @@ function UserProfile() {
                 <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                   <Typography>{username || user.name}</Typography>
                   <Button onClick={() => setIsEditingUsername(true)} size="small" sx={{ ml: 1 }}>
+                    Edit
+                  </Button>
+                </Box>
+              )}
+            </Box>
+
+            {/* Title */}
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="subtitle1">Title:</Typography>
+              {isEditingTitle ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                  <TextField
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    size="small"
+                    error={!!titleError}
+                    helperText={titleError || `${title.length}/16 characters`}
+                    inputProps={{ maxLength: 16 }}
+                  />
+                  <Button onClick={handleTitleUpdate} variant="contained" sx={{ ml: 1 }}>
+                    Save
+                  </Button>
+                  <Button onClick={() => setIsEditingTitle(false)} variant="outlined" sx={{ ml: 1 }}>
+                    Cancel
+                  </Button>
+                </Box>
+              ) : (
+                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                  <Typography>{title || 'TCUP Member'}</Typography>
+                  <Button onClick={() => setIsEditingTitle(true)} size="small" sx={{ ml: 1 }}>
                     Edit
                   </Button>
                 </Box>

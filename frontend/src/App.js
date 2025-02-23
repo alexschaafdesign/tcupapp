@@ -34,7 +34,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import VenueForm from "./pages/Venues/VenueForm.js";
 import CalendarEvents from "./components/CalendarEvents.js";
 import ForumContainer from "./pages/Chat/ForumContainer.js";
-import ThreadView from "./pages/Chat/Components/ThreadView.js";
+import ThreadView from "./pages/Chat/ThreadView.js";
 import LandingPage from "./pages/LandingPage.js";
 import LandingPageTemp from "./pages/LandingPage2.js";
 import Privacy from "./pages/Privacy.js";

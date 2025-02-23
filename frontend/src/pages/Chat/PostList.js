@@ -1,12 +1,15 @@
 import React from 'react';
 import { Box, Typography, Tooltip, Avatar, List, ListItem, Chip, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import AuthWrapper from '../../../components/auth/AuthWrapper';
+import AuthWrapper from '../../components/auth/AuthWrapper';
 import { useAuth0 } from '@auth0/auth0-react';
+import ActiveTags from './Components/ActiveTags';
 
 const PostList = ({ posts }) => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth0();
+  const TAG_LIMIT = 2; // Adjust the limit here for PostList
+
 
   const formatDate = (date) => {
     const now = new Date();
@@ -38,8 +41,8 @@ const PostList = ({ posts }) => {
     <Paper elevation={0} sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
       <List sx={{ p: 0 }}>
         {posts.map((post) => {
-          const visibleTags = post.tags ? post.tags.slice(0, 3) : [];
-          const moreTagsCount = post.tags && post.tags.length > 3 ? post.tags.length - 3 : 0;
+        const moreTagsCount = post.tags && post.tags.length > TAG_LIMIT ? post.tags.length - TAG_LIMIT : 0;
+
 
           return (
             <AuthWrapper 
@@ -77,13 +80,7 @@ const PostList = ({ posts }) => {
                       src={post.avatar_url} 
                       sx={{ width: 60, height: 60 }}
                     />
-                    <Typography 
-                      variant="caption" 
-                      color="text.secondary"
-                      sx={{ mt: 1, textAlign: 'center' }}
-                    >
-                      {post.author}
-                    </Typography>
+                   
                   </Box>
 
                   {/* Main Content */}
@@ -103,43 +100,11 @@ const PostList = ({ posts }) => {
                       </Typography>
 
                       {/* 🏷️ Tags (Limit to 3, show more with Tooltip) */}
+                      {/* 🏷️ Tags (Limit to 3, show more with Tooltip) */}
                       <Box sx={{ display: 'flex', gap: 0.5, flexShrink: 0 }}>
-                        {visibleTags.map((tag) => (
-                          <Chip
-                            key={tag.id}
-                            label={tag.name}
-                            size="small"
-                            sx={{ 
-                              height: 20,
-                              bgcolor: 'primary.light',
-                              color: 'primary.contrastText',
-                              '& .MuiChip-label': {
-                                px: 1,
-                                fontSize: '0.75rem'
-                              }
-                            }}
-                          />
-                        ))}
-
-                        {moreTagsCount > 0 && (
-                          <Tooltip title={post.tags.map(tag => tag.name).join(', ')}>
-                            <Typography
-                              variant="caption"
-                              sx={{ 
-                                bgcolor: 'grey.300',
-                                borderRadius: 12,
-                                px: 1,
-                                fontSize: '0.75rem',
-                                height: 20,
-                                display: 'flex',
-                                alignItems: 'center',
-                                cursor: 'pointer'
-                              }}
-                            >
-                              +{moreTagsCount}
-                            </Typography>
-                          </Tooltip>
-                        )}
+                        {/* Render only up to 3 tags */}
+                        <ActiveTags tags={post.tags} limit={2} />
+                       
                       </Box>
                     </Box>
 

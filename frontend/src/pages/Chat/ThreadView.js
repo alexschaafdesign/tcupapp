@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { createClient } from '@supabase/supabase-js';
-import { Container, Link, Typography, Button, Avatar, Box, CircularProgress, Paper, IconButton, Dialog } from '@mui/material';
+import { Container, Link, Tooltip, Chip, Typography, Button, Avatar, Box, CircularProgress, Paper, IconButton, Dialog } from '@mui/material';
 import { Edit as EditIcon } from '@mui/icons-material';
 import {
   EditorState,
@@ -14,12 +14,13 @@ import {
   convertToRaw,
   SelectionState
 } from 'draft-js';
-import ReactionBar from './ReactionBar';
-import EditHistoricalPost from './EditHistoricalPost';
-import HistoricalReplyForm from './HistoricalReplyForm';
-import EditorWithFormatting from './EditorWithFormatting';
+import ReactionBar from './Components/ReactionBar';
+import EditHistoricalPost from './Components/EditHistoricalPost';
+import HistoricalReplyForm from './Components/HistoricalReplyForm';
+import EditorWithFormatting from './Components/EditorWithFormatting';
 import 'draft-js/dist/Draft.css';
 import { useSearchParams } from 'react-router-dom';
+import ActiveTags from './Components/ActiveTags';
 
 const ThreadView = () => {
   const { threadId } = useParams();
@@ -335,30 +336,8 @@ const ThreadView = () => {
     }
   };
 
-  // Renders the top line (title, date, post ID, etc.)
-  const renderPostHeader = (post, isReply) => (
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-      <Box>
-        {!isReply && (
-          <Typography variant="h3" sx={{ mb: 1 }}>
-            {post.title}
-          </Typography>
-        )}
-        <Typography variant="caption" color="text.secondary">
-          {new Date(post.created_at).toLocaleString()}
-        </Typography>
-      </Box>
-      <Box sx={{ display: 'flex', alignItems: 'start', gap: 1 }}>
-        <IconButton size="small" onClick={() => setEditingPost(post)} sx={{ padding: 0.5 }}>
-          <EditIcon fontSize="small" />
-        </IconButton>
-        <Typography variant="caption" color="text.secondary">
-          #{post.id}
-        </Typography>
-      </Box>
-    </Box>
-  );
 
+  
   // Renders a single post or reply
   const renderPost = (post, isReply = false) => {
     const userAuth0Id = user?.sub; // Auth0 ID of logged-in user
@@ -368,6 +347,8 @@ const ThreadView = () => {
     if (isHighlighted) {
       console.log("Highlighting post:", post.id);
     }
+
+
 
     return (
       <Paper
@@ -417,9 +398,9 @@ const ThreadView = () => {
             <Typography variant="subtitle2" sx={{ textAlign: 'center', fontWeight: 600, mt: 1, wordBreak: 'break-word', overflowWrap: 'break-word', maxWidth: '100%', display: 'block' }}>
               {post.username}
             </Typography>
-            <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center' }}>
-              TCUP Member
-            </Typography>
+            <Typography variant="caption" sx={{ color: 'gray' }}>
+          {post.title}
+        </Typography>
           </Box>
   
           {/* ✅ Main Content Area - Adjusted for Better Spacing */}
@@ -521,12 +502,22 @@ const ThreadView = () => {
   if (loading) return <CircularProgress />;
   if (!threadData?.post) return <Typography>Thread not found</Typography>;
 
-  return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-    {/* Thread Title */}
-    <Typography variant="h3" sx={{ mb: 2, fontWeight: '400' }}>
-      {threadData.post.title}
-    </Typography>
+  const visibleTags = threadData?.post?.tags ? threadData.post.tags.slice(0, 4) : [];
+  const moreTagsCount = threadData?.post?.tags?.length > 4 ? threadData.post.tags.length - 4 : 0;
+
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* Thread Title + Tags Row */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+        
+        {/* Title */}
+        <Typography variant="h3" sx={{ fontWeight: '400' }}>
+          {threadData.post.title}
+        </Typography>
+  
+        {/* Tags Section */}
+        <ActiveTags tags={threadData.post.tags} limit={3} /> {/* Set different limits in different places */}
+      </Box>
 
       {/* Original Post */}
       {renderPost(threadData.post)}
