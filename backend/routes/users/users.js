@@ -3,6 +3,7 @@ import express from 'express';
 import pool from '../../config/db.js';
 import authMiddleware from '../../middleware/auth.js';
 import cloudinary from '../../config/cloudinary.js';
+import axios from 'axios';
 
 const router = express.Router();
 
@@ -201,6 +202,96 @@ router.get('/test-auth', authMiddleware, (req, res) => {
     } catch (err) {
       console.error('Error in test-auth:', err);
       res.status(500).json({ error: 'Server error', details: err.message });
+    }
+  });
+
+  router.put('/password', authMiddleware, async (req, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      const auth0Id = req.user.sub;
+  
+      // Get Management API token
+      const tokenResponse = await axios.post(
+        `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+        {
+          client_id: process.env.AUTH0_CLIENT_ID,
+          client_secret: process.env.AUTH0_CLIENT_SECRET,
+          audience: "https://dev-1s71soupcjy6t33y.us.auth0.com/api/v2/",
+          grant_type: 'client_credentials'
+        }
+      );
+  
+      console.log('Token response:', tokenResponse.data);
+  
+      // Update password directly
+      await axios.patch(
+        `https://${process.env.AUTH0_DOMAIN}/api/v2/users/${auth0Id}`,
+        {
+          password: newPassword,
+          connection: "Username-Password-Authentication"
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.data.access_token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+  
+      res.json({ message: 'Password updated successfully' });
+    } catch (error) {
+      console.log('Full error details:', error.response?.data);
+      console.log('Auth0 request config:', error.config);
+      console.log('Response headers:', error.response?.headers);
+      res.status(500).json({ error: error.response?.data || error.message });
+    }
+  });
+
+  router.put('/email', authMiddleware, async (req, res) => {
+    try {
+      const { email } = req.body;
+      const auth0Id = req.user.sub;
+  
+      // Get Management API token
+      const tokenResponse = await axios.post(
+        `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+        {
+          client_id: process.env.AUTH0_CLIENT_ID,
+          client_secret: process.env.AUTH0_CLIENT_SECRET,
+          audience: "https://dev-1s71soupcjy6t33y.us.auth0.com/api/v2/",
+          grant_type: 'client_credentials'
+        }
+      );
+  
+      // Update email in Auth0
+      await axios.patch(
+        `https://${process.env.AUTH0_DOMAIN}/api/v2/users/${auth0Id}`,
+        {
+          email: email,
+          connection: "Username-Password-Authentication"
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.data.access_token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+  
+      // Update email in PostgreSQL
+      const result = await pool.query(
+        'UPDATE users SET email = $1 WHERE auth0_id = $2 RETURNING *',
+        [email, auth0Id]
+      );
+  
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      res.json(result.rows[0]);
+    } catch (error) {
+      console.error('Error updating email:', error);
+      res.status(500).json({ error: error.response?.data || error.message });
     }
   });
 

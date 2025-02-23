@@ -25,7 +25,7 @@ import ShowFormMinimal from "./pages/WithoutHeader/ShowFormMinimal.js";
 import ShowProfileMinimal from "./pages/WithoutHeader/ShowProfileMinimal.js";
 import EditShowPageMinimal from "./pages/WithoutHeader/EditShowPageMinimal.js";
 import Callback from "./components/Callback.js";
-import UserProfile from "./pages/UserProfile.js";
+import UserProfile from "./pages/User/UserProfile.js";
 import AuthTest from "./components/AuthTest.js";
 import SessionMusiciansTable from "./pages/SessionMusicians/SessionMusiciansTable.js";
 import SessionMusicianProfile from "./pages/SessionMusicians/SessionMusiciansProfile.js";
