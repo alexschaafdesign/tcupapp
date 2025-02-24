@@ -6,7 +6,15 @@ import useApi from "../../hooks/useApi";
 
 const routeNames = {
   thread: "Chat", // Map "thread" to "Chat"
-  chat: "Chat"
+  chat: "Chat",
+  shows: "Show List"
+};
+
+const truncateText = (text, maxLength = 30) => {
+  if (text.length > maxLength) {
+    return text.slice(0, maxLength) + "...";
+  }
+  return text;
 };
 
 const Breadcrumbs = () => {
@@ -54,6 +62,9 @@ const Breadcrumbs = () => {
         if (threadId && value === threadId && threadTitle) {
           displayName = threadTitle;
         }
+
+        // Apply character limit
+        displayName = truncateText(displayName);
 
         console.log(`Breadcrumb segment: ${value}, Display Name: ${displayName}`);
 

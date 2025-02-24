@@ -21,6 +21,7 @@ import EditorWithFormatting from './Components/EditorWithFormatting';
 import 'draft-js/dist/Draft.css';
 import { useSearchParams } from 'react-router-dom';
 import ActiveTags from './Components/ActiveTags';
+import PostCard from './Components/PostCard';
 
 const ThreadView = () => {
   const { threadId } = useParams();
@@ -337,167 +338,6 @@ const ThreadView = () => {
   };
 
 
-  
-  // Renders a single post or reply
-  const renderPost = (post, isReply = false) => {
-    const userAuth0Id = user?.sub; // Auth0 ID of logged-in user
-    const likedUsers = postReactions[post.id] || [];
-    const userHasLiked = likedUsers.some(reaction => reaction.id === userAuth0Id); // ✅ Fix the flipped logic
-    const isHighlighted = post.id === Number(highlightedReplyId);
-    if (isHighlighted) {
-      console.log("Highlighting post:", post.id);
-    }
-
-
-
-    return (
-      <Paper
-      ref={isHighlighted ? replyRef : null} // Attach ref if this post is highlighted
-      elevation={0}
-      sx={{
-        mb: 1,
-        borderBottom: '1px solid',
-        borderColor: 'divider',
-        borderRadius: 0,
-        backgroundColor: isHighlighted ? 'rgba(124, 96, 221, 0.1)' : (isReply ? 'background.default' : 'background.paper'),
-
-        transition: 'background-color 0.3s ease',
-        scrollMarginTop: '100px', // Adjust based on your header height
-      }}
-    >
-        <Box
-          sx={{
-            display: 'flex',
-            gap: 2,
-            p: 2,
-            bgcolor: isReply ? 'background.default' : 'background.paper',
-            minHeight: 120,
-          }}
-        >
-          {/* Left Side: Avatar + Username */}
-          <Box 
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              width: 160,
-              bgcolor: 'grey.100',
-              p: 1,
-              borderRadius: '8px 0 0 8px',
-              borderRight: '1px solid',
-              borderColor: 'divider',
-              flexShrink: 0,
-              minHeight: 120,
-            }}
-          >
-            <Avatar
-              src={post.avatar_url}
-              alt={post.username}
-              sx={{ width: 60, height: 60 }}
-            />
-            <Typography variant="subtitle2" sx={{ textAlign: 'center', fontWeight: 600, mt: 1, wordBreak: 'break-word', overflowWrap: 'break-word', maxWidth: '100%', display: 'block' }}>
-              {post.username}
-            </Typography>
-            <Typography variant="caption" sx={{ color: 'gray' }}>
-          {post.title}
-        </Typography>
-          </Box>
-  
-          {/* ✅ Main Content Area - Adjusted for Better Spacing */}
-          <Box sx={{ 
-            flexGrow: 1, 
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'flex-start',  // ✅ Ensure text starts at the top
-            minHeight: 120,
-          }}>
-            
-            {/* ✅ Top Row: Timestamp (Top Right) */}
-            {/* ✅ Move timestamp to the top left */}
-            <Box sx={{ width: '100%', borderBottom: '1px solid', borderColor: 'divider', mb: 1, position: 'relative', top: '-6px' }}>
-              <Typography variant="caption" color="text.secondary">
-                {new Date(post.created_at).toLocaleString()}
-              </Typography>
-            </Box>
-
-            {/* ✅ Post Content (Below Timestamp) */}
-            <Box sx={{ 
-              mt: 0.5, 
-              width: '100%', 
-              wordBreak: 'break-word', 
-              overflowWrap: 'anywhere', 
-            }}> 
-              {renderContent(post.content)}
-            </Box>
-  
-            {/* ✅ Bottom Row: Like/Reply (Left), "Liked by..." (Right) */}
-            {/* Bottom Row: Always push Like/Reply to the right */}
-            <Box 
-              sx={{ 
-                pt: 1, 
-                mt: 'auto', 
-                display: 'flex', 
-                justifyContent: 'space-between', // ✅ Always separate content
-                alignItems: 'center', 
-                width: '100%' 
-              }}
-            >
-              {/* Liked by Section */}
-              <Box sx={{ flexGrow: 1 }}>
-                {likedUsers.length > 0 && (
-                  <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                    Liked by{" "}
-                    {likedUsers.slice(0, 2).map((user, index) => (
-                      <React.Fragment key={user.id}>
-                        <Link
-                          to={`/profile/${user.id}`}
-                          style={{ textDecoration: "none", color: "inherit", fontWeight: "bold" }}
-                        >
-                          {user.username}
-                        </Link>
-                        {index < likedUsers.length - 1 ? (index === likedUsers.length - 2 ? " and " : ", ") : ""}
-                      </React.Fragment>
-                    ))}
-                    {likedUsers.length > 2 && <> and {likedUsers.length - 2} others</>}
-                  </Typography>
-                )}
-              </Box>
-
-              {/* ✅ Always keep Like/Reply on the right */}
-              <Box sx={{ display: 'flex', gap: 2 }}>
-              <Typography 
-                variant="caption"
-                sx={{
-                  cursor: 'pointer',
-                  fontWeight: userHasLiked ? 'bold' : 'normal',  // ✅ Bold when liked
-                  color: userHasLiked ? '#2E7D32' : 'primary.main',  // ✅ Green when liked, Purple otherwise
-                  transition: 'color 0.2s ease-in-out, font-weight 0.2s ease-in-out',  // ✅ Smooth transition
-                  '&:hover': { textDecoration: 'underline' },
-                  width: '45px',  // ✅ Forces fixed width to match both "Like" & "Liked"
-                  display: 'inline-block', // ✅ Keeps layout consistent
-                  textAlign: 'center',
-                  whiteSpace: 'nowrap', // ✅ Ensures no unintended wrapping
-                }}
-                onClick={() => handleLikeClick(post.id)}
-              >
-                {userHasLiked ? 'Liked' : 'Like'}
-              </Typography>
-                <Typography 
-                  variant="caption" 
-                  color="primary" 
-                  sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
-                  onClick={() => handleReplyClick(post)}
-                >
-                  Reply
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-      </Paper>
-    );
-  };
-
   // Loading or not found states
   if (loading) return <CircularProgress />;
   if (!threadData?.post) return <Typography>Thread not found</Typography>;
@@ -505,39 +345,44 @@ const ThreadView = () => {
   const visibleTags = threadData?.post?.tags ? threadData.post.tags.slice(0, 4) : [];
   const moreTagsCount = threadData?.post?.tags?.length > 4 ? threadData.post.tags.length - 4 : 0;
 
-    return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Thread Title + Tags Row */}
+  return (
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      
+      {/* Thread Title + Tags */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-        
-        {/* Title */}
         <Typography variant="h3" sx={{ fontWeight: '400' }}>
           {threadData.post.title}
         </Typography>
-  
-        {/* Tags Section */}
-        <ActiveTags tags={threadData.post.tags} limit={3} /> {/* Set different limits in different places */}
+        <ActiveTags tags={threadData.post.tags} limit={3} />
       </Box>
-
-      {/* Original Post */}
-      {renderPost(threadData.post)}
-
-      {/* Replies */}
+  
+      {/* ✅ Render the Main Post */}
+      <PostCard 
+        post={threadData.post} 
+        isHighlighted={threadData.post.id === Number(highlightedReplyId)}
+        user={user}
+        handleLikeClick={handleLikeClick}
+        handleReplyClick={handleReplyClick}
+        renderContent={renderContent}
+        postReactions={postReactions}
+      />
+  
+      {/* ✅ Render Replies */}
       {threadData.replies.map((reply) => (
-        <Box key={reply.id}>
-          {renderPost(reply, true)}
-        </Box>
+        <PostCard 
+          key={reply.id}
+          post={reply}
+          isHighlighted={reply.id === Number(highlightedReplyId)}
+          user={user}
+          handleLikeClick={handleLikeClick}
+          handleReplyClick={handleReplyClick}
+          renderContent={renderContent}
+          postReactions={postReactions}
+        />
       ))}
-
+  
       {/* Reply Editor */}
-      <Box
-        ref={replyBoxRef}
-        sx={{
-          mt: 3,
-          // If you have a 64px-high sticky header, this ensures we don't scroll behind it
-          scrollMarginTop: '64px',
-        }}
-      >
+      <Box ref={replyBoxRef} sx={{ mt: 3, scrollMarginTop: '64px' }}>
         <EditorWithFormatting
           editorState={replyEditorState}
           setEditorState={setReplyEditorState}
@@ -545,7 +390,8 @@ const ThreadView = () => {
           focusTrigger={focusTrigger}
         />
       </Box>
-
+  
+      {/* Post Reply & Historical Reply Buttons */}
       <Box sx={{ display: 'flex', gap: 2 }}>
         <Button
           variant="contained"
@@ -558,8 +404,8 @@ const ThreadView = () => {
           Add Historical Reply
         </Button>
       </Box>
-
-      {/* Historical Reply Dialog */}
+  
+      {/* Historical Reply Modal */}
       {showHistoricalReplyModal && (
         <Dialog
           open
@@ -580,8 +426,8 @@ const ThreadView = () => {
           />
         </Dialog>
       )}
-
-      {/* Editing Post Overlay */}
+  
+      {/* Editing Post Modal */}
       {editingPost && (
         <Box
           sx={{
@@ -598,15 +444,7 @@ const ThreadView = () => {
             p: 2,
           }}
         >
-          <Box
-            sx={{
-              maxWidth: '100%',
-              maxHeight: '100%',
-              overflow: 'auto',
-              bgcolor: 'background.paper',
-              borderRadius: 1,
-            }}
-          >
+          <Box sx={{ maxWidth: '100%', maxHeight: '100%', overflow: 'auto', bgcolor: 'background.paper', borderRadius: 1 }}>
             <EditHistoricalPost
               postId={editingPost.id}
               onClose={() => {

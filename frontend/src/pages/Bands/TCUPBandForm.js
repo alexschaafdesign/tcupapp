@@ -15,7 +15,6 @@ import {
   LinearProgress
 } from "@mui/material";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import AppBreadcrumbs from "../../components/Breadcrumbs";
 import DeleteIcon from '@mui/icons-material/Delete';
 import colorTokens from "../../styles/colors/colortokens";
 import ProfileImageAdjuster from "../../components/ProfileImageAdjuster";
@@ -297,7 +296,6 @@ const TCUPBandForm = ({ isEdit = false }) => {
 
   return (
     <Box sx={{ paddingTop: 2, paddingBottom: 10, paddingX: 4 }}>
-      <AppBreadcrumbs />
       <Typography variant="h1" gutterBottom textAlign="center">
         {isEdit ? "Edit Your Band" : "Add Your Band"}
       </Typography>

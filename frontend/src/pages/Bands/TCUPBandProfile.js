@@ -4,7 +4,6 @@ import { Box, Typography, Button, Modal, Stack } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useAuth0 } from "@auth0/auth0-react";
 import formatBandData from "../../utils/formatBandData";
-import AppBreadcrumbs from "../../components/Breadcrumbs";
 import ProfilePhotoCard from "../../components/bands/ProfilePhotoCard";
 import ShowsTableCore from "../Shows/ShowsTableCore";
 import BandClaim from "../../components/bands/BandClaim";
@@ -147,7 +146,6 @@ const TCUPBandProfile = ({ allShows = [] }) => {
           mb: 3,
         }}
       >
-        <AppBreadcrumbs />
         
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <BandClaim 

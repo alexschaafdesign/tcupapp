@@ -1,223 +1,100 @@
-import React, { useState } from 'react';
-import { 
-  Box, 
-  Card, 
-  CardContent, 
-  Typography, 
-  Avatar, 
-  Chip, 
-  Stack,
-  IconButton,
-  Tooltip,
-  Badge,
-  TextField,
-  Button,
-  Collapse
-} from '@mui/material';
-import { 
-  ChatBubbleOutline as ReplyIcon,
-  Visibility as ViewIcon,
-  Send as SendIcon,
-  Close as CloseIcon
-} from '@mui/icons-material';
-import { useAuth0 } from '@auth0/auth0-react';
-import { ThreadPreview } from './ThreadPreview';
+import React, { useRef } from 'react';
+import { Paper, Box, Avatar, Typography, Link } from '@mui/material';
 
-const PostCard = ({ post, onPostUpdated }) => {
-  const [showReplyForm, setShowReplyForm] = useState(false);
-  const [replyContent, setReplyContent] = useState('');
-  const { getAccessTokenSilently } = useAuth0();
-  const apiUrl = process.env.REACT_APP_API_URL;
-
-  const handleReply = async () => {
-    try {
-      const token = await getAccessTokenSilently();
-      const response = await fetch(`${apiUrl}/posts/${post.id}/reply`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ content: replyContent })
-      });
-      const newReply = await response.json();
-      onPostUpdated({ ...post, replies: [...(post.replies || []), newReply] });
-      setReplyContent('');
-      setShowReplyForm(false);
-    } catch (error) {
-      console.error('Error posting reply:', error);
-    }
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMs = now - date;
-    const diffInHours = diffInMs / (1000 * 60 * 60);
-    
-    if (diffInHours < 24) {
-      return diffInHours < 1 
-        ? 'Just now' 
-        : `${Math.floor(diffInHours)} hours ago`;
-    } else if (diffInHours < 48) {
-      return 'Yesterday';
-    } else {
-      return date.toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric',
-        year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-      });
-    }
-  };
+const PostCard = ({ post, isReply, isHighlighted, user, handleLikeClick, handleReplyClick, renderContent, postReactions, highlightedReplyId }) => {
+  const userAuth0Id = user?.sub;
+  const likedUsers = postReactions[post.id] || [];
+  const userHasLiked = likedUsers.some(reaction => reaction.id === userAuth0Id);
+  const replyRef = useRef(null);
 
   return (
-    <Card 
-      elevation={1}
-      sx={{ 
-        mb: 2, 
-        borderRadius: '8px',
-        transition: 'all 0.2s ease',
-        '&:hover': {
-          transform: 'translateY(-2px)',
-          boxShadow: 2,
-          bgcolor: 'rgba(0, 0, 0, 0.01)'
-        },
-        overflow: 'visible'
+    <Paper
+      ref={isHighlighted ? replyRef : null}
+      elevation={0}
+      sx={{
+        mb: 1,
+        borderBottom: '1px solid',
+        borderColor: 'divider',
+        borderRadius: 0,
+        backgroundColor: isHighlighted ? 'rgba(124, 96, 221, 0.1)' : (isReply ? 'background.default' : 'background.paper'),
+        transition: 'background-color 0.3s ease',
+        scrollMarginTop: '100px',
       }}
     >
-      {/* Use the existing ThreadPreview, but wrapped in styled CardContent */}
-      <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
-        <ThreadPreview 
-          post={post} 
-          onReplyClick={() => setShowReplyForm(!showReplyForm)} 
-        />
-        
-        {/* Stats displayed below the thread preview */}
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-          mt: 1
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
-            <ReplyIcon fontSize="small" sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              {post.reply_count || 0}
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <ViewIcon fontSize="small" sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              {post.views || 0}
-            </Typography>
-          </Box>
+      <Box sx={{ display: 'flex', gap: 2, p: 2, bgcolor: isReply ? 'background.default' : 'background.paper', minHeight: 120 }}>
+        {/* Left Side: Avatar + Username */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 160, bgcolor: 'grey.100', p: 1, borderRadius: '8px 0 0 8px', borderRight: '1px solid', borderColor: 'divider', flexShrink: 0, minHeight: 120 }}>
+          <Avatar src={post.avatar_url} alt={post.username} sx={{ width: 60, height: 60 }} />
+          <Typography variant="subtitle2" sx={{ textAlign: 'center', fontWeight: 600, mt: 1, wordBreak: 'break-word', overflowWrap: 'break-word', maxWidth: '100%', display: 'block' }}>
+            {post.username}
+          </Typography>
+          <Typography variant="caption" sx={{ color: 'gray' }}>
+            {post.title}
+          </Typography>
         </Box>
-        
-        {/* Reply form with animation */}
-        <Collapse in={showReplyForm}>
-          <Box sx={{ 
-            mt: 2, 
-            pt: 2, 
-            borderTop: '1px solid',
-            borderColor: 'divider' 
-          }}>
-            <TextField
-              fullWidth
-              multiline
-              rows={3}
-              value={replyContent}
-              onChange={(e) => setReplyContent(e.target.value)}
-              placeholder="Write your reply..."
-              sx={{ mb: 2 }}
-              variant="outlined"
-              size="small"
-            />
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button 
-                variant="outlined" 
-                size="small"
-                startIcon={<CloseIcon />}
-                onClick={() => setShowReplyForm(false)}
-                sx={{ mr: 1, textTransform: 'none' }}
+
+        {/* Main Content */}
+        <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', minHeight: 120 }}>
+          <Box sx={{ width: '100%', borderBottom: '1px solid', borderColor: 'divider', mb: 1, position: 'relative', top: '-6px' }}>
+            <Typography variant="caption" color="text.secondary">
+              {new Date(post.created_at).toLocaleString()}
+            </Typography>
+          </Box>
+
+          <Box sx={{ mt: 0.5, width: '100%', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+            {renderContent(post.content)}
+          </Box>
+
+          {/* Bottom Row: Like/Reply */}
+          <Box sx={{ pt: 1, mt: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+            <Box sx={{ flexGrow: 1 }}>
+              {likedUsers.length > 0 && (
+                <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                  Liked by{" "}
+                  {likedUsers.slice(0, 2).map((user, index) => (
+                    <React.Fragment key={user.id}>
+                      <Link to={`/profile/${user.id}`} style={{ textDecoration: "none", color: "inherit", fontWeight: "bold" }}>
+                        {user.username}
+                      </Link>
+                      {index < likedUsers.length - 1 ? (index === likedUsers.length - 2 ? " and " : ", ") : ""}
+                    </React.Fragment>
+                  ))}
+                  {likedUsers.length > 2 && <> and {likedUsers.length - 2} others</>}
+                </Typography>
+              )}
+            </Box>
+
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Typography 
+                variant="caption"
+                sx={{
+                  cursor: 'pointer',
+                  fontWeight: userHasLiked ? 'bold' : 'normal',
+                  color: userHasLiked ? '#2E7D32' : 'primary.main',
+                  transition: 'color 0.2s ease-in-out, font-weight 0.2s ease-in-out',
+                  '&:hover': { textDecoration: 'underline' },
+                  width: '45px',
+                  display: 'inline-block',
+                  textAlign: 'center',
+                  whiteSpace: 'nowrap',
+                }}
+                onClick={() => handleLikeClick(post.id)}
               >
-                Cancel
-              </Button>
-              <Button 
-                variant="contained" 
-                size="small"
-                startIcon={<SendIcon />}
-                onClick={handleReply}
-                disabled={!replyContent.trim()}
-                sx={{ textTransform: 'none' }}
+                {userHasLiked ? 'Liked' : 'Like'}
+              </Typography>
+              <Typography 
+                variant="caption" 
+                color="primary" 
+                sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                onClick={() => handleReplyClick(post)}
               >
-                Post Reply
-              </Button>
+                Reply
+              </Typography>
             </Box>
           </Box>
-        </Collapse>
-        
-        {/* Preview of replies if available */}
-        {post.recent_replies && post.recent_replies.length > 0 && !showReplyForm && (
-          <Box 
-            sx={{ 
-              mt: 2, 
-              pt: 1.5, 
-              borderTop: '1px solid',
-              borderColor: 'divider'
-            }}
-          >
-            {post.recent_replies.map((reply, index) => (
-              <Box 
-                key={reply.id || index}
-                sx={{ 
-                  display: 'flex',
-                  mb: index < post.recent_replies.length - 1 ? 1.5 : 0,
-                  pl: 1
-                }}
-              >
-                <Avatar 
-                  src={reply.avatar_url} 
-                  alt={reply.author}
-                  sx={{ width: 28, height: 28, mr: 1.5 }} 
-                />
-                <Box>
-                  <Box sx={{ display: 'flex', alignItems: 'baseline' }}>
-                    <Typography 
-                      variant="caption" 
-                      component="span" 
-                      fontWeight={500}
-                      sx={{ mr: 1 }}
-                    >
-                      {reply.author}
-                    </Typography>
-                    <Typography 
-                      variant="caption" 
-                      sx={{ color: 'text.secondary', fontSize: '0.7rem' }}
-                    >
-                      {formatDate(reply.created_at)}
-                    </Typography>
-                  </Box>
-                  <Typography 
-                    variant="caption" 
-                    component="p"
-                    sx={{ 
-                      color: 'text.secondary',
-                      mt: 0.25,
-                      display: '-webkit-box',
-                      WebkitLineClamp: 1,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    {reply.content}
-                  </Typography>
-                </Box>
-              </Box>
-            ))}
-          </Box>
-        )}
-      </CardContent>
-    </Card>
+        </Box>
+      </Box>
+    </Paper>
   );
 };
 
