@@ -9,9 +9,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Environment file logic remains the same
-const envFile = process.env.NODE_ENV === 'production'
-  ? '.env.production'
-  : '.env.development';
+const envFile = process.env.REACT_APP_APP_ENV === 'staging' 
+  ? '.env.staging'
+  : process.env.NODE_ENV === 'production'
+    ? '.env.production'
+    : '.env.development';
   
 const envPath = path.resolve(__dirname, `../${envFile}`);
 console.log('Current directory:', __dirname);

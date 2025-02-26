@@ -35,6 +35,9 @@ const redirectUri = {
   production: 'https://portal.tcupboard.org/callback'
 }[process.env.REACT_APP_APP_ENV || process.env.NODE_ENV];
 
+console.log('Environment:', process.env.REACT_APP_APP_ENV || process.env.NODE_ENV);
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 console.log('Domain:', process.env.REACT_APP_AUTH0_DOMAIN);
