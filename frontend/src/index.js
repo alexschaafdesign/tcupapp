@@ -52,6 +52,9 @@ root.render(
     audience: process.env.REACT_APP_AUTH0_API_IDENTIFIER,
     scope: 'openid profile email offline_access'
   }}
+  logoutParams={{
+    returnTo: window.location.origin
+  }}
   cacheLocation="localstorage"
   useRefreshTokens={true}
   onRedirectCallback={(appState) => {
