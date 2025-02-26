@@ -15,11 +15,18 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
 import AuthWrapper from '../../components/auth/AuthWrapper';
+import { useAuth } from '../../hooks/useAuth';
 
 const ShowsTableCore = ({ data }) => {
   const navigate = useNavigate();
+  const { user, userRoles, isAdmin, isModerator } = useAuth(); // Import useAuth
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
+  console.log('Current user:', user);
+  console.log('User roles:', userRoles);
+  console.log('Is admin?', isAdmin);
+  console.log('Is moderator?', isModerator);
 
   const filteredData = data.filter((item) => {
     if (!item.start) return false;
@@ -45,7 +52,7 @@ const ShowsTableCore = ({ data }) => {
   const sortedDates = Object.keys(groupedData).sort((a, b) => new Date(a) - new Date(b));
 
   const handleEdit = (e, showId) => {
-    e.stopPropagation();
+    e.stopPropagation(); // This prevents navigating to show profile
     navigate(`/shows/${showId}/edit`);
   };
 
@@ -179,6 +186,7 @@ const ShowsTableCore = ({ data }) => {
                             }}
                           >
                             <AuthWrapper
+                              requiredRoles={['admin', 'moderator']}
                               renderContent={({ showAuth, openAuthModal }) => (
                                 <Tooltip title="Edit Show">
                                   <IconButton 
@@ -289,6 +297,7 @@ const ShowsTableCore = ({ data }) => {
                         }}
                       >
                         <AuthWrapper
+                          requiredRoles={['admin', 'moderator']}
                           renderContent={({ showAuth, openAuthModal }) => (
                             <Tooltip title="Edit Show">
                               <IconButton 
@@ -300,13 +309,7 @@ const ShowsTableCore = ({ data }) => {
                                     openAuthModal();
                                   }
                                 }}
-                                sx={{
-                                  color: 'action.active',
-                                  '&:hover': {
-                                    color: 'primary.main',
-                                    bgcolor: 'action.hover'
-                                  }
-                                }}
+                                // styling unchanged
                               >
                                 <EditIcon />
                               </IconButton>

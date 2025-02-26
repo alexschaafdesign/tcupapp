@@ -146,7 +146,7 @@ def fetch_and_process_events(url):
             event_link = show.find('a')['href'] if show.find('a') else None
             event_url = event_link if event_link and event_link.startswith('http') else f"https://first-avenue.com{event_link}" if event_link else 'N/A'
 
-            event_time, flyer_image = get_event_details(event_url)
+            event_time, age_restriction, flyer_image = get_event_details(event_url)
             try:
                 start_datetime = datetime.strptime(f"{event_date} {event_time}", "%Y-%m-%d %H:%M")
                 print(f"Combined start datetime: {start_datetime}")

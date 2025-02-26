@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 from db_utils import connect_to_db, insert_show, get_venue_id
 
-CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
+chrome_driver_path = "/opt/homebrew/bin/chromedriver"  # Update if different
 
 # Configure Chrome options
 from selenium.webdriver.chrome.service import Service
@@ -20,7 +20,7 @@ chrome_options.add_argument('--headless')
 chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument('--disable-dev-shm-usage')
 
-service = Service(CHROMEDRIVER_PATH)
+service = Service(chrome_driver_path)
 driver = webdriver.Chrome(service=service, options=chrome_options)
 url = 'https://www.zhoradarling.com/events'
 driver.get(url)

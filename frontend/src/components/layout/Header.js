@@ -36,9 +36,9 @@ const Header = () => {
 
   const resourceLinks = [
     { text: "venues", path: "/venues" },
-    { text: "bands", path: "/bands", devOnly: true },
+  //  { text: "bands", path: "/bands", devOnly: true },
     { text: "session musicians", path: "/sessionmusicians", devOnly: true },
-    { text: "venue report card", path: "/vrc", devOnly: true },
+   // { text: "venue report card", path: "/vrc", devOnly: true },
     { text: "power pledge", path: "/powerpledge" },
   ];
 

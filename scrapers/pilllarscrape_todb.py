@@ -90,7 +90,7 @@ for block in event_blocks:
         cleaned_date = re.sub(r'\.', '', raw_date)  # Remove periods
         current_year = datetime.datetime.now().year
         # If the event is in December, keep the current year; otherwise, use the next year
-        event_year = current_year if "dec" in cleaned_date.lower() else current_year + 1
+        event_year = 2025        
         event_details['date'] = f"{cleaned_date} {event_year}"
         try:
             event_date = datetime.datetime.strptime(event_details['date'], "%b %d %Y")
@@ -143,20 +143,33 @@ for block in event_blocks:
     # Extract bands (headliner + support acts)
     bands = []
 
+    # Define excluded terms (all in lowercase for case-insensitive matching)
+    excluded_terms = ["all ages", "day of show", "tickets", "ticket advance", "advance"]
+
     # Extract the primary band (headliner)
     name_tag = block.find('span', style=re.compile(r'font-size:\s*24px'))
     if name_tag:
         primary_band = name_tag.get_text(strip=True)
         if primary_band:
-            bands.append(clean_band_name(primary_band))  # Add the primary band
+            cleaned_primary = clean_band_name(primary_band)
+            # Only add if none of the excluded terms appear
+            if not any(term in cleaned_primary.lower() for term in excluded_terms):
+                bands.append(cleaned_primary)
 
     # Extract additional bands from other <p> tags
     additional_bands_tags = block.find_all('p')
     for tag in additional_bands_tags:
         if "Music" not in tag.get_text() and "Doors" not in tag.get_text():  # Ignore time-related lines
             additional_band_text = tag.get_text(strip=True)
-            additional_bands = [clean_band_name(band.strip()) for band in re.split(r',|\band\b|, and\b|with\b', additional_band_text, flags=re.IGNORECASE) if band.strip()]
-            bands.extend(additional_bands)  # Add additional bands to the list
+            additional_bands = [
+                clean_band_name(band.strip())
+                for band in re.split(r',|\band\b|, and\b|with\b', additional_band_text, flags=re.IGNORECASE)
+                if band.strip()
+            ]
+            # Append only bands that don't include any excluded terms
+            for band in additional_bands:
+                if not any(term in band.lower() for term in excluded_terms):
+                    bands.append(band)
 
     # Deduplicate and clean band names
     bands = list(dict.fromkeys(bands))  # Remove duplicates

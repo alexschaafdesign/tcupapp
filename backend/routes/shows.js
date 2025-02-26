@@ -1,5 +1,7 @@
 import express from 'express';
 import pool from '../config/db.js';
+import authMiddleware, { checkRole } from '../middleware/auth.js';
+
 
 const router = express.Router();
 
@@ -174,28 +176,38 @@ router.get('/:id', async (req, res) => {
   try {
     const query = `
       SELECT 
-      shows.id AS show_id,
-      shows.start,
-      shows.flyer_image,
-      shows.event_link,
-      shows.venue_id,
-      shows.bands AS band_list,
-      venues.venue AS venue_name,
-      venues.location,
-      bands.band as raw_band,
-      tcupbands.id AS tcupband_id,
-      tcupbands.slug AS tcupband_slug
-    FROM 
-      shows
-    LEFT JOIN 
-      venues ON shows.venue_id = venues.id
-    LEFT JOIN LATERAL (
-      SELECT TRIM(COALESCE(unnested.band, '')) as band
-      FROM unnest(string_to_array(COALESCE(shows.bands, ''), ',')) as unnested(band)
+        shows.id AS show_id,
+        shows.start,
+        shows.flyer_image,
+        shows.event_link,
+        shows.venue_id,
+        shows.bands AS band_list,
+        venues.venue AS venue_name,
+        venues.location,
+        bands.name as band_name,
+        bands.order_num as band_order,
+        tcupbands.id AS tcupband_id,
+        tcupbands.slug AS tcupband_slug
+      FROM 
+        shows
+      LEFT JOIN 
+        venues ON shows.venue_id = venues.id
+      LEFT JOIN LATERAL (
+      SELECT 
+        CASE 
+          WHEN position(':' in unnested.band) > 0 
+          THEN TRIM(substring(unnested.band from position(':' in unnested.band) + 1))
+          ELSE TRIM(unnested.band)
+        END as name,
+        CASE 
+          WHEN unnested.band ~ '^[0-9]+:' THEN CAST(substring(unnested.band from '^\d+') AS integer)
+          ELSE row_number() OVER (PARTITION BY shows.id ORDER BY unnested.band)
+        END as order_num
+      FROM unnest(string_to_array(shows.bands, ',')) as unnested(band)
       WHERE unnested.band IS NOT NULL AND TRIM(unnested.band) != ''
     ) bands ON true
     LEFT JOIN 
-      tcupbands ON LOWER(TRIM(bands.band)) = LOWER(TRIM(tcupbands.name))
+      tcupbands ON LOWER(TRIM(bands.name)) = LOWER(TRIM(tcupbands.name))
     WHERE shows.id = $1
     `;
     
@@ -309,7 +321,8 @@ router.post("/add", async (req, res) => {
 
 // Edit an existing show
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", authMiddleware, checkRole(['admin']),async (req, res) => {
+  console.log("EDIT ROUTE HIT - REQUIRING ADMIN ROLE");
   try {
     const { flyer_image, event_link, start, venue_id, bands } = req.body;
     const { id } = req.params;
@@ -345,7 +358,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // Delete a specific show by ID
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authMiddleware, checkRole(['admin']), async (req, res) => {
   const { id } = req.params;
 
   try {

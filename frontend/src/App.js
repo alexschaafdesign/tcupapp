@@ -20,7 +20,6 @@ import ShowProfile from "./pages/Shows/ShowProfile.js";
 import ShowsMinimal from "./pages/WithoutHeader/ShowsMinimal.js";
 import ShowForm from "./pages/Shows/ShowForm.js";
 import EditShowPage from "./components/EditShowPage.js";
-import OAuthCallback from "./components/OAuthCallback.js";
 import ShowFormMinimal from "./pages/WithoutHeader/ShowFormMinimal.js";
 import ShowProfileMinimal from "./pages/WithoutHeader/ShowProfileMinimal.js";
 import EditShowPageMinimal from "./pages/WithoutHeader/EditShowPageMinimal.js";

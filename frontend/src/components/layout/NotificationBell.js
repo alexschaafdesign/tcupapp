@@ -42,8 +42,7 @@ const NotificationBell = () => {
      if (response.ok) {
        const data = await response.json();
        console.log('Notification data:', data); // Add this
-       setNotifications(data);
-     }
+       setNotifications(data.filter(n => !n.is_read));     }
    } catch (error) {
      console.error('Error fetching notifications:', error);
    }
@@ -79,11 +78,7 @@ const NotificationBell = () => {
         navigate(`/chat/${notification.thread_id}`);
       }
       
-      setNotifications(prevNotifications => 
-        prevNotifications.map(n => 
-          n.id === notification.id ? { ...n, is_read: true } : n
-        )
-      );
+      setNotifications(prevNotifications => prevNotifications.filter(n => n.id !== notification.id));
       setUnreadCount(prev => Math.max(0, prev - 1));
       setNotificationOpen(false);
     } catch (error) {

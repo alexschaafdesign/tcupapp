@@ -22,6 +22,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import { useAuth } from '../../hooks/useAuth';
 
 const ShowProfile = () => {
   const { id } = useParams();
@@ -30,8 +31,14 @@ const ShowProfile = () => {
   const [error, setError] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteError, setDeleteError] = useState(null);
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const [authAction, setAuthAction] = useState(''); // 'edit' or 'delete'
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
+  const { isAdmin, isModerator, isAuthenticated } = useAuth();
+  const canEdit = isAdmin || isModerator;
+
+
 
   useEffect(() => {
     const fetchShow = async () => {
@@ -50,10 +57,33 @@ const ShowProfile = () => {
     if (id && apiUrl) fetchShow();
   }, [id, apiUrl]);
 
-  const handleDeleteClick = () => setDeleteDialogOpen(true);
+  const handleDeleteClick = () => {
+    if (isAuthenticated && isAdmin) { // Only admins can delete
+      setDeleteDialogOpen(true);
+    } else {
+      setAuthAction('delete');
+      setAuthDialogOpen(true);
+    }
+  };
+  
+
+  const handleEditClick = () => {
+    if (isAuthenticated && canEdit) { // Admin or moderator can edit
+      navigate(`/shows/${id}/edit`);
+    } else {
+      setAuthAction('edit');
+      setAuthDialogOpen(true);
+    }
+  };
+
   const handleDeleteCancel = () => {
     setDeleteDialogOpen(false);
     setDeleteError(null);
+  };
+
+  const handleAuthDialogClose = () => {
+    setAuthDialogOpen(false);
+    setAuthAction('');
   };
 
   const handleDeleteConfirm = async () => {
@@ -227,32 +257,25 @@ const ShowProfile = () => {
         </Box>
       {/* Action Buttons */}
       <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
-        <Button variant="outlined" onClick={() => navigate('/shows')}>
-          Back to Shows
-        </Button>
-        <Button variant="contained" onClick={() => navigate(`/shows/${id}/edit`)}>
+      <Button variant="outlined" onClick={() => navigate('/shows')}>
+        Back to Shows
+      </Button>
+      {canEdit && (
+        <Button variant="contained" onClick={handleEditClick}>
           Edit Show
         </Button>
+      )}
+      {isAdmin && (
         <Button variant="danger" color="error" onClick={handleDeleteClick}>
           Delete Show
         </Button>
-        <IconButton 
-          aria-label="share"
-          onClick={() => {
-            if (navigator.share) {
-              navigator.share({
-                title: show.name,
-                text: `Check out ${show.name} at ${show.venue_name}`,
-                url: window.location.href
-              });
-            }
-          }}
-        >
-          <ShareIcon />
-        </IconButton>
-      </Stack>
+      )}
+      <IconButton aria-label="share">
+        <ShareIcon />
+      </IconButton>
+    </Stack>
 
-      {/* Delete Dialog */}
+      {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
         <DialogTitle>Delete Show</DialogTitle>
         <DialogContent>
@@ -266,6 +289,29 @@ const ShowProfile = () => {
           <Button onClick={handleDeleteCancel}>Cancel</Button>
           <Button onClick={handleDeleteConfirm} color="error" variant="contained">
             Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Authentication Required Dialog */}
+      <Dialog open={authDialogOpen} onClose={handleAuthDialogClose}>
+        <DialogTitle>Login Required</DialogTitle>
+        <DialogContent>
+          <Alert severity="info" sx={{ mt: 1 }}>
+            You must be registered and logged in to {authAction === 'edit' ? 'edit' : 'delete'} a show.
+          </Alert>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAuthDialogClose}>Close</Button>
+          <Button 
+            color="primary" 
+            variant="contained"
+            onClick={() => {
+              handleAuthDialogClose();
+              navigate('/login'); // Assumes you have a /login route
+            }}
+          >
+            Log In / Register
           </Button>
         </DialogActions>
       </Dialog>
