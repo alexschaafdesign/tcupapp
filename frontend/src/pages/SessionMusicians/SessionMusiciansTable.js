@@ -59,8 +59,8 @@ const SessionMusiciansTable = () => {
 
   return (
       <Box sx={{ 
-        width: '100%'
-     
+        width: '100%',
+        mt: 4
       }}>
         <Box sx={{ mb: 3 }}>
           <Button 

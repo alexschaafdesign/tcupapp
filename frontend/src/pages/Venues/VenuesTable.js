@@ -83,7 +83,7 @@ const VenuesTable = () => {
   return (
     <Box sx={{ padding: 0 }}>
       {/* Add Venue Button */}
-      <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 2 }}>
+      <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 2, mt:4 }}>
         <Button variant="contained" color="primary" onClick={handleAddVenue}>
           Add Venue
         </Button>

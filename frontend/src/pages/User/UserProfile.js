@@ -395,13 +395,13 @@ function UserProfile() {
 
           {/* Profile Details */}
           <Box sx={{ flex: 1 }}>
-            <Typography variant="h5" sx={{ mb: 2 }}>
-              Profile Information
+            <Typography variant="h3" sx={{ mb: 2 }}>
+              Your user profile
             </Typography>
 
             {/* Username */}
             <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle1">Username:</Typography>
+              <Typography variant="subtitle2">Username:</Typography>
               {isEditingUsername ? (
                 <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                   <TextField
@@ -430,7 +430,7 @@ function UserProfile() {
 
             {/* Title */}
             <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle1">Title:</Typography>
+              <Typography variant="subtitle2">Title:</Typography>
               {isEditingTitle ? (
                 <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                   <TextField
@@ -460,7 +460,7 @@ function UserProfile() {
 
             {/* Email */}
             <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle1">Email:</Typography>
+              <Typography variant="subtitle2">Email:</Typography>
               {isEditingEmail ? (
                 <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                   <TextField
@@ -494,7 +494,7 @@ function UserProfile() {
 
             {/* Password */}
             <Box>
-              <Typography variant="subtitle1">Password:</Typography>
+              <Typography variant="subtitle2">Password:</Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                 <Typography>********</Typography>
                 <Button onClick={() => setShowPasswordDialog(true)} size="small" sx={{ ml: 1 }}>

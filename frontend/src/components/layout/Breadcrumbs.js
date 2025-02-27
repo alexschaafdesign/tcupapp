@@ -7,7 +7,10 @@ import useApi from "../../hooks/useApi";
 const routeNames = {
   thread: "Chat", // Map "thread" to "Chat"
   chat: "Chat",
-  shows: "Show List"
+  shows: "Show List",
+  powerpledge: "TCUP Power Pledge",
+  sessionmusicians: "Session Musician Database",
+  venues: "Venuepedia"
 };
 
 const truncateText = (text, maxLength = 30) => {

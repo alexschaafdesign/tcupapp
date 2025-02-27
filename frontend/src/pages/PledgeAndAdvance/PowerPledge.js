@@ -676,6 +676,7 @@ const handleCopy = async () => {
       <Box sx={{ 
         position: 'relative', 
         zIndex: 1,
+        paddingTop: 1,
         bgcolor: 'transparent'
       }}>
         {/* TCUP Advance Modal */}
