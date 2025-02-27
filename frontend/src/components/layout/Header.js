@@ -118,8 +118,12 @@ const Header = () => {
           cursor: "pointer",
           fontFamily: "'Courier New', monospace",
           textTransform: "lowercase",
-          "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
-          py: 0,
+          "&:hover": { backgroundColor: "rgba(97, 56, 179, 0.15)" }, // Match NavLink hover
+          borderRadius: "8px", // Add rounded corners like NavLinks
+          px: 1.5, // Match NavLink padding
+          py: 0.5, // Match NavLink padding
+          mb: 0.5, // Match NavLink margin
+          ml: 0 // Remove negative margin
         }}
       >
         <ListItemText
@@ -136,7 +140,7 @@ const Header = () => {
         <Box sx={{ 
           backgroundColor: 'rgba(0, 0, 0, 0.02)',
           borderLeft: '2px solid rgba(0, 0, 0, 0.1)',
-          ml: 2,
+          ml: 1,
           mr: 1,
           borderRadius: '2px',
           overflow: 'hidden'
