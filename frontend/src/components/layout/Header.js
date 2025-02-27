@@ -29,7 +29,7 @@ const Header = () => {
   const isDevMode = process.env.NODE_ENV === "development";
 
   const navLinks = [
-    { text: "chat", path: "/chat", devOnly: true },
+    { text: "chat", path: "/chat" },
     { text: "show list", path: "/shows" },
     { text: "resources", path: "/resources", isDropdown: true, devOnly: true },
   ];
@@ -37,7 +37,7 @@ const Header = () => {
   const resourceLinks = [
     { text: "venues", path: "/venues" },
   //  { text: "bands", path: "/bands", devOnly: true },
-    { text: "session musicians", path: "/sessionmusicians", devOnly: true },
+    { text: "session musicians", path: "/sessionmusicians" },
    // { text: "venue report card", path: "/vrc", devOnly: true },
     { text: "power pledge", path: "/powerpledge" },
   ];

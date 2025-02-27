@@ -53,7 +53,11 @@ root.render(
     scope: 'openid profile email offline_access'
   }}
   logoutParams={{
-    returnTo: window.location.origin
+    returnTo: window.location.hostname.includes('staging')
+      ? 'https://staging.tcupboard.org'
+      : window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:3003'
+        : 'https://portal.tcupboard.org'
   }}
   cacheLocation="localstorage"
   useRefreshTokens={true}

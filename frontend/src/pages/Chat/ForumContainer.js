@@ -1,33 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Container, 
-  Paper,
-  TextField,
-  Button,
-  Dialog,
-  IconButton,
   Box,
   Typography,
   CircularProgress,
-  Chip,
+  Button,
   Stack,
   Collapse,
-  Divider,
-  Badge,
-  Card,
-  CardContent
+  Paper,
+  Chip,
+  Dialog,
+  IconButton
 } from '@mui/material';
 import { 
-  Edit as EditIcon, 
-  Close as CloseIcon, 
-  History as HistoryIcon,
-  FilterList as FilterIcon,
-  Add as AddIcon
+  FilterList as FilterIcon, 
+  Add as AddIcon,
+  Close as CloseIcon
 } from '@mui/icons-material';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 import CreatePost from './Components/CreatePost';
 import PostList from './PostList';
+import AuthContentOverlay from '../../components/auth/AuthOverlay';
 
 export const ForumContainer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,7 +30,7 @@ export const ForumContainer = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -59,8 +53,6 @@ export const ForumContainer = () => {
         const response = await fetch(url); 
         const data = await response.json();
         setPosts(Array.isArray(data) ? data : []);
-        console.log("Fetching posts with tags:", selectedTags);
-        console.log("API URL:", url);
       } catch (error) {
         console.error('Error fetching posts:', error);
         setPosts([]);
@@ -85,7 +77,7 @@ export const ForumContainer = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4, overflowY: 'scroll' }}>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
       
       {/* Header with Latest Posts and Buttons */}
       <Box 
@@ -101,26 +93,28 @@ export const ForumContainer = () => {
           LATEST POSTS
         </Typography>
   
-        {/* Right-aligned buttons */}
-        <Stack direction="row" spacing={2}>
-          <Button 
-            variant="outlined" 
-            size="small"
-            startIcon={<FilterIcon />} 
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            Filter by tags
-          </Button>
-  
-          <Button 
-            variant="contained" 
-            size="small"
-            startIcon={<AddIcon />} 
-            onClick={() => setIsModalOpen(true)}
-          >
-            Start a new thread
-          </Button>
-        </Stack>
+        {/* Right-aligned buttons - only visible when authenticated */}
+        {isAuthenticated && (
+          <Stack direction="row" spacing={2}>
+            <Button 
+              variant="outlined" 
+              size="small"
+              startIcon={<FilterIcon />} 
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              Filter by tags
+            </Button>
+    
+            <Button 
+              variant="contained" 
+              size="small"
+              startIcon={<AddIcon />} 
+              onClick={() => setIsModalOpen(true)}
+            >
+              Start a new thread
+            </Button>
+          </Stack>
+        )}
       </Box>
   
       {/* Create Post Modal */}
@@ -155,59 +149,65 @@ export const ForumContainer = () => {
         </Box>
       </Dialog>
   
-      {/* Collapsible Tag Filter */}
-      <Collapse in={showFilters}>
-        <Paper 
-          elevation={1} 
-          sx={{ 
-            p: 2, 
-            mb: 4, 
-            borderRadius: '8px' 
-          }}
-        >
-          <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary' }}>
-            Select tags to filter discussions:
-          </Typography>
-          <Stack
-            direction="row"
-            spacing={1}
-            flexWrap="wrap"
-            alignItems="center" // Ensures alignment stays even
-            sx={{ gap: 1 }} // Add consistent gap without causing shifts
-          >            {tags.map(tag => (
-              <Chip
-                key={tag.id}
-                label={tag.name}
-                onClick={() => handleTagClick(tag.id)}
-                color={selectedTags.includes(tag.id) ? "primary" : "default"}
-                variant={selectedTags.includes(tag.id) ? "filled" : "outlined"}
-                sx={{
-                  minWidth: 80, // Ensure consistent width
-                  height: 32, // Keep height fixed
-                  fontWeight: selectedTags.includes(tag.id) ? 'normal' : 'normal', // Only bold the text
-                  borderWidth: selectedTags.includes(tag.id) ? 2 : 1, // Subtle border change
-                  transition: 'none', // Remove unwanted transitions
-                }}
-              />
-            ))}
-          </Stack>
-        </Paper>
-      </Collapse>
+      {/* Tag filters - only visible when authenticated */}
+      {isAuthenticated && (
+        <Collapse in={showFilters}>
+          <Paper 
+            elevation={1} 
+            sx={{ 
+              p: 2, 
+              mb: 4, 
+              borderRadius: '8px' 
+            }}
+          >
+            <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary' }}>
+              Select tags to filter discussions:
+            </Typography>
+            <Stack
+              direction="row"
+              spacing={1}
+              flexWrap="wrap"
+              alignItems="center"
+              sx={{ gap: 1 }}
+            >            
+              {tags.map(tag => (
+                <Chip
+                  key={tag.id}
+                  label={tag.name}
+                  onClick={() => handleTagClick(tag.id)}
+                  color={selectedTags.includes(tag.id) ? "primary" : "default"}
+                  variant={selectedTags.includes(tag.id) ? "filled" : "outlined"}
+                  sx={{
+                    minWidth: 80,
+                    height: 32,
+                    borderWidth: selectedTags.includes(tag.id) ? 2 : 1,
+                    transition: 'none',
+                  }}
+                />
+              ))}
+            </Stack>
+          </Paper>
+        </Collapse>
+      )}
   
-      {/* Post List */}
+      {/* Post List with Auth Content Overlay */}
       {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-            <CircularProgress />
-          </Box>
-        ) : posts.length > 0 ? (
-          <Box sx={{ mb: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+          <CircularProgress />
+        </Box>
+      ) : posts.length > 0 ? (
+        <Box sx={{ mb: 4, bgcolor: 'background.paper', borderRadius: '8px' }}>
+          <AuthContentOverlay>
             <PostList posts={posts} />
-          </Box>
-        ) : selectedTags.length > 0 ? null : (
-          <Typography sx={{ textAlign: 'center', mt: 4 }} variant="body1">
+          </AuthContentOverlay>
+        </Box>
+      ) : (
+        <Box sx={{ mb: 4, textAlign: 'center', p: 4 }}>
+          <Typography variant="body1">
             No posts available.
           </Typography>
-        )}
+        </Box>
+      )}
       
     </Container>
   );
