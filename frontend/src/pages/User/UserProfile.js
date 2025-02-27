@@ -15,7 +15,23 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
+  Avatar,
+  IconButton,
+  Divider,
+  Chip,
+  Tooltip,
+  Fade,
+  Snackbar,
 } from '@mui/material';
+import {
+  Edit as EditIcon,
+  Check as CheckIcon,
+  Close as CloseIcon,
+  PhotoCamera as PhotoCameraIcon,
+  Save as SaveIcon,
+  Visibility,
+  VisibilityOff,
+} from '@mui/icons-material';
 import useCloudinaryUpload from '../../hooks/useCloudinaryUpload';
 import useApi from '../../hooks/useApi';
 import { useUserProfile } from '../../hooks/useUserProfile';
@@ -23,10 +39,6 @@ import { useNavigate } from 'react-router-dom';
 import ProfileImageAdjuster from "../../components/ProfileImageAdjuster";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import IconButton from '@mui/material/IconButton';
-
-
 
 function UserProfile() {
   const { uploadImage, uploading, uploadProgress } = useCloudinaryUpload();
@@ -37,18 +49,24 @@ function UserProfile() {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   // Profile info state
-
-  // Editing username
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [username, setUsername] = useState('');
   const [usernameError, setUsernameError] = useState(null);
+  const [isChangingUsername, setIsChangingUsername] = useState(false);
 
-  // Editing title
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [title, setTitle] = useState('');
   const [titleError, setTitleError] = useState(null);
+  const [isChangingTitle, setIsChangingTitle] = useState(false);
 
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState(null);
+  const [isChangingEmail, setIsChangingEmail] = useState(false);
 
+  const [bio, setBio] = useState('');
+  const [isEditingBio, setIsEditingBio] = useState(false);
+  const [isChangingBio, setIsChangingBio] = useState(false);
 
   // Password change state
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
@@ -57,18 +75,9 @@ function UserProfile() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState(null);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [showPasswordSuccess, setShowPasswordSuccess] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  // Email change state
-  const [isChangingEmail, setIsChangingEmail] = useState(false);
-  const [showEmailSuccess, setShowEmailSuccess] = useState(false);
-  const [isEditingEmail, setIsEditingEmail] = useState(false);
-  const [email, setEmail] = useState(user?.email || '');
-  const [emailError, setEmailError] = useState(null);
-
 
   // Data arrays for bands and shows
   const [userBands, setUserBands] = useState([]);
@@ -78,13 +87,31 @@ function UserProfile() {
 
   // Other UI states
   const [uploadError, setUploadError] = useState(null);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
+  const [imageHover, setImageHover] = useState(false);
+  
+  // Success messages
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  // Join date (would normally come from API)
+  const joinDate = new Date(2023, 10, 15).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
 
   const handleTitleUpdate = async () => {
+    if (title.length > 16) {
+      setTitleError('Title must be 16 characters or less');
+      return;
+    }
+    
     try {
       setTitleError(null);
+      setIsChangingTitle(true);
+      
       const response = await callApi(`${apiUrl}/users/title`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -92,9 +119,14 @@ function UserProfile() {
       });
   
       if (response.error) throw new Error(response.error);
+      
       setIsEditingTitle(false);
+      setSuccessMessage('Title updated successfully');
+      setShowSuccess(true);
     } catch (error) {
       setTitleError('Failed to update title. Please try again.');
+    } finally {
+      setIsChangingTitle(false);
     }
   };
 
@@ -163,6 +195,7 @@ function UserProfile() {
             if (profileData.avatar_url) setAvatarUrl(profileData.avatar_url);
             if (profileData.email) setEmail(profileData.email);
             if (profileData.title) setTitle(profileData.title);
+            if (profileData.bio) setBio(profileData.bio);
           }
           // Get additional user data
           const [bandsData, showsData, favoritesData, claimedData] = await Promise.all([
@@ -200,8 +233,8 @@ function UserProfile() {
 
       if (response.error) throw new Error(response.error);
       setAvatarUrl(imageUrl);
-      setUploadSuccess(true);
-      setTimeout(() => setUploadSuccess(false), 3000);
+      setSuccessMessage('Profile picture updated successfully!');
+      setShowSuccess(true);
     } catch (error) {
       console.error('Error uploading avatar:', error);
       setUploadError('Failed to update profile picture. Please try again.');
@@ -217,8 +250,8 @@ function UserProfile() {
       if (response.error) throw new Error(response.error);
       setAvatarUrl(null);
       setShowRemoveDialog(false);
-      setUploadSuccess(true);
-      setTimeout(() => setUploadSuccess(false), 3000);
+      setSuccessMessage('Profile picture removed successfully!');
+      setShowSuccess(true);
     } catch (error) {
       console.error('Error removing avatar:', error);
       setUploadError('Failed to remove profile picture. Please try again.');
@@ -227,8 +260,15 @@ function UserProfile() {
 
   // === Profile Info Update Handlers ===
   const handleUsernameUpdate = async () => {
+    if (!username) {
+      setUsernameError('Username cannot be empty');
+      return;
+    }
+    
     try {
       setUsernameError(null);
+      setIsChangingUsername(true);
+      
       const response = await callApi(`${apiUrl}/users/username`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -236,14 +276,24 @@ function UserProfile() {
       });
 
       if (response.error) throw new Error(response.error);
+      
       setIsEditingUsername(false);
+      setSuccessMessage('Username updated successfully!');
+      setShowSuccess(true);
     } catch (error) {
       console.error('Error updating username:', error);
       setUsernameError('Failed to update username. Please try again.');
+    } finally {
+      setIsChangingUsername(false);
     }
   };
 
   const handleEmailUpdate = async () => {
+    if (!email.includes('@')) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+    
     try {
       setEmailError(null);
       setIsChangingEmail(true);
@@ -257,12 +307,34 @@ function UserProfile() {
       if (response.error) throw new Error(response.error);
       
       setIsEditingEmail(false);
-      setShowEmailSuccess(true);
-      setTimeout(() => setShowEmailSuccess(false), 3000);
+      setSuccessMessage('Email updated successfully!');
+      setShowSuccess(true);
     } catch (error) {
       setEmailError('Failed to update email. Please try again.');
     } finally {
       setIsChangingEmail(false);
+    }
+  };
+
+  const handleBioUpdate = async () => {
+    try {
+      setIsChangingBio(true);
+      
+      const response = await callApi(`${apiUrl}/users/bio`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bio }),
+      });
+  
+      if (response.error) throw new Error(response.error);
+      
+      setIsEditingBio(false);
+      setSuccessMessage('Bio updated successfully!');
+      setShowSuccess(true);
+    } catch (error) {
+      console.error('Error updating bio:', error);
+    } finally {
+      setIsChangingBio(false);
     }
   };
 
@@ -288,13 +360,17 @@ function UserProfile() {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
-      setShowPasswordSuccess(true);
-      setTimeout(() => setShowPasswordSuccess(false), 3000);
+      setSuccessMessage('Password changed successfully!');
+      setShowSuccess(true);
     } catch (error) {
       setPasswordError('Failed to update password. Please try again.');
     } finally {
       setIsChangingPassword(false);
     }
+  };
+  
+  const handleCloseSuccess = () => {
+    setShowSuccess(false);
   };
 
   // While data is loading
@@ -322,375 +398,712 @@ function UserProfile() {
 
   return (
     <Container maxWidth="lg">
+      <Snackbar 
+        open={showSuccess} 
+        autoHideDuration={4000} 
+        onClose={handleCloseSuccess}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert 
+          onClose={handleCloseSuccess} 
+          severity="success" 
+          sx={{ width: '100%' }}
+          elevation={6}
+        >
+          {successMessage}
+        </Alert>
+      </Snackbar>
 
-    {showPasswordSuccess && (
-      <Alert 
-        severity="success" 
+      {/* Modern Profile Card */}
+      <Paper 
+        elevation={3} 
         sx={{ 
-          position: 'fixed', 
-          top: 24, 
-          right: 24, 
-          zIndex: 2000 
+          borderRadius: 3,
+          overflow: 'hidden',
+          transition: 'all 0.3s ease',
+          mt: 4,
+          mb: 4
         }}
       >
-        Password updated successfully!
-      </Alert>
-    )}
-
-    {showEmailSuccess && (
-      <Alert 
-        severity="success" 
-        sx={{ 
-          position: 'fixed', 
-          top: 24, 
-          right: 24, 
-          zIndex: 2000 
-        }}
-      >
-        Email updated successfully!
-      </Alert>
-    )}
-
-      {/* Profile Info Section */}
-      <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
-          {/* Avatar / Image Adjuster */}
-          <Box sx={{ position: 'relative' }}>
-            <ProfileImageAdjuster
-              initialImage={avatarUrl || user.picture}
-              onSave={handleAvatarUpload}
-              onDelete={() => setShowRemoveDialog(true)}
-              isUploading={uploading}
-              uploadProgress={uploadProgress}
+        {/* Header with background color */}
+        <Box sx={{ 
+          height: '120px', 
+          background: 'linear-gradient(120deg, #9c27b0 20%, #673ab7 80%)',
+          position: 'relative'
+        }}>
+          <Chip 
+            label="TCUP Member" 
+            color="secondary" 
+            size="small"
+            sx={{ 
+              position: 'absolute', 
+              top: 16, 
+              right: 16,
+              background: 'rgba(255,255,255,0.9)',
+              color: '#673ab7',
+              fontWeight: 'bold'
+            }} 
+          />
+        </Box>
+        
+        {/* Main content */}
+        <Box sx={{ px: 4, pb: 4, position: 'relative' }}>
+          {/* Avatar - positioned to overlap the header */}
+          <Box 
+            sx={{ 
+              position: 'relative',
+              mt: '-60px',
+              mb: 3,
+              width: 120,
+              height: 120,
+              mx: 'auto'
+            }}
+            onMouseEnter={() => setImageHover(true)}
+            onMouseLeave={() => setImageHover(false)}
+          >
+            <Avatar
+              src={avatarUrl || user?.picture} 
+              alt="Profile"
+              sx={{
+                width: 120,
+                height: 120,
+                border: '4px solid white',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                position: 'relative',
+                zIndex: 1,
+                transition: 'all 0.3s ease',
+                filter: imageHover ? 'brightness(0.8)' : 'brightness(1)'
+              }}
             />
-            {uploadSuccess && (
-              <Alert
-                severity="success"
+            <Fade in={imageHover}>
+              <Box 
                 sx={{
                   position: 'absolute',
-                  bottom: -60,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  whiteSpace: 'nowrap',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 2,
+                  cursor: 'pointer'
                 }}
+                onClick={() => document.getElementById('profile-image-input').click()}
               >
-                Profile picture updated!
-              </Alert>
-            )}
-            {uploadError && (
-              <Alert
-                severity="error"
-                sx={{
-                  position: 'absolute',
-                  bottom: -60,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {uploadError}
-              </Alert>
-            )}
-          </Box>
-
-          {/* Profile Details */}
-          <Box sx={{ flex: 1 }}>
-            <Typography variant="h3" sx={{ mb: 2 }}>
-              Your user profile
-            </Typography>
-
-            {/* Username */}
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2">Username:</Typography>
-              {isEditingUsername ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                  <TextField
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    size="small"
-                    error={!!usernameError}
-                    helperText={usernameError}
-                  />
-                  <Button onClick={handleUsernameUpdate} variant="contained" sx={{ ml: 1 }}>
-                    Save
-                  </Button>
-                  <Button onClick={() => setIsEditingUsername(false)} variant="outlined" sx={{ ml: 1 }}>
-                    Cancel
-                  </Button>
-                </Box>
-              ) : (
-                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                  <Typography>{username || user.name}</Typography>
-                  <Button onClick={() => setIsEditingUsername(true)} size="small" sx={{ ml: 1 }}>
-                    Edit
-                  </Button>
-                </Box>
-              )}
-            </Box>
-
-            {/* Title */}
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2">Title:</Typography>
-              {isEditingTitle ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                  <TextField
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    size="small"
-                    error={!!titleError}
-                    helperText={titleError || `${title.length}/16 characters`}
-                    inputProps={{ maxLength: 16 }}
-                  />
-                  <Button onClick={handleTitleUpdate} variant="contained" sx={{ ml: 1 }}>
-                    Save
-                  </Button>
-                  <Button onClick={() => setIsEditingTitle(false)} variant="outlined" sx={{ ml: 1 }}>
-                    Cancel
-                  </Button>
-                </Box>
-              ) : (
-                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                  <Typography>{title || 'TCUP Member'}</Typography>
-                  <Button onClick={() => setIsEditingTitle(true)} size="small" sx={{ ml: 1 }}>
-                    Edit
-                  </Button>
-                </Box>
-              )}
-            </Box>
-
-            {/* Email */}
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2">Email:</Typography>
-              {isEditingEmail ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                  <TextField
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    size="small"
-                    error={!!emailError}
-                    helperText={emailError}
-                  />
-                  <Button 
-                    onClick={handleEmailUpdate} 
-                    variant="contained" 
-                    sx={{ ml: 1 }}
-                    disabled={isChangingEmail}
-                  >
-                    {isChangingEmail ? <CircularProgress size={24} /> : 'Save'}
-                  </Button>
-                  <Button onClick={() => setIsEditingEmail(false)} variant="outlined" sx={{ ml: 1 }}>
-                    Cancel
-                  </Button>
-                </Box>
-              ) : (
-                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                  <Typography>{email}</Typography>
-                  <Button onClick={() => setIsEditingEmail(true)} size="small" sx={{ ml: 1 }}>
-                    Edit
-                  </Button>
-                </Box>
-              )}
-            </Box>
-
-            {/* Password */}
-            <Box>
-              <Typography variant="subtitle2">Password:</Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                <Typography>********</Typography>
-                <Button onClick={() => setShowPasswordDialog(true)} size="small" sx={{ ml: 1 }}>
-                  Change
-                </Button>
+                <PhotoCameraIcon sx={{ color: 'white', mb: 1 }} />
+                <Typography variant="caption" sx={{ color: 'white' }}>
+                  Change Photo
+                </Typography>
+                <input
+                  id="profile-image-input"
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={(e) => {
+                    if (e.target.files?.[0]) {
+                      handleAvatarUpload(e.target.files[0]);
+                    }
+                  }}
+                />
               </Box>
-            </Box>
+            </Fade>
           </Box>
+
+          {/* Username Heading */}
+          <Box sx={{ textAlign: 'center', mb: 3 }}>
+            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+              {username || user?.name}
+            </Typography>
+            <Typography variant="subtitle1" color="primary" sx={{ mt: 0.5 }}>
+              {title || 'TCUP Member'}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+              Joined {joinDate}
+            </Typography>
+          </Box>
+
+          {/* Biography section */}
+          <Box sx={{ mb: 3, mx: 'auto', maxWidth: '600px' }}>
+            {isEditingBio ? (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <TextField
+                  multiline
+                  rows={4}
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  placeholder="Write a short bio about yourself..."
+                  fullWidth
+                  variant="outlined"
+                  disabled={isChangingBio}
+                />
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                  <Button 
+                    onClick={() => setIsEditingBio(false)} 
+                    variant="outlined"
+                    startIcon={<CloseIcon />}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={handleBioUpdate} 
+                    variant="contained"
+                    disabled={isChangingBio}
+                    startIcon={isChangingBio ? <CircularProgress size={20} /> : <SaveIcon />}
+                  >
+                    Save
+                  </Button>
+                </Box>
+              </Box>
+            ) : (
+              <Box sx={{ textAlign: 'center', position: 'relative' }}>
+                <Typography variant="body1" color="text.primary" sx={{ fontStyle: bio ? 'normal' : 'italic' }}>
+                  {bio || "Add a bio to tell people about yourself..."}
+                </Typography>
+                <IconButton 
+                  size="small" 
+                  sx={{ 
+                    position: 'absolute', 
+                    right: -8, 
+                    top: -8,
+                    color: 'primary.main',
+                    '&:hover': { background: 'rgba(103, 58, 183, 0.1)' }
+                  }}
+                  onClick={() => setIsEditingBio(true)}
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+              </Box>
+            )}
+          </Box>
+
+          <Divider sx={{ my: 3 }} />
+
+          {/* Profile Details in a cleaner layout */}
+          <Grid container spacing={3} sx={{ maxWidth: '800px', mx: 'auto' }}>
+            <Grid item xs={12}>
+              <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
+                Profile Details
+              </Typography>
+            </Grid>
+            
+            {/* Username */}
+            <Grid item xs={12} sm={6}>
+              <Box sx={{ mb: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Username
+                  </Typography>
+                  {!isEditingUsername && (
+                    <Tooltip title="Edit username">
+                      <IconButton 
+                        size="small" 
+                        color="primary" 
+                        onClick={() => setIsEditingUsername(true)}
+                        sx={{ '&:hover': { background: 'rgba(103, 58, 183, 0.1)' } }}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Box>
+                
+                {isEditingUsername ? (
+                  <Fade in={isEditingUsername}>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+                      <TextField
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        size="small"
+                        fullWidth
+                        error={!!usernameError}
+                        helperText={usernameError}
+                        disabled={isChangingUsername}
+                        autoFocus
+                        InputProps={{ sx: { borderRadius: 2 } }}
+                      />
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                        <IconButton 
+                          color="primary" 
+                          size="small" 
+                          onClick={handleUsernameUpdate} 
+                          disabled={isChangingUsername}
+                          sx={{ 
+                            bgcolor: 'primary.main', 
+                            color: 'white',
+                            '&:hover': { bgcolor: 'primary.dark' }
+                          }}
+                        >
+                          {isChangingUsername ? <CircularProgress size={20} /> : <CheckIcon />}
+                        </IconButton>
+                        <IconButton 
+                          size="small" 
+                          onClick={() => setIsEditingUsername(false)}
+                          sx={{ border: '1px solid', borderColor: 'divider' }}
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                  </Fade>
+                ) : (
+                  <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                    {username || user?.name}
+                  </Typography>
+                )}
+              </Box>
+            </Grid>
+            
+            {/* Title */}
+            <Grid item xs={12} sm={6}>
+              <Box sx={{ mb: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Title
+                  </Typography>
+                  {!isEditingTitle && (
+                    <Tooltip title="Edit title">
+                      <IconButton 
+                        size="small" 
+                        color="primary" 
+                        onClick={() => setIsEditingTitle(true)}
+                        sx={{ '&:hover': { background: 'rgba(103, 58, 183, 0.1)' } }}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Box>
+                
+                {isEditingTitle ? (
+                  <Fade in={isEditingTitle}>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+                      <TextField
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        size="small"
+                        fullWidth
+                        error={!!titleError}
+                        helperText={titleError || `${title.length}/16 characters`}
+                        inputProps={{ maxLength: 16 }}
+                        disabled={isChangingTitle}
+                        autoFocus
+                        InputProps={{ sx: { borderRadius: 2 } }}
+                      />
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                        <IconButton 
+                          color="primary" 
+                          size="small" 
+                          onClick={handleTitleUpdate} 
+                          disabled={isChangingTitle}
+                          sx={{ 
+                            bgcolor: 'primary.main', 
+                            color: 'white',
+                            '&:hover': { bgcolor: 'primary.dark' }
+                          }}
+                        >
+                          {isChangingTitle ? <CircularProgress size={20} /> : <CheckIcon />}
+                        </IconButton>
+                        <IconButton 
+                          size="small" 
+                          onClick={() => setIsEditingTitle(false)}
+                          sx={{ border: '1px solid', borderColor: 'divider' }}
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                  </Fade>
+                ) : (
+                  <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                    {title || 'TCUP Member'}
+                  </Typography>
+                )}
+              </Box>
+            </Grid>
+            
+            {/* Email */}
+            <Grid item xs={12} sm={6}>
+              <Box sx={{ mb: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Email
+                  </Typography>
+                  {!isEditingEmail && (
+                    <Tooltip title="Edit email">
+                      <IconButton 
+                        size="small" 
+                        color="primary" 
+                        onClick={() => setIsEditingEmail(true)}
+                        sx={{ '&:hover': { background: 'rgba(103, 58, 183, 0.1)' } }}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Box>
+                
+                {isEditingEmail ? (
+                  <Fade in={isEditingEmail}>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+                      <TextField
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        size="small"
+                        fullWidth
+                        error={!!emailError}
+                        helperText={emailError}
+                        disabled={isChangingEmail}
+                        autoFocus
+                        InputProps={{ sx: { borderRadius: 2 } }}
+                      />
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                        <IconButton 
+                          color="primary" 
+                          size="small" 
+                          onClick={handleEmailUpdate} 
+                          disabled={isChangingEmail}
+                          sx={{ 
+                            bgcolor: 'primary.main', 
+                            color: 'white',
+                            '&:hover': { bgcolor: 'primary.dark' }
+                          }}
+                        >
+                          {isChangingEmail ? <CircularProgress size={20} /> : <CheckIcon />}
+                        </IconButton>
+                        <IconButton 
+                          size="small" 
+                          onClick={() => setIsEditingEmail(false)}
+                          sx={{ border: '1px solid', borderColor: 'divider' }}
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                  </Fade>
+                ) : (
+                  <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                    {email}
+                  </Typography>
+                )}
+              </Box>
+            </Grid>
+            
+            {/* Password */}
+            <Grid item xs={12} sm={6}>
+              <Box sx={{ mb: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    Password
+                  </Typography>
+                  <Tooltip title="Change password">
+                    <IconButton 
+                      size="small" 
+                      color="primary" 
+                      onClick={() => setShowPasswordDialog(true)}
+                      sx={{ '&:hover': { background: 'rgba(103, 58, 183, 0.1)' } }}
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+                <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                  ••••••••
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
         </Box>
       </Paper>
 
-      {/* Bands Section */}
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" sx={{ mb: 2 }}>
-          Bands
-        </Typography>
-        {bandsToShow.length === 0 ? (
-          <Typography sx={{ p: 2 }}>No bands added yet</Typography>
-        ) : (
-          <Grid container spacing={2}>
-            {bandsToShow.map((band) => (
-              <Grid item xs={12} sm={6} md={4} key={band.id}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    cursor: 'pointer',
-                    '&:hover': { boxShadow: 4 },
-                  }}
-                  onClick={() => navigate(`/bands/${band.slug}`)}
-                >
-                  <Typography variant="h6">{band.name}</Typography>
-                  {band.genre && (
-                    <Typography variant="body2">
-                      {Array.isArray(band.genre) ? band.genre.join(', ') : band.genre}
-                    </Typography>
-                  )}
-                </Paper>
-              </Grid>
-            ))}
-          </Grid>
-        )}
-      </Box>
-
-      {/* Favorite Bands Section */}
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" sx={{ mb: 2 }}>
-          Favorite Bands
-        </Typography>
-        {favoriteBands.length === 0 ? (
-          <Typography sx={{ p: 2 }}>No favorite bands yet</Typography>
-        ) : (
-          <Grid container spacing={2}>
-            {favoriteBands.map((band) => (
-              <Grid item xs={12} sm={6} md={4} key={band.id}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    cursor: 'pointer',
-                    '&:hover': { boxShadow: 4 },
-                  }}
-                  onClick={() => navigate(`/bands/${band.slug}`)}
-                >
-                  <Typography variant="h6">{band.name}</Typography>
-                  {band.genre && (
-                    <Typography variant="body2">
-                      {Array.isArray(band.genre) ? band.genre.join(', ') : band.genre}
-                    </Typography>
-                  )}
-                </Paper>
-              </Grid>
-            ))}
-          </Grid>
-        )}
-      </Box>
-
-      {/* Saved Shows Section */}
-      <Box sx={{ mt: 4, mb: 4 }}>
-        <Typography variant="h5" sx={{ mb: 2 }}>
-          Saved Shows
-        </Typography>
-        {savedShows.length === 0 ? (
-          <Typography sx={{ p: 2 }}>No saved shows yet</Typography>
-        ) : (
-          <Grid container spacing={2}>
-            {savedShows.map((show) => (
-              <Grid item xs={12} sm={6} md={4} key={show.id}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    cursor: 'pointer',
-                    '&:hover': { boxShadow: 4 },
-                  }}
-                  onClick={() => navigate(`/shows/${show.id}`)}
-                >
-                  <Typography variant="h6">{show.title}</Typography>
-                  <Typography variant="body2">
-                    {new Date(show.date).toLocaleDateString()}
-                  </Typography>
-                </Paper>
-              </Grid>
-            ))}
-          </Grid>
-        )}
-      </Box>
-
-      {/* Dialog for removing avatar */}
-      <Dialog open={showRemoveDialog} onClose={() => setShowRemoveDialog(false)}>
-        <DialogTitle>Remove Profile Picture</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to remove your profile picture?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowRemoveDialog(false)}>Cancel</Button>
-          <Button onClick={handleRemoveAvatar} color="error" variant="contained">
-            Remove
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Dialog for changing password */}
-      <Dialog open={showPasswordDialog} onClose={() => setShowPasswordDialog(false)}>
-        <DialogTitle>Change Password</DialogTitle>
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          handlePasswordUpdate();
-        }}>
-        <DialogContent>
-        <TextField
-            autoComplete="current-password"
-            name="current-password"
-            margin="dense"
-            label="Current Password"
-            type={showCurrentPassword ? "text" : "password"}
-            fullWidth
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <IconButton onClick={() => setShowCurrentPassword(!showCurrentPassword)}>
-                  {showCurrentPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              ),
+      {/* Bands Section with improved styling */}
+<Paper elevation={2} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
+  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+    <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+      Your Bands
+    </Typography>
+    <Button variant="contained" color="primary" size="small">
+      Add Band
+    </Button>
+  </Box>
+  {bandsToShow.length === 0 ? (
+    <Paper 
+      variant="outlined" 
+      sx={{ 
+        p: 3, 
+        textAlign: 'center', 
+        bgcolor: 'background.default',
+        borderStyle: 'dashed'
+      }}
+    >
+      <Typography sx={{ color: 'text.secondary' }}>No bands added yet</Typography>
+    </Paper>
+  ) : (
+    <Grid container spacing={2}>
+      {bandsToShow.map((band) => (
+        <Grid item xs={12} sm={6} md={4} key={band.id}>
+          <Paper
+            elevation={1}
+            sx={{
+              p: 3,
+              cursor: 'pointer',
+              borderRadius: 2,
+              height: '100%',
+              transition: 'all 0.2s ease',
+              '&:hover': { 
+                boxShadow: 6,
+                transform: 'translateY(-4px)' 
+              },
+              display: 'flex',
+              flexDirection: 'column'
             }}
-          />
+            onClick={() => navigate(`/bands/${band.slug}`)}
+          >
+            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>{band.name}</Typography>
+            {band.genre && (
+              <Chip 
+                label={Array.isArray(band.genre) ? band.genre.join(', ') : band.genre}
+                size="small"
+                sx={{ alignSelf: 'flex-start' }}
+              />
+            )}
+          </Paper>
+        </Grid>
+      ))}
+    </Grid>
+  )}
+</Paper>
 
-          <TextField
-            autoComplete="current-password"
-            name="current-password"
-            margin="dense"
-            label="New Password"
-            type={showNewPassword ? "text" : "password"}
-            fullWidth
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <IconButton onClick={() => setShowNewPassword(!showNewPassword)}>
-                  {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              ),
+{/* Favorite Bands Section */}
+<Paper elevation={2} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
+  <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 2 }}>
+    Favorite Bands
+  </Typography>
+  {favoriteBands.length === 0 ? (
+    <Paper 
+      variant="outlined" 
+      sx={{ 
+        p: 3, 
+        textAlign: 'center', 
+        bgcolor: 'background.default',
+        borderStyle: 'dashed'
+      }}
+    >
+      <Typography sx={{ color: 'text.secondary' }}>No favorite bands yet</Typography>
+    </Paper>
+  ) : (
+    <Grid container spacing={2}>
+      {favoriteBands.map((band) => (
+        <Grid item xs={12} sm={6} md={4} key={band.id}>
+          <Paper
+            elevation={1}
+            sx={{
+              p: 3,
+              cursor: 'pointer',
+              borderRadius: 2,
+              height: '100%',
+              transition: 'all 0.2s ease',
+              '&:hover': { 
+                boxShadow: 6,
+                transform: 'translateY(-4px)' 
+              },
+              display: 'flex',
+              flexDirection: 'column'
             }}
-          />
+            onClick={() => navigate(`/bands/${band.slug}`)}
+          >
+            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>{band.name}</Typography>
+            {band.genre && (
+              <Chip 
+                label={Array.isArray(band.genre) ? band.genre.join(', ') : band.genre}
+                size="small"
+                sx={{ alignSelf: 'flex-start' }}
+              />
+            )}
+          </Paper>
+        </Grid>
+      ))}
+    </Grid>
+  )}
+</Paper>
 
-          <TextField
-            autoComplete="current-password"
-            name="current-password"
-            margin="dense"
-            label="Confirm New Password"
-            type={showConfirmPassword ? "text" : "password"}
-            fullWidth
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-                  {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              ),
+{/* Saved Shows Section */}
+<Paper elevation={2} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
+  <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 2 }}>
+    Saved Shows
+  </Typography>
+  {savedShows.length === 0 ? (
+    <Paper 
+      variant="outlined" 
+      sx={{ 
+        p: 3, 
+        textAlign: 'center', 
+        bgcolor: 'background.default',
+        borderStyle: 'dashed'
+      }}
+    >
+      <Typography sx={{ color: 'text.secondary' }}>No saved shows yet</Typography>
+    </Paper>
+  ) : (
+    <Grid container spacing={2}>
+      {savedShows.map((show) => (
+        <Grid item xs={12} sm={6} md={4} key={show.id}>
+          <Paper
+            elevation={1}
+            sx={{
+              p: 3,
+              cursor: 'pointer',
+              borderRadius: 2,
+              height: '100%',
+              transition: 'all 0.2s ease',
+              '&:hover': { 
+                boxShadow: 6,
+                transform: 'translateY(-4px)' 
+              },
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
             }}
-          />
-          {passwordError && (
-            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
-              {passwordError}
-            </Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-      <Button type="button" onClick={() => setShowPasswordDialog(false)}>Cancel</Button>
-      <Button type="submit" variant="contained" disabled={isChangingPassword}>
+            onClick={() => navigate(`/shows/${show.id}`)}
+          >
+            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>{show.title}</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
+              <Chip 
+                label={new Date(show.date).toLocaleDateString()} 
+                size="small" 
+                color="primary"
+                variant="outlined"
+              />
+            </Box>
+          </Paper>
+        </Grid>
+      ))}
+    </Grid>
+  )}
+</Paper>
+
+{/* Dialog for removing avatar */}
+<Dialog 
+  open={showRemoveDialog} 
+  onClose={() => setShowRemoveDialog(false)}
+  PaperProps={{
+    sx: { borderRadius: 2 }
+  }}
+>
+  <DialogTitle sx={{ pb: 1 }}>Remove Profile Picture</DialogTitle>
+  <DialogContent>
+    <DialogContentText>
+      Are you sure you want to remove your profile picture?
+    </DialogContentText>
+  </DialogContent>
+  <DialogActions sx={{ px: 3, pb: 2 }}>
+    <Button onClick={() => setShowRemoveDialog(false)}>Cancel</Button>
+    <Button 
+      onClick={handleRemoveAvatar} 
+      color="error" 
+      variant="contained"
+      sx={{ borderRadius: 1.5 }}
+    >
+      Remove
+    </Button>
+  </DialogActions>
+</Dialog>
+
+{/* Dialog for changing password */}
+<Dialog 
+  open={showPasswordDialog} 
+  onClose={() => setShowPasswordDialog(false)}
+  PaperProps={{
+    sx: { borderRadius: 2 }
+  }}
+>
+  <DialogTitle sx={{ pb: 1 }}>Change Password</DialogTitle>
+  <form onSubmit={(e) => {
+    e.preventDefault();
+    handlePasswordUpdate();
+  }}>
+    <DialogContent>
+      <TextField
+        autoComplete="current-password"
+        name="current-password"
+        margin="dense"
+        label="Current Password"
+        type={showCurrentPassword ? "text" : "password"}
+        fullWidth
+        value={currentPassword}
+        onChange={(e) => setCurrentPassword(e.target.value)}
+        InputProps={{
+          endAdornment: (
+            <IconButton onClick={() => setShowCurrentPassword(!showCurrentPassword)}>
+              {showCurrentPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          ),
+          sx: { borderRadius: 1.5 }
+        }}
+      />
+
+      <TextField
+        autoComplete="new-password"
+        name="new-password"
+        margin="dense"
+        label="New Password"
+        type={showNewPassword ? "text" : "password"}
+        fullWidth
+        value={newPassword}
+        onChange={(e) => setNewPassword(e.target.value)}
+        InputProps={{
+          endAdornment: (
+            <IconButton onClick={() => setShowNewPassword(!showNewPassword)}>
+              {showNewPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          ),
+          sx: { borderRadius: 1.5 }
+        }}
+      />
+
+      <TextField
+        autoComplete="new-password"
+        name="confirm-password"
+        margin="dense"
+        label="Confirm New Password"
+        type={showConfirmPassword ? "text" : "password"}
+        fullWidth
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        InputProps={{
+          endAdornment: (
+            <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+              {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+            </IconButton>
+          ),
+          sx: { borderRadius: 1.5 }
+        }}
+      />
+      
+      <PasswordRequirements password={newPassword} />
+      
+      {passwordError && (
+        <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+          {passwordError}
+        </Typography>
+      )}
+    </DialogContent>
+    <DialogActions sx={{ px: 3, pb: 2 }}>
+      <Button type="button" onClick={() => setShowPasswordDialog(false)}>
+        Cancel
+      </Button>
+      <Button 
+        type="submit" 
+        variant="contained" 
+        disabled={isChangingPassword}
+        sx={{ borderRadius: 1.5 }}
+      >
         {isChangingPassword ? <CircularProgress size={24} /> : 'Change Password'}
       </Button>
     </DialogActions>
-       </form>
-      </Dialog>
+  </form>
+</Dialog>
     </Container>
   );
 }
