@@ -3,7 +3,8 @@ export const typography = {
 
     h1: {
       fontSize: '2.5rem',
-      fontWeight: 700,
+      fontWeight: 500,
+      fontFamily: "'Geist Mono', monospace",
     },
     h2: {
       fontSize: '2rem',
@@ -17,6 +18,8 @@ export const typography = {
     },
     h5: {
       fontSize: '1rem',
+      fontFamily: "'Geist Mono', monospace",
+
     },
     h6: {
       fontSize: '0.875rem',

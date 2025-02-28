@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { Paper, Box, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import React, { useRef, useEffect, useState } from 'react';
+import { Paper, Box, ToggleButton, ToggleButtonGroup, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
 import { 
   FormatBold,
   FormatItalic,
@@ -7,12 +7,52 @@ import {
   FormatQuote,
   Code,
   FormatListBulleted,
-  FormatListNumbered
+  FormatListNumbered,
+  Link as LinkIcon
 } from '@mui/icons-material';
-import { Editor, EditorState, RichUtils } from 'draft-js';
+import { Editor, EditorState, RichUtils, CompositeDecorator, Entity } from 'draft-js';
+
+// Link decorator component
+const LinkComponent = (props) => {
+  const { url } = props.contentState.getEntity(props.entityKey).getData();
+  return (
+    <a href={url} style={{ color: '#2196f3', textDecoration: 'underline' }} target="_blank" rel="noopener noreferrer">
+      {props.children}
+    </a>
+  );
+};
+
+// Create decorator for links
+const decorator = new CompositeDecorator([
+  {
+    strategy: (contentBlock, callback, contentState) => {
+      contentBlock.findEntityRanges(
+        (character) => {
+          const entityKey = character.getEntity();
+          return (
+            entityKey !== null &&
+            contentState.getEntity(entityKey).getType() === 'LINK'
+          );
+        },
+        callback
+      );
+    },
+    component: LinkComponent,
+  },
+]);
 
 const EditorWithFormatting = ({ editorState, setEditorState, autoFocus, focusTrigger }) => {
   const editorRef = useRef(null);
+  const [linkDialogOpen, setLinkDialogOpen] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
+  const [linkText, setLinkText] = useState('');
+
+  // Initialize with decorator when component mounts
+  useEffect(() => {
+    if (!editorState) {
+      setEditorState(EditorState.createEmpty(decorator));
+    }
+  }, []);
 
   // Focus the editor whenever autoFocus or focusTrigger changes.
   useEffect(() => {
@@ -42,6 +82,94 @@ const EditorWithFormatting = ({ editorState, setEditorState, autoFocus, focusTri
     setEditorState(RichUtils.toggleBlockType(editorState, blockType));
   };
 
+  const promptForLink = (e) => {
+    e.preventDefault();
+    
+    const selection = editorState.getSelection();
+    if (!selection.isCollapsed()) {
+      // Get the selected text to pre-fill the link text
+      const contentState = editorState.getCurrentContent();
+      const startKey = selection.getStartKey();
+      const startOffset = selection.getStartOffset();
+      const endOffset = selection.getEndOffset();
+      const selectedText = contentState
+        .getBlockForKey(startKey)
+        .getText()
+        .slice(startOffset, endOffset);
+      
+      setLinkText(selectedText);
+      setLinkUrl('https://');
+      setLinkDialogOpen(true);
+    } else {
+      // No text selected, prompt for both URL and text
+      setLinkText('');
+      setLinkUrl('https://');
+      setLinkDialogOpen(true);
+    }
+  };
+
+  const confirmLink = () => {
+    const contentState = editorState.getCurrentContent();
+    const selection = editorState.getSelection();
+    
+    // If text is already selected, apply the link
+    if (!selection.isCollapsed()) {
+      const contentWithEntity = contentState.createEntity('LINK', 'MUTABLE', { url: linkUrl });
+      const entityKey = contentWithEntity.getLastCreatedEntityKey();
+      const newEditorState = EditorState.push(
+        editorState,
+        contentWithEntity,
+        'create-entity'
+      );
+      setEditorState(RichUtils.toggleLink(newEditorState, selection, entityKey));
+    } else {
+      // If no text is selected, insert the link text and make it a link
+      const contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', { url: linkUrl });
+      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+      
+      // First, insert the text
+      const contentStateWithText = Modifier.insertText(
+        contentStateWithEntity,
+        selection,
+        linkText
+      );
+      
+      // Then, select the newly inserted text
+      const blockKey = selection.getStartKey();
+      const startOffset = selection.getStartOffset();
+      const endOffset = startOffset + linkText.length;
+      const newSelection = selection.merge({
+        anchorOffset: startOffset,
+        focusOffset: endOffset,
+      });
+      
+      // Finally, apply the link entity to the selected text
+      const newEditorState = EditorState.push(
+        editorState,
+        contentStateWithText,
+        'insert-characters'
+      );
+      
+      const editorWithSelectedText = EditorState.forceSelection(
+        newEditorState,
+        newSelection
+      );
+      
+      setEditorState(RichUtils.toggleLink(editorWithSelectedText, newSelection, entityKey));
+    }
+    
+    setLinkDialogOpen(false);
+    setLinkUrl('');
+    setLinkText('');
+    
+    // Focus back to editor after adding link
+    setTimeout(() => {
+      if (editorRef.current) {
+        editorRef.current.focus();
+      }
+    }, 0);
+  };
+
   const currentInlineStyle = editorState.getCurrentInlineStyle();
   const selection = editorState.getSelection();
   const blockType = editorState
@@ -55,6 +183,9 @@ const EditorWithFormatting = ({ editorState, setEditorState, autoFocus, focusTri
       editorRef.current.focus();
     }
   };
+
+  // Fix missing Modifier import
+  const { Modifier } = require('draft-js');
 
   return (
     <Paper variant="outlined" sx={{ mb: 2, p: 1 }}>
@@ -79,6 +210,12 @@ const EditorWithFormatting = ({ editorState, setEditorState, autoFocus, focusTri
           onMouseDown={(e) => toggleInlineStyle(e, 'UNDERLINE')}
         >
           <FormatUnderlined />
+        </ToggleButton>
+        <ToggleButton
+          value="LINK"
+          onMouseDown={promptForLink}
+        >
+          <LinkIcon />
         </ToggleButton>
         <ToggleButton
           value="blockquote"
@@ -138,6 +275,45 @@ const EditorWithFormatting = ({ editorState, setEditorState, autoFocus, focusTri
           placeholder="Enter your post here..."
         />
       </Box>
+
+      {/* Link Dialog */}
+      <Dialog open={linkDialogOpen} onClose={() => setLinkDialogOpen(false)}>
+        <DialogTitle>Add Link</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="url"
+            label="URL"
+            type="url"
+            fullWidth
+            variant="outlined"
+            value={linkUrl}
+            onChange={(e) => setLinkUrl(e.target.value)}
+          />
+          {selection.isCollapsed() && (
+            <TextField
+              margin="dense"
+              id="text"
+              label="Link Text"
+              type="text"
+              fullWidth
+              variant="outlined"
+              value={linkText}
+              onChange={(e) => setLinkText(e.target.value)}
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setLinkDialogOpen(false)}>Cancel</Button>
+          <Button 
+            onClick={confirmLink}
+            disabled={!linkUrl || (selection.isCollapsed() && !linkText)}
+          >
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Paper>
   );
 };

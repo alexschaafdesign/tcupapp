@@ -15,6 +15,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "../../hooks/useAuth";
 import HeaderUserProfile from "./HeaderUserProfile";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -24,16 +25,25 @@ const Header = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isTcupExpanded, setIsTcupExpanded] = useState(false);
   const [isOrganizeExpanded, setIsOrganizeExpanded] = useState(false);
+  const [isAdminExpanded, setIsAdminExpanded] = useState(false);
+
 
   const navigate = useNavigate();
   const { isAuthenticated, isLoading, loginWithRedirect, logout, user } = useAuth0();
   const isDevMode = process.env.NODE_ENV === "development";
+  const { isAdmin, userRoles } = useAuth();
+
 
   const navLinks = [
     { text: "chat", path: "/chat" },
     { text: "show list", path: "/shows" },
     { text: "resources", path: "/resources", isDropdown: true, devOnly: true },
     { text: "tcup", path: "/organize", isDropdown: true },
+  ];
+
+  const adminLinks = [
+    { text: "add update", path: "/admin/updates" },
+    // Add other admin links as needed
   ];
 
   const resourceLinks = [
@@ -124,6 +134,61 @@ const Header = () => {
     );
   };
 
+
+    
+  const AdminMenu = () => {
+    if (!isAdmin) return null;
+    
+    return (
+      <>
+        <ListItem
+          button
+          onClick={() => setIsAdminExpanded(!isAdminExpanded)}
+          sx={{
+            color: "green",
+            cursor: "pointer",
+            fontFamily: "'Courier New', monospace",
+            textTransform: "lowercase",
+            "&:hover": { backgroundColor: "rgba(97, 56, 179, 0.15)" },
+            borderRadius: "8px",
+            px: 1.5,
+            py: 0,
+            mb: 0.5, // Add this to match ResourcesMenu spacing
+            ml: 0
+          }}
+        >
+          <ListItemText
+            primary="admin"
+            primaryTypographyProps={{ 
+              fontFamily: "'Courier New', monospace",
+              textTransform: "lowercase",
+              fontSize: "16px",
+            }}
+          />
+          {isAdminExpanded ? <ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} /> : <ExpandMoreIcon />}
+        </ListItem>
+        <Collapse in={isAdminExpanded}>
+          <Box sx={{ 
+            backgroundColor: 'rgba(0, 0, 0, 0.02)',
+            borderLeft: '2px solid rgba(0, 0, 0, 0.1)',
+            ml: 1,
+            mr: 1,
+            borderRadius: '2px',
+            overflow: 'hidden',
+            mb: 1 // Add bottom margin to match ResourcesMenu
+          }}>
+            {adminLinks.map((link, index) => (
+              <NavLink
+                key={index}
+                link={link}
+              />
+            ))}
+          </Box>
+        </Collapse>
+      </>
+    );
+  };
+
   const ResourcesMenu = () => (
     <>
       <ListItem
@@ -140,8 +205,8 @@ const Header = () => {
           "&:hover": { backgroundColor: "rgba(97, 56, 179, 0.15)" }, // Match NavLink hover
           borderRadius: "8px", // Add rounded corners like NavLinks
           px: 1.5, // Match NavLink padding
-          py: 0.5, // Match NavLink padding
-          mb: 0.5, // Match NavLink margin
+          py: 0, // Match NavLink padding
+          mb: 0, // Match NavLink margin
           ml: 0 // Remove negative margin
         }}
       >
@@ -159,6 +224,7 @@ const Header = () => {
         <Box sx={{ 
           backgroundColor: 'rgba(0, 0, 0, 0.02)',
           borderLeft: '2px solid rgba(0, 0, 0, 0.1)',
+          mt: 2,
           ml: 1,
           mr: 1,
           borderRadius: '2px',
@@ -193,8 +259,8 @@ const Header = () => {
           "&:hover": { backgroundColor: "rgba(97, 56, 179, 0.15)" },
           borderRadius: "8px",
           px: 1.5,
-          py: 0.5,
-          mb: 0.5,
+          py: 0,
+          mb: 0,
           ml: 0
         }}
       >
@@ -214,6 +280,7 @@ const Header = () => {
           borderLeft: '2px solid rgba(0, 0, 0, 0.1)',
           ml: 1,
           mr: 1,
+          mt: 2, 
           borderRadius: '2px',
           overflow: 'hidden'
         }}>
@@ -335,17 +402,16 @@ const Header = () => {
             {displayedLinks.filter(link => !link.isDropdown).map((link, index) => (
               <NavLink key={index} link={link} />
             ))}
-            <Divider sx={{ mx: 0, my: 2, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
             <ResourcesMenu />
 
           </List>
   
-  {/* Auth Section */}
-  <Box sx={{ mt: "auto" }}>
+         {/* Auth Section */}
+          <Box sx={{ mt: "auto" }}>
             {isAuthenticated && (
-              <>
-               
-              </>
+              <List sx={{ px: 2, py: 1 }}> {/* Match these values with the resources menu */}
+                <AdminMenu />
+              </List>
             )}
             <Divider sx={{ mx: 3, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
             <List sx={{ px: 2 }}>
@@ -489,17 +555,18 @@ const Header = () => {
           </List>
   
           <Box sx={{ mt: "auto", zIndex: 2 }}>
-            {isAuthenticated && (
-              <>
-                <Divider sx={{ mx: 2, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
-                <HeaderUserProfile />
-              </>
-            )}
+        {isAuthenticated && (
+          <>
+            <AdminMenu />
             <Divider sx={{ mx: 2, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
-            <List sx={{ px: 2 }}>
-              <AuthButtons />
-            </List>
-          </Box>
+            <HeaderUserProfile />
+          </>
+        )}
+        <Divider sx={{ mx: 2, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
+        <List sx={{ px: 2 }}>
+          <AuthButtons />
+        </List>
+      </Box>
         </Box>
       </Drawer>
   

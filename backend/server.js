@@ -27,6 +27,7 @@ import pledgesRouter from './routes/pledges.js';
 import flyeringRouter from './routes/flyering.js';
 import imagesRouter from './routes/images.js';
 import notificationsRouter, { createReplyNotification } from './routes/notifications.js';
+import updatesRouter from './routes/updates.js';
 
 // 2) Optional debugging/logging to confirm environment vars are loaded
 console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -121,6 +122,8 @@ app.use('/api/pledges', pledgesRouter);
 app.use('/api/flyering', flyeringRouter);
 app.use('/api/images', imagesRouter);
 app.use('/api/notifications', notificationsRouter)
+app.use('/api/updates', updatesRouter)
+
 
 // Example test route
 app.get('/api/test-db', async (req, res) => {

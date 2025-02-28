@@ -11,7 +11,8 @@ const routeNames = {
   powerpledge: "TCUP Power Pledge",
   sessionmusicians: "Session Musician Database",
   venues: "Venuepedia",
-  profile: "User Profile"
+  profile: "User Profile",
+  about: "TCUP"
 };
 
 const truncateText = (text, maxLength = 30) => {

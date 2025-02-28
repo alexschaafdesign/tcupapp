@@ -54,6 +54,10 @@ import ErrorBoundary from "./components/ErrorBoundary.js";
 import Layout from "./components/layout/Layout.js";
 import Breadcrumbs from "./components/layout/Breadcrumbs.js";
 import AboutTCUP from "./pages/TCUP/AboutTCUP.js";
+import NewUpdate from "./pages/TCUP/Updates/NewUpdate.js";
+import UpdatesPage from "./pages/TCUP/Updates/UpdatesPage.js";
+import UpdateDetail from "./pages/TCUP/Updates/UpdateDetail.js";
+import UpdateEditForm from "./pages/TCUP/Updates/UpdateEditForm.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -106,11 +110,21 @@ function App() {
           {/* PARENT ROUTE: Renders <Layout /> for anything under "/" */}
           <Route path="/" element={<Layout />}>
             {/* index => "/" */}
-            <Route index element={<LandingPageTemp />} />
+            <Route index element={<AboutTCUP />} />
     
             {/* Additional routes => "/landing", "/powerpledge", etc. */}
             <Route path="landing" element={<LandingPage />} />
             <Route path="about" element={<AboutTCUP />} />
+
+            {/* TCUP Updates */}
+            <Route path="/admin/updates" element={<NewUpdate />} />
+            <Route path="/updates/:id" element={<UpdateDetail />} />
+            <Route path="updates" element={<UpdatesPage />} />
+            <Route path="updates/edit/:id" element={<UpdateEditForm />} />
+
+
+
+
             <Route path="powerpledge" element={<PowerPledgeForm />} />
             <Route path="advance" element={<TCUPAdvance />} />
             <Route path="pledgesuccess" element={<PledgeSuccess />} />
