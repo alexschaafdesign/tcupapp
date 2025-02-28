@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { createClient } from '@supabase/supabase-js';
+import { useNavigate } from 'react-router-dom';
 import { Container, Link, Tooltip, Chip, Typography, Button, Avatar, Box, CircularProgress, Paper, IconButton, Dialog } from '@mui/material';
 import { Edit as EditIcon } from '@mui/icons-material';
 import {
@@ -36,7 +37,8 @@ const ThreadView = () => {
   const [editingPost, setEditingPost] = useState(null);
   const [showHistoricalReplyModal, setShowHistoricalReplyModal] = useState(false);
   const [postReactions, setPostReactions] = useState({});
-
+  const [userRoles, setUserRoles] = useState([]);
+  const navigate = useNavigate();
   const [replyEditorState, setReplyEditorState] = useState(EditorState.createEmpty());
   const [focusTrigger, setFocusTrigger] = useState(0);
 
@@ -44,6 +46,27 @@ const ThreadView = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const supabase = createClient(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_ANON_KEY);
+
+  const fetchUserRoles = async () => {
+    if (!user) return;
+    
+    try {
+      const token = await getAccessTokenSilently();
+      const response = await fetch(`${apiUrl}/users/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        const userData = await response.json();
+        setUserRoles(userData.roles || []);
+      }
+    } catch (error) {
+      console.error('Error fetching user roles:', error);
+    }
+  };
+  
 
   useEffect(() => {
     if (highlightedReplyId) {

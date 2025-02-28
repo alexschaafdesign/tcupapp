@@ -8,8 +8,15 @@ const router = express.Router();
 const schema = process.env.NODE_ENV === 'production' ? 'production' : 'development';
 console.log(`Using database schema: ${schema}`);
 
+console.log(`Updates route loaded. NODE_ENV: ${process.env.NODE_ENV}, schema: ${schema}`);
+
+
+
+
 // GET all published updates (public) with optional limit
 router.get('/', async (req, res) => {
+  console.error(`Attempting to fetch updates with schema: ${schema}`);
+
   try {
     const limit = req.query.limit ? parseInt(req.query.limit) : 10;
     

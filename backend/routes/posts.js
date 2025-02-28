@@ -560,4 +560,92 @@ router.post('/tags', authMiddleware, async (req, res) => {
     }
 });
 
+// Add this route to posts.js
+
+// Delete post
+router.delete('/:id', authMiddleware, async (req, res) => {
+    const { id } = req.params;
+    const auth0Id = req.user.sub;
+    
+    try {
+      // Get the post to check ownership
+      const { data: post, error: fetchError } = await supabase
+        .from('forum_messages')
+        .select('auth0_id, parent_id')
+        .eq('id', id)
+        .single();
+        
+      if (fetchError) throw fetchError;
+      if (!post) return res.status(404).json({ error: 'Post not found' });
+      
+      // Get user roles to check for admin status
+      const { rows: userRows } = await pool.query(
+        'SELECT role FROM users WHERE auth0_id = $1',
+        [auth0Id]
+      );
+      
+      const userRoles = userRows[0]?.role || [];
+      const isAdmin = userRoles.includes('admin');
+      
+      // Only allow deletion if user is post owner or admin
+      if (post.auth0_id !== auth0Id && !isAdmin) {
+        return res.status(403).json({ error: 'Unauthorized to delete this post' });
+      }
+      
+      // If it's a thread (no parent_id), we need to delete all replies
+      if (!post.parent_id) {
+        // Delete all reactions to replies
+        await supabase.rpc('delete_thread_reactions', { thread_id: id });
+        
+        // Delete all replies to this thread
+        const { error: deleteRepliesError } = await supabase
+          .from('forum_messages')
+          .delete()
+          .eq('parent_id', id);
+          
+        if (deleteRepliesError) throw deleteRepliesError;
+        
+        // Delete all tags associated with the thread
+        const { error: deleteTagsError } = await supabase
+          .from('post_tags')
+          .delete()
+          .eq('post_id', id);
+          
+        if (deleteTagsError) throw deleteTagsError;
+      } else {
+        // For replies, we need to update the parent thread's reply count
+        const { data: parentThread } = await supabase
+          .from('forum_messages')
+          .select('id')
+          .eq('id', post.parent_id)
+          .single();
+          
+        if (parentThread) {
+          await supabase.rpc('update_thread_reply_stats', { thread_id: post.parent_id });
+        }
+      }
+      
+      // Delete reactions to this post
+      const { error: deleteReactionsError } = await supabase
+        .from('user_reactions')
+        .delete()
+        .eq('post_id', id);
+        
+      if (deleteReactionsError) throw deleteReactionsError;
+      
+      // Finally delete the post itself
+      const { error: deletePostError } = await supabase
+        .from('forum_messages')
+        .delete()
+        .eq('id', id);
+        
+      if (deletePostError) throw deletePostError;
+      
+      res.json({ success: true, message: 'Post deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
 export default router;

@@ -26,70 +26,83 @@ const AboutTCUP = () => {
 
   return (
     <Box sx={{ overflow: 'hidden' }}>
-      {/* Hero Section */}
-      <Box
-        sx={{
-          position: 'relative',
-          height: '50vh',
-          minHeight: '100px',
-          maxHeight: '200px',
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(https://res.cloudinary.com/dsll3ms2c/image/upload/v1740716422/472505985_1150728213085988_6028807238254085019_n_i1vd58.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          mb: 4,
-          mt: 4,
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundImage: 'url("data:image/svg+xml,%3Csvg width="20" height="20" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M0 0h20v20H0z" fill="%23ffffff" fill-opacity="0.05"/%3E%3C/svg%3E")',
-            backgroundRepeat: 'repeat',
-            opacity: 0.2,
-            zIndex: 1
-          }
-        }}
-      >
-        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
-          <Typography 
-            variant="h2" 
-            component="h1"
-            sx={{
-              fontWeight: 500,
-              color: 'white',
-              textAlign: 'center',
-              mb: 2,
-              textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
-              fontSize: { xs: '2.5rem', md: '4rem' }
-            }}
-          >
-            Twin Cities United Performers
-          </Typography>
-          <Typography 
-            variant="h5" 
-            sx={{
-              color: 'white',
-              textAlign: 'center',
-              maxWidth: '800px',
-              mx: 'auto',
-              textShadow: '1px 1px 3px rgba(0,0,0,0.5)',
-              lineHeight: 1.6
-            }}
-          >
-            Building power for musicians and performers in Minnesota
-          </Typography>
-        </Container>
-      </Box>
+      
 
-      <Container maxWidth="lg" sx={{ pb: 10 }}>        
+      <Container maxWidth="lg" sx={{ pb: 10, mt: 4 }}>        
         {/* Main Section with staggered layout */}
        {/* Main Section with staggered layout */}
+
+ {/* Latest Updates Section */}
+ <Fade in={true} timeout={1000} style={{ transitionDelay: '200ms' }}>
+          <Paper
+            elevation={4}
+            sx={{
+              bgcolor: 'white',
+              p: { xs: 3, md: 5 },
+              borderRadius: 3,
+              mb: 6,
+              position: 'relative',
+              overflow: 'hidden',
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                width: '5px',
+                height: '100%',
+                background: 'linear-gradient(180deg, #9c27b0, #f50057)'
+              },
+              transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+              '&:hover': {
+                transform: 'translateY(-5px)',
+                boxShadow: '0 10px 20px rgba(0,0,0,0.1)'
+              }
+            }}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+              <Typography 
+                variant="h4" 
+                sx={{
+                  fontWeight: 'bold',
+                  background: 'linear-gradient(45deg, #9c27b0 30%, #f50057 90%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  textTransform: 'uppercase',
+                  position: 'relative',
+                  display: 'inline-block',
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    bottom: -8,
+                    left: 0,
+                    width: '60px',
+                    height: '3px',
+                    background: 'linear-gradient(45deg, #9c27b0 30%, #f50057 90%)'
+                  }
+                }}
+              >
+                Latest Updates
+              </Typography>
+              
+              <Button
+                endIcon={<ArrowForwardIcon />}
+                sx={{
+                  color: '#9c27b0',
+                  '&:hover': {
+                    backgroundColor: 'rgba(156, 39, 176, 0.08)'
+                  }
+                }}
+              >
+                View All
+              </Button>
+            </Box>      
+
+            <UpdatesSection />
+          </Paper>
+        </Fade>
+
+
+
 {/* Main Section with staggered layout */}
 <Fade in={true} timeout={1000}>
   <Paper
@@ -215,80 +228,9 @@ const AboutTCUP = () => {
   </Paper>
 </Fade>
 
-        {/* Latest Updates Section */}
-        <Fade in={true} timeout={1000} style={{ transitionDelay: '200ms' }}>
-          <Paper
-            elevation={4}
-            sx={{
-              bgcolor: 'white',
-              p: { xs: 3, md: 5 },
-              borderRadius: 3,
-              mb: 6,
-              position: 'relative',
-              overflow: 'hidden',
-              '&::after': {
-                content: '""',
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                width: '5px',
-                height: '100%',
-                background: 'linear-gradient(180deg, #9c27b0, #f50057)'
-              },
-              transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-              '&:hover': {
-                transform: 'translateY(-5px)',
-                boxShadow: '0 10px 20px rgba(0,0,0,0.1)'
-              }
-            }}
-          >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-              <Typography 
-                variant="h4" 
-                sx={{
-                  fontWeight: 'bold',
-                  background: 'linear-gradient(45deg, #9c27b0 30%, #f50057 90%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  textTransform: 'uppercase',
-                  position: 'relative',
-                  display: 'inline-block',
-                  '&::after': {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: -8,
-                    left: 0,
-                    width: '60px',
-                    height: '3px',
-                    background: 'linear-gradient(45deg, #9c27b0 30%, #f50057 90%)'
-                  }
-                }}
-              >
-                Latest Updates
-              </Typography>
-              
-              <Button
-                endIcon={<ArrowForwardIcon />}
-                sx={{
-                  color: '#9c27b0',
-                  '&:hover': {
-                    backgroundColor: 'rgba(156, 39, 176, 0.08)'
-                  }
-                }}
-              >
-                View All
-              </Button>
-            </Box>      
-
-            <UpdatesSection />
-            
-            <Typography variant="body2" sx={{ mt: 3, color: '#666', fontStyle: 'italic', textAlign: 'right' }}>
-              * Updates are managed by TCUP administrators
-            </Typography>
-          </Paper>
-        </Fade>
+       
         
-        {/* Vision Section */}
+        {/* Vision Section 
         <div ref={ref1}>
           <Fade in={inView1} timeout={1000}>
             <Paper
@@ -406,6 +348,7 @@ const AboutTCUP = () => {
             </Paper>
           </Fade>
         </div>
+        */}
         
         {/* First Ave Section */}
         <div ref={ref2}>
