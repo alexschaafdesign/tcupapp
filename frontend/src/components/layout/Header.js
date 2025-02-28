@@ -47,7 +47,7 @@ const Header = () => {
   const organizeLinks = [
     // { text: "venue report card", path: "/vrc" },
     { text: "about TCUP", path: "/about" },
-    { text: "join TCUP", path: "/join" },
+    { text: "join TCUP", path: "https://airtable.com/appWhJi1YbIsdiXrw/pagHJycS1fOI0TGLS/form", external: true },
     { text: "power pledge", path: "/powerpledge" },
 
 

@@ -53,6 +53,7 @@ import * as Sentry from "@sentry/react";
 import ErrorBoundary from "./components/ErrorBoundary.js";
 import Layout from "./components/layout/Layout.js";
 import Breadcrumbs from "./components/layout/Breadcrumbs.js";
+import AboutTCUP from "./pages/TCUP/AboutTCUP.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -109,6 +110,7 @@ function App() {
     
             {/* Additional routes => "/landing", "/powerpledge", etc. */}
             <Route path="landing" element={<LandingPage />} />
+            <Route path="about" element={<AboutTCUP />} />
             <Route path="powerpledge" element={<PowerPledgeForm />} />
             <Route path="advance" element={<TCUPAdvance />} />
             <Route path="pledgesuccess" element={<PledgeSuccess />} />
