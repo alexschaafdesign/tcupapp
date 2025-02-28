@@ -23,6 +23,7 @@ const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isTcupExpanded, setIsTcupExpanded] = useState(false);
+  const [isOrganizeExpanded, setIsOrganizeExpanded] = useState(false);
 
   const navigate = useNavigate();
   const { isAuthenticated, isLoading, loginWithRedirect, logout, user } = useAuth0();
@@ -32,6 +33,7 @@ const Header = () => {
     { text: "chat", path: "/chat" },
     { text: "show list", path: "/shows" },
     { text: "resources", path: "/resources", isDropdown: true, devOnly: true },
+    { text: "tcup", path: "/organize", isDropdown: true },
   ];
 
   const resourceLinks = [
@@ -41,6 +43,15 @@ const Header = () => {
    // { text: "venue report card", path: "/vrc", devOnly: true },
     { text: "power pledge", path: "/powerpledge" },
   ];
+  
+  const organizeLinks = [
+    // { text: "venue report card", path: "/vrc" },
+    { text: "about TCUP", path: "/about" },
+    { text: "join TCUP", path: "/join" },
+    { text: "power pledge", path: "/powerpledge" },
+
+
+  ];
 
   const displayedLinks = navLinks.map((link) => ({
     ...link,
@@ -48,6 +59,11 @@ const Header = () => {
   }));
 
   const displayedResourceLinks = resourceLinks.map((link) => ({
+    ...link,
+    disabled: !isDevMode && link.devOnly,
+  }));
+  
+  const displayedOrganizeLinks = organizeLinks.map((link) => ({
     ...link,
     disabled: !isDevMode && link.devOnly,
   }));
@@ -112,8 +128,11 @@ const Header = () => {
     <>
       <ListItem
         button
-        onClick={() => setIsTcupExpanded(!isTcupExpanded)}
-        sx={{
+        onClick={() => {
+          setIsTcupExpanded(!isTcupExpanded);
+          if (!isTcupExpanded) setIsOrganizeExpanded(false);
+        }}
+                sx={{
           color: "#000000",
           cursor: "pointer",
           fontFamily: "'Courier New', monospace",
@@ -146,6 +165,59 @@ const Header = () => {
           overflow: 'hidden'
         }}>
           {displayedResourceLinks.map((link, index) => (
+            <NavLink
+              key={index}
+              link={{
+                ...link,
+                text: link.text
+              }}
+            />
+          ))}
+        </Box>
+      </Collapse>
+    </>
+  );
+  
+  const OrganizeMenu = () => (
+    <>
+      <ListItem
+        button
+        onClick={() => {
+          setIsOrganizeExpanded(!isOrganizeExpanded);
+          if (!isOrganizeExpanded) setIsTcupExpanded(false);
+        }}        sx={{
+          color: "#000000",
+          cursor: "pointer",
+          fontFamily: "'Courier New', monospace",
+          textTransform: "lowercase",
+          "&:hover": { backgroundColor: "rgba(97, 56, 179, 0.15)" },
+          borderRadius: "8px",
+          px: 1.5,
+          py: 0.5,
+          mb: 0.5,
+          ml: 0
+        }}
+      >
+        <ListItemText
+          primary="tcup"
+          primaryTypographyProps={{ 
+            fontFamily: "'Courier New', monospace",
+            textTransform: "lowercase",
+            fontSize: "16px",
+          }}
+        />
+        {isOrganizeExpanded ? <ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} /> : <ExpandMoreIcon />}
+      </ListItem>
+      <Collapse in={isOrganizeExpanded}>
+        <Box sx={{ 
+          backgroundColor: 'rgba(0, 0, 0, 0.02)',
+          borderLeft: '2px solid rgba(0, 0, 0, 0.1)',
+          ml: 1,
+          mr: 1,
+          borderRadius: '2px',
+          overflow: 'hidden'
+        }}>
+          {displayedOrganizeLinks.map((link, index) => (
             <NavLink
               key={index}
               link={{
@@ -258,11 +330,14 @@ const Header = () => {
   
           {/* Navigation Links */}
           <List sx={{ width: "100%", px: 2, py: 2 }}>
+          <OrganizeMenu />
+          <Divider sx={{ mx: 0, my: 2, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
             {displayedLinks.filter(link => !link.isDropdown).map((link, index) => (
               <NavLink key={index} link={link} />
             ))}
             <Divider sx={{ mx: 0, my: 2, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
             <ResourcesMenu />
+
           </List>
   
   {/* Auth Section */}
@@ -410,6 +485,7 @@ const Header = () => {
             ))}
             <Divider sx={{ mx: 0, my: 2, backgroundColor: "rgba(0, 0, 0, 0.1)" }} />
             <ResourcesMenu />
+            <OrganizeMenu />
           </List>
   
           <Box sx={{ mt: "auto", zIndex: 2 }}>
