@@ -54,10 +54,10 @@ function UserProfile() {
   const [usernameError, setUsernameError] = useState(null);
   const [isChangingUsername, setIsChangingUsername] = useState(false);
 
-  const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const [title, setTitle] = useState('');
-  const [titleError, setTitleError] = useState(null);
-  const [isChangingTitle, setIsChangingTitle] = useState(false);
+  const [isEditingTagline, setIsEditingTagline] = useState(false);
+  const [tagline, setTagline] = useState('');
+  const [taglineError, setTaglineError] = useState(null);
+  const [isChangingTagline, setIsChangingTagline] = useState(false);
 
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [email, setEmail] = useState('');
@@ -102,31 +102,31 @@ function UserProfile() {
     day: 'numeric'
   });
 
-  const handleTitleUpdate = async () => {
-    if (title.length > 16) {
-      setTitleError('Title must be 16 characters or less');
+  const handleTaglineUpdate = async () => {
+    if (tagline.length > 16) {
+      setTaglineError('Tagline must be 16 characters or less');
       return;
     }
     
     try {
-      setTitleError(null);
-      setIsChangingTitle(true);
+      setTaglineError(null);
+      setIsChangingTagline(true);
       
-      const response = await callApi(`${apiUrl}/users/title`, {
+      const response = await callApi(`${apiUrl}/users/tagline`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title }),
+        body: JSON.stringify({ tagline }),
       });
   
       if (response.error) throw new Error(response.error);
       
-      setIsEditingTitle(false);
-      setSuccessMessage('Title updated successfully');
+      setIsEditingTagline(false);
+      setSuccessMessage('Tagline updated successfully');
       setShowSuccess(true);
     } catch (error) {
-      setTitleError('Failed to update title. Please try again.');
+      setTaglineError('Failed to update tagline. Please try again.');
     } finally {
-      setIsChangingTitle(false);
+      setIsChangingTagline(false);
     }
   };
 
@@ -194,7 +194,7 @@ function UserProfile() {
             if (profileData.username) setUsername(profileData.username);
             if (profileData.avatar_url) setAvatarUrl(profileData.avatar_url);
             if (profileData.email) setEmail(profileData.email);
-            if (profileData.title) setTitle(profileData.title);
+            if (profileData.tagline) setTagline(profileData.tagline);
             if (profileData.bio) setBio(profileData.bio);
           }
           // Get additional user data
@@ -517,7 +517,7 @@ function UserProfile() {
               {username || user?.name}
             </Typography>
             <Typography variant="subtitle1" color="primary" sx={{ mt: 0.5 }}>
-              {title || 'TCUP Member'}
+              {tagline || 'TCUP Member'}
             </Typography>
             <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
               Joined {joinDate}
@@ -655,19 +655,19 @@ function UserProfile() {
               </Box>
             </Grid>
             
-            {/* Title */}
+            {/* Tagline */}
             <Grid item xs={12} sm={6}>
               <Box sx={{ mb: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                   <Typography variant="body2" color="text.secondary">
-                    Title
+                    Tagline
                   </Typography>
-                  {!isEditingTitle && (
-                    <Tooltip title="Edit title">
+                  {!isEditingTagline && (
+                    <Tooltip title="Edit tagline">
                       <IconButton 
                         size="small" 
                         color="primary" 
-                        onClick={() => setIsEditingTitle(true)}
+                        onClick={() => setIsEditingTagline(true)}
                         sx={{ '&:hover': { background: 'rgba(103, 58, 183, 0.1)' } }}
                       >
                         <EditIcon fontSize="small" />
@@ -676,18 +676,18 @@ function UserProfile() {
                   )}
                 </Box>
                 
-                {isEditingTitle ? (
-                  <Fade in={isEditingTitle}>
+                {isEditingTagline ? (
+                  <Fade in={isEditingTagline}>
                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
                       <TextField
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        value={tagline}
+                        onChange={(e) => setTagline(e.target.value)}
                         size="small"
                         fullWidth
-                        error={!!titleError}
-                        helperText={titleError || `${title.length}/16 characters`}
+                        error={!!taglineError}
+                        helperText={taglineError || `${tagline.length}/16 characters`}
                         inputProps={{ maxLength: 16 }}
-                        disabled={isChangingTitle}
+                        disabled={isChangingTagline}
                         autoFocus
                         InputProps={{ sx: { borderRadius: 2 } }}
                       />
@@ -695,19 +695,19 @@ function UserProfile() {
                         <IconButton 
                           color="primary" 
                           size="small" 
-                          onClick={handleTitleUpdate} 
-                          disabled={isChangingTitle}
+                          onClick={handleTaglineUpdate} 
+                          disabled={isChangingTagline}
                           sx={{ 
                             bgcolor: 'primary.main', 
                             color: 'white',
                             '&:hover': { bgcolor: 'primary.dark' }
                           }}
                         >
-                          {isChangingTitle ? <CircularProgress size={20} /> : <CheckIcon />}
+                          {isChangingTagline ? <CircularProgress size={20} /> : <CheckIcon />}
                         </IconButton>
                         <IconButton 
                           size="small" 
-                          onClick={() => setIsEditingTitle(false)}
+                          onClick={() => setIsEditingTagline(false)}
                           sx={{ border: '1px solid', borderColor: 'divider' }}
                         >
                           <CloseIcon />
@@ -717,7 +717,7 @@ function UserProfile() {
                   </Fade>
                 ) : (
                   <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
-                    {title || 'TCUP Member'}
+                    {tagline || 'TCUP Member'}
                   </Typography>
                 )}
               </Box>

@@ -3,7 +3,7 @@ import { Box, Typography, Button, IconButton } from "@mui/material";
 import { Star, StarBorder } from "@mui/icons-material"; // Import Star icons
 import BandSocialLinks from "./BandSocialLinks";
 import ProfileImage from "../ProfileImage";
-import colorTokens from "../../styles/colors/colortokens";
+import colorTokens from "../../styles/colors/palette";
 import StatusBadge from "./StatusBadge";
 import useApi from "../../hooks/useApi";
 

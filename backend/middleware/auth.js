@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Environment file logic remains the same
-const envFile = process.env.REACT_APP_APP_ENV === 'staging' 
+const envFile = process.env.APP_ENV === 'staging' 
   ? '.env.staging'
   : process.env.NODE_ENV === 'production'
     ? '.env.production'

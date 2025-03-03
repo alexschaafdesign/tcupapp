@@ -88,7 +88,7 @@ const PostCard = ({
               {post.username}
             </Typography>
             <Typography variant="caption" sx={{ color: 'gray' }}>
-              {post.title}
+              {post.tagline}
             </Typography>
           </Box>
 

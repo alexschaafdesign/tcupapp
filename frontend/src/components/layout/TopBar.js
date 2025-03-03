@@ -5,6 +5,7 @@ import useApi from '../../hooks/useApi';
 import { useUserProfile } from '../../hooks/useUserProfile';
 import Breadcrumbs from './Breadcrumbs';
 import NotificationBell from './NotificationBell';
+import palette from '../../styles/colors/palette';
 
 const TopBar = () => {
   const { user, logout, isAuthenticated, loginWithRedirect } = useAuth0();
@@ -91,7 +92,7 @@ const TopBar = () => {
   };
 
   return (
-    <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 90, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'linear-gradient(90deg, #7C60DD 0%, #9375FF 100%)', padding: '0 20px', height: '60px' }}>
+    <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 90, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: palette.primary.main, padding: '0 20px', height: '60px' }}>
       {/* Left-aligned Breadcrumbs, starting at the right edge of the nav bar */}
       <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', marginLeft: '200px' }}>
         <Breadcrumbs />

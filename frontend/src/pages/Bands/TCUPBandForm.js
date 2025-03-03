@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
-import colorTokens from "../../styles/colors/colortokens";
+import colorTokens from "../../styles/colors/palette";
 import ProfileImageAdjuster from "../../components/ProfileImageAdjuster";
 
 const createSlug = (name, existingSlugs = []) => {

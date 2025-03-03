@@ -295,30 +295,30 @@ router.get('/test-auth', authMiddleware, (req, res) => {
     }
   });
 
-  // Update user title
-router.put('/title', authMiddleware, async (req, res) => {
+  // Update user tagline
+router.put('/tagline', authMiddleware, async (req, res) => {
   try {
-      const { title } = req.body;
+      const { tagline } = req.body;
       const auth0Id = req.user.sub; // Extract Auth0 ID from request
 
-      // Validate title length
-      if (!title || title.length > 16) {
-          return res.status(400).json({ error: 'Title must be between 1 and 16 characters.' });
+      // Validate tagline length
+      if (!tagline || tagline.length > 16) {
+          return res.status(400).json({ error: 'Tagline must be between 1 and 16 characters.' });
       }
 
-      // Update title in PostgreSQL
+      // Update tagline in PostgreSQL
       const result = await pool.query(
-          'UPDATE users SET title = $1 WHERE auth0_id = $2 RETURNING title',
-          [title, auth0Id]
+          'UPDATE users SET tagline = $1 WHERE auth0_id = $2 RETURNING tagline',
+          [tagline, auth0Id]
       );
 
       if (result.rows.length === 0) {
           return res.status(404).json({ error: 'User not found' });
       }
 
-      res.json({ success: true, title: result.rows[0].title });
+      res.json({ success: true, tagline: result.rows[0].tagline });
   } catch (error) {
-      console.error('Error updating title:', error);
+      console.error('Error updating tagline:', error);
       res.status(500).json({ error: 'Internal Server Error' });
   }
 });

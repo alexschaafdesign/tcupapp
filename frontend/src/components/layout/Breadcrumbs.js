@@ -3,6 +3,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 
 import { Box, Typography } from "@mui/material";
 import useApi from "../../hooks/useApi";
+import palette from "../../styles/colors/palette";
 
 const routeNames = {
   thread: "Chat", // Map "thread" to "Chat"
@@ -55,7 +56,7 @@ const Breadcrumbs = () => {
         variant="body2"
         component={Link}
         to="/"
-        sx={{ color: "rgba(255, 255, 255, 0.7)", textDecoration: "none" }}
+        sx={{ color: palette.text.inverse, textDecoration: "none" }}
       >
         Home
       </Typography>

@@ -12,11 +12,14 @@ import {
 } from "@mui/material";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import EditableBandList from "../../components/shows/EditableBandList";
+import { useAuth } from "../../hooks/useAuth";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const ShowForm = ({ isEdit = false, initialData = null }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
+    const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
   
   const [formData, setFormData] = useState({
     flyer_image: "",
@@ -95,13 +98,14 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
     }
 
     try {
+      const token = await getAccessTokenSilently();
+
       const response = await fetch(`${apiUrl}/shows/${id}`, {
         method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete the show.");
-      }
 
       // Only navigate after successful deletion
       navigate(returnUrl);
@@ -140,10 +144,13 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
       console.log("Making fetch request to:", endpoint);
       console.log("With data:", dataToSubmit);
       
+      const token = await getAccessTokenSilently();
+      
       const response = await fetch(endpoint, {
         method: isEdit ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(dataToSubmit),
       });

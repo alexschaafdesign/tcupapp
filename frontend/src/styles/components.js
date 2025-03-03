@@ -92,6 +92,24 @@ export const components = {
           },
         },
       },
+
+      MuiIconButton: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            color: palette.secondary.main,
+            '&:hover': {
+              backgroundColor: 'rgba(25, 118, 210, 0.08)',
+            },
+            padding: '8px',
+            borderRadius: '8px',
+            // Add other styles you want globally
+          }),
+        },
+        // Optional default props
+        defaultProps: {
+          disableRipple: false, // Set to true if you want to disable the ripple effect
+        },
+      },
       
   };
   

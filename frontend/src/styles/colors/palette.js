@@ -1,55 +1,54 @@
-import colorTokens from './colortokens';
+import colors from './colors'
 
 const palette = {
   primary: {
-    light: colorTokens.primary.light, //purple
-    main: colorTokens.primary.main,  
-    dark: colorTokens.primary.dark,
+    light: colors.purple[80],
+    main: colors.purple[40], // Close to #8E6CD1
+    dark: colors.purple[30],
   },
   secondary: {
-    light: colorTokens.secondary.light, // red
-    main: colorTokens.secondary.main,
-    dark: colorTokens.secondary.dark,
+    light: colors.neonGreen[60],
+    main: colors.neonGreen[50],  // Close to #80282A
+    dark: colors.neonGreen[30],
   },
   error: {
-    light: colorTokens.error.light, // red
-    main: colorTokens.error.main,
-    dark: colorTokens.error.dark,
+    light: colors.red[70],
+    main: colors.red[40],
+    dark: colors.red[30],
   },
   warning: {
-    light: colorTokens.warning.light,
-    main: colorTokens.warning.main,
-    dark: colorTokens.warning.dark,
+    light: colors.yellow[70],
+    main: colors.yellow[60],
+    dark: colors.yellow[40]
   },
   success: {
-    light: colorTokens.success.light,
-    main: colorTokens.success.main,
-    dark: colorTokens.success.dark,
+    light: colors.green[70],
+    main: colors.green[50],
+    dark: colors.green[30]
   },
   info: {
-    light: colorTokens.info.light,
-    main: colorTokens.info.main,
-    dark: colorTokens.info.dark,
-  },
-  neutral: {
-    light: colorTokens.neutral.light,
-    main: colorTokens.neutral.main,
-    dark: colorTokens.neutral.dark,
-    white: colorTokens.neutral.white,
+    light: colors.cyan[80],
+    main: colors.cyan[60],
+    dark: colors.cyan[40]
   },
   background: {
-    default: colorTokens.background.default,
-    paper: colorTokens.background.paper,
+    default: colors.neutral[98],
+    paper: colors.neutral[100]
+  },
+  neutral: {
+    white: colors.neutral[100],
+    light: colors.neutral[98],
+    gray: colors.neutral[50],
+    dark: colors.neutral[10],
+    black: colors.neutral[0]
   },
   text: {
-    primary: colorTokens.text.primary,
-    secondary: colorTokens.text.secondary,
-    tertiary: colorTokens.text.tertiary,
-    inverse: colorTokens.text.inverse
-  },
-};
+    primary: colors.neutral[10],
+    secondary: colors.neutral[40],
+    tertiary: colors.neutral[60],
+    inverse: colors.neutral[95]
+  }
 
-console.log('colorTokens:', colorTokens);
-console.log('colorTokens.primary.main:', colorTokens.primary.main);
+};
 
 export default palette;

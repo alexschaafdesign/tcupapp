@@ -118,7 +118,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
         ])];
 
         const userData = await pool.query(
-            'SELECT auth0_id, avatar_url, username, title FROM users WHERE auth0_id = ANY($1)',
+            'SELECT auth0_id, avatar_url, username, tagline FROM users WHERE auth0_id = ANY($1)',
             [allAuth0Ids]
         );
 
@@ -138,7 +138,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
             ...reply,
             avatar_url: userData.rows.find(u => u.auth0_id === reply.auth0_id)?.avatar_url,
             username: userData.rows.find(u => u.auth0_id === reply.auth0_id)?.username,
-            title: userData.rows.find(u => u.auth0_id === reply.auth0_id)?.title // ✅ Add title here
+            tagline: userData.rows.find(u => u.auth0_id === reply.auth0_id)?.tagline // ✅ Add tagline here
         })) || [];
 
         res.json({
