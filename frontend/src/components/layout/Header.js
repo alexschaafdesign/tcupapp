@@ -29,7 +29,7 @@ const CustomDivider = ({ container = false }) => (
 );
 
 // Component for expandable dropdown menus
-const ExpandableMenu = ({ title, isExpanded, setIsExpanded, links, closeOtherMenus }) => {
+const ExpandableMenu = ({ title, isExpanded, setIsExpanded, links, closeOtherMenus, closeDrawer }) => {
   return (
     <Box sx={{ mb: 2 }}>
       <ListItem
@@ -72,6 +72,7 @@ const ExpandableMenu = ({ title, isExpanded, setIsExpanded, links, closeOtherMen
             <NavLink
               key={index}
               link={link}
+              closeDrawer={closeDrawer}
             />
           ))}
         </Box>
@@ -145,6 +146,9 @@ const Header = () => {
     tcup: false,
     admin: false
   });
+  
+  // Function to close the drawer
+  const closeDrawer = () => setDrawerOpen(false);
   
   const toggleMenu = (menu) => {
     setExpandedMenus({
@@ -249,13 +253,18 @@ const Header = () => {
                 isExpanded={expandedMenus.tcup}
                 setIsExpanded={() => toggleMenu('tcup')}
                 links={organizeLinks}
+                closeDrawer={closeDrawer}
               />
             </Box>
             
             <CustomDivider container={true} />
             
             {navLinks.map((link, index) => (
-              <NavLink key={index} link={link} />
+              <NavLink 
+                key={index} 
+                link={link} 
+                closeDrawer={closeDrawer}
+              />
             ))}
             
             <Box sx={{ mb: 2 }}>
@@ -264,6 +273,7 @@ const Header = () => {
                 isExpanded={expandedMenus.resources}
                 setIsExpanded={() => toggleMenu('resources')}
                 links={resourceLinks}
+                closeDrawer={closeDrawer}
               />
             </Box>
           </List>
@@ -277,6 +287,7 @@ const Header = () => {
                   isExpanded={expandedMenus.admin}
                   setIsExpanded={() => toggleMenu('admin')}
                   links={adminLinks}
+                  closeDrawer={closeDrawer}
                 />
               </Box>
             )}
@@ -318,8 +329,6 @@ const Header = () => {
         </IconButton>
       </AppBar>
   
-
-
       {/* Mobile Drawer */}
       <Drawer 
         anchor="left" 
@@ -336,7 +345,7 @@ const Header = () => {
       >
         <Box sx={{ py: 2, display: "flex", flexDirection: "column", height: "100%" }}>
           <Box sx={{ px: 2, textAlign: "center", mb: 2 }}>
-            <Logo size="drawer" onClick={() => setDrawerOpen(false)} />
+            <Logo size="drawer" onClick={closeDrawer} />
           </Box>
           
           <CustomDivider />
@@ -348,13 +357,18 @@ const Header = () => {
                 isExpanded={expandedMenus.tcup}
                 setIsExpanded={() => toggleMenu('tcup')}
                 links={organizeLinks}
+                closeDrawer={closeDrawer}
               />
             </Box>
             
             <CustomDivider container={true} />
             
             {navLinks.map((link, index) => (
-              <NavLink key={index} link={link} />
+              <NavLink 
+                key={index} 
+                link={link} 
+                closeDrawer={closeDrawer}
+              />
             ))}
             
             <Box sx={{ mb: 2 }}>
@@ -363,6 +377,7 @@ const Header = () => {
                 isExpanded={expandedMenus.resources}
                 setIsExpanded={() => toggleMenu('resources')}
                 links={resourceLinks}
+                closeDrawer={closeDrawer}
               />
             </Box>
           </List>
@@ -371,8 +386,8 @@ const Header = () => {
             {/* Show user profile for all authenticated users */}
             {isAuthenticated && (
               <>
-                <HeaderUserProfile />
-                <CustomDivider />
+            <HeaderUserProfile closeDrawer={closeDrawer} />
+            <CustomDivider />
               </>
             )}
             
@@ -385,6 +400,7 @@ const Header = () => {
                     isExpanded={expandedMenus.admin}
                     setIsExpanded={() => toggleMenu('admin')}
                     links={adminLinks}
+                    closeDrawer={closeDrawer}
                   />
                 </Box>
                 <CustomDivider />
@@ -396,6 +412,7 @@ const Header = () => {
                 isAuthenticated={isAuthenticated} 
                 loginWithRedirect={loginWithRedirect}
                 logout={logout}
+                closeDrawer={closeDrawer}
               />
             </List>
           </Box>
@@ -422,10 +439,18 @@ const navItemStyles = {
 };
 
 // Extract NavLink as a functional component
-const NavLink = ({ link }) => {
+const NavLink = ({ link, closeDrawer }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const isActive = location.pathname === link.path;
+
+  const handleClick = () => {
+    if (!link.external && !link.disabled) {
+      navigate(link.path);
+      // Close the drawer
+      if (closeDrawer) closeDrawer();
+    }
+  };
 
   return (
     <ListItem
@@ -435,13 +460,7 @@ const NavLink = ({ link }) => {
       rel={link.external ? "noopener noreferrer" : undefined}
       button={!link.external}
       disabled={link.disabled}
-      onClick={() => {
-        if (!link.external && !link.disabled) {
-          navigate(link.path);
-          // Close drawer if it's being used
-          document.querySelector('[role="presentation"]')?.click();
-        }
-      }}
+      onClick={handleClick}
       sx={{
         ...navItemStyles,
         color: isActive ? "#6138B3" : "#000000",
@@ -463,36 +482,45 @@ const NavLink = ({ link }) => {
 };
 
 // Extract Auth buttons as a functional component
-const AuthButtons = ({ isAuthenticated, loginWithRedirect, logout }) => (
-  <ListItem
-    button
-    onClick={() =>
-      isAuthenticated
-        ? logout({ 
-            logoutParams: {
-              returnTo: process.env.REACT_APP_AUTH0_REDIRECT_URI || window.location.origin
-            }
-          })
-        : loginWithRedirect()
+const AuthButtons = ({ isAuthenticated, loginWithRedirect, logout, closeDrawer }) => {
+  const handleAuth = () => {
+    if (isAuthenticated) {
+      logout({ 
+        logoutParams: {
+          returnTo: process.env.REACT_APP_AUTH0_REDIRECT_URI || window.location.origin
+        }
+      });
+    } else {
+      loginWithRedirect();
     }
-    sx={{
-      color: "#000000",
-      cursor: "pointer",
-      fontFamily: "'Courier New', monospace",
-      textTransform: "lowercase",
-      "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
-      py: 1.5,
-    }}
-  >
-    <ListItemText
-      primary={isAuthenticated ? "logout" : "login"}
-      primaryTypographyProps={{ 
+    
+    // Close the drawer
+    if (closeDrawer) closeDrawer();
+  };
+
+  return (
+    <ListItem
+      button
+      onClick={handleAuth}
+      sx={{
+        color: "#000000",
+        cursor: "pointer",
         fontFamily: "'Courier New', monospace",
         textTransform: "lowercase",
-        fontSize: "16px",
+        "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
+        py: 1.5,
       }}
-    />
-  </ListItem>
-);
+    >
+      <ListItemText
+        primary={isAuthenticated ? "logout" : "login"}
+        primaryTypographyProps={{ 
+          fontFamily: "'Courier New', monospace",
+          textTransform: "lowercase",
+          fontSize: "16px",
+        }}
+      />
+    </ListItem>
+  );
+};
 
 export default Header;

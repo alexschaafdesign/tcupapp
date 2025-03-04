@@ -5,18 +5,16 @@ import { useNavigate } from 'react-router-dom';
 import useApi from '../../hooks/useApi';
 import { useUserProfile } from '../../hooks/useUserProfile';
 
-function HeaderUserProfile() {
+function HeaderUserProfile({ closeDrawer }) {
   const { user, isAuthenticated } = useAuth0();
   const navigate = useNavigate();
   const { avatarUrl, setAvatarUrl, fetchUserProfile } = useUserProfile();
-  const [isLoaded, setIsLoaded] = useState(false);  // Add this flag
+  const [isLoaded, setIsLoaded] = useState(false);
   const [username, setUsername] = useState('');
   
-
   const apiUrl = process.env.REACT_APP_API_URL;
   const { callApi } = useApi();
   
-
   // Add console logs
   console.log('HeaderUserProfile - isAuthenticated:', isAuthenticated);
   console.log('HeaderUserProfile - avatarUrl:', avatarUrl);
@@ -30,7 +28,8 @@ function HeaderUserProfile() {
                 const userProfile = await callApi(`${apiUrl}/users/profile`);
                 if (userProfile?.username) {
                   setUsername(userProfile.username);
-                }                console.log('Profile response:', userProfile);
+                }                
+                console.log('Profile response:', userProfile);
                 if (userProfile?.avatar_url) {
                     setAvatarUrl(userProfile.avatar_url);
                 }
@@ -49,6 +48,10 @@ function HeaderUserProfile() {
 
   const handleNavigation = () => {
     navigate('/profile');
+    // Close the drawer if closeDrawer function is provided
+    if (closeDrawer) {
+      closeDrawer();
+    }
   };
 
   return (
