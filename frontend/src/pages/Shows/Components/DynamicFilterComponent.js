@@ -15,11 +15,12 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Alert
+  Alert,
+  Typography
 } from '@mui/material';
 import DateRangeFilter from './DateRangeFilter';
 import AddIcon from '@mui/icons-material/Add';
-import { useAuth } from '../hooks/useAuth'; // Use your enhanced hook instead of useAuth0
+import { useAuth } from '../../../hooks/useAuth'; // Use your enhanced hook instead of useAuth0
 
 function DynamicFilterComponent({ filters, navigate }) {
   const { isAuthenticated, isAdmin, isModerator } = useAuth();
@@ -47,6 +48,14 @@ function DynamicFilterComponent({ filters, navigate }) {
         borderRadius: 2
       }}
     >
+      <Box
+      sx={{
+        mb: 2
+      }}>
+          <Typography variant="body2">
+            Welcome to TCUP's <b>SHOW LIST</b>, a mostly-automated list of all shows in the Twin Cities. If you don't see yours listed, feel free to add it!
+          </Typography>
+                  </Box>
       <Stack spacing={3}>
         {/* Primary Filters */}
         <Box 

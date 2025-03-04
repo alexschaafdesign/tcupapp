@@ -40,7 +40,7 @@ export const textFieldStyles = {
         borderRadius: '4px',
       },
       notchedOutline: {
-        borderColor: palette.secondary.main,
+        borderColor: palette.primary.main,
       },
       input: {
         padding: '16.5px 14px',

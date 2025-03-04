@@ -1,3 +1,5 @@
+// This is the "Latest Updates" preview box that lives at the top of the homepage
+
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, CircularProgress, Button, Paper } from '@mui/material';
 import { format } from 'date-fns';
@@ -153,16 +155,9 @@ const UpdatesPreview = () => {
         <Button 
           variant="outlined" 
           onClick={viewAllUpdates}
-          sx={{
-            borderColor: '#9c27b0',
-            color: '#9c27b0',
-            '&:hover': {
-              borderColor: '#7b1fa2',
-              backgroundColor: 'rgba(156, 39, 176, 0.04)'
-            }
-          }}
+         
         >
-          View All Updates
+          View All Updates!!
         </Button>
       </Box>
     </Box>

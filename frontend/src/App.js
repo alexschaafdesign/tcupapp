@@ -17,12 +17,8 @@ import TCUPPeopleTable from "./pages/TCUPPeopleTable.js";
 import TCUPPeopleProfile from "./pages/TCUPPeopleProfile.js";
 import Organize from "./pages/Organize.js";
 import ShowProfile from "./pages/Shows/ShowProfile.js";
-import ShowsMinimal from "./pages/WithoutHeader/ShowsMinimal.js";
 import ShowForm from "./pages/Shows/ShowForm.js";
 import EditShowPage from "./components/EditShowPage.js";
-import ShowFormMinimal from "./pages/WithoutHeader/ShowFormMinimal.js";
-import ShowProfileMinimal from "./pages/WithoutHeader/ShowProfileMinimal.js";
-import EditShowPageMinimal from "./pages/WithoutHeader/EditShowPageMinimal.js";
 import Callback from "./components/Callback.js";
 import UserProfile from "./pages/User/UserProfile.js";
 import AuthTest from "./components/AuthTest.js";
@@ -32,12 +28,12 @@ import useApi from "./hooks/useApi.js";
 import { useAuth0 } from "@auth0/auth0-react";
 import VenueForm from "./pages/Venues/VenueForm.js";
 import CalendarEvents from "./components/CalendarEvents.js";
-import ForumContainer from "./pages/Chat/ForumContainer.js";
-import ThreadView from "./pages/Chat/ThreadView.js";
+import MainChatPage from "./pages/Chat/MainChatPage.js";
+import ViewSingleThread from "./pages/Chat/ViewSingleThread.js";
 import LandingPage from "./pages/LandingPage.js";
 import LandingPageTemp from "./pages/LandingPage2.js";
 import Privacy from "./pages/Privacy.js";
-import AdminImportPost from "./pages/Chat/AdminImportPost.js";
+import AdminImportPost from "./archived/pages/Chat/AdminImportPost.js";
 import VRCForm from "./pages/VRC/VRCForm.js";
 import PowerPledgeForm from "./pages/PledgeAndAdvance/PowerPledge.js";
 import ImageDisplayPage from "./pages/ImageDisplayPage.js";
@@ -56,7 +52,7 @@ import Breadcrumbs from "./components/layout/Breadcrumbs.js";
 import AboutTCUP from "./pages/TCUP/AboutTCUP.js";
 import NewUpdate from "./pages/TCUP/Updates/NewUpdate.js";
 import UpdatesPage from "./pages/TCUP/Updates/UpdatesPage.js";
-import UpdateDetail from "./pages/TCUP/Updates/UpdateDetail.js";
+import SingleUpdatePost from "./pages/TCUP/Updates/SingleUpdatePost.js";
 import UpdateEditForm from "./pages/TCUP/Updates/UpdateEditForm.js";
 
 function App() {
@@ -118,7 +114,7 @@ function App() {
 
             {/* TCUP Updates */}
             <Route path="/admin/updates" element={<NewUpdate />} />
-            <Route path="/updates/:id" element={<UpdateDetail />} />
+            <Route path="/updates/:id" element={<SingleUpdatePost />} />
             <Route path="updates" element={<UpdatesPage />} />
             <Route path="updates/edit/:id" element={<UpdateEditForm />} />
 
@@ -140,17 +136,13 @@ function App() {
                 </ErrorBoundary>
               }
             />
-            <Route path="shows/minimal" element={<ShowsMinimal />} />
             <Route path="shows/add" element={<ShowForm />} />
-            <Route path="shows/add/minimal" element={<ShowFormMinimal />} />
             <Route path="shows/:id/edit" element={<EditShowPage />} />
             <Route path="shows/:id" element={<ShowProfile />} />
-            <Route path="shows/:id/minimal" element={<ShowProfileMinimal />} />
-            <Route path="shows/:id/edit/minimal" element={<EditShowPageMinimal />} />
     
             {/* Forum/Thread */}
-            <Route path="chat" element={<ForumContainer />} />
-            <Route path="chat/:threadId" element={<ThreadView />} />
+            <Route path="chat" element={<MainChatPage />} />
+            <Route path="chat/:threadId" element={<ViewSingleThread />} />
             <Route path="import" element={<AdminImportPost />} />
             <Route path="test-auth" element={<AuthTest />} />
             <Route path="vrc" element={<VRCForm />} />

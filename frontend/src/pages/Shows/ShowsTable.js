@@ -6,9 +6,9 @@ import {
 } from '@mui/material';
 import dayjs from 'dayjs';
 import ShowsTableCore from './ShowsTableCore';
-import DynamicFilterComponent from '../../components/DynamicFilterComponent';
+import DynamicFilterComponent from './Components/DynamicFilterComponent';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
-import DateRangeFilter from '../../components/DateRangeFilter';
+import DateRangeFilter from './Components/DateRangeFilter';
 
 
 function ShowsTable() {
@@ -156,6 +156,7 @@ function ShowsTable() {
   return (
     <Box sx={{ paddingBottom: '150px', paddingTop: 4, overflowY: 'auto' }}>
       
+
       <DynamicFilterComponent 
         filters={filters}
         navigate={navigate} />

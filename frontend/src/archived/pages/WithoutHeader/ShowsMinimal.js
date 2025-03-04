@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import ShowsTableCoreMinimal from './ShowsTableCoreMinimal';
 import DynamicFilterComponent from '../../components/DynamicFilterComponent';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
-import DateRangeFilter from '../../components/DateRangeFilter';
+import DateRangeFilter from '../Shows/Components/DateRangeFilter';
 
 function ShowsTableMinimal() {
   const [searchParams, setSearchParams] = useSearchParams();

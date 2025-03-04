@@ -1,3 +1,5 @@
+// This is /chat, which holds PostList (the lists of threads)
+
 import React, { useState, useEffect } from 'react';
 import { 
   Container, 
@@ -21,7 +23,7 @@ import {
 } from '@mui/icons-material';
 import { useAuth0 } from '@auth0/auth0-react';
 import CreatePost from './Components/CreatePost';
-import PostList from './PostList';
+import ListOfAllThreads from './Components/ListOfAllThreads';
 import AuthContentOverlay from '../../components/auth/AuthOverlay';
 
 const ForumContainer = () => {
@@ -128,7 +130,7 @@ const ForumContainer = () => {
               </IconButton>
             ) : (
               <Button 
-                variant="outlined" 
+                variant="white" 
                 size="small"
                 startIcon={<FilterIcon />} 
                 onClick={() => setShowFilters(!showFilters)}
@@ -246,7 +248,7 @@ const ForumContainer = () => {
       ) : posts.length > 0 ? (
         <Box sx={{ mb: 4, bgcolor: 'background.paper', borderRadius: '8px' }}>
           <AuthContentOverlay>
-            <PostList posts={posts} />
+            <ListOfAllThreads posts={posts} />
           </AuthContentOverlay>
         </Box>
       ) : (

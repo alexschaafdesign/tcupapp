@@ -14,7 +14,7 @@ export const buttonStyles = {
           color: palette.neutral.black,
           textTransform: "uppercase",
           '&:hover': {
-            backgroundColor: palette.secondary.dark,
+            backgroundColor: palette.secondary.light,
           },
         },
         outlined: {
@@ -23,6 +23,14 @@ export const buttonStyles = {
             borderColor: palette.primary.light,
             backgroundColor: palette.primary.main,
             color: palette.neutral.white
+          },
+        },
+        white: {
+          backgroundColor: palette.neutral.white, // Contained buttons use primary color
+          color: palette.neutral.black,
+          textTransform: "uppercase",
+          '&:hover': {
+            backgroundColor: palette.secondary.light,
           },
         },
         text: {

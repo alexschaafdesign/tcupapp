@@ -14,12 +14,12 @@ export const components = {
     MuiCheckbox: {
         styleOverrides: {
           root: {
-            color: '#1976d2', // Default unchecked color (use your preferred color)
+            color: palette.primary.main, // Default unchecked color (use your preferred color)
             '&.Mui-checked': {
-              color: '#0d47a1', // Checked color
+              color: palette.primary.main, // Checked color
             },
             '&:hover': {
-              backgroundColor: 'rgba(25, 118, 210, 0.08)', // Hover effect
+              backgroundColor: palette.primary.light, // Hover effect
             },
             '&.Mui-disabled': {
               color: 'rgba(0, 0, 0, 0.26)', // Disabled state color

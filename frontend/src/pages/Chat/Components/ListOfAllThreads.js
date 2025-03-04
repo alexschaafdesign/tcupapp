@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, Typography, Avatar, List, ListItem, Paper, useMediaQuery, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import AuthWrapper from '../../components/auth/AuthWrapper';
+import AuthWrapper from '../../../components/auth/AuthWrapper';
 import { useAuth0 } from '@auth0/auth0-react';
-import ActiveTags from './Components/ActiveTags';
+import ActiveTags from './ActiveTags';
 
 const PostList = ({ posts }) => {
   const navigate = useNavigate();

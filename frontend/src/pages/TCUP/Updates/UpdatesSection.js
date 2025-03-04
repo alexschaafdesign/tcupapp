@@ -1,8 +1,12 @@
+// This is the "Latest Updates" preview box that lives at the top of the homepage
+
+
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, CircularProgress, Button, Grid, Paper } from '@mui/material';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import palette from '../../../styles/colors/palette';
 
 const UpdatesSection = () => {
   const [updates, setUpdates] = useState([]);
@@ -162,14 +166,7 @@ const UpdatesSection = () => {
         <Button 
           variant="outlined" 
           onClick={viewAllUpdates}
-          sx={{
-            borderColor: '#9c27b0',
-            color: '#9c27b0',
-            '&:hover': {
-              borderColor: '#7b1fa2',
-              backgroundColor: 'rgba(156, 39, 176, 0.04)'
-            }
-          }}
+          
         >
           View All Updates
         </Button>
