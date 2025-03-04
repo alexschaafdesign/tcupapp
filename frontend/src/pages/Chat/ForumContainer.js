@@ -38,9 +38,24 @@ const ForumContainer = () => {
 
   useEffect(() => {
     const fetchTags = async () => {
-      const response = await fetch(`${apiUrl}/tags`);
-      const data = await response.json();
-      setTags(data);
+      try {
+        // Check if apiUrl is defined
+        if (!apiUrl) {
+          console.warn('API URL is undefined');
+          return;
+        }
+        
+        const response = await fetch(`${apiUrl}/tags`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setTags(data);
+      } catch (error) {
+        console.error('Error fetching tags:', error);
+        // Set empty tags array to prevent further errors
+        setTags([]);
+      }
     };
     fetchTags();
   }, [apiUrl]);
@@ -93,7 +108,7 @@ const ForumContainer = () => {
       >
         {/* Left-aligned "LATEST POSTS" */}
         <Typography 
-          variant={isMobile ? "h3" : "h3"} 
+          variant={isMobile ? "h5" : "h3"} 
           sx={{ color: 'text.primary' }}
         >
           LATEST POSTS
@@ -199,21 +214,25 @@ const ForumContainer = () => {
               alignItems="center"
               sx={{ gap: 1 }}
             >            
-              {tags.map(tag => (
-                <Chip
-                  key={tag.id}
-                  label={tag.name}
-                  onClick={() => handleTagClick(tag.id)}
-                  color={selectedTags.includes(tag.id) ? "primary" : "default"}
-                  variant={selectedTags.includes(tag.id) ? "filled" : "outlined"}
-                  sx={{
-                    minWidth: 80,
-                    height: 32,
-                    borderWidth: selectedTags.includes(tag.id) ? 2 : 1,
-                    transition: 'none'
-                  }}
-                />
-              ))}
+              {Array.isArray(tags) && tags.length > 0 ? (
+                tags.map(tag => (
+                  <Chip
+                    key={tag.id}
+                    label={tag.name}
+                    onClick={() => handleTagClick(tag.id)}
+                    color={selectedTags.includes(tag.id) ? "primary" : "default"}
+                    variant={selectedTags.includes(tag.id) ? "filled" : "outlined"}
+                    sx={{
+                      minWidth: 80,
+                      height: 32,
+                      borderWidth: selectedTags.includes(tag.id) ? 2 : 1,
+                      transition: 'none'
+                    }}
+                  />
+                ))
+              ) : (
+                <Typography variant="body2" color="text.secondary">No tags available</Typography>
+              )}
             </Stack>
           </Paper>
         </Collapse>
