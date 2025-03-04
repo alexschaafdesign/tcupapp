@@ -318,6 +318,8 @@ const Header = () => {
         </IconButton>
       </AppBar>
   
+
+
       {/* Mobile Drawer */}
       <Drawer 
         anchor="left" 
@@ -364,8 +366,17 @@ const Header = () => {
               />
             </Box>
           </List>
-  
+
           <Box sx={{ mt: "auto", zIndex: 2 }}>
+            {/* Show user profile for all authenticated users */}
+            {isAuthenticated && (
+              <>
+                <HeaderUserProfile />
+                <CustomDivider />
+              </>
+            )}
+            
+            {/* Admin section remains conditional */}
             {isAuthenticated && isAdmin && (
               <>
                 <Box sx={{ mb: 2, px: 2 }}>
@@ -377,10 +388,9 @@ const Header = () => {
                   />
                 </Box>
                 <CustomDivider />
-                <HeaderUserProfile />
               </>
             )}
-            <CustomDivider />
+            
             <List sx={{ px: 2 }}>
               <AuthButtons 
                 isAuthenticated={isAuthenticated} 

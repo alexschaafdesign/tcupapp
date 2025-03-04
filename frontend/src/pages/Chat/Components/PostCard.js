@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Paper, Box, Avatar, Typography, Link, Tooltip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, CircularProgress } from '@mui/material';
+import { Paper, Box, Avatar, Typography, Link, Tooltip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, CircularProgress, useMediaQuery, useTheme } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -16,6 +16,8 @@ const PostCard = ({
   postReactions, 
   highlightedReplyId 
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
   const { getAccessTokenSilently } = useAuth0();
   const { isAdmin } = useAuth(); // Use your auth hook to get role information
@@ -65,6 +67,153 @@ const PostCard = ({
     }
   };
 
+  // Mobile layout
+  if (isMobile) {
+    return (
+      <>
+        <Paper
+          ref={isHighlighted ? replyRef : null}
+          elevation={0}
+          sx={{
+            mb: 1,
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+            borderRadius: 0,
+            backgroundColor: isHighlighted ? 'rgba(124, 96, 221, 0.1)' : (isReply ? 'background.default' : 'background.paper'),
+            transition: 'background-color 0.3s ease',
+            scrollMarginTop: '100px',
+          }}
+        >
+          {/* Compact header with avatar, username, and timestamp */}
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            p: 1.5,
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+            bgcolor: isReply ? 'background.default' : 'background.paper',
+          }}>
+            <Avatar 
+              src={post.avatar_url} 
+              alt={post.username} 
+              sx={{ width: 36, height: 36, mr: 1.5 }} 
+            />
+            <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
+              <Typography 
+                variant="subtitle2" 
+                sx={{ 
+                  fontWeight: 600, 
+                  lineHeight: 1.2,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {post.username}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {new Date(post.created_at).toLocaleString(undefined, {
+                  year: '2-digit',
+                  month: 'numeric',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: '2-digit'
+                })}
+              </Typography>
+            </Box>
+            
+            {/* Delete button */}
+            {canDelete && (
+              <IconButton 
+                size="small" 
+                color="error" 
+                onClick={() => setDeleteDialogOpen(true)}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            )}
+          </Box>
+
+          {/* Content */}
+          <Box sx={{ p: 1.5, pt: 1, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+            {renderContent(post.content)}
+          </Box>
+
+          {/* Bottom actions */}
+          <Box sx={{ 
+            px: 1.5, 
+            py: 1, 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            borderTop: '1px solid',
+            borderColor: 'divider',
+          }}>
+            {/* Like count */}
+            <Typography variant="caption" color="text.secondary">
+              {likedUsers.length > 0 && (
+                <>
+                  {likedUsers.length} {likedUsers.length === 1 ? 'like' : 'likes'}
+                </>
+              )}
+            </Typography>
+
+            {/* Actions */}
+            <Box sx={{ display: 'flex', gap: 3 }}>
+              <Typography 
+                variant="caption"
+                sx={{
+                  cursor: 'pointer',
+                  fontWeight: userHasLiked ? 'bold' : 'normal',
+                  color: userHasLiked ? '#2E7D32' : 'primary.main',
+                }}
+                onClick={() => handleLikeClick(post.id)}
+              >
+                {userHasLiked ? 'Liked' : 'Like'}
+              </Typography>
+              <Typography 
+                variant="caption" 
+                color="primary" 
+                sx={{ cursor: 'pointer' }}
+                onClick={() => handleReplyClick(post)}
+              >
+                Reply
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
+
+        {/* Delete Dialog */}
+        <Dialog
+          open={deleteDialogOpen}
+          onClose={() => !isDeleting && setDeleteDialogOpen(false)}
+        >
+          <DialogTitle>
+            {post.parent_id ? "Delete Reply" : "Delete Thread"}
+          </DialogTitle>
+          <DialogContent>
+            <Typography>
+              {post.parent_id
+                ? "Are you sure you want to delete this reply?"
+                : "Are you sure you want to delete this thread and all replies?"
+              }
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDeleteDialogOpen(false)} disabled={isDeleting}>
+              Cancel
+            </Button>
+            <Button onClick={handleDelete} color="error" disabled={isDeleting}>
+              {isDeleting ? <CircularProgress size={16} sx={{ mr: 1 }} /> : null}
+              {isDeleting ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
+    );
+  }
+
+  // Desktop layout - keep original
   return (
     <>
       <Paper

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import useApi from "../../hooks/useApi";
 import palette from "../../styles/colors/palette";
 
 const routeNames = {
-  thread: "Chat", // Map "thread" to "Chat"
+  thread: "Chat",
   chat: "Chat",
   shows: "Show List",
   powerpledge: "TCUP Power Pledge",
@@ -25,30 +24,30 @@ const truncateText = (text, maxLength = 30) => {
 
 const Breadcrumbs = () => {
   const location = useLocation();
-  const { threadId } = useParams(); // Ensure this matches `App.js`
+  const { threadId } = useParams();
   const [threadTitle, setThreadTitle] = useState(null);
   const { callApi } = useApi();
-
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const pathnames = location.pathname.split("/").filter((x) => x);
 
-  console.log("Breadcrumbs pathnames:", pathnames);
-  console.log("Thread Id from useParams():", threadId);
-
+  // Always call hooks at the top level, before any conditionals
   useEffect(() => {
     if (threadId) {
-      console.log("Fetching thread title for Id:", threadId);
       callApi(`${process.env.REACT_APP_API_URL}/posts/${threadId}`)
-              .then((data) => {
-          console.log("API response:", data);
+        .then((data) => {
           if (data?.post?.title) {
             setThreadTitle(data.post.title);
-          } else {
-            console.warn("Thread title not found in API response.");
           }
         })
         .catch((err) => console.error("Failed to fetch thread title:", err));
     }
   }, [threadId, callApi]);
+
+  // Don't render breadcrumbs on mobile devices
+  if (isMobile) {
+    return null;
+  }
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 0, ml: 3 }}>
@@ -65,14 +64,14 @@ const Breadcrumbs = () => {
         const isLast = index === pathnames.length - 1;
 
         let displayName = routeNames[value] || decodeURIComponent(value);
-        if (threadId && value === threadId && threadTitle) {
-          displayName = threadTitle;
+        
+        // For thread pages, just use "Thread" instead of the full title
+        if (threadId && value === threadId) {
+          displayName = "Thread";
         }
 
         // Apply character limit
         displayName = truncateText(displayName);
-
-        console.log(`Breadcrumb segment: ${value}, Display Name: ${displayName}`);
 
         return (
           <Typography

@@ -152,80 +152,103 @@ const ThreadView = () => {
   };
 
   // Safely render post content (including quotes)
-  const renderContent = (content) => {
-    try {
-      // Parse the content
-      const contentObj = JSON.parse(content);
-      const contentState = convertFromRaw(contentObj);
-      const plainText = contentState.getPlainText();
+  // Updated renderContent function that preserves formatting
+// Improved renderContent function that properly renders Draft.js content
+const renderContent = (content) => {
+  try {
+    // Parse the content
+    const contentObj = typeof content === 'string' ? JSON.parse(content) : content;
+    const contentState = convertFromRaw(contentObj);
+    const plainText = contentState.getPlainText();
 
-      // If we detect the [QUOTE="xyz"] syntax, we render them with Paper boxes
-      if (plainText.includes('[QUOTE="') && plainText.includes('[/QUOTE]')) {
-        const parts = [];
-        const quoteRegex = /\[QUOTE="([^"]+)"\]([\s\S]*?)\[\/QUOTE\]/g;
-        let match;
-        let lastIndex = 0;
+    // Handle quotes
+    if (plainText.includes('[QUOTE="') && plainText.includes('[/QUOTE]')) {
+      const parts = [];
+      const quoteRegex = /\[QUOTE="([^"]+)"\]([\s\S]*?)\[\/QUOTE\]/g;
+      let match;
+      let lastIndex = 0;
 
-        while ((match = quoteRegex.exec(plainText)) !== null) {
-          // Text before the quote
-          if (match.index > lastIndex) {
-            parts.push(
-              <Typography key={`text-${lastIndex}`} variant="body1" component="div">
-                {plainText.substring(lastIndex, match.index)}
-              </Typography>
-            );
-          }
-
-          // The quote itself
-          const author = match[1];
-          const quoteText = match[2].trim();
+      while ((match = quoteRegex.exec(plainText)) !== null) {
+        // Add text before the quote
+        if (match.index > lastIndex) {
           parts.push(
-            <Paper
-              key={`quote-${match.index}`}
-              elevation={0}
-              sx={{
-                borderLeft: '4px solid',
-                borderColor: 'primary.main',
-                bgcolor: 'rgba(0,0,0,0.05)',
-                p: 2,
-                my: 2,
-                maxWidth: '100%',
-              }}
-            >
-              <Typography variant="subtitle2" color="primary" fontWeight="bold">
-                {author} wrote:
-              </Typography>
-              <Typography variant="body2">{quoteText}</Typography>
-            </Paper>
-          );
-
-          lastIndex = match.index + match[0].length;
-        }
-
-        // Text after the last quote
-        if (lastIndex < plainText.length) {
-          parts.push(
-            <Typography key={`text-${lastIndex}`} variant="body1" component="div">
-              {plainText.substring(lastIndex)}
+            <Typography key={`text-${lastIndex}`} variant="body1" component="div" sx={{ whiteSpace: 'pre-wrap', my: 1 }}>
+              {plainText.substring(lastIndex, match.index)}
             </Typography>
           );
         }
 
-        return <Box>{parts}</Box>;
+        // Add the quote
+        const author = match[1];
+        const quoteText = match[2].trim();
+        parts.push(
+          <Paper
+            key={`quote-${match.index}`}
+            elevation={0}
+            sx={{
+              borderLeft: '4px solid',
+              borderColor: 'primary.main',
+              bgcolor: 'rgba(0,0,0,0.05)',
+              p: 2,
+              my: 2,
+              maxWidth: '100%',
+            }}
+          >
+            <Typography variant="subtitle2" color="primary" fontWeight="bold">
+              {author} wrote:
+            </Typography>
+            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+              {quoteText}
+            </Typography>
+          </Paper>
+        );
+
+        lastIndex = match.index + match[0].length;
       }
 
-      // Otherwise, no quotes. Render the raw content as a readOnly Editor
-      const editorState = EditorState.createWithContent(contentState);
-      return (
-        <Box>
-          <Editor editorState={editorState} onChange={() => {}} readOnly />
-        </Box>
-      );
-    } catch (error) {
-      // If parse fails, just render as plain text
-      return <Typography variant="body1">{content}</Typography>;
+      // Add text after the last quote
+      if (lastIndex < plainText.length) {
+        parts.push(
+          <Typography key={`text-${lastIndex}`} variant="body1" component="div" sx={{ whiteSpace: 'pre-wrap', my: 1 }}>
+            {plainText.substring(lastIndex)}
+          </Typography>
+        );
+      }
+
+      return <Box sx={{ mt: 1 }}>{parts}</Box>;
     }
-  };
+    
+    // For non-quoted content, use the Draft.js Editor component
+    // This will properly render any formatting applied in the editor
+    const editorState = EditorState.createWithContent(contentState);
+    
+    return (
+      <Box sx={{ 
+        mt: 1,
+        '.DraftEditor-root': { 
+          '.public-DraftStyleDefault-block': {
+            marginTop: '0.5em',
+            marginBottom: '0.5em',
+          }
+        }
+      }}>
+        <Editor 
+          editorState={editorState} 
+          onChange={() => {}} 
+          readOnly={true}
+        />
+      </Box>
+    );
+  } catch (error) {
+    console.error('Error rendering content:', error);
+    // Fallback for plain text or parsing errors
+    return (
+      <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', my: 1 }}>
+        {typeof content === 'string' ? content : JSON.stringify(content)}
+      </Typography>
+    );
+  }
+};
 
   const handleLikeClick = async (postId) => {
     if (!user) return;
@@ -372,8 +395,24 @@ const ThreadView = () => {
     <Container maxWidth="lg" sx={{ py: 4 }}>
       
       {/* Thread Title + Tags */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-        <Typography variant="h3" sx={{ fontWeight: '400' }}>
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          mb: 1,
+          position: 'relative', // Add relative positioning
+          overflow: 'hidden'    // Prevent content from spilling outside
+        }}
+      >
+        <Typography 
+          variant="h3" 
+          sx={{ 
+            fontWeight: '400',
+            position: 'relative', // Ensure text is above background elements
+            zIndex: 1           // Higher z-index to ensure it's on top
+          }}
+        >
           {threadData.post.title}
         </Typography>
         <ActiveTags tags={threadData.post.tags} limit={3} />

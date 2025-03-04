@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Tooltip, Avatar, List, ListItem, Chip, Paper } from '@mui/material';
+import { Box, Typography, Avatar, List, ListItem, Paper, useMediaQuery, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AuthWrapper from '../../components/auth/AuthWrapper';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -8,8 +8,9 @@ import ActiveTags from './Components/ActiveTags';
 const PostList = ({ posts }) => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth0();
-  const TAG_LIMIT = 2; // Adjust the limit here for PostList
-
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const TAG_LIMIT = isMobile ? 1 : 2; // Only show 1 tag on mobile
 
   const formatDate = (date) => {
     const now = new Date();
@@ -41,9 +42,6 @@ const PostList = ({ posts }) => {
     <Paper elevation={0} sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
       <List sx={{ p: 0 }}>
         {posts.map((post) => {
-        const moreTagsCount = post.tags && post.tags.length > TAG_LIMIT ? post.tags.length - TAG_LIMIT : 0;
-
-
           return (
             <AuthWrapper 
               key={post.id}
@@ -52,135 +50,160 @@ const PostList = ({ posts }) => {
                 <ListItem
                   onClick={() => handleClick(post, showModal)}
                   sx={{
-                    p: 0.5,
+                    p: isMobile ? 1 : 0.5,
                     borderBottom: '1px solid',
                     borderColor: 'divider',
                     cursor: 'pointer',
                     '&:hover': { bgcolor: 'grey.50' },
                     display: 'flex',
-                    gap: 2
+                    flexDirection: isMobile ? 'column' : 'row',
+                    alignItems: isMobile ? 'flex-start' : 'center',
+                    gap: 1
                   }}
                 >
-                  {/* Left Side: Avatar + Subtitle */}
-                  <Box 
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: 90,
-                      bgcolor: 'grey.100',
-                      p: 1,
-                      borderRadius: '8px 0 0 8px',
-                      borderRight: '1px solid',
-                      borderColor: 'divider'
-                    }}
-                  >
-                    <Avatar 
-                      src={post.avatar_url} 
-                      sx={{ width: 60, height: 60 }}
-                    />
-                   
-                  </Box>
-
-                  {/* Main Content */}
-                  <Box sx={{ flex: 1, minWidth: 0 }}>
-                    {/* Title and Tags Row */}
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
-                      <Typography 
-                        sx={{ 
-                          color: 'primary.main',
-                          fontWeight: 600,
-                          fontSize: '1.2rem',
-                          flex: 1,
-                          mr: 2
-                        }}
-                      >
-                        {post.title}
-                      </Typography>
-
-                      {/* 🏷️ Tags (Limit to 3, show more with Tooltip) */}
-                      {/* 🏷️ Tags (Limit to 3, show more with Tooltip) */}
-                      <Box sx={{ display: 'flex', gap: 0.5, flexShrink: 0 }}>
-                        {/* Render only up to 3 tags */}
-                        <ActiveTags tags={post.tags} limit={2} />
-                       
+                  {/* Mobile Layout */}
+                  {isMobile ? (
+                    <>
+                      {/* Top Section - Title and Avatar */}
+                      <Box sx={{ 
+                        display: 'flex', 
+                        width: '100%', 
+                        alignItems: 'center',
+                        gap: 1,
+                        mb: 1
+                      }}>
+                        <Avatar 
+                          src={post.avatar_url} 
+                          sx={{ width: 40, height: 40 }}
+                        />
+                        <Box sx={{ flex: 1 }}>
+                          <Typography 
+                            sx={{ 
+                              color: 'primary.main',
+                              fontWeight: 600,
+                              fontSize: '1rem',
+                              lineHeight: 1.2
+                            }}
+                          >
+                            {post.title}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            by {post.author} · {formatDate(post.created_at)}
+                          </Typography>
+                        </Box>
                       </Box>
-                    </Box>
 
-                    {/* Preview Text */}
-                    <Typography 
-                      variant="body2" 
-                      color="text.secondary"
-                      sx={{ 
-                        fontSize: '0.875rem',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        display: '-webkit-box',
-                        WebkitLineClamp: 1,
-                        WebkitBoxOrient: 'vertical',
-                        mb: 2
-                      }}
-                    >
-                      {post.content ? (
-                        typeof post.content === 'string' && post.content.startsWith('{') 
-                          ? JSON.parse(post.content).blocks?.[0]?.text || 'No preview available'
-                          : post.content.substring(0, 100)
-                      ) : 'No preview available'}
-                    </Typography>
-
-                    {/* Bottom Row */}
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      {/* Author Info and Stats */}
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography variant="caption" color="text.secondary">
-                          by {post.author} · {formatDate(post.created_at)}
+                      {/* Bottom Section - Preview Text and Stats */}
+                      <Box sx={{ width: '100%', pl: 6 }}>
+                        {/* We're removing tags from mobile view as requested */}
+                        
+                        {/* Preview Text - Shorter on mobile */}
+                        <Typography 
+                          variant="body2" 
+                          color="text.secondary"
+                          sx={{ 
+                            fontSize: '0.8rem',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: 'vertical',
+                            mb: 0.5
+                          }}
+                        >
+                          {post.content ? (
+                            typeof post.content === 'string' && post.content.startsWith('{') 
+                              ? JSON.parse(post.content).blocks?.[0]?.text || 'No preview available'
+                              : post.content.substring(0, 60) + '...'
+                          ) : 'No preview available'}
                         </Typography>
                         
-                        <Typography variant="caption">
+                        {/* Reply Count */}
+                        <Typography variant="caption" color="text.secondary">
                           {post.reply_count || 0} replies
                         </Typography>
                       </Box>
-
-                      {/* Right side - Last post info */}
-{post.reply_count > 0 && post.last_reply_at && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Box sx={{ textAlign: 'right', lineHeight: 1 }}>
-                          {/* LAST POST text inline without adding height */}
-                          <Typography 
-                            variant="caption" 
-                            color="text.tertiary" 
-                            sx={{ display: 'inline', fontSize: '0.7rem', mr: 0.5 }}
-                          >
-                            LAST POST
-                          </Typography>
-
-                          {/* Timestamp with link */}
-                          <Typography 
-                            variant="caption" 
-                            sx={{ color: 'primary.main', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
-                          >
-                            {formatDate(post.last_reply_at)}
-                          </Typography>
-
-                          {/* Username */}
-                          <Typography 
-                            variant="caption" 
-                            display="block"
-                            sx={{ color: 'text.secondary' }}
-                          >
-                            {post.last_reply_author}
-                          </Typography>
-                        </Box>
-                        
+                    </>
+                  ) : (
+                    /* Desktop Layout */
+                    <>
+                      {/* Left Side: Avatar */}
+                      <Box 
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: 70,
+                          bgcolor: 'grey.100',
+                          p: 1,
+                          borderRadius: '8px 0 0 8px',
+                          borderRight: '1px solid',
+                          borderColor: 'divider'
+                        }}
+                      >
                         <Avatar 
-                          src={post.last_reply_avatar_url} 
-                          sx={{ width: 24, height: 24 }}
+                          src={post.avatar_url} 
+                          sx={{ width: 50, height: 50 }}
                         />
                       </Box>
-                    )}
-                    </Box>
-                  </Box>
+
+                      {/* Main Content */}
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        {/* Title and Tags Row */}
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+                          <Typography 
+                            sx={{ 
+                              color: 'primary.main',
+                              fontWeight: 600,
+                              fontSize: '1.1rem',
+                              flex: 1,
+                              mr: 2
+                            }}
+                          >
+                            {post.title}
+                          </Typography>
+
+                          {/* Removed tags as requested */}
+                        </Box>
+
+                        {/* Preview Text */}
+                        <Typography 
+                          variant="body2" 
+                          color="text.secondary"
+                          sx={{ 
+                            fontSize: '0.875rem',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: 'vertical',
+                            mb: 1
+                          }}
+                        >
+                          {post.content ? (
+                            typeof post.content === 'string' && post.content.startsWith('{') 
+                              ? JSON.parse(post.content).blocks?.[0]?.text || 'No preview available'
+                              : post.content.substring(0, 100)
+                          ) : 'No preview available'}
+                        </Typography>
+
+                        {/* Bottom Row */}
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                          {/* Author Info and Stats */}
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Typography variant="caption" color="text.secondary">
+                              by {post.author} · {formatDate(post.created_at)}
+                            </Typography>
+                            
+                            <Typography variant="caption">
+                              {post.reply_count || 0} replies
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Box>
+                    </>
+                  )}
                 </ListItem>
               )}
             />

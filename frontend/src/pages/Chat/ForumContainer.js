@@ -10,7 +10,9 @@ import {
   Paper,
   Chip,
   Dialog,
-  IconButton
+  IconButton,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import { 
   FilterList as FilterIcon, 
@@ -18,12 +20,11 @@ import {
   Close as CloseIcon
 } from '@mui/icons-material';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useNavigate } from 'react-router-dom';
 import CreatePost from './Components/CreatePost';
 import PostList from './PostList';
 import AuthContentOverlay from '../../components/auth/AuthOverlay';
 
-export const ForumContainer = () => {
+const ForumContainer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState([]);
   const [tags, setTags] = useState([]);
@@ -31,7 +32,8 @@ export const ForumContainer = () => {
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const { getAccessTokenSilently, isAuthenticated } = useAuth0();
-  const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
@@ -77,7 +79,7 @@ export const ForumContainer = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: isMobile ? 2 : 4, px: isMobile ? 1 : 2 }}>
       
       {/* Header with Latest Posts and Buttons */}
       <Box 
@@ -85,34 +87,60 @@ export const ForumContainer = () => {
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center', 
-          mb: 2 
+          mb: { xs: 2, sm: 3 },
+          mt: { xs: 2, sm: 0 } 
         }}
       >
         {/* Left-aligned "LATEST POSTS" */}
-        <Typography variant="h3" sx={{ color: 'text.primary' }}>
+        <Typography 
+          variant={isMobile ? "h3" : "h3"} 
+          sx={{ color: 'text.primary' }}
+        >
           LATEST POSTS
         </Typography>
   
         {/* Right-aligned buttons - only visible when authenticated */}
         {isAuthenticated && (
           <Stack direction="row" spacing={2}>
-            <Button 
-              variant="outlined" 
-              size="small"
-              startIcon={<FilterIcon />} 
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              Filter by tags
-            </Button>
+            {isMobile ? (
+              <IconButton
+                size="small"
+                color={showFilters ? "primary" : "default"}
+                onClick={() => setShowFilters(!showFilters)}
+                sx={{ border: 1, borderColor: 'divider' }}
+              >
+                <FilterIcon />
+              </IconButton>
+            ) : (
+              <Button 
+                variant="outlined" 
+                size="small"
+                startIcon={<FilterIcon />} 
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                Filter by tags
+              </Button>
+            )}
     
-            <Button 
-              variant="contained" 
-              size="small"
-              startIcon={<AddIcon />} 
-              onClick={() => setIsModalOpen(true)}
-            >
-              Start a new thread
-            </Button>
+            {isMobile ? (
+              <IconButton
+                size="small"
+                color="primary"
+                onClick={() => setIsModalOpen(true)}
+                sx={{ bgcolor: 'primary.main', color: 'white', '&:hover': { bgcolor: 'primary.dark' } }}
+              >
+                <AddIcon />
+              </IconButton>
+            ) : (
+              <Button 
+                variant="contained" 
+                size="small"
+                startIcon={<AddIcon />} 
+                onClick={() => setIsModalOpen(true)}
+              >
+                Start a new thread
+              </Button>
+            )}
           </Stack>
         )}
       </Box>
@@ -123,8 +151,9 @@ export const ForumContainer = () => {
         onClose={() => setIsModalOpen(false)}
         maxWidth="md"
         fullWidth
+        fullScreen={isMobile}
         PaperProps={{
-          sx: { borderRadius: '8px' }
+          sx: { borderRadius: isMobile ? 0 : '8px' }
         }}
       >
         <Box sx={{ 
@@ -140,7 +169,7 @@ export const ForumContainer = () => {
             <CloseIcon />
           </IconButton>
         </Box>
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: isMobile ? 2 : 3 }}>
           <CreatePost 
             onPostCreated={handlePostCreated}
             tags={tags}
@@ -149,14 +178,14 @@ export const ForumContainer = () => {
         </Box>
       </Dialog>
   
-      {/* Tag filters - only visible when authenticated */}
+      {/* Tag filters - only visible when authenticated and showFilters is true */}
       {isAuthenticated && (
         <Collapse in={showFilters}>
           <Paper 
             elevation={1} 
             sx={{ 
-              p: 2, 
-              mb: 4, 
+              p: isMobile ? 1 : 2, 
+              mb: { xs: 3, sm: 4 }, 
               borderRadius: '8px' 
             }}
           >
@@ -181,7 +210,7 @@ export const ForumContainer = () => {
                     minWidth: 80,
                     height: 32,
                     borderWidth: selectedTags.includes(tag.id) ? 2 : 1,
-                    transition: 'none',
+                    transition: 'none'
                   }}
                 />
               ))}
@@ -208,7 +237,6 @@ export const ForumContainer = () => {
           </Typography>
         </Box>
       )}
-      
     </Container>
   );
 };
