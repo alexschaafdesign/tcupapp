@@ -44,6 +44,8 @@ const ListOfAllThreads = ({ posts }) => {
         {posts.map((post) => {
           // Use the reply_count directly from the thread_listings view
           const replyCount = post.reply_count || 0;
+          // Check if there's last reply information
+          const hasReplies = replyCount > 0 && post.last_reply_at && post.last_reply_by;
           
           return (
             <AuthWrapper 
@@ -164,7 +166,7 @@ const ListOfAllThreads = ({ posts }) => {
 
                         {/* Bottom Row */}
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                          {/* Author Info and Stats */}
+                          {/* Author Info and Stats on Left */}
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                             <Typography variant="caption" color="text.secondary">
                               by {post.author} · {formatDate(post.created_at)}
@@ -174,6 +176,13 @@ const ListOfAllThreads = ({ posts }) => {
                               {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
                             </Typography>
                           </Box>
+                          
+                          {/* Last Reply Info - Desktop Only, Right Aligned */}
+                          {hasReplies && (
+                            <Typography variant="caption" color="text.secondary">
+                              last reply by {post.last_reply_by} {formatDate(post.last_reply_at)}
+                            </Typography>
+                          )}
                         </Box>
                       </Box>
                     </>

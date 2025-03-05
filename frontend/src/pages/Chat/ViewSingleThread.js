@@ -50,6 +50,15 @@ const ViewSingleThread = () => {
   const replyBoxRef = useRef(null);
   const apiUrl = process.env.REACT_APP_API_URL;
 
+  const canEditPost = (post) => {
+    if (!user) return false;
+    return post.auth0_id === user.sub || userRoles.includes('admin');
+  };
+
+  const handleEditClick = (post) => {
+    setEditingPost(post);
+  };
+
   const supabase = createClient(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_ANON_KEY);
 
   const fetchUserRoles = async () => {
@@ -449,6 +458,8 @@ const ViewSingleThread = () => {
         handleReplyClick={handleReplyClick}
         renderContent={renderContent}
         postReactions={postReactions}
+        handleEditClick={handleEditClick}
+        canEditPost={canEditPost(threadData.post)}
       />
   
       {/* Reply Header */}
@@ -474,6 +485,8 @@ const ViewSingleThread = () => {
           renderContent={renderContent}
           postReactions={postReactions}
           highlightedReplyId={highlightedReplyId}
+          handleEditClick={handleEditClick}
+          canEditPost={canEditPost(threadData.post)}
         />
       ))}
   

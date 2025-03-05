@@ -1,11 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Paper, Box, Avatar, Typography, Link, Tooltip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, CircularProgress, useMediaQuery, useTheme, Grid } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useAuth } from '../../../hooks/useAuth';
+import EditPost from './EditPost'; // Import the EditPostForm component
 
 // Image display component
 const PostImageGrid = ({ images }) => {
@@ -113,7 +115,9 @@ const IndividualPost = ({
   isHighlighted, 
   user, 
   handleLikeClick, 
-  handleReplyClick, 
+  handleReplyClick,
+  handleEditClick, // Add new prop for edit functionality
+  canEditPost, // Add new prop to determine if post can be edited 
   renderContent, 
   postReactions, 
   highlightedReplyId 
@@ -125,6 +129,7 @@ const IndividualPost = ({
   const { isAdmin } = useAuth();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false); // Add state for edit dialog
   const apiUrl = process.env.REACT_APP_API_URL;
   
   const userAuth0Id = user?.sub;
@@ -138,6 +143,8 @@ const IndividualPost = ({
   // Check if user can delete (is admin or post owner)
   const isPostOwner = userAuth0Id === post.auth0_id;
   const canDelete = isAdmin || isPostOwner;
+
+  // The canEditPost prop is passed from parent component now
 
   useEffect(() => {
     console.log('Post data:', post);
@@ -176,6 +183,20 @@ const IndividualPost = ({
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  const handleLocalEditClick = () => {
+    if (typeof handleEditClick === 'function') {
+      handleEditClick(post);
+    } else {
+      setEditDialogOpen(true);
+    }
+  };
+
+  const handleSaveEdit = (updatedPost) => {
+    setEditDialogOpen(false);
+    window.location.reload(); // Refresh to see changes
+    // Alternatively, update the post in the parent component's state
   };
 
   // Thread starter specific styles and rendering
@@ -266,7 +287,7 @@ const IndividualPost = ({
                 {hasImages && <PostImageGrid images={post.images} />}
               </Box>
 
-              {/* Bottom Row: Like/Reply */}
+              {/* Bottom Row: Like/Reply/Edit/Delete */}
               <Box sx={{ pt: 1, mt: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                 <Box sx={{ flexGrow: 1 }}>
                   {likedUsers.length > 0 && (
@@ -316,6 +337,20 @@ const IndividualPost = ({
                   >
                     Reply
                   </Typography>
+                  
+                  {/* Add Edit button */}
+                  {canEditPost && (
+                    <Tooltip title="Edit Thread">
+                      <IconButton 
+                        size="small" 
+                        color="primary" 
+                        onClick={handleLocalEditClick}
+                        sx={{ ml: 1, p: 0 }}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                   
                   {/* Delete button for admins or post owner */}
                   {canDelete && (
@@ -371,6 +406,20 @@ const IndividualPost = ({
               )}
             </Button>
           </DialogActions>
+        </Dialog>
+
+        {/* Edit Dialog - only shown when handleEditClick isn't provided */}
+        <Dialog
+          open={editDialogOpen}
+          onClose={() => setEditDialogOpen(false)}
+          maxWidth="md"
+          fullWidth
+        >
+          <EditPost 
+            post={post}
+            onClose={() => setEditDialogOpen(false)}
+            onSave={handleSaveEdit}
+          />
         </Dialog>
       </>
     );
@@ -430,6 +479,18 @@ const IndividualPost = ({
                 })}
               </Typography>
             </Box>
+            
+            {/* Edit button */}
+            {canEditPost && (
+              <IconButton 
+                size="small" 
+                color="primary" 
+                onClick={handleLocalEditClick}
+                sx={{ mx: 1 }}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            )}
             
             {/* Delete button */}
             {canDelete && (
@@ -521,6 +582,20 @@ const IndividualPost = ({
             </Button>
           </DialogActions>
         </Dialog>
+
+        {/* Edit Dialog */}
+        <Dialog
+          open={editDialogOpen}
+          onClose={() => setEditDialogOpen(false)}
+          maxWidth="md"
+          fullWidth
+        >
+          <EditPost 
+            post={post}
+            onClose={() => setEditDialogOpen(false)}
+            onSave={handleSaveEdit}
+          />
+        </Dialog>
       </>
     );
   }
@@ -594,19 +669,35 @@ const IndividualPost = ({
                 {new Date(post.created_at).toLocaleString()}
               </Typography>
               
-              {/* Add Delete button here if user can delete */}
-              {canDelete && (
-                <Tooltip title="Delete">
-                  <IconButton 
-                    size="small" 
-                    color="error" 
-                    onClick={() => setDeleteDialogOpen(true)}
-                    sx={{ ml: 1 }}
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              )}
+              <Box sx={{ display: 'flex' }}>
+                {/* Add Edit button */}
+                {canEditPost && (
+                  <Tooltip title="Edit">
+                    <IconButton 
+                      size="small" 
+                      color="primary" 
+                      onClick={handleLocalEditClick}
+                      sx={{ ml: 1 }}
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                
+                {/* Delete button */}
+                {canDelete && (
+                  <Tooltip title="Delete">
+                    <IconButton 
+                      size="small" 
+                      color="error" 
+                      onClick={() => setDeleteDialogOpen(true)}
+                      sx={{ ml: 1 }}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </Box>
             </Box>
 
             <Box sx={{ mt: 0.5, width: '100%', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
@@ -710,6 +801,20 @@ const IndividualPost = ({
             )}
           </Button>
         </DialogActions>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog
+        open={editDialogOpen}
+        onClose={() => setEditDialogOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <EditPost 
+          post={post}
+          onClose={() => setEditDialogOpen(false)}
+          onSave={handleSaveEdit}
+        />
       </Dialog>
     </>
   );

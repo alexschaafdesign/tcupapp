@@ -41,14 +41,16 @@ router.get('/', async (req, res) => {
         
         const postIds = threadsData.map(post => post.id);
         
-        // Get all replies for these threads
+        // Get all replies for these threads with auth0_id and author included
         const { data: allReplies } = await supabase
             .from('forum_messages')
-            .select('parent_id, created_at')
+            .select('parent_id, created_at, auth0_id, author')
             .in('parent_id', postIds);
         
-        // Create maps for latest reply date and count
+        // Create maps for latest reply info and count
         const lastReplyMap = {};
+        const lastReplyByMap = {};
+        const lastReplyAuth0IdMap = {};
         const replyCountMap = {};
         
         allReplies.forEach(reply => {
@@ -61,6 +63,8 @@ router.get('/', async (req, res) => {
             const replyDate = new Date(reply.created_at);
             if (!lastReplyMap[parentId] || replyDate > new Date(lastReplyMap[parentId])) {
                 lastReplyMap[parentId] = reply.created_at;
+                lastReplyByMap[parentId] = reply.author;
+                lastReplyAuth0IdMap[parentId] = reply.auth0_id;
             }
         });
         
@@ -71,7 +75,19 @@ router.get('/', async (req, res) => {
             return new Date(bActivity) - new Date(aActivity);
         });
         
-        // Rest of your code (fetch tags, user data, etc.)
+        // Collect all auth0_ids needed (thread authors and reply authors)
+        const allAuth0Ids = [...new Set([
+            ...sortedThreadsData.map(post => post.auth0_id),
+            ...Object.values(lastReplyAuth0IdMap).filter(id => id)
+        ])];
+        
+        // Get user data for both thread authors and repliers
+        const { rows: userData } = await pool.query(
+            'SELECT auth0_id, avatar_url, username FROM users WHERE auth0_id = ANY($1)',
+            [allAuth0Ids]
+        );
+
+        // Rest of your code (fetch tags, etc.)
         const { data: postTags } = await supabase
             .from('post_tags')
             .select('post_id, tag:tags(*)')
@@ -83,21 +99,26 @@ router.get('/', async (req, res) => {
             return acc;
         }, {});
 
-        const allAuth0Ids = [...new Set(sortedThreadsData.map(post => post.auth0_id))];
-        
-        const { rows: userData } = await pool.query(
-            'SELECT auth0_id, avatar_url, username FROM users WHERE auth0_id = ANY($1)',
-            [allAuth0Ids]
-        );
-
-        const postsWithData = sortedThreadsData.map(post => ({
-            ...post,
-            reply_count: replyCountMap[post.id] || 0,
-            last_reply_at: lastReplyMap[post.id] || null,
-            avatar_url: userData.find(u => u.auth0_id === post.auth0_id)?.avatar_url,
-            username: userData.find(u => u.auth0_id === post.auth0_id)?.username,
-            tags: tagsByPostId[post.id] || []
-        }));
+        const postsWithData = sortedThreadsData.map(post => {
+            // Find user data for thread author
+            const authorData = userData.find(u => u.auth0_id === post.auth0_id);
+            
+            // Find user data for last replier (if exists)
+            const lastReplyAuth0Id = lastReplyAuth0IdMap[post.id];
+            const lastReplierData = lastReplyAuth0Id 
+                ? userData.find(u => u.auth0_id === lastReplyAuth0Id)
+                : null;
+                
+            return {
+                ...post,
+                reply_count: replyCountMap[post.id] || 0,
+                last_reply_at: lastReplyMap[post.id] || null,
+                last_reply_by: lastReplierData?.username || lastReplyByMap[post.id] || null,
+                avatar_url: authorData?.avatar_url,
+                username: authorData?.username,
+                tags: tagsByPostId[post.id] || []
+            };
+        });
 
         res.json(postsWithData);
     } catch (error) {
