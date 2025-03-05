@@ -280,32 +280,41 @@ const Header = () => {
           </List>
   
          {/* Auth Section */}
-          <Box sx={{ mt: "auto" }}>
-            {isAuthenticated && isAdmin && (
-              <Box sx={{ mb: 2, px: 2 }}>
-                <ExpandableMenu 
-                  title="admin"
-                  isExpanded={expandedMenus.admin}
-                  setIsExpanded={() => toggleMenu('admin')}
-                  links={adminLinks}
-                  closeDrawer={closeDrawer}
-                />
-              </Box>
-            )}
-            <CustomDivider />
+         <Box sx={{ mt: "auto", zIndex: 2 }}>
+            {/* Show user profile for all authenticated users */}
             {isAuthenticated && (
+              <>
+            <CustomDivider />
+            
+              </>
+            )}
+            
+            {/* Admin section remains conditional */}
+            {isAuthenticated && isAdmin && (
+              <>
+                <Box sx={{ mb: 2, px: 2 }}>
+                  <ExpandableMenu 
+                    title="admin"
+                    isExpanded={expandedMenus.admin}
+                    setIsExpanded={() => toggleMenu('admin')}
+                    links={adminLinks}
+                    closeDrawer={closeDrawer}
+                  />
+                </Box>
+                <CustomDivider />
+              </>
+            )}
+
             <List sx={{ px: 2 }}>
               <NavLink 
                 link={{ text: "contact", path: "/contact" }}
                 closeDrawer={closeDrawer}
               />
-            </List>
-          )}
-            <List sx={{ px: 2 }}>
               <AuthButtons 
                 isAuthenticated={isAuthenticated} 
                 loginWithRedirect={loginWithRedirect}
                 logout={logout}
+                closeDrawer={closeDrawer}
               />
             </List>
           </Box>
@@ -397,6 +406,7 @@ const Header = () => {
               <>
             <HeaderUserProfile closeDrawer={closeDrawer} />
             <CustomDivider />
+            
               </>
             )}
             
@@ -415,8 +425,12 @@ const Header = () => {
                 <CustomDivider />
               </>
             )}
-            
+
             <List sx={{ px: 2 }}>
+              <NavLink 
+                link={{ text: "contact", path: "/contact" }}
+                closeDrawer={closeDrawer}
+              />
               <AuthButtons 
                 isAuthenticated={isAuthenticated} 
                 loginWithRedirect={loginWithRedirect}
