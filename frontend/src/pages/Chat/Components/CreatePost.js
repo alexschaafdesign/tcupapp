@@ -14,6 +14,7 @@ import {
 import { Send as SendIcon } from '@mui/icons-material';
 import theme from '../../../styles/theme';
 import { useTheme } from '@mui/material/styles';
+import ChatImageUpload from './ChatImageUpload';
 
 const CreatePost = ({ onPostCreated, tags, setTags }) => {
   const { getAccessTokenSilently } = useAuth0();
@@ -23,6 +24,8 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
   const [newTag, setNewTag] = useState('');
   const [isAddingTag, setIsAddingTag] = useState(false);
   const [recentlyAddedTag, setRecentlyAddedTag] = useState(null);
+  const [images, setImages] = useState([]); // State for image uploads
+  const [isSubmitting, setIsSubmitting] = useState(false); // Track submission state
 
   const theme = useTheme();
 
@@ -88,11 +91,23 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Check if there's either text content or images
     const contentState = editorState.getCurrentContent();
-    const rawContent = convertToRaw(contentState);
+    const hasText = contentState.hasText();
+    const hasImages = images.length > 0;
+    
+    if (!title.trim() || (!hasText && !hasImages)) {
+      // Either require a title with text content, or a title with images
+      return;
+    }
+    
+    setIsSubmitting(true);
     
     try {
       const token = await getAccessTokenSilently();
+      const rawContent = convertToRaw(contentState);
+      
       const response = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
         method: 'POST',
         headers: {
@@ -102,7 +117,8 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
         body: JSON.stringify({
           title,
           content: JSON.stringify(rawContent),
-          tags: selectedTags
+          tags: selectedTags,
+          images: images // Include images array in the request
         })
       });
 
@@ -115,8 +131,11 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
       setTitle('');
       setSelectedTags([]);
       setEditorState(EditorState.createEmpty());
+      setImages([]); // Clear images after posting
     } catch (error) {
       console.error('Error creating post:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -138,6 +157,11 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
         setEditorState={setEditorState}
       />
       
+      {/* Add the ChatImageUpload component */}
+      <Box sx={{ my: 2 }}>
+        <ChatImageUpload images={images} setImages={setImages} />
+      </Box>
+      
       <Paper variant="outlined" sx={{ p: 2, mb: 3 }}>
         <Typography variant="subtitle2" sx={{ mb: 1 }}>
           Select Tags
@@ -149,55 +173,55 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
 
             return (
               <Chip
-  key={tag.id}
-  label={tag.name}
-  onClick={() => handleTagToggle(tag.id)}
-  color={isActive ? "primary" : "default"}
-  variant="outlined"
-  sx={{
-    transition: 'background-color 0.3s ease, border-color 0.3s ease',
+                key={tag.id}
+                label={tag.name}
+                onClick={() => handleTagToggle(tag.id)}
+                color={isActive ? "primary" : "default"}
+                variant="outlined"
+                sx={{
+                  transition: 'background-color 0.3s ease, border-color 0.3s ease',
 
-    // ✅ Background color logic
-    bgcolor: isNew
-      ? theme.palette.success.light  // Highlight new tag
-      : isActive
-        ? theme.palette.primary.main  // Selected tag background (purple)
-        : 'inherit', // Default state
+                  // ✅ Background color logic
+                  bgcolor: isNew
+                    ? theme.palette.success.light  // Highlight new tag
+                    : isActive
+                      ? theme.palette.primary.main  // Selected tag background (purple)
+                      : 'inherit', // Default state
 
-    // ✅ Border logic - Remove border if it's new
-    border: isNew
-      ? "none" // ✅ Remove border if new
-      : isActive
-        ? `2px solid ${theme.palette.primary.main}`  // Active tags get a border
-        : `1px solid ${theme.palette.neutral.light}`, // Default border
+                  // ✅ Border logic - Remove border if it's new
+                  border: isNew
+                    ? "none" // ✅ Remove border if new
+                    : isActive
+                      ? `2px solid ${theme.palette.primary.main}`  // Active tags get a border
+                      : `1px solid ${theme.palette.neutral.light}`, // Default border
 
-    // ✅ Text color logic
-    color: isNew
-      ? theme.palette.text.primary
-      : isActive
-        ? theme.palette.primary.contrastText // White text for active tags
-        : theme.palette.text.primary,
+                  // ✅ Text color logic
+                  color: isNew
+                    ? theme.palette.text.primary
+                    : isActive
+                      ? theme.palette.primary.contrastText // White text for active tags
+                      : theme.palette.text.primary,
 
-    // ✅ Hover styles
-    '&:hover': {
-      bgcolor: isNew 
-        ? theme.palette.success.dark  // Keep new tag highlighted
-        : isActive 
-          ? `${theme.palette.primary.dark} !important` // Darker purple when active
-          : theme.palette.action.hover, // Default MUI hover for inactive
+                  // ✅ Hover styles
+                  '&:hover': {
+                    bgcolor: isNew 
+                      ? theme.palette.success.dark  // Keep new tag highlighted
+                      : isActive 
+                        ? `${theme.palette.primary.dark} !important` // Darker purple when active
+                        : theme.palette.action.hover, // Default MUI hover for inactive
 
-      borderColor: isNew 
-        ? "none" // ✅ Keep no border on hover if new
-        : isActive 
-          ? theme.palette.primary.dark // Darken the border on hover when active
-          : theme.palette.neutral.light, // Keep normal border for inactive tags
+                    borderColor: isNew 
+                      ? "none" // ✅ Keep no border on hover if new
+                      : isActive 
+                        ? theme.palette.primary.dark // Darken the border on hover when active
+                        : theme.palette.neutral.light, // Keep normal border for inactive tags
 
-      color: isActive 
-        ? theme.palette.primary.contrastText // Maintain white text for active hover
-        : theme.palette.text.primary
-    }
-  }}
-/>
+                    color: isActive 
+                      ? theme.palette.primary.contrastText // Maintain white text for active hover
+                      : theme.palette.text.primary
+                  }
+                }}
+              />
             );
           })}
         </Box>
@@ -226,11 +250,15 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
           type="submit" 
           variant="contained" 
           color="primary"
-          disabled={!title.trim() || !editorState.getCurrentContent().hasText()}
+          disabled={
+            isSubmitting || 
+            !title.trim() || 
+            (!editorState.getCurrentContent().hasText() && images.length === 0)
+          }
           endIcon={<SendIcon />}
           sx={{ px: 4, py: 1 }}
         >
-          Post Discussion
+          {isSubmitting ? 'Posting...' : 'Post Discussion'}
         </Button>
       </Box>
     </form>

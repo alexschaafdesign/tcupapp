@@ -153,7 +153,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
 
 // Create new post
 router.post('/', authMiddleware, async (req, res) => {
-    const { title, content, tags } = req.body;
+    const { title, content, tags, images } = req.body;
     const auth0Id = req.user.sub;
     
     try {
@@ -179,7 +179,8 @@ router.post('/', authMiddleware, async (req, res) => {
                 author: finalAuthor,
                 reply_count: 0,
                 is_thread_starter: true,
-                is_edited: false
+                is_edited: false,
+                images: images || [] 
             }])
             .select()
             .single();
@@ -216,7 +217,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
 // Add reply to post
 router.post('/:id/reply', authMiddleware, async (req, res) => {
-    const { content } = req.body;
+    const { content, images } = req.body;
     const { id: parentId } = req.params;
     const auth0Id = req.user.sub;
     
@@ -253,7 +254,8 @@ router.post('/:id/reply', authMiddleware, async (req, res) => {
                 content,
                 parent_id: parentId,
                 auth0_id: auth0Id,
-                author: finalAuthor
+                author: finalAuthor,
+                images: images || []
             }])
             .select()
             .single();
@@ -418,7 +420,7 @@ router.post('/:postId/reactions', authMiddleware, async (req, res) => {
 
 router.put('/edit/:id', authMiddleware, async (req, res) => {
     const { id } = req.params;
-    const { title, content, tags, userId, createdAt } = req.body;
+    const { title, content, tags, userId, createdAt, images } = req.body;
 
     try {
         // Get user info
@@ -440,7 +442,8 @@ router.put('/edit/:id', authMiddleware, async (req, res) => {
                 auth0_id: userId,
                 author: userRows[0].username,
                 created_at: createdAt,
-                is_edited: true
+                is_edited: true,
+                images: images || undefined 
             })
             .eq('id', id)
             .select()

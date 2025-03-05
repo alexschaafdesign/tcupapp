@@ -25,6 +25,7 @@ import ActiveTags from './Components/ActiveTags';
 import IndividualPost from './Components/IndividualPost';
 import { stateToHTML } from 'draft-js-export-html';
 import parse from 'html-react-parser';
+import ChatImageUpload from './Components/ChatImageUpload';
 
 const ViewSingleThread = () => {
   const { threadId } = useParams();
@@ -42,6 +43,9 @@ const ViewSingleThread = () => {
   const navigate = useNavigate();
   const [replyEditorState, setReplyEditorState] = useState(EditorState.createEmpty());
   const [focusTrigger, setFocusTrigger] = useState(0);
+  const [replyImages, setReplyImages] = useState([]);
+
+
 
   const replyBoxRef = useRef(null);
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -376,7 +380,7 @@ const ViewSingleThread = () => {
       const token = await getAccessTokenSilently();
       const contentState = replyEditorState.getCurrentContent();
       const rawContent = JSON.stringify(convertToRaw(contentState));
-
+  
       const response = await fetch(`${apiUrl}/posts/${threadId}/reply`, {
         method: 'POST',
         headers: {
@@ -386,17 +390,19 @@ const ViewSingleThread = () => {
         body: JSON.stringify({
           content: rawContent,
           parent_id: parentId || (replyingTo?.id || null),
+          images: replyImages
         }),
       });
-
+  
       const newReply = await response.json();
       setThreadData((prev) => ({
         ...prev,
         replies: [...prev.replies, newReply],
       }));
-
-      // Clear the reply editor
+  
+      // Clear the reply editor and images
       setReplyEditorState(EditorState.createEmpty());
+      setReplyImages([]);
       setReplyingTo(null);
     } catch (error) {
       console.error('Error:', error);
@@ -483,6 +489,10 @@ const ViewSingleThread = () => {
             autoFocus={replyingTo !== null}
             focusTrigger={focusTrigger}
           />
+          <ChatImageUpload 
+           images={replyImages} 
+           setImages={setReplyImages} 
+    />
         </Paper>
       </Box>
   
