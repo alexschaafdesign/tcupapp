@@ -13,79 +13,90 @@ router.get('/', async (req, res) => {
         const { tags } = req.query;
         const tagIds = tags ? tags.split(',').map(Number) : [];
         
+        // Get threads
         let query = supabase
-            .from('thread_listings')
+            .from('forum_messages')
             .select('*')
-            .order('created_at', { ascending: false });
+            .is('parent_id', null);
 
         if (tagIds.length > 0) {
-            const { data: taggedThreadIds, error } = await supabase
+            // Filter by tags if needed
+            const { data: taggedThreadIds } = await supabase
                 .from('post_tags')
                 .select('post_id')
                 .in('tag_id', tagIds);
-
-            if (error) throw error; // Ensure errors don't go unnoticed
-
-            // Extract post IDs as an array
+            
             const postIds = taggedThreadIds.map(t => t.post_id);
-
             if (postIds.length > 0) {
                 query = query.in('id', postIds);
             } else {
-                return res.json([]); // Return empty array if no matching posts
+                return res.json([]);
             }
         }
 
-        const { data: threadsData, error: threadsError } = await query;
-        if (threadsError) throw threadsError;
-        
+        const { data: threadsData } = await query;
         if (!threadsData || threadsData.length === 0) {
             return res.json([]);
         }
         
-        // Fetch tags for all posts in one query
         const postIds = threadsData.map(post => post.id);
-        const { data: postTags, error: postTagsError } = await supabase
+        
+        // Get all replies for these threads
+        const { data: allReplies } = await supabase
+            .from('forum_messages')
+            .select('parent_id, created_at')
+            .in('parent_id', postIds);
+        
+        // Create maps for latest reply date and count
+        const lastReplyMap = {};
+        const replyCountMap = {};
+        
+        allReplies.forEach(reply => {
+            const parentId = reply.parent_id;
+            
+            // Track reply count
+            replyCountMap[parentId] = (replyCountMap[parentId] || 0) + 1;
+            
+            // Track latest reply
+            const replyDate = new Date(reply.created_at);
+            if (!lastReplyMap[parentId] || replyDate > new Date(lastReplyMap[parentId])) {
+                lastReplyMap[parentId] = reply.created_at;
+            }
+        });
+        
+        // Sort by latest activity (either last reply or created date)
+        const sortedThreadsData = threadsData.sort((a, b) => {
+            const aActivity = lastReplyMap[a.id] || a.created_at;
+            const bActivity = lastReplyMap[b.id] || b.created_at;
+            return new Date(bActivity) - new Date(aActivity);
+        });
+        
+        // Rest of your code (fetch tags, user data, etc.)
+        const { data: postTags } = await supabase
             .from('post_tags')
             .select('post_id, tag:tags(*)')
             .in('post_id', postIds);
         
-        if (postTagsError) throw postTagsError;
-        
-        // Group tags by post ID
         const tagsByPostId = postTags.reduce((acc, { post_id, tag }) => {
             if (!acc[post_id]) acc[post_id] = [];
             acc[post_id].push(tag);
             return acc;
         }, {});
+
+        const allAuth0Ids = [...new Set(sortedThreadsData.map(post => post.auth0_id))];
         
-       
-        
-
-        if (threadsError) throw threadsError;
-
-        if (!threadsData || threadsData.length === 0) {
-            return res.json([]); // Ensure the frontend receives an empty array
-        }
-
-        // Get all auth0_ids including those from replies
-        const allAuth0Ids = [...new Set([
-            ...threadsData.map(post => post.auth0_id),
-            ...threadsData.map(post => post.last_reply_auth0_id).filter(Boolean)
-        ])];
-
-        // Get user data
         const { rows: userData } = await pool.query(
             'SELECT auth0_id, avatar_url, username FROM users WHERE auth0_id = ANY($1)',
             [allAuth0Ids]
         );
 
-        const postsWithData = threadsData.map(post => ({
+        const postsWithData = sortedThreadsData.map(post => ({
             ...post,
+            reply_count: replyCountMap[post.id] || 0,
+            last_reply_at: lastReplyMap[post.id] || null,
             avatar_url: userData.find(u => u.auth0_id === post.auth0_id)?.avatar_url,
-            last_reply_avatar_url: userData.find(u => u.auth0_id === post.last_reply_auth0_id)?.avatar_url,
             username: userData.find(u => u.auth0_id === post.auth0_id)?.username,
-            tags: tagsByPostId[post.id] || [] // ✅ Attach tags here!
+            tags: tagsByPostId[post.id] || []
         }));
 
         res.json(postsWithData);

@@ -69,8 +69,19 @@ const ForumContainer = () => {
         if (selectedTags.length > 0) {
           url += `?tags=${selectedTags.join(',')}`;
         }
+        
+        console.log('Fetching posts from:', url);
         const response = await fetch(url); 
         const data = await response.json();
+        
+        // Debug the data structure
+        console.log('Posts data from API:', data);
+        if (data.length > 0) {
+          console.log('First post structure:', data[0]);
+          console.log('Reply count type:', typeof data[0].reply_count);
+          console.log('Reply count value:', data[0].reply_count);
+        }
+        
         setPosts(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error('Error fetching posts:', error);

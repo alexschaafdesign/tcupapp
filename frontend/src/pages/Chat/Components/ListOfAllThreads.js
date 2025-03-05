@@ -5,7 +5,7 @@ import AuthWrapper from '../../../components/auth/AuthWrapper';
 import { useAuth0 } from '@auth0/auth0-react';
 import ActiveTags from './ActiveTags';
 
-const PostList = ({ posts }) => {
+const ListOfAllThreads = ({ posts }) => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth0();
   const theme = useTheme();
@@ -42,6 +42,9 @@ const PostList = ({ posts }) => {
     <Paper elevation={0} sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
       <List sx={{ p: 0 }}>
         {posts.map((post) => {
+          // Use the reply_count directly from the thread_listings view
+          const replyCount = post.reply_count || 0;
+          
           return (
             <AuthWrapper 
               key={post.id}
@@ -95,32 +98,11 @@ const PostList = ({ posts }) => {
 
                       {/* Bottom Section - Preview Text and Stats */}
                       <Box sx={{ width: '100%', pl: 6 }}>
-                        {/* Preview Text */}
-                        <Typography 
-                          variant="body2" 
-                          color="text.secondary"
-                          sx={{ 
-                            fontSize: '0.8rem',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            display: '-webkit-box',
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: 'vertical',
-                            mb: 0.5
-                          }}
-                        >
-                          {post.content ? (
-                            typeof post.content === 'string' && post.content.startsWith('{') 
-                              ? JSON.parse(post.content).blocks?.[0]?.text || 'No preview available'
-                              : post.content.substring(0, 60) + '...'
-                          ) : 'No preview available'}
-                        </Typography>
-                        
                         {/* Bottom row with replies count and tags */}
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           {/* Reply Count */}
                           <Typography variant="caption" color="text.secondary">
-                            {post.reply_count || 0} replies
+                            {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
                           </Typography>
                           
                           {/* Tags in bottom right */}
@@ -180,27 +162,6 @@ const PostList = ({ posts }) => {
                           )}
                         </Box>
 
-                        {/* Preview Text */}
-                        <Typography 
-                          variant="body2" 
-                          color="text.secondary"
-                          sx={{ 
-                            fontSize: '0.875rem',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            display: '-webkit-box',
-                            WebkitLineClamp: 1,
-                            WebkitBoxOrient: 'vertical',
-                            mb: 1
-                          }}
-                        >
-                          {post.content ? (
-                            typeof post.content === 'string' && post.content.startsWith('{') 
-                              ? JSON.parse(post.content).blocks?.[0]?.text || 'No preview available'
-                              : post.content.substring(0, 100)
-                          ) : 'No preview available'}
-                        </Typography>
-
                         {/* Bottom Row */}
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                           {/* Author Info and Stats */}
@@ -210,7 +171,7 @@ const PostList = ({ posts }) => {
                             </Typography>
                             
                             <Typography variant="caption">
-                              {post.reply_count || 0} replies
+                              {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
                             </Typography>
                           </Box>
                         </Box>
@@ -227,4 +188,4 @@ const PostList = ({ posts }) => {
   );
 };
 
-export default PostList;
+export default ListOfAllThreads;

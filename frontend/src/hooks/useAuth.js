@@ -1,7 +1,5 @@
-// src/hooks/useAuth.js
 import { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { getSupabaseClient } from '../lib/supabaseClient';
 
 export const useAuth = () => {
   const { 
@@ -9,16 +7,17 @@ export const useAuth = () => {
     isAuthenticated, 
     getAccessTokenSilently 
   } = useAuth0();
-  const [supabaseReady, setSupabaseReady] = useState(false);
+  const [tokenReady, setTokenReady] = useState(false);
 
-    // Add debugging logs here
+  // Add debugging logs only when user exists to avoid console spam
+  if (user) {
     console.log('Auth0 user object:', user);
     console.log('Roles namespace check:', user?.['https://tcupboard.org/roles']);
+  }
   
   // Role utilities
   const userRoles = user?.['https://tcupboard.org/roles'] || [];
-  console.log('Extracted roles:', userRoles);
-
+  
   const isAdmin = userRoles.includes('admin');
   const isModerator = userRoles.includes('moderator');
   const isContributor = userRoles.includes('contributor');
@@ -28,22 +27,14 @@ export const useAuth = () => {
     if (isAuthenticated) {
       const updateToken = async () => {
         try {
+          // Get the token but don't try to use it directly with Supabase
           const token = await getAccessTokenSilently();
-          console.log('Got Auth0 token:', token.slice(0, 20) + '...');
+          setTokenReady(true);
           
-          // Use getSupabaseClient instead of setSupabaseToken
-          const client = getSupabaseClient(token);
-          // Test connection to verify it works
-          const { data, error } = await client.from('forum_messages').select('id').limit(1);
-          
-          setSupabaseReady(!error);
-          
-          if (error) {
-            console.error('Failed to establish Supabase session:', error);
-          }
+          // No need to test Supabase connection - we'll use the backend proxy
         } catch (error) {
-          console.error('Error updating token:', error);
-          setSupabaseReady(false);
+          console.error('Error getting access token:', error);
+          setTokenReady(false);
         }
       };
 
@@ -54,9 +45,9 @@ export const useAuth = () => {
   return { 
     user, 
     isAuthenticated,
-    supabaseReady,
+    tokenReady,  // renamed from supabaseReady to be clearer
     getAccessTokenSilently,
-    // Add role-related properties
+    // Role-related properties
     userRoles,
     isAdmin,
     isModerator,

@@ -1,4 +1,3 @@
-// src/lib/supabaseClient.js
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
@@ -10,7 +9,12 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 // Create the default client with anon key
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+        autoRefreshToken: false,
+        persistSession: false
+    }
+})
 
 // Create an authenticated client with JWT
 export const getSupabaseClient = (jwt) => {
@@ -20,7 +24,13 @@ export const getSupabaseClient = (jwt) => {
     }
 
     try {
+        // This approach doesn't work correctly for Supabase Row Level Security
+        // Instead of this direct approach, use your backend proxy
         return createClient(supabaseUrl, supabaseAnonKey, {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false
+            },
             global: {
                 headers: {
                     Authorization: `Bearer ${jwt}`
@@ -33,8 +43,11 @@ export const getSupabaseClient = (jwt) => {
     }
 }
 
-// Optional: Add a helper for checking connection
+// IMPORTANT: Don't test connection directly - use backend proxy instead
 export const testSupabaseConnection = async () => {
+    // This is commented out to prevent direct Supabase access
+    // Instead, we should use the backend proxy for all Supabase access
+    /*
     try {
         const { data, error } = await supabase.from('forum_messages').select('id').limit(1)
         if (error) throw error
@@ -43,4 +56,6 @@ export const testSupabaseConnection = async () => {
         console.error('Supabase connection test failed:', error)
         return false
     }
+    */
+    return true; // Just assume connection is valid and use backend
 }
