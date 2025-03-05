@@ -6,6 +6,7 @@ import UpdatesSection from './Updates/UpdatesSection';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useInView } from 'react-intersection-observer';
+import HomeAlert from './Components/HomeAlert';
 
 const AboutTCUP = () => {
   // Animation on scroll
@@ -26,7 +27,7 @@ const AboutTCUP = () => {
 
   return (
     <Box sx={{ overflow: 'hidden' }}>
-      
+      <HomeAlert />
 
       <Container maxWidth="lg" sx={{ pb: 10, mt: 4 }}>        
         {/* Main Section with staggered layout */}

@@ -17,6 +17,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useAuth } from "../../hooks/useAuth";
 import HeaderUserProfile from "./HeaderUserProfile";
 import palette from "../../styles/colors/palette";
+import { ContactSupport } from "@mui/icons-material";
 
 // Component for consistent dividers
 const CustomDivider = ({ container = false }) => (
@@ -292,6 +293,14 @@ const Header = () => {
               </Box>
             )}
             <CustomDivider />
+            {isAuthenticated && (
+            <List sx={{ px: 2 }}>
+              <NavLink 
+                link={{ text: "contact", path: "/contact" }}
+                closeDrawer={closeDrawer}
+              />
+            </List>
+          )}
             <List sx={{ px: 2 }}>
               <AuthButtons 
                 isAuthenticated={isAuthenticated} 

@@ -54,6 +54,7 @@ import NewUpdate from "./pages/TCUP/Updates/NewUpdate.js";
 import UpdatesPage from "./pages/TCUP/Updates/UpdatesPage.js";
 import SingleUpdatePost from "./pages/TCUP/Updates/SingleUpdatePost.js";
 import UpdateEditForm from "./pages/TCUP/Updates/UpdateEditForm.js";
+import ContactForm from "./pages/Contact/ContactForm.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -111,6 +112,8 @@ function App() {
             {/* Additional routes => "/landing", "/powerpledge", etc. */}
             <Route path="landing" element={<LandingPage />} />
             <Route path="about" element={<AboutTCUP />} />
+            <Route path="contact" element={<ContactForm />} />
+
 
             {/* TCUP Updates */}
             <Route path="/admin/updates" element={<NewUpdate />} />

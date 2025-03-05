@@ -8,7 +8,7 @@ const palette = {
   },
   secondary: {
     light: colors.neonGreen[60],
-    main: colors.neonGreen[50],  // Close to #80282A
+    main: colors.neonGreen[50],  
     dark: colors.neonGreen[30],
   },
   error: {

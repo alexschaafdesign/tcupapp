@@ -28,6 +28,7 @@ import flyeringRouter from './routes/flyering.js';
 import imagesRouter from './routes/images.js';
 import notificationsRouter, { createReplyNotification } from './routes/notifications.js';
 import updatesRouter from './routes/updates.js';
+import contactRouter from './routes/contact.js'
 
 // 2) Optional debugging/logging to confirm environment vars are loaded
 console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -123,6 +124,8 @@ app.use('/api/flyering', flyeringRouter);
 app.use('/api/images', imagesRouter);
 app.use('/api/notifications', notificationsRouter)
 app.use('/api/updates', updatesRouter)
+app.use('/api/contact', contactRouter)
+
 
 
 // Example test route

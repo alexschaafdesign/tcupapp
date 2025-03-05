@@ -4,7 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { createClient } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
 import { Container, Link, Tooltip, Chip, Typography, Button, Avatar, Box, CircularProgress, Paper, IconButton, Dialog } from '@mui/material';
-import { Edit as EditIcon } from '@mui/icons-material';
+import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import {
   EditorState,
   ContentState,
@@ -15,23 +15,22 @@ import {
   convertToRaw,
   SelectionState
 } from 'draft-js';
+import 'draft-js/dist/Draft.css';
+import { useSearchParams } from 'react-router-dom';
 import ReactionBar from './Components/ReactionBar';
 import EditHistoricalPost from './Components/EditHistoricalPost';
 import HistoricalReplyForm from './Components/HistoricalReplyForm';
 import EditorWithFormatting from './Components/EditorWithFormatting';
-import 'draft-js/dist/Draft.css';
-import { useSearchParams } from 'react-router-dom';
 import ActiveTags from './Components/ActiveTags';
-import PostCard from './Components/PostCard';
+import IndividualPost from './Components/IndividualPost';
 
-const ThreadView = () => {
+const ViewSingleThread = () => {
   const { threadId } = useParams();
   const { getAccessTokenSilently, user } = useAuth0();
   const [searchParams] = useSearchParams();
   const highlightedReplyId = searchParams.get('highlight');
   const replyRef = useRef(null);
   const [threadData, setThreadData] = useState(null);
-  const [likedPosts, setLikedPosts] = useState({}); // Track liked state for each post
   const [replyingTo, setReplyingTo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editingPost, setEditingPost] = useState(null);
@@ -67,7 +66,6 @@ const ThreadView = () => {
     }
   };
   
-
   useEffect(() => {
     if (highlightedReplyId) {
       setTimeout(() => {
@@ -77,38 +75,34 @@ const ThreadView = () => {
         } else {
           console.log("No element found with the highlighted id");
         }
-      }, 500); // Increase or decrease delay as needed
+      }, 500);
     }
   }, [highlightedReplyId, threadData]);
-
-  useEffect(() => {
-    console.log("highlightedReplyId:", highlightedReplyId);
-  }, [highlightedReplyId]);
 
   // Fetch the thread data
   const fetchThread = async () => {
     try {
       const token = await getAccessTokenSilently();
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/posts/${threadId}`, {
+      const response = await fetch(`${apiUrl}/posts/${threadId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
       setThreadData(data);
   
-      // ✅ Fetch reactions from Supabase (contains only user_id)
+      // Fetch reactions from Supabase
       const { data: reactions, error } = await supabase
         .from('user_reactions')
         .select('post_id, user_id, type');
   
       if (error) throw error;
   
-      // ✅ Extract unique auth0_id values
+      // Extract unique auth0_id values
       const uniqueAuth0Ids = [...new Set(reactions.map((r) => r.user_id))];
   
       let users = [];
       if (uniqueAuth0Ids.length > 0) {
-        // ✅ Fetch usernames from your PostgreSQL backend API (which you already have)
-        const userResponse = await fetch(`${process.env.REACT_APP_API_URL}/users`, {
+        // Fetch usernames from PostgreSQL backend API
+        const userResponse = await fetch(`${apiUrl}/users`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -118,17 +112,20 @@ const ThreadView = () => {
         const allUsers = await userResponse.json();
         console.log("Fetched all users from PostgreSQL:", allUsers);
   
-        // ✅ Filter only the users who reacted
+        // Filter only the users who reacted
         users = allUsers.filter((user) => uniqueAuth0Ids.includes(user.auth0_id));
       }
   
-      // ✅ Map reactions to usernames
+      // Map reactions to usernames
       const reactionsByPost = {};
       reactions.forEach((reaction) => {
         const user = users.find((u) => u.auth0_id === reaction.user_id);
         if (user) {
           if (!reactionsByPost[reaction.post_id]) reactionsByPost[reaction.post_id] = [];
-          reactionsByPost[reaction.post_id].push({ id: user.auth0_id, username: user.username });
+          // Ensure no duplicate users in the reactions list
+          if (!reactionsByPost[reaction.post_id].some(r => r.id === user.auth0_id)) {
+            reactionsByPost[reaction.post_id].push({ id: user.auth0_id, username: user.username });
+          }
         }
       });
   
@@ -136,7 +133,7 @@ const ThreadView = () => {
   
       setPostReactions(reactionsByPost);
     } catch (error) {
-      console.error("Error fetching reactions:", error);
+      console.error("Error fetching thread:", error);
     } finally {
       setLoading(false);
     }
@@ -144,122 +141,115 @@ const ThreadView = () => {
 
   useEffect(() => {
     fetchThread();
-  }, [threadId, getAccessTokenSilently, apiUrl]);
-
-  // Helper to create a [QUOTE="author"] block
-  const createQuoteBlock = (text, author) => {
-    return `[QUOTE="${author}"]${text}[/QUOTE]\n\n`;
-  };
+    fetchUserRoles();
+  }, [threadId, getAccessTokenSilently, apiUrl, user]);
 
   // Safely render post content (including quotes)
-  // Updated renderContent function that preserves formatting
-// Improved renderContent function that properly renders Draft.js content
-const renderContent = (content) => {
-  try {
-    // Parse the content
-    const contentObj = typeof content === 'string' ? JSON.parse(content) : content;
-    const contentState = convertFromRaw(contentObj);
-    const plainText = contentState.getPlainText();
+  const renderContent = (content) => {
+    try {
+      // Parse the content
+      const contentObj = typeof content === 'string' ? JSON.parse(content) : content;
+      const contentState = convertFromRaw(contentObj);
+      const plainText = contentState.getPlainText();
 
-    // Handle quotes
-    if (plainText.includes('[QUOTE="') && plainText.includes('[/QUOTE]')) {
-      const parts = [];
-      const quoteRegex = /\[QUOTE="([^"]+)"\]([\s\S]*?)\[\/QUOTE\]/g;
-      let match;
-      let lastIndex = 0;
+      // Handle quotes
+      if (plainText.includes('[QUOTE="') && plainText.includes('[/QUOTE]')) {
+        const parts = [];
+        const quoteRegex = /\[QUOTE="([^"]+)"\]([\s\S]*?)\[\/QUOTE\]/g;
+        let match;
+        let lastIndex = 0;
 
-      while ((match = quoteRegex.exec(plainText)) !== null) {
-        // Add text before the quote
-        if (match.index > lastIndex) {
+        while ((match = quoteRegex.exec(plainText)) !== null) {
+          // Add text before the quote
+          if (match.index > lastIndex) {
+            parts.push(
+              <Typography key={`text-${lastIndex}`} variant="body1" component="div" sx={{ whiteSpace: 'pre-wrap', my: 1 }}>
+                {plainText.substring(lastIndex, match.index)}
+              </Typography>
+            );
+          }
+
+          // Add the quote
+          const author = match[1];
+          const quoteText = match[2].trim();
+          parts.push(
+            <Paper
+              key={`quote-${match.index}`}
+              elevation={0}
+              sx={{
+                borderLeft: '4px solid',
+                borderColor: 'primary.main',
+                bgcolor: 'rgba(0,0,0,0.05)',
+                p: 2,
+                my: 2,
+                maxWidth: '100%',
+              }}
+            >
+              <Typography variant="subtitle2" color="primary" fontWeight="bold">
+                {author} wrote:
+              </Typography>
+              <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                {quoteText}
+              </Typography>
+            </Paper>
+          );
+
+          lastIndex = match.index + match[0].length;
+        }
+
+        // Add text after the last quote
+        if (lastIndex < plainText.length) {
           parts.push(
             <Typography key={`text-${lastIndex}`} variant="body1" component="div" sx={{ whiteSpace: 'pre-wrap', my: 1 }}>
-              {plainText.substring(lastIndex, match.index)}
+              {plainText.substring(lastIndex)}
             </Typography>
           );
         }
 
-        // Add the quote
-        const author = match[1];
-        const quoteText = match[2].trim();
-        parts.push(
-          <Paper
-            key={`quote-${match.index}`}
-            elevation={0}
-            sx={{
-              borderLeft: '4px solid',
-              borderColor: 'primary.main',
-              bgcolor: 'rgba(0,0,0,0.05)',
-              p: 2,
-              my: 2,
-              maxWidth: '100%',
-            }}
-          >
-            <Typography variant="subtitle2" color="primary" fontWeight="bold">
-              {author} wrote:
-            </Typography>
-            <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-              {quoteText}
-            </Typography>
-          </Paper>
-        );
-
-        lastIndex = match.index + match[0].length;
+        return <Box sx={{ mt: 1 }}>{parts}</Box>;
       }
-
-      // Add text after the last quote
-      if (lastIndex < plainText.length) {
-        parts.push(
-          <Typography key={`text-${lastIndex}`} variant="body1" component="div" sx={{ whiteSpace: 'pre-wrap', my: 1 }}>
-            {plainText.substring(lastIndex)}
-          </Typography>
-        );
-      }
-
-      return <Box sx={{ mt: 1 }}>{parts}</Box>;
-    }
-    
-    // For non-quoted content, use the Draft.js Editor component
-    // This will properly render any formatting applied in the editor
-    const editorState = EditorState.createWithContent(contentState);
-    
-    return (
-      <Box sx={{ 
-        mt: 1,
-        '.DraftEditor-root': { 
-          '.public-DraftStyleDefault-block': {
-            marginTop: '0.5em',
-            marginBottom: '0.5em',
+      
+      // For non-quoted content, use the Draft.js Editor component
+      const editorState = EditorState.createWithContent(contentState);
+      
+      return (
+        <Box sx={{ 
+          mt: 1,
+          '.DraftEditor-root': { 
+            '.public-DraftStyleDefault-block': {
+              marginTop: '0.5em',
+              marginBottom: '0.5em',
+            }
           }
-        }
-      }}>
-        <Editor 
-          editorState={editorState} 
-          onChange={() => {}} 
-          readOnly={true}
-        />
-      </Box>
-    );
-  } catch (error) {
-    console.error('Error rendering content:', error);
-    // Fallback for plain text or parsing errors
-    return (
-      <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', my: 1 }}>
-        {typeof content === 'string' ? content : JSON.stringify(content)}
-      </Typography>
-    );
-  }
-};
+        }}>
+          <Editor 
+            editorState={editorState} 
+            onChange={() => {}} 
+            readOnly={true}
+          />
+        </Box>
+      );
+    } catch (error) {
+      console.error('Error rendering content:', error);
+      // Fallback for plain text or parsing errors
+      return (
+        <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', my: 1 }}>
+          {typeof content === 'string' ? content : JSON.stringify(content)}
+        </Typography>
+      );
+    }
+  };
 
   const handleLikeClick = async (postId) => {
     if (!user) return;
   
-    const userAuth0Id = user.sub; // Auth0 ID of the logged-in user
+    const userAuth0Id = user.sub;
     const hasLiked = postReactions[postId]?.some((reaction) => reaction.id === userAuth0Id);
   
-    console.log(`User ${userAuth0Id} clicked like. Has liked?`, hasLiked); // Debugging
+    console.log(`User ${userAuth0Id} clicked like. Has liked?`, hasLiked);
   
     if (hasLiked) {
-      // ✅ Unlike (DELETE reaction)
+      // Unlike (DELETE reaction)
       const { error: deleteError } = await supabase
         .from("user_reactions")
         .delete()
@@ -272,60 +262,57 @@ const renderContent = (content) => {
         }));
       }
     } else {
-      // ✅ Like (INSERT new reaction)
+      // Like (INSERT new reaction)
       const { error: insertError } = await supabase
         .from("user_reactions")
         .insert([{ post_id: postId, type: "love", user_id: userAuth0Id }]);
   
       if (!insertError) {
-        setPostReactions((prev) => ({
-          ...prev,
-          [postId]: [...(prev[postId] || []), { id: userAuth0Id, username: user.name }],
-        }));
+        setPostReactions((prev) => {
+          // Get the username from the user object
+          const username = user.name || user.nickname || 'User';
+          return {
+            ...prev,
+            [postId]: [...(prev[postId] || []), { id: userAuth0Id, username }],
+          };
+        });
       }
     }
   };
 
-  /**
-   * handleReplyClick: triggered when user clicks "Reply" on a post.
-   * Insert a [QUOTE="username"] block into the editor and scroll to it.
-   */
   const handleReplyClick = (reply) => {
     setReplyingTo(reply);
   
-    // 1️⃣ Extract clean text without nested quotes
+    // Extract clean text without nested quotes
     let cleanText = '';
     try {
       const parsed = JSON.parse(reply.content);
       const contentState = convertFromRaw(parsed);
       cleanText = contentState
         .getPlainText()
-        .replace(/\[QUOTE=".*?"\].*?\[\/QUOTE\]/gs, '') // ✅ Remove nested quotes
+        .replace(/\[QUOTE=".*?"\].*?\[\/QUOTE\]/gs, '')
         .trim();
     } catch (e) {
       cleanText = reply.content || '';
     }
   
-    // 2️⃣ Create blocks: One for the quote, one for spacing, and one empty block for the cursor
+    // Create blocks: Quote block, spacing block, and empty cursor block
     const quoteBlock = new ContentBlock({
       key: genKey(),
       type: 'unstyled',
       text: `[QUOTE="${reply.username}"]${cleanText}[/QUOTE]`,
     });
   
-    const spacingBlock = new ContentBlock({ key: genKey(), type: 'unstyled', text: '' }); // ✅ Empty line for spacing
+    const spacingBlock = new ContentBlock({ key: genKey(), type: 'unstyled', text: '' });
+    const emptyBlock = new ContentBlock({ key: genKey(), type: 'unstyled', text: '' });
   
-    const emptyBlock = new ContentBlock({ key: genKey(), type: 'unstyled', text: '' }); // ✅ Active cursor starts here
-  
-    // 3️⃣ Build a new ContentState from these blocks
+    // Build ContentState and EditorState
     const newContentState = ContentState.createFromBlockArray([quoteBlock, spacingBlock, emptyBlock]);
-  
-    // 4️⃣ Build an EditorState from that content
     let newEditorState = EditorState.createWithContent(newContentState);
   
-    // 5️⃣ Force the cursor to be in the empty block
+    // Position cursor in empty block
     const blockArray = newContentState.getBlocksAsArray();
-    const emptyBlockKey = blockArray[2].getKey(); // ✅ Cursor lands on the last block
+    const emptyBlockKey = blockArray[2].getKey();
   
     const selection = new SelectionState({
       anchorKey: emptyBlockKey,
@@ -338,19 +325,16 @@ const renderContent = (content) => {
   
     newEditorState = EditorState.forceSelection(newEditorState, selection);
   
-    // 6️⃣ Apply new editor state & trigger focus
+    // Update state and trigger focus
     setReplyEditorState(newEditorState);
     setFocusTrigger(Date.now());
   
-    // 7️⃣ Optional: Small delay before scrolling to ensure smooth UI update
+    // Scroll to reply box
     setTimeout(() => {
       replyBoxRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
   };
 
-  /**
-   * handleReply: post the new reply to the server.
-   */
   const handleReply = async (parentId = null) => {
     try {
       const token = await getAccessTokenSilently();
@@ -383,17 +367,12 @@ const renderContent = (content) => {
     }
   };
 
-
   // Loading or not found states
   if (loading) return <CircularProgress />;
   if (!threadData?.post) return <Typography>Thread not found</Typography>;
 
-  const visibleTags = threadData?.post?.tags ? threadData.post.tags.slice(0, 4) : [];
-  const moreTagsCount = threadData?.post?.tags?.length > 4 ? threadData.post.tags.length - 4 : 0;
-
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      
       {/* Thread Title + Tags */}
       <Box 
         sx={{ 
@@ -401,16 +380,16 @@ const renderContent = (content) => {
           justifyContent: 'space-between', 
           alignItems: 'center', 
           mb: 1,
-          position: 'relative', // Add relative positioning
-          overflow: 'hidden'    // Prevent content from spilling outside
+          position: 'relative',
+          overflow: 'hidden'
         }}
       >
         <Typography 
           variant="h3" 
           sx={{ 
             fontWeight: '400',
-            position: 'relative', // Ensure text is above background elements
-            zIndex: 1           // Higher z-index to ensure it's on top
+            position: 'relative',
+            zIndex: 1
           }}
         >
           {threadData.post.title}
@@ -418,9 +397,10 @@ const renderContent = (content) => {
         <ActiveTags tags={threadData.post.tags} limit={3} />
       </Box>
   
-      {/* ✅ Render the Main Post */}
-      <PostCard 
-        post={threadData.post} 
+      {/* Thread Starter Card */}
+      <IndividualPost 
+        post={threadData.post}
+        isThreadStarter={true}
         isHighlighted={threadData.post.id === Number(highlightedReplyId)}
         user={user}
         handleLikeClick={handleLikeClick}
@@ -429,28 +409,45 @@ const renderContent = (content) => {
         postReactions={postReactions}
       />
   
-      {/* ✅ Render Replies */}
+      {/* Reply Header */}
+      {threadData.replies.length > 0 && (
+        <Box sx={{ mt: 3, mb: 2 }}>
+          <Typography variant="h5" component="h2">
+            Replies ({threadData.replies.length})
+          </Typography>
+        </Box>
+      )}
+  
+      {/* Render Replies */}
       {threadData.replies.map((reply) => (
-        <PostCard 
+        <IndividualPost 
           key={reply.id}
           post={reply}
+          isReply={true}
+          isThreadStarter={false}
           isHighlighted={reply.id === Number(highlightedReplyId)}
           user={user}
           handleLikeClick={handleLikeClick}
           handleReplyClick={handleReplyClick}
           renderContent={renderContent}
           postReactions={postReactions}
+          highlightedReplyId={highlightedReplyId}
         />
       ))}
   
       {/* Reply Editor */}
       <Box ref={replyBoxRef} sx={{ mt: 3, scrollMarginTop: '64px' }}>
-        <EditorWithFormatting
-          editorState={replyEditorState}
-          setEditorState={setReplyEditorState}
-          autoFocus={replyingTo !== null}
-          focusTrigger={focusTrigger}
-        />
+        <Paper sx={{ p: 2, mb: 2 }}>
+          <Typography variant="h6" gutterBottom>
+            Post a Reply
+          </Typography>
+          <EditorWithFormatting
+            editorState={replyEditorState}
+            setEditorState={setReplyEditorState}
+            autoFocus={replyingTo !== null}
+            focusTrigger={focusTrigger}
+          />
+        </Paper>
       </Box>
   
       {/* Post Reply & Historical Reply Buttons */}
@@ -521,4 +518,4 @@ const renderContent = (content) => {
   );
 };
 
-export default ThreadView;
+export default ViewSingleThread;

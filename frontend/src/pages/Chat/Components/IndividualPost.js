@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useAuth } from '../../../hooks/useAuth';
 
-const PostCard = ({ 
+const IndividualPost = ({ 
   post, 
-  isReply, 
+  isReply,
+  isThreadStarter,
   isHighlighted, 
   user, 
   handleLikeClick, 
@@ -20,7 +21,7 @@ const PostCard = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
   const { getAccessTokenSilently } = useAuth0();
-  const { isAdmin } = useAuth(); // Use your auth hook to get role information
+  const { isAdmin } = useAuth();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -67,7 +68,202 @@ const PostCard = ({
     }
   };
 
-  // Mobile layout
+  // Thread starter specific styles and rendering
+  if (isThreadStarter) {
+    return (
+      <>
+        <Paper
+          elevation={0}
+          sx={{
+            mb: 1,
+            border: '1px solid',
+            borderColor: 'divider',
+            borderRadius: 2,
+            backgroundColor: 'background.paper',
+            transition: 'background-color 0.3s ease',
+            scrollMarginTop: '100px',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Thread starter header */}
+          <Box sx={{ 
+            bgcolor: 'primary.main', 
+            color: 'white',
+            px: 2,
+            py: 1,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <Typography variant="h6">Thread Starter</Typography>
+            <Typography variant="body2">
+              {new Date(post.created_at).toLocaleString()}
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: 'flex', gap: 2, p: 2, bgcolor: 'background.paper', minHeight: 120 }}>
+            {/* Left Side: Avatar + Username */}
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              width: 160, 
+              bgcolor: 'grey.100', 
+              p: 1, 
+              borderRadius: '8px 0 0 8px', 
+              borderRight: '1px solid', 
+              borderColor: 'divider', 
+              flexShrink: 0, 
+              minHeight: 120 
+            }}>
+              <Avatar 
+                src={post.avatar_url} 
+                alt={post.username || post.name || 'User'} 
+                sx={{ width: 60, height: 60 }} 
+              />
+              <Typography 
+                variant="subtitle2" 
+                sx={{ 
+                  textAlign: 'center', 
+                  fontWeight: 600, 
+                  mt: 1, 
+                  wordBreak: 'break-word', 
+                  overflowWrap: 'break-word', 
+                  maxWidth: '100%', 
+                  display: 'block' 
+                }}
+              >
+                {post.username || (post.auth0_id?.startsWith('google-oauth2|') ? (post.name || post.email?.split('@')[0] || 'Google User') : 'User')}
+              </Typography>
+              <Typography 
+                variant="caption" 
+                sx={{ 
+                  color: 'gray',
+                  textAlign: 'center',
+                  mt: 0.5
+                }}
+              >
+                {post.tagline || (post.auth0_id?.startsWith('google-oauth2|') ? 'Google User' : 'Member')}
+              </Typography>
+            </Box>
+
+            {/* Main Content */}
+            <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', minHeight: 120 }}>
+              <Box sx={{ mt: 0.5, width: '100%', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+                {renderContent(post.content)}
+              </Box>
+
+              {/* Bottom Row: Like/Reply */}
+              <Box sx={{ pt: 1, mt: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                <Box sx={{ flexGrow: 1 }}>
+                  {likedUsers.length > 0 && (
+                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                      Liked by{" "}
+                      {likedUsers.slice(0, 2).map((user, index) => (
+                        <React.Fragment key={user.id}>
+                          <Link 
+                            component="button" 
+                            onClick={() => navigate(`/profile/${user.id}`)} 
+                            sx={{ textDecoration: "none", fontWeight: "bold" }}
+                          >
+                            {user.username}
+                          </Link>
+                          {index < Math.min(likedUsers.length - 1, 1) ? ", " : ""}
+                          {index === 0 && likedUsers.length === 2 ? " and " : ""}
+                        </React.Fragment>
+                      ))}
+                      {likedUsers.length > 2 && <> and {likedUsers.length - 2} others</>}
+                    </Typography>
+                  )}
+                </Box>
+
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <Typography 
+                    variant="caption"
+                    sx={{
+                      cursor: 'pointer',
+                      fontWeight: userHasLiked ? 'bold' : 'normal',
+                      color: userHasLiked ? '#2E7D32' : 'primary.main',
+                      transition: 'color 0.2s ease-in-out, font-weight 0.2s ease-in-out',
+                      '&:hover': { textDecoration: 'underline' },
+                      width: '45px',
+                      display: 'inline-block',
+                      textAlign: 'center',
+                      whiteSpace: 'nowrap',
+                    }}
+                    onClick={() => handleLikeClick(post.id)}
+                  >
+                    {userHasLiked ? 'Liked' : 'Like'}
+                  </Typography>
+                  <Typography 
+                    variant="caption" 
+                    color="primary" 
+                    sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                    onClick={() => handleReplyClick(post)}
+                  >
+                    Reply
+                  </Typography>
+                  
+                  {/* Delete button for admins or post owner */}
+                  {canDelete && (
+                    <Tooltip title="Delete Thread">
+                      <IconButton 
+                        size="small" 
+                        color="error" 
+                        onClick={() => setDeleteDialogOpen(true)}
+                        sx={{ ml: 1, p: 0 }}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </Paper>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog
+          open={deleteDialogOpen}
+          onClose={() => !isDeleting && setDeleteDialogOpen(false)}
+        >
+          <DialogTitle>
+            Delete Thread
+          </DialogTitle>
+          <DialogContent>
+            <Typography>
+              Are you sure you want to delete this thread? This will delete the entire thread and all replies. This action cannot be undone.
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button 
+              onClick={() => setDeleteDialogOpen(false)} 
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleDelete} 
+              color="error" 
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <>
+                  <CircularProgress size={16} color="inherit" sx={{ mr: 1 }} />
+                  Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
+    );
+  }
+
+  // Mobile layout for replies
   if (isMobile) {
     return (
       <>
@@ -95,7 +291,7 @@ const PostCard = ({
           }}>
             <Avatar 
               src={post.avatar_url} 
-              alt={post.username} 
+              alt={post.username || 'User'} 
               sx={{ width: 36, height: 36, mr: 1.5 }} 
             />
             <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
@@ -109,7 +305,7 @@ const PostCard = ({
                   whiteSpace: 'nowrap'
                 }}
               >
-                {post.username}
+                {post.username || 'Anonymous User'}
               </Typography>
               <Typography variant="caption" color="text.secondary">
                 {new Date(post.created_at).toLocaleString(undefined, {
@@ -213,7 +409,7 @@ const PostCard = ({
     );
   }
 
-  // Desktop layout - keep original
+  // Desktop layout - for replies
   return (
     <>
       <Paper
@@ -231,13 +427,47 @@ const PostCard = ({
       >
         <Box sx={{ display: 'flex', gap: 2, p: 2, bgcolor: isReply ? 'background.default' : 'background.paper', minHeight: 120 }}>
           {/* Left Side: Avatar + Username */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 160, bgcolor: 'grey.100', p: 1, borderRadius: '8px 0 0 8px', borderRight: '1px solid', borderColor: 'divider', flexShrink: 0, minHeight: 120 }}>
-            <Avatar src={post.avatar_url} alt={post.username} sx={{ width: 60, height: 60 }} />
-            <Typography variant="subtitle2" sx={{ textAlign: 'center', fontWeight: 600, mt: 1, wordBreak: 'break-word', overflowWrap: 'break-word', maxWidth: '100%', display: 'block' }}>
-              {post.username}
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            width: 160, 
+            bgcolor: 'grey.100', 
+            p: 1, 
+            borderRadius: '8px 0 0 8px', 
+            borderRight: '1px solid', 
+            borderColor: 'divider', 
+            flexShrink: 0, 
+            minHeight: 120 
+          }}>
+            <Avatar 
+              src={post.avatar_url} 
+              alt={post.username || post.name || 'User'} 
+              sx={{ width: 60, height: 60 }} 
+            />
+            <Typography 
+              variant="subtitle2" 
+              sx={{ 
+                textAlign: 'center', 
+                fontWeight: 600, 
+                mt: 1, 
+                wordBreak: 'break-word', 
+                overflowWrap: 'break-word', 
+                maxWidth: '100%', 
+                display: 'block' 
+              }}
+            >
+              {post.username || post.name || post.email || 'User'}
             </Typography>
-            <Typography variant="caption" sx={{ color: 'gray' }}>
-              {post.tagline}
+            <Typography 
+              variant="caption" 
+              sx={{ 
+                color: 'gray',
+                textAlign: 'center',
+                mt: 0.5 
+              }}
+            >
+              {post.tagline || (post.email ? 'Google User' : 'Member')}
             </Typography>
           </Box>
 
@@ -275,10 +505,15 @@ const PostCard = ({
                     Liked by{" "}
                     {likedUsers.slice(0, 2).map((user, index) => (
                       <React.Fragment key={user.id}>
-                        <Link to={`/profile/${user.id}`} style={{ textDecoration: "none", color: "inherit", fontWeight: "bold" }}>
+                        <Link 
+                          component="button" 
+                          onClick={() => navigate(`/profile/${user.id}`)} 
+                          sx={{ textDecoration: "none", fontWeight: "bold" }}
+                        >
                           {user.username}
                         </Link>
-                        {index < likedUsers.length - 1 ? (index === likedUsers.length - 2 ? " and " : ", ") : ""}
+                        {index < Math.min(likedUsers.length - 1, 1) ? ", " : ""}
+                        {index === 0 && likedUsers.length === 2 ? " and " : ""}
                       </React.Fragment>
                     ))}
                     {likedUsers.length > 2 && <> and {likedUsers.length - 2} others</>}
@@ -361,4 +596,4 @@ const PostCard = ({
   );
 };
 
-export default PostCard;
+export default IndividualPost;
