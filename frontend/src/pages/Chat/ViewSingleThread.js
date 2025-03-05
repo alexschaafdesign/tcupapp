@@ -23,6 +23,8 @@ import HistoricalReplyForm from './Components/HistoricalReplyForm';
 import EditorWithFormatting from './Components/EditorWithFormatting';
 import ActiveTags from './Components/ActiveTags';
 import IndividualPost from './Components/IndividualPost';
+import { stateToHTML } from 'draft-js-export-html';
+import parse from 'html-react-parser';
 
 const ViewSingleThread = () => {
   const { threadId } = useParams();
@@ -151,24 +153,49 @@ const ViewSingleThread = () => {
       const contentObj = typeof content === 'string' ? JSON.parse(content) : content;
       const contentState = convertFromRaw(contentObj);
       const plainText = contentState.getPlainText();
-
+  
+      // HTML options for stateToHTML conversion
+      const exportOptions = {
+        entityStyleFn: (entity) => {
+          const entityType = entity.get('type').toLowerCase();
+          if (entityType === 'link') {
+            const data = entity.getData();
+            return {
+              element: 'a',
+              attributes: {
+                href: data.url,
+                target: '_blank',
+                rel: 'noopener noreferrer',
+                className: 'post-link'
+              }
+            };
+          }
+        }
+      };
+  
       // Handle quotes
       if (plainText.includes('[QUOTE="') && plainText.includes('[/QUOTE]')) {
         const parts = [];
         const quoteRegex = /\[QUOTE="([^"]+)"\]([\s\S]*?)\[\/QUOTE\]/g;
         let match;
         let lastIndex = 0;
-
+  
         while ((match = quoteRegex.exec(plainText)) !== null) {
           // Add text before the quote
           if (match.index > lastIndex) {
+            const beforeText = plainText.substring(lastIndex, match.index);
+            // For text parts, we'll convert that portion to HTML
+            const textBlocks = beforeText.split('\n').map((line, i) => 
+              `<p key="line-${i}">${line}</p>`
+            ).join('');
+            
             parts.push(
-              <Typography key={`text-${lastIndex}`} variant="body1" component="div" sx={{ whiteSpace: 'pre-wrap', my: 1 }}>
-                {plainText.substring(lastIndex, match.index)}
-              </Typography>
+              <Box key={`text-${lastIndex}`} sx={{ my: 1 }}>
+                {parse(textBlocks)}
+              </Box>
             );
           }
-
+  
           // Add the quote
           const author = match[1];
           const quoteText = match[2].trim();
@@ -193,40 +220,49 @@ const ViewSingleThread = () => {
               </Typography>
             </Paper>
           );
-
+  
           lastIndex = match.index + match[0].length;
         }
-
+  
         // Add text after the last quote
         if (lastIndex < plainText.length) {
+          const afterText = plainText.substring(lastIndex);
+          const textBlocks = afterText.split('\n').map((line, i) => 
+            `<p key="line-${i}">${line}</p>`
+          ).join('');
+          
           parts.push(
-            <Typography key={`text-${lastIndex}`} variant="body1" component="div" sx={{ whiteSpace: 'pre-wrap', my: 1 }}>
-              {plainText.substring(lastIndex)}
-            </Typography>
+            <Box key={`text-${lastIndex}`} sx={{ my: 1 }}>
+              {parse(textBlocks)}
+            </Box>
           );
         }
-
+  
         return <Box sx={{ mt: 1 }}>{parts}</Box>;
       }
       
-      // For non-quoted content, use the Draft.js Editor component
-      const editorState = EditorState.createWithContent(contentState);
+      // For non-quoted content, convert to HTML with preserved links
+      const html = stateToHTML(contentState, exportOptions);
       
       return (
-        <Box sx={{ 
-          mt: 1,
-          '.DraftEditor-root': { 
-            '.public-DraftStyleDefault-block': {
-              marginTop: '0.5em',
-              marginBottom: '0.5em',
+        <Box 
+          sx={{ 
+            mt: 1,
+            // Style links in the content
+            '& a.post-link': {
+              color: 'primary.main',
+              textDecoration: 'underline',
+              '&:hover': {
+                textDecoration: 'none'
+              }
+            },
+            // Preserve paragraph spacing
+            '& p': {
+              my: 1
             }
-          }
-        }}>
-          <Editor 
-            editorState={editorState} 
-            onChange={() => {}} 
-            readOnly={true}
-          />
+          }}
+        >
+          {parse(html)}
         </Box>
       );
     } catch (error) {

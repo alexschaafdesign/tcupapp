@@ -10,7 +10,19 @@ import {
   FormatListNumbered,
   Link as LinkIcon
 } from '@mui/icons-material';
-import { Editor, EditorState, RichUtils, CompositeDecorator, Entity } from 'draft-js';
+import { 
+  Editor, 
+  EditorState, 
+  RichUtils, 
+  CompositeDecorator, 
+  Modifier,
+  convertToRaw,
+  convertFromRaw
+} from 'draft-js';
+// Import this to convert content to HTML for display
+// You'll need to install this package:
+// npm install draft-js-export-html
+import { stateToHTML } from 'draft-js-export-html';
 
 // Link decorator component
 const LinkComponent = (props) => {
@@ -41,20 +53,54 @@ const decorator = new CompositeDecorator([
   },
 ]);
 
-const EditorWithFormatting = ({ editorState, setEditorState, autoFocus, focusTrigger }) => {
+// HTML options for stateToHTML conversion
+const exportOptions = {
+  entityStyleFn: (entity) => {
+    const entityType = entity.get('type').toLowerCase();
+    if (entityType === 'link') {
+      const data = entity.getData();
+      return {
+        element: 'a',
+        attributes: {
+          href: data.url,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          className: 'editor-link'
+        }
+      };
+    }
+  }
+};
+
+const EditorWithFormatting = ({ 
+  editorState, 
+  setEditorState, 
+  autoFocus, 
+  focusTrigger,
+  onSave // Add a save handler prop
+}) => {
   const editorRef = useRef(null);
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
   const [linkText, setLinkText] = useState('');
-
+  
   // Initialize with decorator when component mounts
   useEffect(() => {
     if (!editorState) {
       setEditorState(EditorState.createEmpty(decorator));
+    } else {
+      // Ensure the decorator is applied to existing editor state too
+      const currentContent = editorState.getCurrentContent();
+      const rawContent = convertToRaw(currentContent);
+      const newEditorState = EditorState.createWithContent(
+        convertFromRaw(rawContent),
+        decorator
+      );
+      setEditorState(newEditorState);
     }
   }, []);
 
-  // Focus the editor whenever autoFocus or focusTrigger changes.
+  // Focus the editor whenever autoFocus or focusTrigger changes
   useEffect(() => {
     if (autoFocus && editorRef.current) {
       setTimeout(() => {
@@ -63,8 +109,8 @@ const EditorWithFormatting = ({ editorState, setEditorState, autoFocus, focusTri
     }
   }, [autoFocus, focusTrigger]);
 
-  const handleKeyCommand = (command, editor) => {
-    const newState = RichUtils.handleKeyCommand(editor, command);
+  const handleKeyCommand = (command, editorState) => {
+    const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       setEditorState(newState);
       return 'handled';
@@ -143,19 +189,19 @@ const EditorWithFormatting = ({ editorState, setEditorState, autoFocus, focusTri
         focusOffset: endOffset,
       });
       
-      // Finally, apply the link entity to the selected text
-      const newEditorState = EditorState.push(
+      // Apply the link entity to the selected text and update the editor state
+      let newEditorState = EditorState.push(
         editorState,
         contentStateWithText,
         'insert-characters'
       );
       
-      const editorWithSelectedText = EditorState.forceSelection(
+      newEditorState = EditorState.forceSelection(
         newEditorState,
         newSelection
       );
       
-      setEditorState(RichUtils.toggleLink(editorWithSelectedText, newSelection, entityKey));
+      setEditorState(RichUtils.toggleLink(newEditorState, newSelection, entityKey));
     }
     
     setLinkDialogOpen(false);
@@ -168,6 +214,29 @@ const EditorWithFormatting = ({ editorState, setEditorState, autoFocus, focusTri
         editorRef.current.focus();
       }
     }, 0);
+  };
+
+  // Method to get content as HTML (for saving/displaying)
+  const getContentAsHTML = () => {
+    const contentState = editorState.getCurrentContent();
+    return stateToHTML(contentState, exportOptions);
+  };
+
+  // Method to get content as raw (for saving/loading)
+  const getContentAsRaw = () => {
+    const contentState = editorState.getCurrentContent();
+    return JSON.stringify(convertToRaw(contentState));
+  };
+
+  // Method to handle saving content
+  const handleSave = () => {
+    if (onSave) {
+      // Pass both HTML and raw formats
+      onSave({
+        html: getContentAsHTML(),
+        raw: getContentAsRaw()
+      });
+    }
   };
 
   const currentInlineStyle = editorState.getCurrentInlineStyle();
@@ -183,9 +252,6 @@ const EditorWithFormatting = ({ editorState, setEditorState, autoFocus, focusTri
       editorRef.current.focus();
     }
   };
-
-  // Fix missing Modifier import
-  const { Modifier } = require('draft-js');
 
   return (
     <Paper variant="outlined" sx={{ mb: 2, p: 1 }}>
@@ -265,16 +331,36 @@ const EditorWithFormatting = ({ editorState, setEditorState, autoFocus, focusTri
             minHeight: '100px',
             width: '100%',
           },
+          // Add some styling to make links visible in the editor
+          '& a': {
+            color: '#2196f3',
+            textDecoration: 'underline',
+          }
         }}
       >
         <Editor
-          ref={(node) => (editorRef.current = node)}
+          ref={editorRef}
           editorState={editorState}
           onChange={setEditorState}
           handleKeyCommand={handleKeyCommand}
           placeholder="Enter your post here..."
+          // Ensure links are clickable in editor (may need additional handling)
+          spellCheck={true}
         />
       </Box>
+
+      {/* Save Button */}
+      {onSave && (
+        <Box sx={{ mt: 1, display: 'flex', justifyContent: 'flex-end' }}>
+          <Button 
+            variant="contained" 
+            color="primary"
+            onClick={handleSave}
+          >
+            Save
+          </Button>
+        </Box>
+      )}
 
       {/* Link Dialog */}
       <Dialog open={linkDialogOpen} onClose={() => setLinkDialogOpen(false)}>
@@ -318,4 +404,41 @@ const EditorWithFormatting = ({ editorState, setEditorState, autoFocus, focusTri
   );
 };
 
+// Example of how you might use this component with saved content handling
+const PostEditor = () => {
+  const [editorState, setEditorState] = useState(null);
+  const [savedContent, setSavedContent] = useState(null);
+
+  // Handle saving the content
+  const handleSave = (content) => {
+    setSavedContent(content);
+    // Here you would typically send the content to your backend
+    console.log('Content saved:', content);
+  };
+
+  return (
+    <div>
+      <h2>Create Post</h2>
+      <EditorWithFormatting
+        editorState={editorState}
+        setEditorState={setEditorState}
+        autoFocus={true}
+        onSave={handleSave}
+      />
+      
+      {savedContent && (
+        <div>
+          <h3>Preview</h3>
+          <div
+            dangerouslySetInnerHTML={{ __html: savedContent.html }}
+            style={{ border: '1px solid #ccc', padding: '10px', marginTop: '10px' }}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Add both export types to accommodate existing imports
+export { EditorWithFormatting, PostEditor };
 export default EditorWithFormatting;
