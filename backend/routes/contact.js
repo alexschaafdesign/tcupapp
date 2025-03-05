@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
     
     const msg = {
       to: recipientEmails,
-      from: process.env.SENDGRID_VERIFIED_SENDER, // Must be verified in SendGrid
+      from: `tCUPBOARD Admin <${process.env.SENDGRID_VERIFIED_SENDER}>`,
       subject: `Website Contact: ${subject}`,
       text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
       html: `
@@ -45,7 +45,7 @@ router.post('/', async (req, res) => {
     // Send confirmation email to the sender
     const confirmationMsg = {
       to: email,
-      from: process.env.SENDGRID_VERIFIED_SENDER,
+      from: `tCUPBOARD Admin <${process.env.SENDGRID_VERIFIED_SENDER}>`,
       subject: 'We received your message - tCUPBOARD',
       text: `Hi ${name},\n\nThank you for contacting us. We have received your message and will get back to you as soon as possible.\n\nRegards,\nTCUP Team`,
       html: `

@@ -67,7 +67,7 @@ router.post('/', async (req, res) => {
 
     const msg = {
       to: recipients,
-      from: process.env.SENDGRID_VERIFIED_SENDER,
+      from: `tCUPBOARD Admin <${process.env.SENDGRID_VERIFIED_SENDER}>`,
       subject: 'New Power Pledge Submission',
       html: `
         <h2>New Power Pledge Submission</h2>
