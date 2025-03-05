@@ -95,9 +95,7 @@ const PostList = ({ posts }) => {
 
                       {/* Bottom Section - Preview Text and Stats */}
                       <Box sx={{ width: '100%', pl: 6 }}>
-                        {/* We're removing tags from mobile view as requested */}
-                        
-                        {/* Preview Text - Shorter on mobile */}
+                        {/* Preview Text */}
                         <Typography 
                           variant="body2" 
                           color="text.secondary"
@@ -118,10 +116,20 @@ const PostList = ({ posts }) => {
                           ) : 'No preview available'}
                         </Typography>
                         
-                        {/* Reply Count */}
-                        <Typography variant="caption" color="text.secondary">
-                          {post.reply_count || 0} replies
-                        </Typography>
+                        {/* Bottom row with replies count and tags */}
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          {/* Reply Count */}
+                          <Typography variant="caption" color="text.secondary">
+                            {post.reply_count || 0} replies
+                          </Typography>
+                          
+                          {/* Tags in bottom right */}
+                          {post.tags && post.tags.length > 0 && (
+                            <Box>
+                              <ActiveTags tags={post.tags.slice(0, TAG_LIMIT)} small />
+                            </Box>
+                          )}
+                        </Box>
                       </Box>
                     </>
                   ) : (
@@ -164,7 +172,12 @@ const PostList = ({ posts }) => {
                             {post.title}
                           </Typography>
 
-                          {/* Removed tags as requested */}
+                          {/* Adding tags back for desktop */}
+                          {post.tags && post.tags.length > 0 && (
+                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexWrap: 'wrap', gap: 0.5 }}>
+                              <ActiveTags tags={post.tags.slice(0, TAG_LIMIT)} small />
+                            </Box>
+                          )}
                         </Box>
 
                         {/* Preview Text */}
