@@ -452,7 +452,7 @@ const ViewSingleThread = () => {
         canEditPost={canEditPost(threadData.post)}
       />
 
-      <ActiveTags tags={threadData.post.tags} limit={3} />
+    <ActiveTags tags={threadData.post.tags} limit={3} />
 
   
       {/* Reply Header */}
@@ -479,7 +479,7 @@ const ViewSingleThread = () => {
           postReactions={postReactions}
           highlightedReplyId={highlightedReplyId}
           handleEditClick={handleEditClick}
-          canEditPost={canEditPost(threadData.post)}
+          canEditPost={canEditPost(reply)}
         />
       ))}
   
