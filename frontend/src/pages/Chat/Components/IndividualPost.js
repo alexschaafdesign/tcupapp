@@ -7,7 +7,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useAuth } from '../../../hooks/useAuth';
-import EditPost from './EditPost'; // Import the EditPostForm component
+import EditPost from './EditPost';
+import ReactionBar from './ReactionBar';
 
 // Image display component
 const PostImageGrid = ({ images }) => {
