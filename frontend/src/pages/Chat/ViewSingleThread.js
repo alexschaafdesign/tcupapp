@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { createClient } from '@supabase/supabase-js';
-import { useNavigate } from 'react-router-dom';
-import { Container, Link, Tooltip, Chip, Typography, Button, Avatar, Box, CircularProgress, Paper, IconButton, Dialog } from '@mui/material';
-import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Container, Link, Tooltip, Chip, Typography, Button, Avatar, Box, CircularProgress, Paper, IconButton, Dialog, useMediaQuery, useTheme } from '@mui/material';
+import { Edit as EditIcon, Delete as DeleteIcon, ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import {
   EditorState,
   ContentState,
@@ -41,8 +40,10 @@ const ViewSingleThread = () => {
   const [replyEditorState, setReplyEditorState] = useState(EditorState.createEmpty());
   const [focusTrigger, setFocusTrigger] = useState(0);
   const [replyImages, setReplyImages] = useState([]);
-
-
+  
+  // Theme for responsive design
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const replyBoxRef = useRef(null);
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -415,12 +416,37 @@ const ViewSingleThread = () => {
     }
   };
 
+  // Navigate back to the forum
+  const handleBackClick = () => {
+    navigate('/chat');
+  };
+
   // Loading or not found states
   if (loading) return <CircularProgress />;
   if (!threadData?.post) return <Typography>Thread not found</Typography>;
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* Mobile Back Button */}
+      {isMobile && (
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+          <Button 
+            startIcon={<ArrowBackIcon />} 
+            onClick={handleBackClick}
+            sx={{ 
+              textTransform: 'none', 
+              fontWeight: 'medium',
+              color: 'text.primary',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+              }
+            }}
+          >
+            Back to chat
+          </Button>
+        </Box>
+      )}
+      
       {/* Thread Title + Tags */}
       <Box 
         sx={{ 
@@ -432,7 +458,6 @@ const ViewSingleThread = () => {
           overflow: 'hidden'
         }}
       >
-
       </Box>
   
       {/* Thread Starter Card */}
@@ -449,8 +474,7 @@ const ViewSingleThread = () => {
         canEditPost={canEditPost(threadData.post)}
       />
 
-    <ActiveTags tags={threadData.post.tags} limit={3} />
-
+      <ActiveTags tags={threadData.post.tags} limit={3} />
   
       {/* Reply Header */}
       {threadData.replies.length > 0 && (
@@ -495,7 +519,7 @@ const ViewSingleThread = () => {
           <ChatImageUpload 
            images={replyImages} 
            setImages={setReplyImages} 
-    />
+          />
         </Paper>
       </Box>
   
@@ -508,30 +532,7 @@ const ViewSingleThread = () => {
         >
           Post Reply
         </Button>
-
       </Box>
-  
-      {/* Historical Reply Modal 
-      {showHistoricalReplyModal && (
-        <Dialog
-          open
-          onClose={() => setShowHistoricalReplyModal(false)}
-          maxWidth="md"
-          fullWidth
-        >
-          <HistoricalReplyForm
-            threadId={threadId}
-            onReplyCreated={(reply) => {
-              setThreadData((prev) => ({
-                ...prev,
-                replies: [...prev.replies, reply],
-              }));
-              setShowHistoricalReplyModal(false);
-            }}
-            onClose={() => setShowHistoricalReplyModal(false)}
-          />
-        </Dialog>
-      )}*/}
   
       {/* Editing Post Modal */}
       {editingPost && (
