@@ -39,6 +39,7 @@ import { useNavigate } from 'react-router-dom';
 import ProfileImageAdjuster from "../../components/ProfileImageAdjuster";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import palette from '../../styles/colors/palette';
 
 function UserProfile() {
   const { uploadImage, uploading, uploadProgress } = useCloudinaryUpload();
@@ -428,10 +429,10 @@ function UserProfile() {
         {/* Header with background color */}
         <Box sx={{ 
           height: '120px', 
-          background: 'linear-gradient(120deg, #9c27b0 20%, #673ab7 80%)',
+          background: palette.secondary.main,
           position: 'relative'
         }}>
-          <Chip 
+         {/* <Chip 
             label="TCUP Member" 
             color="secondary" 
             size="small"
@@ -443,8 +444,8 @@ function UserProfile() {
               color: '#673ab7',
               fontWeight: 'bold'
             }} 
-          />
-        </Box>
+          />*/}
+        </Box> 
         
         {/* Main content */}
         <Box sx={{ px: 4, pb: 4, position: 'relative' }}>
@@ -517,7 +518,7 @@ function UserProfile() {
               {username || user?.name}
             </Typography>
             <Typography variant="subtitle1" color="primary" sx={{ mt: 0.5 }}>
-              {tagline || 'TCUP Member'}
+              {tagline || []}
             </Typography>
             <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
               Joined {joinDate}
@@ -717,7 +718,7 @@ function UserProfile() {
                   </Fade>
                 ) : (
                   <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
-                    {tagline || 'TCUP Member'}
+                    {tagline || []}
                   </Typography>
                 )}
               </Box>

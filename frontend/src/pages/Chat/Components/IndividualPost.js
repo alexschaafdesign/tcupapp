@@ -247,7 +247,7 @@ const IndividualPost = ({
                     {post.username || 'Anonymous'}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    {post.tagline || 'Member'}
+                    {post.tagline || []}
                   </Typography>
                 </Box>
               </Box>
@@ -338,7 +338,7 @@ const IndividualPost = ({
                   mt: 0.5
                 }}
               >
-                {post.tagline || (post.auth0_id?.startsWith('google-oauth2|') ? 'Google User' : 'Member')}
+                {post.tagline || []}
               </Typography>
             </Box>
 
@@ -721,7 +721,7 @@ const IndividualPost = ({
                 mt: 0.5 
               }}
             >
-              {post.tagline || (post.email ? 'Google User' : 'Member')}
+              {post.tagline || []}
             </Typography>
           </Box>
 

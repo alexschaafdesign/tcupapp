@@ -16,7 +16,7 @@ const ActiveTags = ({ tags, limit, showTooltip = true }) => {
           label={tag.name}
           size="small"
           sx={{
-            bgcolor: palette.secondary.light,
+            bgcolor: palette.secondary.main,
             color: palette.neutral.black,
             textTransform: 'uppercase',
             '& .MuiChip-label': { px: 1, fontSize: '0.75rem' },

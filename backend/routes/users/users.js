@@ -110,6 +110,28 @@ router.get('/shows', authMiddleware, async (req, res) => {
   }
 });
 
+// Update user's bio
+router.put('/bio', authMiddleware, async (req, res) => {
+  try {
+    const { bio } = req.body;
+    const auth0Id = req.user.sub;
+
+    const result = await pool.query(
+      'UPDATE users SET bio = $1 WHERE auth0_id = $2 RETURNING bio',
+      [bio, auth0Id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ success: true, bio: result.rows[0].bio });
+  } catch (error) {
+    console.error('Error updating bio:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // Update user's avatars
 // In your users.js route file
 router.put('/avatar', authMiddleware, async (req, res) => {

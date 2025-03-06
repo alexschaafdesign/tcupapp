@@ -18,8 +18,6 @@ import {
 import 'draft-js/dist/Draft.css';
 import { useSearchParams } from 'react-router-dom';
 import ReactionBar from './Components/ReactionBar';
-import EditHistoricalPost from './Components/EditHistoricalPost';
-import HistoricalReplyForm from './Components/HistoricalReplyForm';
 import EditorWithFormatting from './Components/EditorWithFormatting';
 import ActiveTags from './Components/ActiveTags';
 import IndividualPost from './Components/IndividualPost';
@@ -37,7 +35,6 @@ const ViewSingleThread = () => {
   const [replyingTo, setReplyingTo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editingPost, setEditingPost] = useState(null);
-  const [showHistoricalReplyModal, setShowHistoricalReplyModal] = useState(false);
   const [postReactions, setPostReactions] = useState({});
   const [userRoles, setUserRoles] = useState([]);
   const navigate = useNavigate();
@@ -554,13 +551,7 @@ const ViewSingleThread = () => {
           }}
         >
           <Box sx={{ maxWidth: '100%', maxHeight: '100%', overflow: 'auto', bgcolor: 'background.paper', borderRadius: 1 }}>
-            <EditHistoricalPost
-              postId={editingPost.id}
-              onClose={() => {
-                setEditingPost(null);
-                fetchThread();
-              }}
-            />
+            
           </Box>
         </Box>
       )}

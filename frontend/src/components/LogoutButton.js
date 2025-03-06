@@ -5,7 +5,8 @@ function LogoutButton() {
 
   if (isAuthenticated) {
     return (
-      <button onClick={() => logout({ 
+      <button onClick={() => logout({
+        federated: true, // Clears the Auth0 SSO session
         logoutParams: {
           returnTo: window.location.origin
         }
