@@ -4,8 +4,12 @@ import pool from '../../config/db.js';
 import authMiddleware from '../../middleware/auth.js';
 import cloudinary from '../../config/cloudinary.js';
 import axios from 'axios';
+import sgMail from '@sendgrid/mail';
+
 
 const router = express.Router();
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Get a user
 router.get('/profile', authMiddleware, async (req, res) => {
