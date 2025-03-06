@@ -511,9 +511,7 @@ const ViewSingleThread = () => {
         >
           Post Reply
         </Button>
-        <Button variant="outlined" onClick={() => setShowHistoricalReplyModal(true)}>
-          Add Historical Reply
-        </Button>
+
       </Box>
   
       {/* Historical Reply Modal */}
