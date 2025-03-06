@@ -157,7 +157,7 @@ const UpdatesPreview = () => {
           onClick={viewAllUpdates}
          
         >
-          View All Updates!!
+          View All Updates
         </Button>
       </Box>
     </Box>

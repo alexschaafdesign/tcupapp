@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Chip, Tooltip, Typography } from '@mui/material';
+import palette from '../../../styles/colors/palette';
 
 const ActiveTags = ({ tags, limit, showTooltip = true }) => {
   if (!tags || tags.length === 0) return null; // Don't render if no tags exist
@@ -15,8 +16,9 @@ const ActiveTags = ({ tags, limit, showTooltip = true }) => {
           label={tag.name}
           size="small"
           sx={{
-            bgcolor: 'primary.light',
-            color: 'primary.text',
+            bgcolor: palette.secondary.light,
+            color: palette.neutral.black,
+            textTransform: 'uppercase',
             '& .MuiChip-label': { px: 1, fontSize: '0.75rem' },
           }}
         />

@@ -435,17 +435,7 @@ const ViewSingleThread = () => {
           overflow: 'hidden'
         }}
       >
-        <Typography 
-          variant="h3" 
-          sx={{ 
-            fontWeight: '400',
-            position: 'relative',
-            zIndex: 1
-          }}
-        >
-          {threadData.post.title}
-        </Typography>
-        <ActiveTags tags={threadData.post.tags} limit={3} />
+
       </Box>
   
       {/* Thread Starter Card */}
@@ -461,6 +451,9 @@ const ViewSingleThread = () => {
         handleEditClick={handleEditClick}
         canEditPost={canEditPost(threadData.post)}
       />
+
+      <ActiveTags tags={threadData.post.tags} limit={3} />
+
   
       {/* Reply Header */}
       {threadData.replies.length > 0 && (

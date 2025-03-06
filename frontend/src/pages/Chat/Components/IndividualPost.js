@@ -7,8 +7,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useAuth } from '../../../hooks/useAuth';
-import EditPost from './EditPost';
-import ReactionBar from './ReactionBar';
+import EditPost from './EditPost'; // Import the EditPostForm component
+import palette from '../../../styles/colors/palette';
 
 // Image display component
 const PostImageGrid = ({ images }) => {
@@ -202,6 +202,69 @@ const IndividualPost = ({
 
   // Thread starter specific styles and rendering
   if (isThreadStarter) {
+    if (isMobile) {
+      // MOBILE layout for thread starter
+      return (
+        <>
+          <Paper
+            elevation={0}
+            sx={{
+              mb: 1,
+              // any mobile-friendly styles you want
+            }}
+          >
+            {/* 
+              For mobile, consider a more compact header, 
+              simpler avatar placement, smaller spacing, etc.
+            */}
+            <Box 
+              sx={{
+                bgcolor: palette.secondary.main, 
+                color: palette.neutral.black,
+                px: 2,
+                py: 1,
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
+              <Typography variant="h6">{post.title}</Typography>
+              <Typography variant="body2">
+                {new Date(post.created_at).toLocaleString()}
+              </Typography>
+            </Box>
+  
+            {/* Example "mobile-friendly" body */}
+            <Box sx={{ p: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Avatar 
+                  src={post.avatar_url} 
+                  alt={post.username || 'User'} 
+                  sx={{ width: 40, height: 40, mr: 1.5 }} 
+                />
+                <Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                    {post.username || 'Anonymous'}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {post.tagline || 'Member'}
+                  </Typography>
+                </Box>
+              </Box>
+  
+              {/* Post content, images, etc. */}
+              {renderContent(post.content)}
+              {hasImages && <PostImageGrid images={post.images} />}
+  
+              {/* Like, Reply, Edit, Delete row */}
+              {/* ...similar to your mobile reply layout... */}
+            </Box>
+          </Paper>
+  
+          {/* Delete/Edit Dialogs remain the same */}
+        </>
+      );
+    } else {
     return (
       <>
         <Paper
@@ -219,15 +282,15 @@ const IndividualPost = ({
         >
           {/* Thread starter header */}
           <Box sx={{ 
-            bgcolor: 'primary.main', 
-            color: 'white',
+            bgcolor: palette.secondary.main, 
+            color: palette.neutral.black,
             px: 2,
             py: 1,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            <Typography variant="h6">Thread Starter</Typography>
+            <Typography variant="h6">{post.title}</Typography>
             <Typography variant="body2">
               {new Date(post.created_at).toLocaleString()}
             </Typography>
@@ -297,8 +360,6 @@ const IndividualPost = ({
                       {likedUsers.slice(0, 2).map((user, index) => (
                         <React.Fragment key={user.id}>
                           <Link 
-                            component="button" 
-                            onClick={() => navigate(`/profile/${user.id}`)} 
                             sx={{ textDecoration: "none", fontWeight: "bold" }}
                           >
                             {user.username}
@@ -344,9 +405,8 @@ const IndividualPost = ({
                     <Tooltip title="Edit Thread">
                       <IconButton 
                         size="small" 
-                        color="primary" 
                         onClick={handleLocalEditClick}
-                        sx={{ ml: 1, p: 0 }}
+                        sx={{ ml: 1, p: 0, color: palette.warning.main }}
                       >
                         <EditIcon fontSize="small" />
                       </IconButton>
@@ -360,7 +420,7 @@ const IndividualPost = ({
                         size="small" 
                         color="error" 
                         onClick={() => setDeleteDialogOpen(true)}
-                        sx={{ ml: 1, p: 0 }}
+                        sx={{ ml: 1, p: 0, color: palette.error.main  }}
                       >
                         <DeleteIcon fontSize="small" />
                       </IconButton>
@@ -425,6 +485,7 @@ const IndividualPost = ({
       </>
     );
   }
+}
 
   // Mobile layout for replies
   if (isMobile) {
@@ -487,7 +548,7 @@ const IndividualPost = ({
                 size="small" 
                 color="primary" 
                 onClick={handleLocalEditClick}
-                sx={{ mx: 1 }}
+                sx={{ mx: 1, color: palette.warning.main }}
               >
                 <EditIcon fontSize="small" />
               </IconButton>
@@ -499,6 +560,7 @@ const IndividualPost = ({
                 size="small" 
                 color="error" 
                 onClick={() => setDeleteDialogOpen(true)}
+                sx={{ color: palette.error.main }}
               >
                 <DeleteIcon fontSize="small" />
               </IconButton>
@@ -676,9 +738,8 @@ const IndividualPost = ({
                   <Tooltip title="Edit">
                     <IconButton 
                       size="small" 
-                      color="primary" 
                       onClick={handleLocalEditClick}
-                      sx={{ ml: 1 }}
+                      sx={{ ml: 1, color: palette.warning.main }}
                     >
                       <EditIcon fontSize="small" />
                     </IconButton>
@@ -690,9 +751,8 @@ const IndividualPost = ({
                   <Tooltip title="Delete">
                     <IconButton 
                       size="small" 
-                      color="error" 
                       onClick={() => setDeleteDialogOpen(true)}
-                      sx={{ ml: 1 }}
+                      sx={{ ml: 1, color: palette.error.main }}
                     >
                       <DeleteIcon fontSize="small" />
                     </IconButton>
@@ -717,8 +777,6 @@ const IndividualPost = ({
                     {likedUsers.slice(0, 2).map((user, index) => (
                       <React.Fragment key={user.id}>
                         <Link 
-                          component="button" 
-                          onClick={() => navigate(`/profile/${user.id}`)} 
                           sx={{ textDecoration: "none", fontWeight: "bold" }}
                         >
                           {user.username}

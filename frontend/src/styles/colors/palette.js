@@ -7,7 +7,7 @@ const palette = {
     dark: colors.purple[30],
   },
   secondary: {
-    light: colors.neonGreen[60],
+    light: colors.neonGreen[70],
     main: colors.neonGreen[50],  
     dark: colors.neonGreen[30],
   },
