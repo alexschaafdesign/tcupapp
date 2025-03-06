@@ -228,10 +228,10 @@ const IndividualPost = ({
                 alignItems: 'center'
               }}
             >
-              <Typography variant="h6">{post.title}</Typography>
-              <Typography variant="body2">
+              <Typography variant="h4">{post.title}</Typography>
+              {/*<Typography variant="body2">
                 {new Date(post.created_at).toLocaleString()}
-              </Typography>
+              </Typography>*/}
             </Box>
   
             {/* Example "mobile-friendly" body */}
@@ -290,8 +290,8 @@ const IndividualPost = ({
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            <Typography variant="h6">{post.title}</Typography>
-            <Typography variant="body2">
+            <Typography variant="h4">{post.title}</Typography>
+            <Typography variant="body2" sx={{ color: palette.text.secondary }}>
               {new Date(post.created_at).toLocaleString()}
             </Typography>
           </Box>

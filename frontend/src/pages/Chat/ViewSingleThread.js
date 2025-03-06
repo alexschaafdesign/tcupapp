@@ -514,7 +514,7 @@ const ViewSingleThread = () => {
 
       </Box>
   
-      {/* Historical Reply Modal */}
+      {/* Historical Reply Modal 
       {showHistoricalReplyModal && (
         <Dialog
           open
@@ -534,7 +534,7 @@ const ViewSingleThread = () => {
             onClose={() => setShowHistoricalReplyModal(false)}
           />
         </Dialog>
-      )}
+      )}*/}
   
       {/* Editing Post Modal */}
       {editingPost && (
