@@ -7,6 +7,7 @@ import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useInView } from 'react-intersection-observer';
 import HomeAlert from './Components/HomeAlert';
+import WelcomeSection from './Components/WelcomeSection';
 
 const AboutTCUP = () => {
   // Animation on scroll
@@ -32,6 +33,8 @@ const AboutTCUP = () => {
       <Container maxWidth="lg" sx={{ pb: 10, mt: 4 }}>        
         {/* Main Section with staggered layout */}
        {/* Main Section with staggered layout */}
+
+       <WelcomeSection />
 
  {/* Latest Updates Section */}
  <Fade in={true} timeout={1000} style={{ transitionDelay: '200ms' }}>
@@ -82,7 +85,7 @@ const AboutTCUP = () => {
                   }
                 }}
               >
-                Latest Updates
+                Latest TCUP Updates
               </Typography>
               
               <Button
