@@ -12,8 +12,29 @@ const router = express.Router();
 router.post('/register', authMiddleware, async (req, res) => {
     const auth0Id = req.user.sub;
     const email = req.user.email;
-    const username = req.user.nickname || req.user.name || req.user.preferred_username || 
-                    (req.user.email ? req.user.email.split('@')[0] : `user_${Date.now()}`);
+    
+    // Log the full user object to debug
+    console.log('Auth0 user data:', JSON.stringify(req.user, null, 2));
+    
+    // Try to get username from custom namespace
+    const namespace = 'https://tcupboard.org/';
+    let username = req.user[`${namespace}username`];
+    
+    // Fallbacks if custom claim isn't available
+    if (!username) {
+        username = req.user.username || 
+                   req.user.nickname || 
+                   req.user.name || 
+                   req.user.preferred_username || 
+                   (req.user.email ? req.user.email.split('@')[0] : null);
+    }
+    
+    // Last resort fallback with random string instead of timestamp
+    if (!username) {
+        const randomId = Math.random().toString(36).substring(2, 10);
+        username = `user_${randomId}`;
+    }
+    
     try {
         const existingUser = await pool.query(
             'SELECT * FROM users WHERE auth0_id = $1',

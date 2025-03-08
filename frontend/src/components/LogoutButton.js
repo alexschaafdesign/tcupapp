@@ -1,16 +1,12 @@
 import { useAuth0 } from '@auth0/auth0-react';
+import React from 'react';
 
 function LogoutButton() {
   const { logout, isAuthenticated } = useAuth0();
 
   if (isAuthenticated) {
     return (
-      <button onClick={() => logout({
-        federated: true, // Clears the Auth0 SSO session
-        logoutParams: {
-          returnTo: window.location.origin
-        }
-      })}>
+      <button onClick={() => logout()}>
         Log Out
       </button>
     );

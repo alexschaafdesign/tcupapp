@@ -49,7 +49,26 @@ router.get('/', authMiddleware, async (req, res) => {
 // Get or create user profile
 router.post('/profile', async (req, res) => {
   try {
-    const { sub: auth0Id, email, name } = req.body; // Auth0 user info
+    const { sub: auth0Id, email } = req.body; // Auth0 user info
+    
+    // Extract username from custom claim or fallbacks
+    const namespace = 'https://tcupboard.org/';
+    let username = req.body[`${namespace}username`];
+    
+    // Fallbacks if custom claim isn't available
+    if (!username) {
+        username = req.body.username || 
+                   req.body.nickname || 
+                   req.body.name || 
+                   req.body.preferred_username || 
+                   (email ? email.split('@')[0] : null);
+    }
+    
+    // Last resort fallback with random string
+    if (!username) {
+        const randomId = Math.random().toString(36).substring(2, 10);
+        username = `user_${randomId}`;
+    }
     
     // Check if user exists
     let user = await pool.query(
@@ -58,10 +77,10 @@ router.post('/profile', async (req, res) => {
     );
 
     if (user.rows.length === 0) {
-      // Create new user
+      // Create new user with extracted username
       user = await pool.query(
         'INSERT INTO users (auth0_id, email, username) VALUES ($1, $2, $3) RETURNING *',
-        [auth0Id, email, name]
+        [auth0Id, email, username]
       );
     }
 
@@ -212,24 +231,33 @@ router.put('/username', authMiddleware, async (req, res) => {
 // routes/users.js or where you have your routes
 // In users.js routes
 router.get('/test-auth', authMiddleware, (req, res) => {
-    console.log('Test auth endpoint hit');
-    console.log('User:', req.user);
-    try {
-      if (!req.user) {
-        throw new Error('No user information available');
-      }
+  console.log('Test auth endpoint hit');
+  console.log('Full user object:', JSON.stringify(req.user, null, 2));
   
-      res.json({ 
-        message: 'Authentication working!', 
-        userId: req.user.sub,
-        timestamp: new Date(),
-        userInfo: req.user  // Include the full user info in response
-      });
-    } catch (err) {
-      console.error('Error in test-auth:', err);
-      res.status(500).json({ error: 'Server error', details: err.message });
+  // Check for custom username claim
+  const namespace = 'https://tcupboard.org/';
+  const customUsername = req.user[`${namespace}username`];
+  console.log('Custom username from token:', customUsername);
+  
+  try {
+    if (!req.user) {
+      throw new Error('No user information available');
     }
-  });
+
+    res.json({ 
+      message: 'Authentication working!', 
+      userId: req.user.sub,
+      timestamp: new Date(),
+      userInfo: req.user,
+      customClaims: {
+        username: customUsername
+      }
+    });
+  } catch (err) {
+    console.error('Error in test-auth:', err);
+    res.status(500).json({ error: 'Server error', details: err.message });
+  }
+});
 
   router.put('/password', authMiddleware, async (req, res) => {
     try {

@@ -14,7 +14,6 @@ if (process.env.NODE_ENV === "development") {
   });
 }
 
-
 // Initialize Sentry
 Sentry.init({
   dsn: process.env.REACT_APP_SENTRY_DSN,
@@ -22,53 +21,62 @@ Sentry.init({
     Sentry.browserTracingIntegration(),
     Sentry.replayIntegration(),
   ],
-  // Adjust tracing and session replay for better debugging
   tracesSampleRate: process.env.NODE_ENV === "production" ? 1.0 : 0.5,
   tracePropagationTargets: ["localhost", /^https:\/\/portal\.tcupboard\.org\/api/, /^https:\/\/tcupmn\.org\/api/],
   replaysSessionSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
   replaysOnErrorSampleRate: 1.0,
 });
 
-const redirectUri = {
-  development: 'http://localhost:3003/callback',
-  staging: 'https://staging.tcupboard.org/callback',
-  production: 'https://portal.tcupboard.org/callback'
-}[process.env.REACT_APP_APP_ENV || process.env.NODE_ENV];
+// Determine environment
+let currentEnv = process.env.REACT_APP_APP_ENV || process.env.NODE_ENV;
+console.log('Current environment:', currentEnv);
 
-console.log('Environment:', process.env.REACT_APP_APP_ENV || process.env.NODE_ENV);
+// Get the current origin
+const currentOrigin = window.location.origin;
+console.log('Current origin:', currentOrigin);
 
+// Set URLs based on actual origin when possible
+let redirectUri = `${currentOrigin}/callback`;
+let logoutReturnTo = currentOrigin;
+
+// Override with environment-specific values if needed
+if (currentEnv === 'staging') {
+  redirectUri = 'https://staging.tcupboard.org/callback';
+  logoutReturnTo = 'https://staging.tcupboard.org';
+} else if (currentEnv === 'production') {
+  redirectUri = 'https://portal.tcupboard.org/callback';
+  logoutReturnTo = 'https://portal.tcupboard.org';
+}
+
+console.log('Redirect URI:', redirectUri);
+console.log('Logout Return To:', logoutReturnTo);
+console.log('Auth0 Domain:', process.env.REACT_APP_AUTH0_DOMAIN);
+console.log('Auth0 Client ID:', process.env.REACT_APP_AUTH0_CLIENT_ID);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-console.log('Domain:', process.env.REACT_APP_AUTH0_DOMAIN);
-console.log('Client ID:', process.env.REACT_APP_AUTH0_CLIENT_ID);
-
 root.render(
   <Auth0Provider
-  domain={process.env.REACT_APP_AUTH0_DOMAIN}
-  clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
-  authorizationParams={{
-    redirect_uri: redirectUri,
-    audience: process.env.REACT_APP_AUTH0_API_IDENTIFIER,
-    scope: 'openid profile email offline_access'
-  }}
-  logoutParams={{
-    returnTo: window.location.hostname.includes('staging')
-      ? 'https://staging.tcupboard.org'
-      : window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3003'
-        : 'https://portal.tcupboard.org'
-  }}
-  cacheLocation="localstorage"
-  useRefreshTokens={true}
-  onRedirectCallback={(appState) => {
-    window.history.replaceState(
-      {},
-      document.title,
-      appState?.returnTo || window.location.pathname
-    );
-  }}
->
+    domain={process.env.REACT_APP_AUTH0_DOMAIN}
+    clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+    authorizationParams={{
+      redirect_uri: redirectUri,
+      audience: process.env.REACT_APP_AUTH0_API_IDENTIFIER,
+      scope: 'openid profile email offline_access'
+    }}
+    logoutParams={{
+      returnTo: logoutReturnTo
+    }}
+    cacheLocation="localstorage"
+    useRefreshTokens={true}
+    onRedirectCallback={(appState) => {
+      window.history.replaceState(
+        {},
+        document.title,
+        appState?.returnTo || window.location.pathname
+      );
+    }}
+  >
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
