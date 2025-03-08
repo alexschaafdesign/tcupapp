@@ -367,7 +367,7 @@ router.get('/token-debug', authMiddleware, (req, res) => {
         {
           client_id: process.env.AUTH0_CLIENT_ID,
           client_secret: process.env.AUTH0_CLIENT_SECRET,
-          audience: "https://dev-1s71soupcjy6t33y.us.auth0.com/api/v2/",
+          audience: `https://${process.env.AUTH0_DOMAIN}/api/v2/`,
           grant_type: 'client_credentials'
         }
       );
