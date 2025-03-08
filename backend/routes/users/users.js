@@ -12,25 +12,57 @@ const router = express.Router();
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Get a user
-router.get('/profile', authMiddleware, async (req, res) => {
-  console.log('GET /profile hit'); // Debug endpoint hit
-  console.log('Auth0 ID:', req.user.sub); // Debug auth ID
+// Get or create user profile
+router.post('/profile', async (req, res) => {
   try {
-      const auth0Id = req.user.sub;
-      
-      const user = await pool.query(
-          'SELECT * FROM users WHERE auth0_id = $1',
-          [auth0Id]
+    console.log('==== User Profile Creation ====');
+    console.log('Incoming Auth0 data:', JSON.stringify(req.body, null, 2));
+    
+    const { sub: auth0Id, email } = req.body; // Auth0 user info
+    
+    // Extract username from custom claim or fallbacks
+    const namespace = 'https://tcupboard.org/';
+    let username = req.body[`${namespace}username`];
+    console.log('Username from namespace:', username);
+    
+    // Fallbacks if custom claim isn't available
+    if (!username) {
+        username = req.body.username || 
+                   req.body.nickname || 
+                   req.body.name || 
+                   req.body.preferred_username || 
+                   (email ? email.split('@')[0] : null);
+        console.log('Username after fallbacks:', username);
+    }
+    
+    // Last resort fallback with random string
+    if (!username) {
+        const randomId = Math.random().toString(36).substring(2, 10);
+        username = `user_${randomId}`;
+        console.log('Generated random username:', username);
+    }
+    
+    // Check if user exists
+    let user = await pool.query(
+      'SELECT * FROM users WHERE auth0_id = $1',
+      [auth0Id]
+    );
+
+    if (user.rows.length === 0) {
+      console.log('Creating new user with username:', username);
+      // Create new user with extracted username
+      user = await pool.query(
+        'INSERT INTO users (auth0_id, email, username) VALUES ($1, $2, $3) RETURNING *',
+        [auth0Id, email, username]
       );
+    } else {
+      console.log('User already exists:', user.rows[0]);
+    }
 
-      if (user.rows.length === 0) {
-          return res.status(404).json({ error: 'User not found' });
-      }
-
-      res.json(user.rows[0]);
+    res.json(user.rows[0]);
   } catch (err) {
-      console.error('Error fetching user profile:', err);
-      res.status(500).json({ error: 'Server error' });
+    console.error('Error in profile creation:', err);
+    res.status(500).send('Server error');
   }
 });
 

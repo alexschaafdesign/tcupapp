@@ -55,6 +55,7 @@ import UpdatesPage from "./pages/TCUP/Updates/UpdatesPage.js";
 import SingleUpdatePost from "./pages/TCUP/Updates/SingleUpdatePost.js";
 import UpdateEditForm from "./pages/TCUP/Updates/UpdateEditForm.js";
 import ContactForm from "./pages/Contact/ContactForm.js";
+import ProfileSync from "./pages/User/Components/ProfileSync.js";
 
 function App() {
   const [allShows, setAllShows] = useState([]);
@@ -103,6 +104,7 @@ function App() {
 
     return (
       <ThemeProvider theme={theme}>
+        <ProfileSync />
         <Routes>
           {/* PARENT ROUTE: Renders <Layout /> for anything under "/" */}
           <Route path="/" element={<Layout />}>
