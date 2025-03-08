@@ -259,6 +259,25 @@ router.get('/test-auth', authMiddleware, (req, res) => {
   }
 });
 
+router.get('/auth-test', (req, res) => {
+  // No auth middleware - should always work
+  res.json({ message: 'Public endpoint working' });
+});
+
+router.get('/token-debug', authMiddleware, (req, res) => {
+  // Will test if auth middleware passes
+  res.json({
+    message: 'Token validated successfully',
+    user: {
+      sub: req.user.sub,
+      roles: req.user.roles
+    },
+    headers: {
+      authorization: req.headers.authorization ? 'Present (not shown)' : 'Missing'
+    }
+  });
+});
+
   router.put('/password', authMiddleware, async (req, res) => {
     try {
       const { currentPassword, newPassword } = req.body;

@@ -8,82 +8,77 @@ import path from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Environment file logic remains the same
-const envFile = process.env.APP_ENV === 'staging' 
-  ? '.env.staging'
-  : process.env.NODE_ENV === 'production'
-    ? '.env.production'
+// Simplify environment file logic
+const envFile = process.env.NODE_ENV === 'production' 
+  ? '.env.production'
+  : process.env.NODE_ENV === 'staging'
+    ? '.env.staging'
     : '.env.development';
   
 const envPath = path.resolve(__dirname, `../${envFile}`);
 console.log('Current directory:', __dirname);
 console.log('Looking for env file at:', envPath);
+console.log('NODE_ENV:', process.env.NODE_ENV);
 
-// Try to load the env file
-const result = dotenv.config({ path: envPath });
-if (result.error) {
-    console.error('Error loading .env file:', result.error);
-}
+// Load the env file
+dotenv.config({ path: envPath });
 
-// Log all relevant environment variables
-console.log('Environment variables:', {
-    NODE_ENV: process.env.NODE_ENV,
-    AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
-    AUTH0_API_IDENTIFIER: process.env.AUTH0_API_IDENTIFIER
+console.log('AUTH0_DOMAIN:', process.env.AUTH0_DOMAIN);
+console.log('AUTH0_API_IDENTIFIER:', process.env.AUTH0_API_IDENTIFIER);
+
+console.log('Full env variables:', {
+  NODE_ENV: process.env.NODE_ENV,
+  AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
+  AUTH0_API_IDENTIFIER: process.env.AUTH0_API_IDENTIFIER,
+  envFile
 });
 
+// Create the JWT validator
 const checkJwt = auth({
-    audience: process.env.AUTH0_API_IDENTIFIER,
-    issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}`,
-    tokenSigningAlg: 'RS256'
+  audience: process.env.AUTH0_API_IDENTIFIER,
+  issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}`,
+  tokenSigningAlg: 'RS256'
 });
 
+// Our custom middleware that uses checkJwt but preserves req.user
 const authMiddleware = (req, res, next) => {
   console.log('=== Auth Debug Start ===');
-  console.log('Auth header:', req.headers.authorization);
+  console.log('Auth header present:', !!req.headers.authorization);
   
+  // First run the official validator
   checkJwt(req, res, (err) => {
     if (err) {
       console.error('Auth Error:', err);
-      return next(err);
+      return res.status(401).json({ error: 'Authentication failed', details: err.message });
     }
-
+    
     try {
-      // Get the token from the Authorization header
-      const token = req.headers.authorization?.split(' ')[1];
-      if (token) {
-        // Decode the token (it's already verified by checkJwt)
-        const decoded = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
-        
-        // Set the user info on the request object
-        req.user = {
-          sub: decoded.sub,
-          email: decoded.email,
-          // Add roles from the token - adjust namespace as needed
-          roles: decoded['https://tcupboard.org/roles'] || []
-        };
-
-        console.log('Decoded token:', decoded);
-        console.log('User roles:', req.user.roles);
-      }
-
+      // After validation succeeds, copy the validated data to req.user
+      // This preserves compatibility with your existing code
+      req.user = {
+        ...req.auth.payload,
+        sub: req.auth.payload.sub,
+        roles: req.auth.payload['https://tcupboard.org/roles'] || []
+      };
+      
+      console.log('User authenticated:', req.user.sub);
+      console.log('User roles:', req.user.roles);
       console.log('=== Auth Debug End ===');
       next();
     } catch (error) {
       console.error('Error processing token:', error);
-      return next(error);
+      return res.status(500).json({ error: 'Error processing authentication' });
     }
   });
 };
 
-// Create a middleware to check roles
-// In auth.js - add debugging
+// Role checking middleware stays the same
 export const checkRole = (requiredRoles) => {
   return (req, res, next) => {
     console.log('Checking roles:', {
       requiredRoles,
       userRoles: req.user?.roles,
-      user: req.user
+      user: req.user?.sub
     });
     
     // If no token/auth, deny access

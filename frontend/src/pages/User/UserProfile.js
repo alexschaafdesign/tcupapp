@@ -45,9 +45,10 @@ function UserProfile() {
   const { uploadImage, uploading, uploadProgress } = useCloudinaryUpload();
   const { avatarUrl, setAvatarUrl } = useUserProfile();
   const { callApi } = useApi();
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { getAccessTokenSilently, user, isAuthenticated, isLoading } = useAuth0();
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
+
 
   // Profile info state
   const [isEditingUsername, setIsEditingUsername] = useState(false);
@@ -102,6 +103,29 @@ function UserProfile() {
     month: 'long',
     day: 'numeric'
   });
+
+  useEffect(() => {
+    async function checkToken() {
+      if (isAuthenticated) {
+        try {
+          const token = await getAccessTokenSilently();
+          console.log("Token retrieved successfully:", token ? "Yes" : "No");
+          
+          // Test a direct fetch with this token
+          const response = await fetch('/api/users/profile', {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          console.log("Direct fetch status:", response.status);
+        } catch (error) {
+          console.error("Token retrieval error:", error);
+        }
+      }
+    }
+    
+    checkToken();
+  }, [isAuthenticated, getAccessTokenSilently]);
 
   const handleTaglineUpdate = async () => {
     if (tagline.length > 16) {
