@@ -20,27 +20,43 @@ router.post('/profile', async (req, res) => {
     
     const { sub: auth0Id, email } = req.body; // Auth0 user info
     
-    // Extract username from custom claim or fallbacks
+    // Extract username with clear priority order
     const namespace = 'https://tcupboard.org/';
-    let username = req.body[`${namespace}username`];
-    console.log('Username from namespace:', username);
+    let username;
+    let source = "unknown";
     
-    // Fallbacks if custom claim isn't available
-    if (!username) {
-        username = req.body.username || 
-                   req.body.nickname || 
-                   req.body.name || 
-                   req.body.preferred_username || 
-                   (email ? email.split('@')[0] : null);
-        console.log('Username after fallbacks:', username);
+    // 1. First priority: Custom namespace claim
+    if (req.body[`${namespace}username`]) {
+      username = req.body[`${namespace}username`];
+      source = "custom claim";
+    } 
+    // 2. Second priority: nickname
+    else if (req.body.nickname) {
+      username = req.body.nickname;
+      source = "nickname";
+    }
+    // 3. Third priority: name
+    else if (req.body.name) {
+      username = req.body.name;
+      source = "name";
+    }
+    // 4. More fallbacks
+    else if (req.body.preferred_username) {
+      username = req.body.preferred_username;
+      source = "preferred_username";
+    }
+    else if (email) {
+      username = email.split('@')[0];
+      source = "email username";
+    }
+    else {
+      // Last resort fallback with random string
+      const randomId = Math.random().toString(36).substring(2, 10);
+      username = `user_${randomId}`;
+      source = "random fallback";
     }
     
-    // Last resort fallback with random string
-    if (!username) {
-        const randomId = Math.random().toString(36).substring(2, 10);
-        username = `user_${randomId}`;
-        console.log('Generated random username:', username);
-    }
+    console.log(`Selected username "${username}" from source: ${source}`);
     
     // Check if user exists
     let user = await pool.query(
@@ -57,6 +73,16 @@ router.post('/profile', async (req, res) => {
       );
     } else {
       console.log('User already exists:', user.rows[0]);
+      
+      // IMPORTANT: Consider updating the username if it's from a better source
+      // This helps fix users who were previously created with fallback usernames
+      if (source === "custom claim" || source === "nickname") {
+        console.log('Updating existing user username from', user.rows[0].username, 'to', username);
+        user = await pool.query(
+          'UPDATE users SET username = $1 WHERE auth0_id = $2 RETURNING *',
+          [username, auth0Id]
+        );
+      }
     }
 
     res.json(user.rows[0]);
@@ -78,50 +104,28 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
-// Get or create user profile
-router.post('/profile', async (req, res) => {
+// Get a user profile
+router.get('/profile', authMiddleware, async (req, res) => {
   try {
-    const { sub: auth0Id, email } = req.body; // Auth0 user info
+    console.log('GET /profile hit for user:', req.user.sub);
     
-    // Extract username from custom claim or fallbacks
-    const namespace = 'https://tcupboard.org/';
-    let username = req.body[`${namespace}username`];
-    
-    // Fallbacks if custom claim isn't available
-    if (!username) {
-        username = req.body.username || 
-                   req.body.nickname || 
-                   req.body.name || 
-                   req.body.preferred_username || 
-                   (email ? email.split('@')[0] : null);
-    }
-    
-    // Last resort fallback with random string
-    if (!username) {
-        const randomId = Math.random().toString(36).substring(2, 10);
-        username = `user_${randomId}`;
-    }
-    
-    // Check if user exists
-    let user = await pool.query(
+    const auth0Id = req.user.sub;
+    const user = await pool.query(
       'SELECT * FROM users WHERE auth0_id = $1',
       [auth0Id]
     );
 
     if (user.rows.length === 0) {
-      // Create new user with extracted username
-      user = await pool.query(
-        'INSERT INTO users (auth0_id, email, username) VALUES ($1, $2, $3) RETURNING *',
-        [auth0Id, email, username]
-      );
+      return res.status(404).json({ error: 'User not found' });
     }
 
     res.json(user.rows[0]);
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
+    console.error('Error fetching user profile:', err);
+    res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 // Get user's bands
 router.get('/bands', authMiddleware, async (req, res) => {
