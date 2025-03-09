@@ -20,9 +20,9 @@ module.exports = {
       script: './server.js',
       cwd: '/var/www/tcup-staging/backend',
       env: {
-        NODE_ENV: 'production',  // Confirm if this should be 'production' or 'staging'
+        NODE_ENV: 'staging',  // Changed from 'production' to 'staging'
         APP_ENV: 'staging',
-        DOTENV_CONFIG_PATH: '/var/www/tcup-staging/backend/.env.production',
+        DOTENV_CONFIG_PATH: '/var/www/tcup-staging/backend/.env.staging', // Changed to .env.staging
         PORT: 3004
       },
       max_memory_restart: '500M',
