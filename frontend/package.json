@@ -80,7 +80,7 @@
     "start": "PORT=3003 react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build:staging": "cross-env NODE_ENV=production react-scripts build",
+    "build:staging": "cross-env NODE_ENV=staging react-scripts build",
     "build:production": "cross-env NODE_ENV=production react-scripts build"
   },
   "eslintConfig": {
