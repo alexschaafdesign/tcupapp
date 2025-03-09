@@ -400,6 +400,8 @@ router.get('/token-debug', authMiddleware, (req, res) => {
       res.json(result.rows[0]);
     } catch (error) {
       console.error('Error updating email:', error);
+      console.error('Auth0 response:', error.response?.data);
+      console.error('Full error:', JSON.stringify(error, null, 2));
       res.status(500).json({ error: error.response?.data || error.message });
     }
   });
