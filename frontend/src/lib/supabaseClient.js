@@ -4,8 +4,8 @@ const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
 const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('Missing Supabase environment variables')
-    throw new Error('Missing Supabase environment variables. Please check your .env.development file.')
+    console.error(`Missing Supabase environment variables in ${process.env.NODE_ENV} environment`)
+    throw new Error(`Missing Supabase environment variables. Please check your .env.${process.env.NODE_ENV} file.`)
 }
 
 // Create the default client with anon key
