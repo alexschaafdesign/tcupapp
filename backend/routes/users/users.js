@@ -356,27 +356,39 @@ router.get('/token-debug', authMiddleware, (req, res) => {
     }
   });
 
-router.put('/email', authMiddleware, async (req, res) => {
-  console.log("EMAIL ROUTE DEBUG:");
-  console.log("Current NODE_ENV:", process.env.NODE_ENV);
-  console.log("AUTH0_DOMAIN:", process.env.AUTH0_DOMAIN);
-  console.log("AUTH0_CLIENT_ID:", process.env.AUTH0_CLIENT_ID);
-  console.log("AUTH0_CLIENT_SECRET:", process.env.AUTH0_CLIENT_SECRET ? "[PRESENT]" : "[MISSING]");
+  router.put('/email', authMiddleware, async (req, res) => {
+    console.log("EMAIL ROUTE DEBUG:");
+    console.log("Current NODE_ENV:", process.env.NODE_ENV);
+    console.log("AUTH0_DOMAIN:", process.env.AUTH0_DOMAIN);
+    console.log("AUTH0_CLIENT_ID:", process.env.AUTH0_CLIENT_ID);
+    console.log("AUTH0_CLIENT_SECRET:", process.env.AUTH0_CLIENT_SECRET ? "[PRESENT]" : "[MISSING]");
+    
     try {
       const { email } = req.body;
-      const auth0Id = req.user.sub;
+      // Fix #1: Check both locations for the auth0 ID
+      const auth0Id = req.auth?.payload?.sub || req.user?.sub;
+      
+      if (!auth0Id) {
+        console.error("No auth0Id found in request", {req: {auth: req.auth, user: req.user}});
+        return res.status(401).json({ error: "User ID not found in token" });
+      }
   
+      console.log("Using auth0Id:", auth0Id);
+      
       // Get Management API token
       const tokenResponse = await axios.post(
         `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
         {
           client_id: process.env.AUTH0_CLIENT_ID,
           client_secret: process.env.AUTH0_CLIENT_SECRET,
-          audience: `https://dev-1s71soupcjy6t33y.us.auth0.com/api/v2/`,
+          // Fix #2: Use the dynamic Auth0 domain
+          audience: `https://${process.env.AUTH0_DOMAIN}/api/v2/`,
           grant_type: 'client_credentials'
         }
       );
   
+      console.log("Got management token");
+      
       // Update email in Auth0
       await axios.patch(
         `https://${process.env.AUTH0_DOMAIN}/api/v2/users/${auth0Id}`,
@@ -392,16 +404,20 @@ router.put('/email', authMiddleware, async (req, res) => {
         }
       );
   
+      console.log("Updated email in Auth0");
+      
       // Update email in PostgreSQL
       const result = await pool.query(
         'UPDATE users SET email = $1 WHERE auth0_id = $2 RETURNING *',
         [email, auth0Id]
       );
   
+      console.log("Updated email in PostgreSQL");
+      
       if (result.rows.length === 0) {
         return res.status(404).json({ error: 'User not found' });
       }
-  
+      
       res.json(result.rows[0]);
     } catch (error) {
       console.error('Error updating email:', error);
