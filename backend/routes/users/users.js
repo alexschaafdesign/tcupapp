@@ -240,6 +240,10 @@ router.get('/transformed-avatar', (req, res) => {
 router.put('/username', authMiddleware, async (req, res) => {
   const { username } = req.body;
   const userId = req.user.sub;
+
+  console.log("Using AUTH0_DOMAIN:", process.env.AUTH0_DOMAIN);
+  console.log("Using AUTH0_CLIENT_ID:", process.env.AUTH0_CLIENT_ID);
+  console.log("AUTH0_CLIENT_SECRET present:", !!process.env.AUTH0_CLIENT_SECRET);
   
   try {
     console.log('Updating username for user:', userId);
