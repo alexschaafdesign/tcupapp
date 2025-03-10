@@ -78,6 +78,27 @@ const ViewSingleThread = () => {
       console.error('Error fetching user roles:', error);
     }
   };
+
+  useEffect(() => {
+    if (user && threadId) {
+      markThreadAsRead();
+    }
+  }, [threadId, user]);
+  
+  // Add this function to your component's functions
+  const markThreadAsRead = async () => {
+    try {
+      const token = await getAccessTokenSilently();
+      await fetch(`${apiUrl}/read-status/${threadId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    } catch (error) {
+      console.error('Error marking thread as read:', error);
+    }
+  };
   
   useEffect(() => {
     if (highlightedReplyId) {
