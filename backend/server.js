@@ -20,7 +20,7 @@ import usersRouter from './routes/users/users.js';
 import favoritesRouter from './routes/users/favorites.js';
 import authRoutes from './routes/auth.js';
 import sessionMusiciansRouter from './routes/sessionmusicians.js';
-import postsRouter from './routes/posts.js';
+import postsRouter from './routes/chat/posts.js';
 import tagsRouter from './routes/tags.js';
 import tcupgcalRouter from './routes/tcupgcal.js';
 import pledgesRouter from './routes/pledges.js';
@@ -30,6 +30,7 @@ import notificationsRouter, { createReplyNotification } from './routes/notificat
 import updatesRouter from './routes/updates.js';
 import contactRouter from './routes/contact.js';
 import uploadRouter from './routes/upload.js';
+import readStatusRouter from './routes/chat/read-status.js'
 
 // 2) Optional debugging/logging to confirm environment vars are loaded
 console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -127,6 +128,8 @@ app.use('/api/notifications', notificationsRouter)
 app.use('/api/updates', updatesRouter)
 app.use('/api/contact', contactRouter)
 app.use('/api/upload', uploadRouter)
+app.use('/api/read-status', readStatusRouter);
+
 
 
 
