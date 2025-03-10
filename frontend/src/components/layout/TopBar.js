@@ -1,29 +1,38 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, IconButton, Avatar, Tooltip, Typography, Paper, ClickAwayListener, Button } from '@mui/material';
+import { Box, IconButton, Avatar, Tooltip, Typography, Paper, ClickAwayListener, Button, Menu, MenuItem } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
 import useApi from '../../hooks/useApi';
 import { useUserProfile } from '../../hooks/useUserProfile';
+import { useAuth } from '../../hooks/useAuth';
 import Breadcrumbs from './Breadcrumbs';
 import NotificationBell from './NotificationBell';
 import palette from '../../styles/colors/palette';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const TopBar = () => {
+  // Existing state and hooks
   const { user, logout, isAuthenticated, loginWithRedirect } = useAuth0();
   const { avatarUrl, setAvatarUrl } = useUserProfile();
   const { callApi } = useApi();
+  const { isAdmin } = useAuth(); // Add this to check admin role
   const apiUrl = process.env.REACT_APP_API_URL;
   const [username, setUsername] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
   
   // State for dropdowns
   const [profileOpen, setProfileOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
   
   // References to button elements
   const profileBtnRef = useRef(null);
+  const adminBtnRef = useRef(null);
   
-  // References to dropdown elements
-  const profileDropdownRef = useRef(null);
+  // Define admin links
+  const adminLinks = [
+    { text: "add update", path: "/admin/updates" },
+  ];
   
+  // Existing useEffect and handlers
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (isAuthenticated && !isLoaded) {
@@ -45,13 +54,22 @@ const TopBar = () => {
     fetchUserProfile();
   }, [isAuthenticated, isLoaded, apiUrl, callApi, setAvatarUrl]);
   
-  
   const handleProfileClick = () => {
     setProfileOpen(prev => !prev);
+    setAdminOpen(false); // Close admin menu when profile is opened
   };
   
   const handleProfileClose = () => {
     setProfileOpen(false);
+  };
+  
+  const handleAdminClick = () => {
+    setAdminOpen(prev => !prev);
+    setProfileOpen(false); // Close profile menu when admin is opened
+  };
+  
+  const handleAdminClose = () => {
+    setAdminOpen(false);
   };
   
   const handleLogout = () => {
@@ -97,9 +115,62 @@ const TopBar = () => {
       <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', marginLeft: '200px' }}>
         <Breadcrumbs />
       </Box>
-      
-      {/* Notification Section - Only show when authenticated */}
-      {isAuthenticated && <NotificationBell />}
+          
+      {/* Admin menu - Only show for admins on desktop */}
+      {isAuthenticated && isAdmin && (
+        <Box sx={{ display: { xs: 'none', md: 'block' }, mr: 2 }}>
+          <Button
+            ref={adminBtnRef}
+            onClick={handleAdminClick}
+            sx={{
+              color: 'white',
+              textTransform: 'lowercase',
+              fontFamily: "'Courier New', monospace",
+              fontWeight: 'bold',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+              }
+            }}
+            endIcon={<ExpandMoreIcon sx={{ transform: adminOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s' }} />}
+          >
+            admin
+          </Button>
+          
+          {adminOpen && (
+            <ClickAwayListener onClickAway={handleAdminClose}>
+              <Paper 
+                sx={{
+                  ...getDropdownStyle(adminBtnRef),
+                  width: '180px'
+                }}
+              >
+                {adminLinks.map((link, index) => (
+                  <Box 
+                    key={index}
+                    sx={{ 
+                      px: 2, 
+                      py: 1, 
+                      cursor: 'pointer',
+                      fontFamily: "'Courier New', monospace",
+                      textTransform: 'lowercase',
+                      '&:hover': { bgcolor: 'rgba(97, 56, 179, 0.15)' }
+                    }}
+                    onClick={() => { 
+                      window.location.href = link.path; 
+                      handleAdminClose();
+                    }}
+                  >
+                    {link.text}
+                  </Box>
+                ))}
+              </Paper>
+            </ClickAwayListener>
+          )}
+        </Box>
+      )}
+
+            {/* Notification Section - Only show when authenticated */}
+            {isAuthenticated && <NotificationBell />}
     
       {/* User Profile or Login/Register Buttons */}
       {isAuthenticated ? (
@@ -122,7 +193,6 @@ const TopBar = () => {
           {profileOpen && (
             <ClickAwayListener onClickAway={handleProfileClose}>
               <Paper 
-                ref={profileDropdownRef}
                 sx={{
                   ...getDropdownStyle(profileBtnRef),
                   width: '240px'

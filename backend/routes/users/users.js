@@ -74,15 +74,15 @@ router.post('/profile', async (req, res) => {
     } else {
       console.log('User already exists:', user.rows[0]);
       
-      // IMPORTANT: Consider updating the username if it's from a better source
-      // This helps fix users who were previously created with fallback usernames
-      if (source === "custom claim" || source === "nickname") {
-        console.log('Updating existing user username from', user.rows[0].username, 'to', username);
+      // ONLY update email if needed - leave username alone
+      if (user.rows[0].email !== email) {
+        console.log('Updating user email from', user.rows[0].email, 'to', email);
         user = await pool.query(
-          'UPDATE users SET username = $1 WHERE auth0_id = $2 RETURNING *',
-          [username, auth0Id]
+          'UPDATE users SET email = $1 WHERE auth0_id = $2 RETURNING *',
+          [email, auth0Id]
         );
       }
+      // Do NOT update username for existing users
     }
 
     res.json(user.rows[0]);
@@ -240,27 +240,51 @@ router.get('/transformed-avatar', (req, res) => {
 router.put('/username', authMiddleware, async (req, res) => {
   const { username } = req.body;
   const userId = req.user.sub;
-
-  console.log('Updating username for user:', userId);
-  console.log('New username:', username);
   
   try {
+    console.log('Updating username for user:', userId);
+    
+    // Get Management API token
+    const tokenResponse = await axios.post(
+      `https://${process.env.AUTH0_DOMAIN}/oauth/token`,
+      {
+        client_id: process.env.AUTH0_CLIENT_ID,
+        client_secret: process.env.AUTH0_CLIENT_SECRET,
+        audience: `https://${process.env.AUTH0_DOMAIN}/api/v2/`,
+        grant_type: 'client_credentials'
+      }
+    );
+    
+    // Update Auth0 user (setting both fields to ensure consistency)
+    await axios.patch(
+      `https://${process.env.AUTH0_DOMAIN}/api/v2/users/${userId}`,
+      {
+        nickname: username,
+        user_metadata: { preferred_username: username }
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${tokenResponse.data.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    
+    // Update PostgreSQL
     const result = await pool.query(
       'UPDATE users SET username = $1 WHERE auth0_id = $2 RETURNING *',
       [username, userId]
     );
-
+    
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
-
+    
     res.json(result.rows[0]);
   } catch (error) {
     console.error('Error updating username:', error);
-    res.status(500).json({ 
-      error: 'Failed to update username',
-      details: error.message 
-    });
+    console.error('Auth0 response:', error.response?.data);
+    res.status(500).json({ error: error.response?.data || error.message });
   }
 });
 

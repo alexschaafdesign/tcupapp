@@ -112,7 +112,7 @@ function UserProfile() {
           console.log("Token retrieved successfully:", token ? "Yes" : "No");
           
           // Test a direct fetch with this token
-          const response = await fetch('/api/users/profile', {
+          const response = await fetch(`${apiUrl}/users/profile`, {
             headers: {
               Authorization: `Bearer ${token}`
             }
@@ -125,7 +125,7 @@ function UserProfile() {
     }
     
     checkToken();
-  }, [isAuthenticated, getAccessTokenSilently]);
+  }, [isAuthenticated, getAccessTokenSilently, apiUrl]);
 
   const handleTaglineUpdate = async () => {
     if (tagline.length > 16) {

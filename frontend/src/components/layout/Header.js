@@ -289,22 +289,7 @@ const Header = () => {
               </>
             )}
             
-            {/* Admin section remains conditional */}
-            {isAuthenticated && isAdmin && (
-              <>
-                <Box sx={{ mb: 2, px: 2 }}>
-                  <ExpandableMenu 
-                    title="admin"
-                    isExpanded={expandedMenus.admin}
-                    setIsExpanded={() => toggleMenu('admin')}
-                    links={adminLinks}
-                    closeDrawer={closeDrawer}
-                  />
-                </Box>
-                <CustomDivider />
-              </>
-            )}
-
+           
             <List sx={{ px: 2 }}>
               <NavLink 
                 link={{ text: "contact", path: "/contact" }}
