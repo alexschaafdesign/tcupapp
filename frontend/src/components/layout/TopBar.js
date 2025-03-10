@@ -124,14 +124,14 @@ const TopBar = () => {
             onClick={handleAdminClick}
             sx={{
               color: 'white',
-              textTransform: 'lowercase',
+              textTransform: 'uppercase',
               fontFamily: "'Courier New', monospace",
               fontWeight: 'bold',
               '&:hover': {
                 backgroundColor: 'rgba(255, 255, 255, 0.1)'
               }
             }}
-            endIcon={<ExpandMoreIcon sx={{ transform: adminOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s' }} />}
+            endIcon={<ExpandMoreIcon sx={{ transform: adminOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s', ml: -0.5 }} />}
           >
             admin
           </Button>
