@@ -96,7 +96,7 @@ router.post('/profile', async (req, res) => {
 router.get('/', authMiddleware, async (req, res) => {
   try {
       const { rows } = await pool.query('SELECT auth0_id, username, email FROM users ORDER BY username');
-      console.log('Users fetched:', rows);
+    //  console.log('Users fetched:', rows);
       res.json(rows);
   } catch (error) {
       console.error('Error fetching users:', error);
