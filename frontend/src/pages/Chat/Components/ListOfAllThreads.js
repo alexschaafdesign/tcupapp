@@ -1,9 +1,10 @@
-import React from 'react';
-import { Box, Typography, Avatar, List, ListItem, Paper, useMediaQuery, useTheme } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Avatar, List, ListItem, Paper, useMediaQuery, useTheme, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AuthWrapper from '../../../components/auth/AuthWrapper';
 import { useAuth0 } from '@auth0/auth0-react';
 import ActiveTags from './ActiveTags';
+import { useApi } from '../../../hooks/useApi';
 
 const ListOfAllThreads = ({ posts }) => {
   const navigate = useNavigate();
@@ -11,6 +12,48 @@ const ListOfAllThreads = ({ posts }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const TAG_LIMIT = isMobile ? 1 : 2; // Only show 1 tag on mobile
+  const { callApi } = useApi();
+  const [readStatus, setReadStatus] = useState({});
+  const [isLoadingStatus, setIsLoadingStatus] = useState(false);
+
+  // Fetch read status for all threads when user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && posts?.length > 0) {
+      fetchReadStatus();
+    }
+  }, [isAuthenticated, posts]);
+
+  const fetchReadStatus = async () => {
+    try {
+      setIsLoadingStatus(true);
+      const response = await callApi('/read-status');
+      if (response) {
+        setReadStatus(response);
+      }
+    } catch (error) {
+      console.error('Error fetching read status:', error);
+    } finally {
+      setIsLoadingStatus(false);
+    }
+  };
+
+  const isThreadUnread = (post) => {
+    if (!isAuthenticated) return false;
+    
+    // If we have no read status for this thread, it's unread
+    if (!readStatus[post.id]) return true;
+    
+    // Find the latest activity timestamp
+    const threadTimestamp = new Date(post.created_at);
+    const lastReplyTimestamp = post.last_reply_at ? new Date(post.last_reply_at) : null;
+    const latestActivity = lastReplyTimestamp && lastReplyTimestamp > threadTimestamp 
+      ? lastReplyTimestamp 
+      : threadTimestamp;
+    
+    // Compare with last read timestamp
+    const lastReadAt = new Date(readStatus[post.id]);
+    return latestActivity > lastReadAt;
+  };
 
   const formatDate = (date) => {
     const now = new Date();
@@ -30,13 +73,34 @@ const ListOfAllThreads = ({ posts }) => {
     return postDate.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
-  const handleClick = (post, showAuthModal) => {
+  const handleClick = async (post, showAuthModal) => {
     if (isAuthenticated) {
+      try {
+        await callApi(`/api/posts/${post.id}/read`, {
+          method: 'POST'
+        });
+        
+        // Update local read status
+        setReadStatus(prev => ({
+          ...prev,
+          [post.id]: new Date().toISOString()
+        }));
+      } catch (error) {
+        console.error('Error marking thread as read:', error);
+      }
       navigate(`/chat/${post.id}`);
     } else {
       showAuthModal();
     }
   };
+
+  if (isLoadingStatus && posts?.length === 0) {
+    return (
+      <Box display="flex" justifyContent="center" mt={4}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Paper elevation={0} sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
@@ -46,6 +110,8 @@ const ListOfAllThreads = ({ posts }) => {
           const replyCount = post.reply_count || 0;
           // Check if there's last reply information
           const hasReplies = replyCount > 0 && post.last_reply_at && post.last_reply_by;
+          // Check if thread is unread
+          const unread = isThreadUnread(post);
           
           return (
             <AuthWrapper 
@@ -85,7 +151,7 @@ const ListOfAllThreads = ({ posts }) => {
                           <Typography 
                             sx={{ 
                               color: 'primary.main',
-                              fontWeight: 600,
+                              fontWeight: unread ? 700 : 600,
                               fontSize: '1rem',
                               lineHeight: 1.2
                             }}
@@ -147,7 +213,7 @@ const ListOfAllThreads = ({ posts }) => {
                           <Typography 
                             sx={{ 
                               color: 'primary.main',
-                              fontWeight: 600,
+                              fontWeight: unread ? 700 : 600,
                               fontSize: '1.1rem',
                               flex: 1,
                               mr: 2

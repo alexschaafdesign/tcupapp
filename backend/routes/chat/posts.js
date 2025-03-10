@@ -1,10 +1,10 @@
 // posts.js
 import express from 'express';
-import authMiddleware from '../middleware/auth.js';
-import pool from "../config/db.js";
-import supabase from '../lib/supabase.js';
+import authMiddleware from '../../middleware/auth.js';
+import pool from '../../config/db.js';
+import supabase from '../../lib/supabase.js';
 const router = express.Router();
-import { createReplyNotification } from './notifications.js';
+import { createReplyNotification } from '../notifications.js';
 
 
 
@@ -682,5 +682,6 @@ router.delete('/:id', authMiddleware, async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   });
+
 
 export default router;
