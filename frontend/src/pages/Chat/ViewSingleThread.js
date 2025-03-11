@@ -40,6 +40,8 @@ const ViewSingleThread = () => {
   const [replyEditorState, setReplyEditorState] = useState(EditorState.createEmpty());
   const [focusTrigger, setFocusTrigger] = useState(0);
   const [replyImages, setReplyImages] = useState([]);
+  const [editEditorState, setEditEditorState] = useState(null);
+
   
   // Theme for responsive design
   const theme = useTheme();
@@ -55,6 +57,21 @@ const ViewSingleThread = () => {
 
   const handleEditClick = (post) => {
     setEditingPost(post);
+    
+    try {
+      // Parse the content and create editor state
+      const contentObj = typeof post.content === 'string' 
+        ? JSON.parse(post.content) 
+        : post.content;
+      
+      const contentState = convertFromRaw(contentObj);
+      const newEditorState = EditorState.createWithContent(contentState);
+      setEditEditorState(newEditorState);
+    } catch (error) {
+      console.error('Error initializing editor:', error);
+      // Fallback to empty editor if there's an error
+      setEditEditorState(EditorState.createEmpty());
+    }
   };
 
   const supabase = createClient(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_ANON_KEY);
@@ -76,6 +93,55 @@ const ViewSingleThread = () => {
       }
     } catch (error) {
       console.error('Error fetching user roles:', error);
+    }
+  };
+
+  const saveEditedPost = async () => {
+    try {
+      if (!editingPost || !editEditorState) return;
+      
+      console.log("Saving edited post:", editingPost.id);
+      
+      const token = await getAccessTokenSilently();
+      const contentState = editEditorState.getCurrentContent();
+      const rawContent = JSON.stringify(convertToRaw(contentState));
+      
+      const endpoint = `${apiUrl}/posts/edit/${editingPost.id}`;
+      console.log("Endpoint:", endpoint);
+  
+      // Create the request body
+      const requestBody = {
+        content: rawContent,
+        images: editingPost.images || [],
+        userId: user.sub,
+        title: editingPost.title // Add original title if it exists
+      };
+      
+      console.log("Request body:", requestBody);
+  
+      const response = await fetch(endpoint, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
+  
+      console.log("Response status:", response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error response:", errorText);
+        throw new Error(`Failed to update post: ${response.status} ${errorText}`);
+      }
+      
+      // Close modal and refresh data
+      setEditingPost(null);
+      setEditEditorState(null);
+      fetchThread();
+    } catch (error) {
+      console.error('Error saving edited post:', error);
     }
   };
 
@@ -556,27 +622,76 @@ const ViewSingleThread = () => {
       </Box>
   
       {/* Editing Post Modal */}
-      {editingPost && (
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            bgcolor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 1000,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            p: 2,
-          }}
-        >
-          <Box sx={{ maxWidth: '100%', maxHeight: '100%', overflow: 'auto', bgcolor: 'background.paper', borderRadius: 1 }}>
-            
-          </Box>
-        </Box>
+{editingPost && (
+  <Box
+    sx={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      bgcolor: 'rgba(0, 0, 0, 0.5)',
+      zIndex: 1000,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      p: 2,
+    }}
+    onClick={() => setEditingPost(null)} // Close when clicking outside
+  >
+    <Box 
+      sx={{ 
+        width: '100%',
+        maxWidth: 600, 
+        maxHeight: '90vh', 
+        overflow: 'auto', 
+        bgcolor: 'background.paper', 
+        borderRadius: 1,
+        p: 3 
+      }}
+      onClick={(e) => e.stopPropagation()} // Prevent closing when clicking on modal
+    >
+      <Typography variant="h6" gutterBottom>
+        Edit Post
+      </Typography>
+      
+      {/* Add the editor component for editing */}
+      <EditorWithFormatting
+        editorState={editEditorState}
+        setEditorState={setEditEditorState}
+      />
+      
+      {/* Add image management if needed */}
+      {editingPost.images && (
+        <ChatImageUpload 
+          images={editingPost.images} 
+          setImages={(newImages) => {
+            setEditingPost({
+              ...editingPost,
+              images: newImages
+            });
+          }} 
+        />
       )}
+      
+      {/* Add buttons */}
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
+        <Button 
+          variant="outlined" 
+          onClick={() => setEditingPost(null)}
+        >
+          Cancel
+        </Button>
+        <Button 
+          variant="contained" 
+          onClick={saveEditedPost}
+        >
+          Save Changes
+        </Button>
+      </Box>
+    </Box>
+  </Box>
+)}
     </Container>
   );
 };
