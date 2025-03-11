@@ -40,6 +40,7 @@ import ProfileImageAdjuster from "../../components/ProfileImageAdjuster";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import palette from '../../styles/colors/palette';
+import { useAuth } from '../../hooks/useAuth';
 
 function UserProfile() {
   const { uploadImage, uploading, uploadProgress } = useCloudinaryUpload();
@@ -48,6 +49,8 @@ function UserProfile() {
   const { getAccessTokenSilently, user, isAuthenticated, isLoading } = useAuth0();
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
+  const { isAdmin } = useAuth(); // Add this to check admin role
+  
 
 
   // Profile info state
@@ -456,8 +459,9 @@ function UserProfile() {
           background: palette.secondary.main,
           position: 'relative'
         }}>
-         {/* <Chip 
-            label="TCUP Member" 
+          {isAdmin && (
+         <Chip 
+            label="Admin" 
             color="secondary" 
             size="small"
             sx={{ 
@@ -468,7 +472,8 @@ function UserProfile() {
               color: '#673ab7',
               fontWeight: 'bold'
             }} 
-          />*/}
+          />
+          )}
         </Box> 
         
         {/* Main content */}
@@ -620,8 +625,8 @@ function UserProfile() {
                   <Typography variant="body2" color="text.secondary">
                     Username
                   </Typography>
-                  {!isEditingUsername && (
-                    <Tooltip title="Edit username">
+                    {!isEditingUsername && (
+                 <Tooltip title="Edit username">
                       <IconButton 
                         size="small" 
                         color="primary" 
@@ -669,14 +674,19 @@ function UserProfile() {
                         >
                           <CloseIcon />
                         </IconButton>
+                       
                       </Box>
                     </Box>
+                    
                   </Fade>
+                  
                 ) : (
                   <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
                     {username || user?.name}
                   </Typography>
+                   
                 )}
+                
               </Box>
             </Grid>
             
@@ -748,7 +758,7 @@ function UserProfile() {
               </Box>
             </Grid>
             
-            {/* Email */}
+            {/* Email - temporarily disabled
             <Grid item xs={12} sm={6}>
               <Box sx={{ mb: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
@@ -813,7 +823,21 @@ function UserProfile() {
                   </Typography>
                 )}
               </Box>
-            </Grid>
+            </Grid> */}
+
+            {/* Email - Read only version */}
+              <Grid item xs={12} sm={6}>
+                <Box sx={{ mb: 2 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Email
+                    </Typography>
+                  </Box>
+                  <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                    {email}
+                  </Typography>
+                </Box>
+              </Grid>
             
             {/* Password */}
             <Grid item xs={12} sm={6}>
