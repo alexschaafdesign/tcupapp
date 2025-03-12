@@ -1,21 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
 import ShowsTable from "./pages/Shows/ShowsTable.js";
 import "./styles/App.css";
 import 'draft-js/dist/Draft.css';
 import VenuesTable from "./pages/Venues/VenuesTable.js";
 import VenueProfile from "./pages/Venues/VenueProfile.js";
-import { Box } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./styles/theme"; // Import your custom theme
 import TCUPBandForm from "./pages/Bands/TCUPBandForm.js";
 import TCUPBandsGrid from "./pages/Bands/TCUPBandsGrid.js";
 import TCUPBandProfile from "./pages/Bands/TCUPBandProfile.js";
-import Header from "./components/layout/Header.js"; // Import your custom Header component
 import TCUPPeopleForm from "./pages/TCUPPeopleForm.js";
 import TCUPPeopleTable from "./pages/TCUPPeopleTable.js";
 import TCUPPeopleProfile from "./pages/TCUPPeopleProfile.js";
-import Organize from "./pages/Organize.js";
 import ShowProfile from "./pages/Shows/ShowProfile.js";
 import ShowForm from "./pages/Shows/ShowForm.js";
 import EditShowPage from "./components/EditShowPage.js";
@@ -31,7 +28,6 @@ import CalendarEvents from "./components/CalendarEvents.js";
 import MainChatPage from "./pages/Chat/MainChatPage.js";
 import ViewSingleThread from "./pages/Chat/ViewSingleThread.js";
 import LandingPage from "./pages/LandingPage.js";
-import LandingPageTemp from "./pages/LandingPage2.js";
 import Privacy from "./pages/Privacy.js";
 import AdminImportPost from "./archived/pages/Chat/AdminImportPost.js";
 import VRCForm from "./pages/VRC/VRCForm.js";
@@ -45,10 +41,8 @@ import TCUPNewsletter from "./pages/Newsletter.js";
 import TCUPAdvance from "./pages/PledgeAndAdvance/TCUPAdvance.js";
 import PledgeSuccess from "./pages/PledgeAndAdvance/PledgeSuccess.js";
 import PledgeTracker from "./pages/PledgeAndAdvance/PledgeTracker.js";
-import * as Sentry from "@sentry/react";
 import ErrorBoundary from "./components/ErrorBoundary.js";
 import Layout from "./components/layout/Layout.js";
-import Breadcrumbs from "./components/layout/Breadcrumbs.js";
 import AboutTCUP from "./pages/TCUP/AboutTCUP.js";
 import NewUpdate from "./pages/TCUP/Updates/NewUpdate.js";
 import UpdatesPage from "./pages/TCUP/Updates/UpdatesPage.js";
@@ -58,22 +52,13 @@ import ContactForm from "./pages/Contact/ContactForm.js";
 import ProfileSync from "./pages/User/Components/ProfileSync.js";
 
 function App() {
-  const [allShows, setAllShows] = useState([]);
   const { isAuthenticated, user, isLoading } = useAuth0();
   const { callApi } = useApi();
-  const location = useLocation(); // Get the current route location
-  const getMaxWidth = () => {
-    return location.pathname === '/sessionmusicians' ? false : 'md';
-  };
+
 
   console.log("NODE_ENV:", process.env.NODE_ENV);
 
   const hasAttemptedRegistration = React.useRef(false);
-
-  const isDevMode = process.env.NODE_ENV === 'development';
-
-  const showHeader = isDevMode;
-
 
   useEffect(() => {
       console.log('Auth state changed:', {
@@ -154,7 +139,6 @@ function App() {
             <Route path="newsletter" element={<TCUPNewsletter />} />
             <Route path="pledgephotos" element={<PledgePhotos />} />
             <Route path="calendar" element={<CalendarEvents />} />
-            <Route path="organize" element={<Organize />} />
             <Route path="callback" element={<Callback />} />
             <Route path="privacy" element={<Privacy />} />
     

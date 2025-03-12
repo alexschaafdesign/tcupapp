@@ -9,105 +9,9 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useAuth } from '../../../hooks/useAuth';
 import EditPost from './EditPost'; // Import the EditPostForm component
 import palette from '../../../styles/colors/palette';
+import ImageAttachmentsGrid from './ImageAttachmentsGrid';
 
-// Image display component
-const PostImageGrid = ({ images }) => {
-  const [enlargedImage, setEnlargedImage] = useState(null);
-  
-  if (!images || images.length === 0) return null;
-  
-  return (
-    <>
-      <Grid container spacing={1} sx={{ mt: 2, mb: 2 }}>
-        {images.map((image, index) => (
-          <Grid item key={index} xs={6} sm={4} md={images.length === 1 ? 6 : 3}>
-            <Box
-              sx={{
-                position: 'relative',
-                height: 0,
-                paddingTop: '75%',
-                backgroundColor: '#f0f0f0',
-                borderRadius: 1,
-                overflow: 'hidden',
-                cursor: 'pointer'
-              }}
-              onClick={() => setEnlargedImage(image.url)}
-            >
-              <img
-                src={image.url}
-                alt={`Post image ${index + 1}`}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover'
-                }}
-              />
-              <IconButton
-                size="small"
-                sx={{
-                  position: 'absolute',
-                  bottom: 4,
-                  right: 4,
-                  bgcolor: 'rgba(0,0,0,0.5)',
-                  color: 'white',
-                  '&:hover': {
-                    bgcolor: 'rgba(0,0,0,0.7)'
-                  }
-                }}
-              >
-                <ZoomInIcon fontSize="small" />
-              </IconButton>
-            </Box>
-          </Grid>
-        ))}
-      </Grid>
 
-      {/* Enlarged image dialog */}
-      <Dialog
-        open={!!enlargedImage}
-        onClose={() => setEnlargedImage(null)}
-        maxWidth="xl"
-        PaperProps={{
-          sx: { 
-            bgcolor: 'rgba(0,0,0,0.9)',
-            boxShadow: 'none',
-            position: 'relative'
-          }
-        }}
-      >
-        <IconButton
-          onClick={() => setEnlargedImage(null)}
-          sx={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            color: 'white',
-            bgcolor: 'rgba(0,0,0,0.5)',
-            '&:hover': {
-              bgcolor: 'rgba(0,0,0,0.7)'
-            }
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        {enlargedImage && (
-          <img
-            src={enlargedImage}
-            alt="Enlarged post image"
-            style={{
-              maxWidth: '100%',
-              maxHeight: '90vh',
-              objectFit: 'contain'
-            }}
-          />
-        )}
-      </Dialog>
-    </>
-  );
-};
 
 const IndividualPost = ({ 
   post, 
@@ -117,8 +21,8 @@ const IndividualPost = ({
   user, 
   handleLikeClick, 
   handleReplyClick,
-  handleEditClick, // Add new prop for edit functionality
-  canEditPost, // Add new prop to determine if post can be edited 
+  handleEditClick,
+  canEditPost,
   renderContent, 
   postReactions, 
   highlightedReplyId 
@@ -130,7 +34,7 @@ const IndividualPost = ({
   const { isAdmin } = useAuth();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [editDialogOpen, setEditDialogOpen] = useState(false); // Add state for edit dialog
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
   
   const userAuth0Id = user?.sub;
@@ -145,13 +49,23 @@ const IndividualPost = ({
   const isPostOwner = userAuth0Id === post.auth0_id;
   const canDelete = isAdmin || isPostOwner;
 
-  // The canEditPost prop is passed from parent component now
-
   useEffect(() => {
     console.log('Post data:', post);
     console.log('Has images:', hasImages);
     console.log('Images array:', post.images);
   }, [post]);
+
+  // Add navigation handler for user profiles
+  const navigateToUserProfile = () => {
+    if (post.auth0_id) {
+      navigate(`/profile/${post.auth0_id}`);
+    }
+  };
+
+  // Handle navigation to another user's profile
+  const navigateToOtherUserProfile = (userId) => {
+    navigate(`/profile/${userId}`);
+  };
 
   const handleDelete = async () => {
     try {
@@ -197,7 +111,6 @@ const IndividualPost = ({
   const handleSaveEdit = (updatedPost) => {
     setEditDialogOpen(false);
     window.location.reload(); // Refresh to see changes
-    // Alternatively, update the post in the parent component's state
   };
 
   // Thread starter specific styles and rendering
@@ -208,15 +121,8 @@ const IndividualPost = ({
         <>
           <Paper
             elevation={0}
-            sx={{
-              mb: 1,
-              // any mobile-friendly styles you want
-            }}
+            sx={{ mb: 1 }}
           >
-            {/* 
-              For mobile, consider a more compact header, 
-              simpler avatar placement, smaller spacing, etc.
-            */}
             <Box 
               sx={{
                 bgcolor: palette.secondary.main, 
@@ -229,21 +135,26 @@ const IndividualPost = ({
               }}
             >
               <Typography variant="h4">{post.title}</Typography>
-              {/*<Typography variant="body2">
-                {new Date(post.created_at).toLocaleString()}
-              </Typography>*/}
             </Box>
   
-            {/* Example "mobile-friendly" body */}
             <Box sx={{ p: 2 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Avatar 
                   src={post.avatar_url} 
                   alt={post.username || 'User'} 
-                  sx={{ width: 40, height: 40, mr: 1.5 }} 
+                  sx={{ width: 40, height: 40, mr: 1.5, cursor: 'pointer' }} 
+                  onClick={navigateToUserProfile}
                 />
                 <Box>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                  <Typography 
+                    variant="subtitle2" 
+                    sx={{ 
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      '&:hover': { textDecoration: 'underline' }
+                    }}
+                    onClick={navigateToUserProfile}
+                  >
                     {post.username || 'Anonymous'}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
@@ -252,12 +163,8 @@ const IndividualPost = ({
                 </Box>
               </Box>
   
-              {/* Post content, images, etc. */}
               {renderContent(post.content)}
-              {hasImages && <PostImageGrid images={post.images} />}
-  
-              {/* Like, Reply, Edit, Delete row */}
-              {/* ...similar to your mobile reply layout... */}
+              {hasImages && <ImageAttachmentsGrid images={post.images} />}
             </Box>
           </Paper>
   
@@ -265,172 +172,185 @@ const IndividualPost = ({
         </>
       );
     } else {
-    return (
-      <>
-        <Paper
-          elevation={0}
-          sx={{
-            mb: 1,
-            border: '1px solid',
-            borderColor: 'divider',
-            borderRadius: 2,
-            backgroundColor: 'background.paper',
-            transition: 'background-color 0.3s ease',
-            scrollMarginTop: '100px',
-            overflow: 'hidden',
-          }}
-        >
-          {/* Thread starter header */}
-          <Box sx={{ 
-            bgcolor: palette.secondary.main, 
-            color: palette.neutral.black,
-            px: 2,
-            py: 1,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <Typography variant="h4">{post.title}</Typography>
-            <Typography variant="body2" sx={{ color: palette.text.secondary }}>
-              {new Date(post.created_at).toLocaleString()}
-            </Typography>
-          </Box>
-
-          <Box sx={{ display: 'flex', gap: 2, p: 2, bgcolor: 'background.paper', minHeight: 120 }}>
-            {/* Left Side: Avatar + Username */}
+      return (
+        <>
+          <Paper
+            elevation={0}
+            sx={{
+              mb: 1,
+              border: '1px solid',
+              borderColor: 'divider',
+              borderRadius: 2,
+              backgroundColor: 'background.paper',
+              transition: 'background-color 0.3s ease',
+              scrollMarginTop: '100px',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Thread starter header */}
             <Box sx={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              width: 160, 
-              bgcolor: 'grey.100', 
-              p: 1, 
-              borderRadius: '8px 0 0 8px', 
-              borderRight: '1px solid', 
-              borderColor: 'divider', 
-              flexShrink: 0, 
-              minHeight: 120 
+              bgcolor: palette.secondary.main, 
+              color: palette.neutral.black,
+              px: 2,
+              py: 1,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
             }}>
-              <Avatar 
-                src={post.avatar_url} 
-                alt={post.username || post.name || 'User'} 
-                sx={{ width: 60, height: 60 }} 
-              />
-              <Typography 
-                variant="subtitle2" 
-                sx={{ 
-                  textAlign: 'center', 
-                  fontWeight: 600, 
-                  mt: 1, 
-                  wordBreak: 'break-word', 
-                  overflowWrap: 'break-word', 
-                  maxWidth: '100%', 
-                  display: 'block' 
-                }}
-              >
-                {post.username || (post.auth0_id?.startsWith('google-oauth2|') ? (post.name || post.email?.split('@')[0] || 'Google User') : 'User')}
-              </Typography>
-              <Typography 
-                variant="caption" 
-                sx={{ 
-                  color: 'gray',
-                  textAlign: 'center',
-                  mt: 0.5
-                }}
-              >
-                {post.tagline || []}
+              <Typography variant="h4">{post.title}</Typography>
+              <Typography variant="body2" sx={{ color: palette.text.secondary }}>
+                {new Date(post.created_at).toLocaleString()}
               </Typography>
             </Box>
 
-            {/* Main Content */}
-            <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', minHeight: 120 }}>
-              <Box sx={{ mt: 0.5, width: '100%', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
-                {renderContent(post.content)}
-                
-                {/* Display images if present */}
-                {hasImages && <PostImageGrid images={post.images} />}
+            <Box sx={{ display: 'flex', gap: 2, p: 2, bgcolor: 'background.paper', minHeight: 120 }}>
+              {/* Left Side: Avatar + Username */}
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                width: 160, 
+                bgcolor: 'grey.100', 
+                p: 1, 
+                borderRadius: '8px 0 0 8px', 
+                borderRight: '1px solid', 
+                borderColor: 'divider', 
+                flexShrink: 0, 
+                minHeight: 120 
+              }}>
+                <Avatar 
+                  src={post.avatar_url} 
+                  alt={post.username || post.name || 'User'} 
+                  sx={{ 
+                    width: 60, 
+                    height: 60,
+                    cursor: 'pointer' 
+                  }}
+                  onClick={navigateToUserProfile}
+                />
+                <Typography 
+                  variant="subtitle2" 
+                  sx={{ 
+                    textAlign: 'center', 
+                    fontWeight: 600, 
+                    mt: 1, 
+                    wordBreak: 'break-word', 
+                    overflowWrap: 'break-word', 
+                    maxWidth: '100%', 
+                    display: 'block',
+                    cursor: 'pointer',
+                    '&:hover': { textDecoration: 'underline' }
+                  }}
+                  onClick={navigateToUserProfile}
+                >
+                  {post.username || (post.auth0_id?.startsWith('google-oauth2|') ? (post.name || post.email?.split('@')[0] || 'Google User') : 'User')}
+                </Typography>
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    color: 'gray',
+                    textAlign: 'center',
+                    mt: 0.5
+                  }}
+                >
+                  {post.tagline || []}
+                </Typography>
               </Box>
 
-              {/* Bottom Row: Like/Reply/Edit/Delete */}
-              <Box sx={{ pt: 1, mt: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                <Box sx={{ flexGrow: 1 }}>
-                  {likedUsers.length > 0 && (
-                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                      Liked by{" "}
-                      {likedUsers.slice(0, 2).map((user, index) => (
-                        <React.Fragment key={user.id}>
-                          <Link 
-                            sx={{ textDecoration: "none", fontWeight: "bold" }}
-                          >
-                            {user.username}
-                          </Link>
-                          {index < Math.min(likedUsers.length - 1, 1) ? ", " : ""}
-                          {index === 0 && likedUsers.length === 2 ? " and " : ""}
-                        </React.Fragment>
-                      ))}
-                      {likedUsers.length > 2 && <> and {likedUsers.length - 2} others</>}
+              {/* Main Content */}
+              <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', minHeight: 120 }}>
+                <Box sx={{ mt: 0.5, width: '100%', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+                  {renderContent(post.content)}
+                  
+                  {hasImages && <ImageAttachmentsGrid images={post.images} />}
+                </Box>
+
+                {/* Bottom Row: Like/Reply/Edit/Delete */}
+                <Box sx={{ pt: 1, mt: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                  <Box sx={{ flexGrow: 1 }}>
+                    {likedUsers.length > 0 && (
+                      <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                        Liked by{" "}
+                        {likedUsers.slice(0, 2).map((user, index) => (
+                          <React.Fragment key={user.id}>
+                            <Link 
+                              sx={{ 
+                                textDecoration: "none", 
+                                fontWeight: "bold",
+                                cursor: 'pointer',
+                                '&:hover': { textDecoration: 'underline' }
+                              }}
+                              onClick={() => navigateToOtherUserProfile(user.id)}
+                            >
+                              {user.username}
+                            </Link>
+                            {index < Math.min(likedUsers.length - 1, 1) ? ", " : ""}
+                            {index === 0 && likedUsers.length === 2 ? " and " : ""}
+                          </React.Fragment>
+                        ))}
+                        {likedUsers.length > 2 && <> and {likedUsers.length - 2} others</>}
+                      </Typography>
+                    )}
+                  </Box>
+
+                  <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Typography 
+                      variant="caption"
+                      sx={{
+                        cursor: 'pointer',
+                        fontWeight: userHasLiked ? 'bold' : 'normal',
+                        color: userHasLiked ? '#2E7D32' : 'primary.main',
+                        transition: 'color 0.2s ease-in-out, font-weight 0.2s ease-in-out',
+                        '&:hover': { textDecoration: 'underline' },
+                        width: '45px',
+                        display: 'inline-block',
+                        textAlign: 'center',
+                        whiteSpace: 'nowrap',
+                      }}
+                      onClick={() => handleLikeClick(post.id)}
+                    >
+                      {userHasLiked ? 'Liked' : 'Like'}
                     </Typography>
-                  )}
-                </Box>
-
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  <Typography 
-                    variant="caption"
-                    sx={{
-                      cursor: 'pointer',
-                      fontWeight: userHasLiked ? 'bold' : 'normal',
-                      color: userHasLiked ? '#2E7D32' : 'primary.main',
-                      transition: 'color 0.2s ease-in-out, font-weight 0.2s ease-in-out',
-                      '&:hover': { textDecoration: 'underline' },
-                      width: '45px',
-                      display: 'inline-block',
-                      textAlign: 'center',
-                      whiteSpace: 'nowrap',
-                    }}
-                    onClick={() => handleLikeClick(post.id)}
-                  >
-                    {userHasLiked ? 'Liked' : 'Like'}
-                  </Typography>
-                  <Typography 
-                    variant="caption" 
-                    color="primary" 
-                    sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
-                    onClick={() => handleReplyClick(post)}
-                  >
-                    Reply
-                  </Typography>
-                  
-                  {/* Add Edit button */}
-                  {canEditPost && (
-                    <Tooltip title="Edit Thread">
-                      <IconButton 
-                        size="small" 
-                        onClick={handleLocalEditClick}
-                        sx={{ ml: 1, p: 0, color: palette.warning.main }}
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                  
-                  {/* Delete button for admins or post owner */}
-                  {canDelete && (
-                    <Tooltip title="Delete Thread">
-                      <IconButton 
-                        size="small" 
-                        color="error" 
-                        onClick={() => setDeleteDialogOpen(true)}
-                        sx={{ ml: 1, p: 0, color: palette.error.main  }}
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  )}
+                    <Typography 
+                      variant="caption" 
+                      color="primary" 
+                      sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                      onClick={() => handleReplyClick(post)}
+                    >
+                      Reply
+                    </Typography>
+                    
+                    {/* Add Edit button */}
+                    {canEditPost && (
+                      <Tooltip title="Edit Thread">
+                        <IconButton 
+                          size="small" 
+                          onClick={handleLocalEditClick}
+                          sx={{ ml: 1, p: 0, color: palette.warning.main }}
+                        >
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                    
+                    {/* Delete button for admins or post owner */}
+                    {canDelete && (
+                      <Tooltip title="Delete Thread">
+                        <IconButton 
+                          size="small" 
+                          color="error" 
+                          onClick={() => setDeleteDialogOpen(true)}
+                          sx={{ ml: 1, p: 0, color: palette.error.main  }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </Box>
                 </Box>
               </Box>
             </Box>
-          </Box>
-        </Paper>
+          </Paper>
 
         {/* Delete Confirmation Dialog */}
         <Dialog
@@ -516,7 +436,13 @@ const IndividualPost = ({
             <Avatar 
               src={post.avatar_url} 
               alt={post.username || 'User'} 
-              sx={{ width: 36, height: 36, mr: 1.5 }} 
+              sx={{ 
+                width: 36, 
+                height: 36, 
+                mr: 1.5,
+                cursor: 'pointer' 
+              }}
+              onClick={navigateToUserProfile} 
             />
             <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
               <Typography 
@@ -526,8 +452,11 @@ const IndividualPost = ({
                   lineHeight: 1.2,
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap'
+                  whiteSpace: 'nowrap',
+                  cursor: 'pointer',
+                  '&:hover': { textDecoration: 'underline' }
                 }}
+                onClick={navigateToUserProfile}
               >
                 {post.username || 'Anonymous User'}
               </Typography>
@@ -572,7 +501,7 @@ const IndividualPost = ({
             {renderContent(post.content)}
             
             {/* Display images if present */}
-            {hasImages && <PostImageGrid images={post.images} />}
+            {hasImages && <ImageAttachmentsGrid images={post.images} />}
           </Box>
 
           {/* Bottom actions */}
@@ -664,7 +593,7 @@ const IndividualPost = ({
   }
 
   // Desktop layout - for replies
-  return (
+ return (
     <>
       <Paper
         ref={isHighlighted ? replyRef : null}
@@ -697,7 +626,12 @@ const IndividualPost = ({
             <Avatar 
               src={post.avatar_url} 
               alt={post.username || post.name || 'User'} 
-              sx={{ width: 60, height: 60 }} 
+              sx={{ 
+                width: 60, 
+                height: 60,
+                cursor: 'pointer'
+              }}
+              onClick={navigateToUserProfile}
             />
             <Typography 
               variant="subtitle2" 
@@ -708,8 +642,11 @@ const IndividualPost = ({
                 wordBreak: 'break-word', 
                 overflowWrap: 'break-word', 
                 maxWidth: '100%', 
-                display: 'block' 
+                display: 'block',
+                cursor: 'pointer',
+                '&:hover': { textDecoration: 'underline' }
               }}
+              onClick={navigateToUserProfile}
             >
               {post.username || post.name || post.email || 'User'}
             </Typography>
@@ -764,8 +701,7 @@ const IndividualPost = ({
             <Box sx={{ mt: 0.5, width: '100%', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
               {renderContent(post.content)}
               
-              {/* Display images if present */}
-              {hasImages && <PostImageGrid images={post.images} />}
+              {hasImages && <ImageAttachmentsGrid images={post.images} />}
             </Box>
 
             {/* Bottom Row: Like/Reply */}
@@ -777,7 +713,13 @@ const IndividualPost = ({
                     {likedUsers.slice(0, 2).map((user, index) => (
                       <React.Fragment key={user.id}>
                         <Link 
-                          sx={{ textDecoration: "none", fontWeight: "bold" }}
+                          sx={{ 
+                            textDecoration: "none", 
+                            fontWeight: "bold",
+                            cursor: 'pointer',
+                            '&:hover': { textDecoration: 'underline' } 
+                          }}
+                          onClick={() => navigateToOtherUserProfile(user.id)}
                         >
                           {user.username}
                         </Link>
