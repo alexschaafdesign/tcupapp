@@ -2,11 +2,11 @@ import React from "react";
 import { Box, Grid, Card, CardContent, Typography, Icon } from "@mui/material";
 import LatestPosts from "../components/Xenforo/LatestPosts";
 import ForumThreads from "../components/Xenforo/ForumThreads";
-import XenForoEmbed from "../components/XenforoEmbed";
+import XenForoEmbed from "../../components/XenforoEmbed";
 import XenforoTest from "../components/Xenforo/XenforoTest";
 import AuthTest from "../components/Xenforo/AuthTest";
-import TestSupabase from "../components/TestSupabase";
-import CalendarEvents from "../components/CalendarEvents";
+import TestSupabase from "../../components/TestSupabase";
+import CalendarEvents from "../../components/CalendarEvents";
 
 
 const apiUrl = process.env.REACT_APP_API_URL;  // The backend API URL from the .env file
