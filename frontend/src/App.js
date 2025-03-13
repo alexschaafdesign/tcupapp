@@ -50,6 +50,7 @@ import SingleUpdatePost from "./pages/TCUP/Updates/SingleUpdatePost.js";
 import UpdateEditForm from "./pages/TCUP/Updates/UpdateEditForm.js";
 import ContactForm from "./pages/Contact/ContactForm.js";
 import ProfileSync from "./pages/User/Components/ProfileSync.js";
+import Resources from "./pages/Resources/Resources.js";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
@@ -108,6 +109,8 @@ function App() {
             <Route path="updates" element={<UpdatesPage />} />
             <Route path="updates/edit/:id" element={<UpdateEditForm />} />
 
+            {/* Resources */}
+            <Route path="resources" element={<Resources />} />
 
 
 
