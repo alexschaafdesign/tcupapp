@@ -34,7 +34,7 @@ const createSlug = (name, existingSlugs = []) => {
   return slug;
 };
 
-const TCUPBandForm = ({ isEdit = false }) => {
+const BandForm = ({ isEdit = false }) => {
   const { bandid } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -565,4 +565,4 @@ const TCUPBandForm = ({ isEdit = false }) => {
     );
 };
 
-export default TCUPBandForm;
+export default BandForm;

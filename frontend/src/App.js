@@ -7,9 +7,9 @@ import VenuesTable from "./pages/Venues/VenuesTable.js";
 import VenueProfile from "./pages/Venues/VenueProfile.js";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./styles/theme"; // Import your custom theme
-import TCUPBandForm from "./pages/Bands/TCUPBandForm.js";
-import TCUPBandsGrid from "./pages/Bands/TCUPBandsGrid.js";
-import TCUPBandProfile from "./pages/Bands/TCUPBandProfile.js";
+import BandForm from "./pages/Bands/BandForm.js";
+import FullBandList from "./pages/Bands/FullBandList.js";
+import BandProfile from "./pages/Bands/BandProfile.js";
 import TCUPPeopleForm from "./pages/TCUPPeopleForm.js";
 import TCUPPeopleTable from "./pages/TCUPPeopleTable.js";
 import TCUPPeopleProfile from "./pages/TCUPPeopleProfile.js";
@@ -148,10 +148,10 @@ function App() {
             <Route path="flyering/edit/:id" element={<EditFlyeringForm />} />
     
             {/* Bands */}
-            <Route path="bands" element={<TCUPBandsGrid />} />
-            <Route path="bands/add" element={<TCUPBandForm isEdit={false} />} />
-            <Route path="bands/:bandSlug" element={<TCUPBandProfile />} />
-            <Route path="bands/:bandid/edit" element={<TCUPBandForm isEdit />} />
+            <Route path="bands" element={<FullBandList />} />
+            <Route path="bands/add" element={<BandForm isEdit={false} />} />
+            <Route path="bands/:bandSlug" element={<BandProfile />} />
+            <Route path="bands/:bandid/edit" element={<BandForm isEdit />} />
     
             {/* Venues */}
             <Route path="venues" element={<VenuesTable />} />

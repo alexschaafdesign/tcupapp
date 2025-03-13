@@ -176,6 +176,7 @@ const Header = () => {
     { text: "venues", path: "/venues" },
     { text: "session musicians", path: "/sessionmusicians" },
     { text: "power pledge", path: "/powerpledge" },
+    { test: "flyering", path: "/flyering" }
   ].map(link => ({
     ...link,
     disabled: !isDevMode && link.devOnly,
