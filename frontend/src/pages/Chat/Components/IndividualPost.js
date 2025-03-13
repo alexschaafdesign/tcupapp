@@ -2,16 +2,13 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Paper, Box, Avatar, Typography, Link, Tooltip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, CircularProgress, useMediaQuery, useTheme, Grid } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
-import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useAuth } from '../../../hooks/useAuth';
 import EditPost from './EditPost'; // Import the EditPostForm component
 import palette from '../../../styles/colors/palette';
 import ImageAttachmentsGrid from './ImageAttachmentsGrid';
-
-
+import PostHeader from './PostHeader';
 
 const IndividualPost = ({ 
   post, 
@@ -53,7 +50,7 @@ const IndividualPost = ({
     console.log('Post data:', post);
     console.log('Has images:', hasImages);
     console.log('Images array:', post.images);
-  }, [post]);
+  }, [post, hasImages]);
 
   // Add navigation handler for user profiles
   const navigateToUserProfile = () => {
@@ -188,20 +185,16 @@ const IndividualPost = ({
             }}
           >
             {/* Thread starter header */}
-            <Box sx={{ 
-              bgcolor: palette.secondary.main, 
-              color: palette.neutral.black,
-              px: 2,
-              py: 1,
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
-              <Typography variant="h4">{post.title}</Typography>
-              <Typography variant="body2" sx={{ color: palette.text.secondary }}>
-                {new Date(post.created_at).toLocaleString()}
-              </Typography>
-            </Box>
+            <PostHeader 
+                post={post} 
+                isMobile={isMobile} 
+                isThreadStarter={isThreadStarter} 
+                canEditPost={canEditPost}
+                canDelete={canDelete}
+                handleLocalEditClick={handleLocalEditClick}
+                setDeleteDialogOpen={setDeleteDialogOpen}
+                navigateToUserProfile={navigateToUserProfile}
+              />
 
             <Box sx={{ display: 'flex', gap: 2, p: 2, bgcolor: 'background.paper', minHeight: 120 }}>
               {/* Left Side: Avatar + Username */}

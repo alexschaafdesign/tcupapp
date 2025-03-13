@@ -348,7 +348,7 @@ const TCUPBandProfile = ({ allShows = [] }) => {
           {selectedImage && (
             <img
               src={selectedImage}
-              alt="Expanded Image"
+              alt="Expanded"
               style={{
                 maxWidth: "calc(100vw - 32px)",
                 maxHeight: "calc(100vh - 32px)",
