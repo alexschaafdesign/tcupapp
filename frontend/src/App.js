@@ -168,7 +168,11 @@ function App() {
             <Route path="people/:personId/edit" element={<TCUPPeopleForm isEdit />} />
             <Route path="people/:personID" element={<TCUPPeopleProfile />} />
             <Route path="people" element={<TCUPPeopleTable />} />
-            <Route path="profile" element={<UserProfile />} />
+
+            {/* User */}
+
+            <Route path="/profile/:userId" element={<UserProfile />} />
+
     
             {/* Session Musicians */}
             <Route path="sessionmusicians" element={<SessionMusiciansTable />} />

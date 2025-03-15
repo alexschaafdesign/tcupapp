@@ -20,7 +20,7 @@ const Layout = () => {
           width: '100%',
           minHeight: '100vh',
           marginLeft: { xs: 0, md: 0 },
-          paddingTop: '20px',
+          paddingTop: 6,
           backgroundColor: "#eeeeee"
         }}
       >
@@ -31,7 +31,7 @@ const Layout = () => {
             mx: 'auto', // Centers the box
             width: '100%',
             px: { xs: 2, sm: 3, md: 4, lg: 3 }, // Adds padding for different breakpoints
-            py: 3,
+            py: 4,
           }}
         >
           <Outlet />

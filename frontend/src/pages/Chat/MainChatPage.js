@@ -107,7 +107,7 @@ const ForumContainer = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: isMobile ? 2 : 4, px: isMobile ? 1 : 2 }}>
+    <Container maxWidth="lg" sx={{ py: isMobile ? 2 : 0, px: isMobile ? 1 : 2 }}>
       
       {/* Header with Latest Posts and Buttons */}
       <Box 

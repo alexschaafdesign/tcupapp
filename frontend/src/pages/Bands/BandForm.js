@@ -295,7 +295,7 @@ const BandForm = ({ isEdit = false }) => {
   };
 
   return (
-    <Box sx={{ paddingTop: 2, paddingBottom: 10, paddingX: 4 }}>
+    <Box sx={{ paddingTop: 0, paddingBottom: 10, paddingX: 4 }}>
       <Typography variant="h1" gutterBottom textAlign="center">
         {isEdit ? "Edit Your Band" : "Add Your Band"}
       </Typography>
