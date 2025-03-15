@@ -154,7 +154,7 @@ function ShowsTable() {
   ];
 
   return (
-    <Box sx={{ paddingBottom: '150px', paddingTop: 4, overflowY: 'auto' }}>
+    <Box sx={{ paddingBottom: '150px', overflowY: 'auto' }}>
       
 
       <DynamicFilterComponent 

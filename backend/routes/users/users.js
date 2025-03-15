@@ -12,7 +12,7 @@ const router = express.Router();
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Get a user
-// Get or create user profile
+// create user profile
 router.post('/profile', async (req, res) => {
   try {
     console.log('==== User Profile Creation ====');
@@ -104,22 +104,38 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
-// Get a user profile
-router.get('/profile', authMiddleware, async (req, res) => {
+// Get any user's profile by auth0_id
+router.get('/profile/:auth0Id', authMiddleware, async (req, res) => {
   try {
-    console.log('GET /profile hit for user:', req.user.sub);
+    const { auth0Id } = req.params;
+    const requesterId = req.user.sub; // The authenticated user making the request
     
-    const auth0Id = req.user.sub;
-    const user = await pool.query(
-      'SELECT * FROM users WHERE auth0_id = $1',
-      [auth0Id]
-    );
+    // Determine if viewing own profile or someone else's
+    const isOwnProfile = auth0Id === requesterId;
+    
+    // Run query - get all fields for own profile, limited fields for others
+    let query;
+    if (isOwnProfile) {
+      // Full profile data for your own profile
+      query = 'SELECT * FROM users WHERE auth0_id = $1';
+    } else {
+      // Limited profile data for other users
+      query = 'SELECT id, auth0_id, username, bio, avatar_url, tagline, created_at FROM users WHERE auth0_id = $1';
+    }
+    
+    const user = await pool.query(query, [auth0Id]);
 
     if (user.rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    res.json(user.rows[0]);
+    // Add a flag indicating if this is the user's own profile
+    const userData = {
+      ...user.rows[0],
+      isOwnProfile
+    };
+
+    res.json(userData);
   } catch (err) {
     console.error('Error fetching user profile:', err);
     res.status(500).json({ error: 'Server error' });
@@ -240,10 +256,6 @@ router.get('/transformed-avatar', (req, res) => {
 router.put('/username', authMiddleware, async (req, res) => {
   const { username } = req.body;
   const userId = req.user.sub;
-
-  console.log("Using AUTH0_DOMAIN:", process.env.AUTH0_DOMAIN);
-  console.log("Using AUTH0_CLIENT_ID:", process.env.AUTH0_CLIENT_ID);
-  console.log("AUTH0_CLIENT_SECRET present:", !!process.env.AUTH0_CLIENT_SECRET);
   
   try {
     console.log('Updating username for user:', userId);
@@ -342,7 +354,7 @@ router.get('/token-debug', authMiddleware, (req, res) => {
   });
 });
 
-  router.put('/password', authMiddleware, async (req, res) => {
+router.put('/password', authMiddleware, async (req, res) => {
     try {
       const { currentPassword, newPassword } = req.body;
       const auth0Id = req.user.sub;
@@ -384,7 +396,7 @@ router.get('/token-debug', authMiddleware, (req, res) => {
     }
   });
 
-  router.put('/email', authMiddleware, async (req, res) => {
+router.put('/email', authMiddleware, async (req, res) => {
     console.log("EMAIL ROUTE DEBUG:");
     console.log("Current NODE_ENV:", process.env.NODE_ENV);
     console.log("AUTH0_DOMAIN:", process.env.AUTH0_DOMAIN);

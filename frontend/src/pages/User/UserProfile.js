@@ -41,6 +41,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import palette from '../../styles/colors/palette';
 import { useAuth } from '../../hooks/useAuth';
+import { useParams } from 'react-router-dom';
 
 function UserProfile() {
   const { uploadImage, uploading, uploadProgress } = useCloudinaryUpload();
@@ -50,6 +51,11 @@ function UserProfile() {
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
   const { isAdmin } = useAuth(); // Add this to check admin role
+  const { userId } = useParams();
+  const [profileData, setProfileData] = useState(null);
+
+
+  const endpoint = userId ? `${apiUrl}/users/profile/${userId}` : `${apiUrl}/users/profile`;
   
 
 
@@ -106,6 +112,22 @@ function UserProfile() {
     month: 'long',
     day: 'numeric'
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isAuthenticated && !isLoaded) {
+        try {
+          const data = await callApi(endpoint);
+          setProfileData(data); // Save the fetched data to state
+          setIsLoaded(true);
+        } catch (err) {
+          console.error('Error fetching user data:', err);
+        }
+      }
+    };
+
+    fetchData();
+  }, [isAuthenticated, isLoaded, callApi, endpoint]);
 
   useEffect(() => {
     async function checkToken() {
