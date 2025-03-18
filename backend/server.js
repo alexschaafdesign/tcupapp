@@ -31,6 +31,7 @@ import updatesRouter from './routes/updates.js';
 import contactRouter from './routes/contact.js';
 import uploadRouter from './routes/upload.js';
 import readStatusRouter from './routes/chat/read-status.js'
+import directMessagesRouter from './routes/direct-messages.js'
 
 // 2) Optional debugging/logging to confirm environment vars are loaded
 console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -129,6 +130,7 @@ app.use('/api/updates', updatesRouter)
 app.use('/api/contact', contactRouter)
 app.use('/api/upload', uploadRouter)
 app.use('/api/read-status', readStatusRouter);
+app.use('/api/direct-messages', directMessagesRouter)
 
 
 

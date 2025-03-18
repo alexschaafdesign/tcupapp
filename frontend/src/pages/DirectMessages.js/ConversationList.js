@@ -15,7 +15,9 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
-  Divider
+  Divider,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import { 
   Add as AddIcon,
@@ -29,6 +31,7 @@ const ConversationList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -38,40 +41,74 @@ const ConversationList = () => {
   useEffect(() => {
     if (isAuthenticated) {
       fetchConversations();
+    } else {
+      setLoading(false);
     }
   }, [isAuthenticated]);
 
   const fetchConversations = async () => {
     try {
+      console.log("Fetching conversations");
+      setLoading(true);
+      setError(null);
+      
       const token = await getAccessTokenSilently();
-      const response = await fetch(`${apiUrl}/messages/conversations`, {
+      const response = await fetch(`${apiUrl}/direct-messages/conversations`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const errorText = await response.text();
+        console.error(`HTTP error! Status: ${response.status}, Response: ${errorText}`);
+        throw new Error(`Failed to fetch conversations: ${response.status}`);
       }
       
       const data = await response.json();
+      console.log(`Received ${data.length} conversations`);
       setConversations(data);
     } catch (error) {
       console.error('Error fetching conversations:', error);
+      setError('Failed to load conversations. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleConversationCreated = (newConversation) => {
-    setConversations([newConversation, ...conversations]);
+    console.log("New conversation created:", newConversation);
+    
+    if (!newConversation || !newConversation.id) {
+      console.error("Created conversation has no ID:", newConversation);
+      setError("Could not navigate to new conversation - missing ID");
+      return;
+    }
+    
+    setConversations(prev => [newConversation, ...prev]);
     setIsModalOpen(false);
+    
     // Navigate to the new conversation
     navigate(`/messages/${newConversation.id}`);
   };
 
   const handleConversationClick = (conversationId) => {
+    if (!conversationId) {
+      console.error("Attempted to navigate to conversation with undefined ID");
+      setError("Cannot open conversation - missing ID");
+      return;
+    }
+    
+    console.log(`Navigating to conversation: ${conversationId}`);
     navigate(`/messages/${conversationId}`);
+  };
+
+  const handleRetry = () => {
+    fetchConversations();
+  };
+
+  const handleCloseError = () => {
+    setError(null);
   };
 
   return (
@@ -95,6 +132,16 @@ const ConversationList = () => {
   
         {isAuthenticated && (
           <Stack direction="row" spacing={2}>
+            {error && (
+              <Button 
+                variant="outlined" 
+                size="small"
+                onClick={handleRetry}
+              >
+                Retry
+              </Button>
+            )}
+            
             {isMobile ? (
               <IconButton
                 size="small"
@@ -154,11 +201,24 @@ const ConversationList = () => {
         <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
           <CircularProgress />
         </Box>
-      ) : conversations.length > 0 ? (
+      ) : error ? (
+        <Box sx={{ mb: 4, textAlign: 'center', p: 4 }}>
+          <Typography variant="body1" color="error" gutterBottom>
+            {error}
+          </Typography>
+          <Button 
+            variant="outlined" 
+            onClick={handleRetry}
+            sx={{ mt: 2 }}
+          >
+            Retry
+          </Button>
+        </Box>
+      ) : conversations && conversations.length > 0 ? (
         <Box sx={{ mb: 4, bgcolor: 'background.paper', borderRadius: '8px' }}>
           <List sx={{ width: '100%' }}>
             {conversations.map((conversation, index) => (
-              <React.Fragment key={conversation.id}>
+              <React.Fragment key={conversation.id || index}>
                 <ListItem 
                   alignItems="flex-start"
                   button
@@ -172,8 +232,8 @@ const ConversationList = () => {
                 >
                   <ListItemAvatar>
                     <Avatar 
-                      alt={conversation.other_user.username} 
-                      src={conversation.other_user.avatar_url} 
+                      alt={conversation.other_user?.username || 'User'} 
+                      src={conversation.other_user?.avatar_url} 
                     />
                   </ListItemAvatar>
                   <ListItemText
@@ -181,7 +241,7 @@ const ConversationList = () => {
                       <Typography variant="subtitle1" fontWeight={
                         conversation.unread ? 600 : 400
                       }>
-                        {conversation.other_user.username}
+                        {conversation.other_user?.username || 'Unknown User'}
                       </Typography>
                     }
                     secondary={
@@ -191,12 +251,15 @@ const ConversationList = () => {
                           component="span"
                           variant="body2"
                         >
-                          {conversation.last_message.substring(0, 50)}
-                          {conversation.last_message.length > 50 ? '...' : ''}
+                          {conversation.last_message 
+                            ? `${conversation.last_message.substring(0, 50)}${conversation.last_message.length > 50 ? '...' : ''}`
+                            : 'No messages yet'}
                         </Typography>
-                        <Typography variant="caption" sx={{ ml: 1, color: 'text.secondary' }}>
-                          {new Date(conversation.last_message_at).toLocaleDateString()}
-                        </Typography>
+                        {conversation.last_message_at && (
+                          <Typography variant="caption" sx={{ ml: 1, color: 'text.secondary' }}>
+                            {new Date(conversation.last_message_at).toLocaleDateString()}
+                          </Typography>
+                        )}
                       </React.Fragment>
                     }
                   />
@@ -213,6 +276,18 @@ const ConversationList = () => {
           </Typography>
         </Box>
       )}
+      
+      {/* Error Snackbar */}
+      <Snackbar 
+        open={!!error} 
+        autoHideDuration={6000} 
+        onClose={handleCloseError}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseError} severity="error" sx={{ width: '100%' }}>
+          {error}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
