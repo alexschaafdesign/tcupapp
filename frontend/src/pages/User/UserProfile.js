@@ -106,12 +106,23 @@ function UserProfile() {
   const [successMessage, setSuccessMessage] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
 
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
+
+
   // Join date (would normally come from API)
   const joinDate = new Date(2023, 10, 15).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   });
+
+  useEffect(() => {
+    // Check if this is the current user's profile
+    if (isAuthenticated && user) {
+      setIsOwnProfile(!userId || userId === user.sub);
+    }
+  }, [isAuthenticated, userId, user]);
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -233,21 +244,27 @@ function UserProfile() {
     );
   };
 
-  // Fetch the profile info and related data in one effect
+// Replace your fetchData function in the useEffect with this version
   useEffect(() => {
-    const fetchData = async () => {
-      if (isAuthenticated && !isLoaded) {
-        try {
-          // Get profile information
-          const profileData = await callApi(`${apiUrl}/users/profile`);
-          if (profileData) {
-            if (profileData.username) setUsername(profileData.username);
-            if (profileData.avatar_url) setAvatarUrl(profileData.avatar_url);
-            if (profileData.email) setEmail(profileData.email);
-            if (profileData.tagline) setTagline(profileData.tagline);
-            if (profileData.bio) setBio(profileData.bio);
-          }
-          // Get additional user data
+  const fetchData = async () => {
+    if (isAuthenticated && !isLoaded) {
+      try {
+        console.log('Fetching profile data for endpoint:', endpoint);
+        
+        // Use the endpoint that's based on userId
+        const profileData = await callApi(endpoint);
+        
+        if (profileData) {
+          if (profileData.username) setUsername(profileData.username);
+          if (profileData.avatar_url) setAvatarUrl(profileData.avatar_url);
+          if (profileData.email) setEmail(profileData.email);
+          if (profileData.tagline) setTagline(profileData.tagline);
+          if (profileData.bio) setBio(profileData.bio);
+        }
+        
+        // If this is looking at the current user's profile, fetch additional data
+        // Otherwise skip fetching bands, shows, etc. for other users
+        if (!userId || userId === user?.sub) {
           const [bandsData, showsData, favoritesData, claimedData] = await Promise.all([
             callApi(`${apiUrl}/users/bands`),
             callApi(`${apiUrl}/users/shows`),
@@ -258,15 +275,17 @@ function UserProfile() {
           setSavedShows(showsData || []);
           setFavoriteBands(favoritesData || []);
           setClaimedBands(claimedData || []);
-          setIsLoaded(true);
-        } catch (err) {
-          console.error('Error fetching user data:', err);
         }
+        
+        setIsLoaded(true);
+      } catch (err) {
+        console.error('Error fetching user data:', err);
       }
-    };
+    }
+  };
 
-    fetchData();
-  }, [isAuthenticated, isLoaded, callApi, apiUrl, setAvatarUrl]);
+  fetchData();
+}, [isAuthenticated, isLoaded, callApi, endpoint, apiUrl, setAvatarUrl, userId, user?.sub]);
 
   // === Avatar Upload / Removal Handlers ===
   const handleAvatarUpload = async (file) => {
