@@ -6,7 +6,8 @@ import {
   Autocomplete,
   Avatar,
   CircularProgress,
-  Typography
+  Typography,
+  Alert
 } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
 import EditorWithFormatting from '../Chat/Components/EditorWithFormatting';
@@ -17,6 +18,8 @@ const NewConversationModal = ({ onConversationCreated }) => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [error, setError] = useState(null);
   const [messageEditorState, setMessageEditorState] = useState(EditorState.createEmpty());
   const [messageImages, setMessageImages] = useState([]);
   const { getAccessTokenSilently } = useAuth0();
@@ -26,6 +29,9 @@ const NewConversationModal = ({ onConversationCreated }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        setLoadingUsers(true);
+        setError(null);
+        
         const token = await getAccessTokenSilently();
         const response = await fetch(`${apiUrl}/users`, {
           headers: {
@@ -34,29 +40,37 @@ const NewConversationModal = ({ onConversationCreated }) => {
         });
         
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          throw new Error(`Failed to fetch users: ${response.status}`);
         }
         
         const data = await response.json();
+        console.log(`Loaded ${data.length} users for selection`);
         setUsers(data);
       } catch (error) {
         console.error('Error fetching users:', error);
+        setError("Failed to load users. Please try again.");
+      } finally {
+        setLoadingUsers(false);
       }
     };
     
     fetchUsers();
-  }, []);
+  }, [getAccessTokenSilently, apiUrl]);
   
   const handleStartConversation = async () => {
     if (!selectedUser) return;
     
     setLoading(true);
+    setError(null);
+    
     try {
+      console.log("Starting conversation with user:", selectedUser.username);
+      
       const token = await getAccessTokenSilently();
       const contentState = messageEditorState.getCurrentContent();
       const rawContent = JSON.stringify(convertToRaw(contentState));
       
-      const response = await fetch(`${apiUrl}/messages/new`, {
+      const response = await fetch(`${apiUrl}/direct-messages/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -70,13 +84,29 @@ const NewConversationModal = ({ onConversationCreated }) => {
       });
       
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const errorText = await response.text();
+        console.error(`Error sending message (${response.status}):`, errorText);
+        throw new Error(`Failed to send message: ${response.status}`);
       }
       
-      const newConversation = await response.json();
-      onConversationCreated(newConversation);
+      const responseData = await response.json();
+      console.log("Message sent, response:", responseData);
+      
+      // Extract conversation info from the response
+      const conversationInfo = {
+        id: responseData.conversation_id,
+        other_user: selectedUser,
+        last_message: contentState.getPlainText(),
+        last_message_at: new Date().toISOString()
+      };
+      
+      console.log("Created conversation:", conversationInfo);
+      
+      // Pass the conversation info to the parent component
+      onConversationCreated(conversationInfo);
     } catch (error) {
       console.error('Error starting conversation:', error);
+      setError(error.message || "Failed to start conversation");
     } finally {
       setLoading(false);
     }
@@ -84,17 +114,24 @@ const NewConversationModal = ({ onConversationCreated }) => {
   
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      {error && (
+        <Alert severity="error" onClose={() => setError(null)}>
+          {error}
+        </Alert>
+      )}
+      
       <Autocomplete
         options={users}
-        getOptionLabel={(option) => option.username}
+        loading={loadingUsers}
+        getOptionLabel={(option) => option.username || ''}
         renderOption={(props, option) => (
           <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
             <Avatar 
-              alt={option.username} 
+              alt={option.username || 'User'} 
               src={option.avatar_url} 
               sx={{ width: 24, height: 24, mr: 2 }}
             />
-            {option.username}
+            {option.username || 'Unnamed User'}
           </Box>
         )}
         renderInput={(params) => (
@@ -108,12 +145,18 @@ const NewConversationModal = ({ onConversationCreated }) => {
                 <>
                   {selectedUser && (
                     <Avatar 
-                      alt={selectedUser.username} 
+                      alt={selectedUser.username || 'User'} 
                       src={selectedUser.avatar_url} 
                       sx={{ width: 24, height: 24, ml: 1, mr: 1 }}
                     />
                   )}
                   {params.InputProps.startAdornment}
+                </>
+              ),
+              endAdornment: (
+                <>
+                  {loadingUsers ? <CircularProgress color="inherit" size={20} /> : null}
+                  {params.InputProps.endAdornment}
                 </>
               )
             }}
@@ -145,7 +188,11 @@ const NewConversationModal = ({ onConversationCreated }) => {
         <Button
           variant="contained"
           onClick={handleStartConversation}
-          disabled={!selectedUser || (!messageEditorState.getCurrentContent().hasText() && messageImages.length === 0) || loading}
+          disabled={
+            !selectedUser || 
+            (!messageEditorState.getCurrentContent().hasText() && messageImages.length === 0) || 
+            loading
+          }
         >
           {loading ? <CircularProgress size={24} /> : 'Send Message'}
         </Button>

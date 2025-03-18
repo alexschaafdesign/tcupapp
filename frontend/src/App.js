@@ -177,7 +177,7 @@ function App() {
 
               {/* Direct Messages */}
             <Route path="/messages" element={<ConversationList />} />
-            <Route path="/messages/:userId" element={<ConversationDetail />} />
+            <Route path="/messages/:conversationId" element={<ConversationDetail />} />
 
     
             {/* Session Musicians */}

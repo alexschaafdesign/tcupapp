@@ -12,7 +12,9 @@ import {
   IconButton,
   Divider,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import {
@@ -33,8 +35,10 @@ const ConversationDetail = () => {
   const [messages, setMessages] = useState([]);
   const [otherUser, setOtherUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [messageEditorState, setMessageEditorState] = useState(EditorState.createEmpty());
   const [messageImages, setMessageImages] = useState([]);
+  const [sendingMessage, setSendingMessage] = useState(false);
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -46,40 +50,60 @@ const ConversationDetail = () => {
   // Fetch conversation data
   const fetchConversation = async () => {
     try {
+      console.log(`Fetching conversation details for ID: ${conversationId}`);
+      setError(null);
+      
       const token = await getAccessTokenSilently();
-      const response = await fetch(`${apiUrl}/messages/${conversationId}`, {
+      const response = await fetch(`${apiUrl}/direct-messages/conversation-by-id/${conversationId}`, {
         headers: { 
           Authorization: `Bearer ${token}` 
         },
       });
       
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const errorText = await response.text();
+        console.error(`Error response (${response.status}):`, errorText);
+        throw new Error(`Failed to load conversation: ${response.status}`);
       }
       
       const data = await response.json();
-      setMessages(data.messages);
-      setOtherUser(data.other_user);
+      console.log("Received conversation data:", data);
       
-      // Mark as read
-      await fetch(`${apiUrl}/messages/${conversationId}/read`, {
-        method: 'POST',
-        headers: { 
-          Authorization: `Bearer ${token}` 
-        },
-      });
+      if (data.messages) {
+        setMessages(data.messages);
+      } else {
+        console.warn("No messages found in response:", data);
+        setMessages([]);
+      }
+      
+      if (data.other_user) {
+        setOtherUser(data.other_user);
+      } else {
+        console.warn("No other_user found in response:", data);
+      }
+      
+      // Update read status - only if we found messages
+      if (data.messages && data.messages.length > 0) {
+        await fetch(`${apiUrl}/direct-messages/${conversationId}/read`, {
+          method: 'POST',
+          headers: { 
+            Authorization: `Bearer ${token}` 
+          },
+        });
+      }
     } catch (error) {
       console.error("Error fetching conversation:", error);
+      setError(error.message || "Failed to load conversation");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (conversationId) {
+    if (conversationId && user?.sub) {
       fetchConversation();
     }
-  }, [conversationId]);
+  }, [conversationId, user]);
 
   useEffect(() => {
     // Scroll to bottom when messages change
@@ -88,11 +112,17 @@ const ConversationDetail = () => {
 
   const handleSendMessage = async () => {
     try {
+      setSendingMessage(true);
+      setError(null);
+      
       const token = await getAccessTokenSilently();
       const contentState = messageEditorState.getCurrentContent();
       const rawContent = JSON.stringify(convertToRaw(contentState));
-  
-      const response = await fetch(`${apiUrl}/messages/${conversationId}/send`, {
+      
+      console.log("Sending message to conversation:", conversationId);
+      
+      // Now using the conversationId/send endpoint
+      const response = await fetch(`${apiUrl}/direct-messages/${conversationId}/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,21 +131,29 @@ const ConversationDetail = () => {
         body: JSON.stringify({
           content: rawContent,
           images: messageImages
-        }),
+        })
       });
   
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const errorText = await response.text();
+        console.error(`Send message error (${response.status}):`, errorText);
+        throw new Error(`Failed to send message: ${response.status}`);
       }
       
       const newMessage = await response.json();
-      setMessages([...messages, newMessage]);
+      console.log("New message sent:", newMessage);
+      
+      // Add the new message to the UI
+      setMessages(prev => [...prev, newMessage]);
   
       // Clear the message editor and images
       setMessageEditorState(EditorState.createEmpty());
       setMessageImages([]);
     } catch (error) {
       console.error('Error sending message:', error);
+      setError(error.message || "Failed to send message");
+    } finally {
+      setSendingMessage(false);
     }
   };
 
@@ -124,17 +162,38 @@ const ConversationDetail = () => {
     navigate('/messages');
   };
 
+  const handleCloseError = () => {
+    setError(null);
+  };
+
   // Render the message content (reusing the same logic as in ViewSingleThread)
   const renderMessageContent = (content) => {
-    // Reuse the renderContent function from ViewSingleThread
-    // This would handle parsing the Draft.js content and displaying it
+    if (!content) {
+      return <Typography variant="body2">No content</Typography>;
+    }
+    
     try {
       const contentObj = typeof content === 'string' ? JSON.parse(content) : content;
+      
+      // Verify we have proper Draft.js content with blocks
+      if (!contentObj || !contentObj.blocks) {
+        return <Typography variant="body2">{typeof content === 'string' ? content : JSON.stringify(content)}</Typography>;
+      }
+      
       const contentState = convertFromRaw(contentObj);
-      const html = stateToHTML(contentState);
+      const html = stateToHTML(contentState, {
+        // Customize HTML conversion options if needed
+        inlineStyles: {
+          BOLD: { element: 'strong' },
+          ITALIC: { element: 'em' },
+        }
+      });
+      
       return parse(html);
     } catch (error) {
-      return <Typography>{content}</Typography>;
+      console.error("Error rendering message content:", error);
+      // Fallback for non-parsable content
+      return <Typography variant="body2">{typeof content === 'string' ? content : 'Unreadable content'}</Typography>;
     }
   };
 
@@ -148,7 +207,7 @@ const ConversationDetail = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Back Button */}
-      <Box sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
+      <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Button 
           startIcon={<ArrowBackIcon />} 
           onClick={handleBackClick}
@@ -160,17 +219,28 @@ const ConversationDetail = () => {
         >
           Back to messages
         </Button>
+        
+        {error && (
+          <Button 
+            variant="outlined" 
+            color="error" 
+            size="small"
+            onClick={fetchConversation}
+          >
+            Retry
+          </Button>
+        )}
       </Box>
       
       {/* Conversation Header with user info */}
       <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
         <Avatar 
-          alt={otherUser?.username} 
+          alt={otherUser?.username || 'User'} 
           src={otherUser?.avatar_url} 
           sx={{ width: 48, height: 48 }}
         />
         <Typography variant="h5">
-          {otherUser?.username}
+          {otherUser?.username || 'Unknown User'}
         </Typography>
       </Box>
       
@@ -183,12 +253,15 @@ const ConversationDetail = () => {
           flexDirection: 'column', 
           gap: 2, 
           mb: 3,
+          height: '60vh',
           maxHeight: '60vh',
           overflow: 'auto',
-          p: 2
+          p: 2,
+          bgcolor: 'background.default',
+          borderRadius: 1
         }}
       >
-        {messages.length === 0 ? (
+        {!messages || messages.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 4 }}>
             <Typography color="text.secondary">
               No messages yet. Start the conversation!
@@ -231,7 +304,7 @@ const ConversationDetail = () => {
                   color: 'text.secondary'
                 }}
               >
-                {new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {message.created_at ? new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
               </Typography>
             </Box>
           ))
@@ -254,12 +327,28 @@ const ConversationDetail = () => {
           <Button
             variant="contained"
             onClick={handleSendMessage}
-            disabled={!messageEditorState.getCurrentContent().hasText() && messageImages.length === 0}
+            disabled={
+              sendingMessage ||
+              !otherUser || 
+              (!messageEditorState.getCurrentContent().hasText() && messageImages.length === 0)
+            }
           >
-            Send
+            {sendingMessage ? 'Sending...' : 'Send'}
           </Button>
         </Box>
       </Paper>
+      
+      {/* Error Snackbar */}
+      <Snackbar 
+        open={!!error} 
+        autoHideDuration={6000} 
+        onClose={handleCloseError}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseError} severity="error" sx={{ width: '100%' }}>
+          {error}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
