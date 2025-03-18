@@ -35,7 +35,7 @@
     "axios": "^1.7.9",
     "buffer": "^6.0.3",
     "cloudinary": "^2.5.1",
-    "date-fns": "^2.29.3",
+    "date-fns": "^2.30.0",
     "dayjs": "^1.11.13",
     "draft-js": "^0.11.7",
     "draft-js-export-html": "^1.4.1",

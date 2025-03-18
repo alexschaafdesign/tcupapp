@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, IconButton, Avatar, Tooltip, Typography, Paper, ClickAwayListener, Button, Menu, MenuItem } from '@mui/material';
+import { Box, IconButton, Avatar, Tooltip, Typography, Paper, ClickAwayListener, Button, Menu, MenuItem, Badge } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
 import useApi from '../../hooks/useApi';
 import { useUserProfile } from '../../hooks/useUserProfile';
 import { useAuth } from '../../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 import Breadcrumbs from './Breadcrumbs';
 import NotificationBell from './NotificationBell';
 import palette from '../../styles/colors/palette';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChatIcon from '@mui/icons-material/Chat';
 
 const TopBar = () => {
   // Existing state and hooks
@@ -18,10 +20,14 @@ const TopBar = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const [username, setUsername] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
+  const navigate = useNavigate();
   
   // State for dropdowns
   const [profileOpen, setProfileOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
+  
+  // State for unread messages count
+  const [unreadMessages, setUnreadMessages] = useState(0);
   
   // References to button elements
   const profileBtnRef = useRef(null);
@@ -53,6 +59,29 @@ const TopBar = () => {
 
     fetchUserProfile();
   }, [isAuthenticated, isLoaded, apiUrl, callApi, setAvatarUrl]);
+  
+  // Fetch unread message count
+  useEffect(() => {
+    const fetchUnreadMessages = async () => {
+      if (isAuthenticated) {
+        try {
+          const conversations = await callApi(`${apiUrl}/direct-messages/conversations`);
+          const unreadCount = conversations.reduce((total, conv) => 
+            total + (conv.unread_count || 0), 0);
+          setUnreadMessages(unreadCount);
+        } catch (err) {
+          console.error('Error fetching unread messages:', err);
+        }
+      }
+    };
+
+    fetchUnreadMessages();
+    
+    // You could set up polling here to periodically check for new messages
+    const interval = setInterval(fetchUnreadMessages, 60000); // check every minute
+    
+    return () => clearInterval(interval);
+  }, [isAuthenticated, apiUrl, callApi]);
   
   const handleProfileClick = () => {
     setProfileOpen(prev => !prev);
@@ -90,6 +119,10 @@ const TopBar = () => {
         screen_hint: 'signup'
       }
     });
+  };
+  
+  const handleMessageClick = () => {
+    navigate('/messages');
   };
   
   // Calculate dropdown positions using refs
@@ -169,8 +202,24 @@ const TopBar = () => {
         </Box>
       )}
 
-            {/* Notification Section - Only show when authenticated */}
-            {isAuthenticated && <NotificationBell />}
+      {/* Message icon - Only show when authenticated */}
+      {isAuthenticated && (
+        <Box sx={{ mr: 2 }}>
+          <Tooltip title="Messages">
+            <IconButton 
+              onClick={handleMessageClick}
+              sx={{ color: 'white' }}
+            >
+              <Badge badgeContent={unreadMessages} color="error">
+                <ChatIcon />
+              </Badge>
+            </IconButton>
+          </Tooltip>
+        </Box>
+      )}
+
+      {/* Notification Section - Only show when authenticated */}
+      {isAuthenticated && <NotificationBell />}
     
       {/* User Profile or Login/Register Buttons */}
       {isAuthenticated ? (

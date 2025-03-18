@@ -51,6 +51,8 @@ import UpdateEditForm from "./pages/TCUP/Updates/UpdateEditForm.js";
 import ContactForm from "./pages/Contact/ContactForm.js";
 import ProfileSync from "./pages/User/Components/ProfileSync.js";
 import Resources from "./pages/Resources/Resources.js";
+import ConversationDetail from "./pages/DirectMessages.js/ConversationDetail.js";
+import ConversationList from "./pages/DirectMessages.js/ConversationList.js";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
@@ -172,6 +174,10 @@ function App() {
             {/* User */}
 
             <Route path="/profile/:userId" element={<UserProfile />} />
+
+              {/* Direct Messages */}
+            <Route path="/messages" element={<ConversationList />} />
+            <Route path="/messages/:userId" element={<ConversationDetail />} />
 
     
             {/* Session Musicians */}
