@@ -104,44 +104,44 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
-// Get any user's profile by auth0_id
+// In your users.js file, add or update the route to handle profile/:auth0Id
 router.get('/profile/:auth0Id', authMiddleware, async (req, res) => {
   try {
     const { auth0Id } = req.params;
-    const requesterId = req.user.sub; // The authenticated user making the request
+    const requesterId = req.user.sub;
     
-    // Determine if viewing own profile or someone else's
-    const isOwnProfile = auth0Id === requesterId;
+    console.log('Profile request:');
+    console.log('- Requested profile:', auth0Id);
+    console.log('- Requester ID:', requesterId);
     
-    // Run query - get all fields for own profile, limited fields for others
-    let query;
-    if (isOwnProfile) {
-      // Full profile data for your own profile
-      query = 'SELECT * FROM users WHERE auth0_id = $1';
-    } else {
-      // Limited profile data for other users
-      query = 'SELECT id, auth0_id, username, bio, avatar_url, tagline, created_at FROM users WHERE auth0_id = $1';
-    }
+    const query = 'SELECT id, auth0_id, username, bio, avatar_url, tagline, created_at FROM users WHERE auth0_id = $1';
+    const result = await pool.query(query, [auth0Id]);
     
-    const user = await pool.query(query, [auth0Id]);
-
-    if (user.rows.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
-
-    // Add a flag indicating if this is the user's own profile
-    const userData = {
-      ...user.rows[0],
-      isOwnProfile
-    };
-
-    res.json(userData);
-  } catch (err) {
-    console.error('Error fetching user profile:', err);
+    
+    // If looking at own profile, include email and other sensitive fields
+    if (auth0Id === requesterId) {
+      const ownProfileQuery = 'SELECT * FROM users WHERE auth0_id = $1';
+      const ownResult = await pool.query(ownProfileQuery, [auth0Id]);
+      return res.json({
+        ...ownResult.rows[0],
+        isOwnProfile: true
+      });
+    }
+    
+    // For other users' profiles, only return limited information
+    return res.json({
+      ...result.rows[0],
+      isOwnProfile: false
+    });
+    
+  } catch (error) {
+    console.error('Error fetching profile:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
-
 
 // Get user's bands
 router.get('/bands', authMiddleware, async (req, res) => {
