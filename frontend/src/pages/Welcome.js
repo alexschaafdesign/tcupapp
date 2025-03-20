@@ -28,14 +28,19 @@ const WelcomePage = () => {
   // Function to handle login with Auth0
   const handleLogin = () => {
     loginWithRedirect({
-      screen_hint: 'login'
+      authorizationParams: {
+        screen_hint: 'login',
+      }
     });
   };
+  
 
   // Function to handle signup with Auth0
   const handleSignup = () => {
     loginWithRedirect({
-      screen_hint: 'signup'
+      authorizationParams: {
+        screen_hint: 'signup',
+      }
     });
   };
 
@@ -240,12 +245,6 @@ const WelcomePage = () => {
               sx={{ mb: 1 }}
             >
               BUT it just takes five seconds (i swear) to set up a new one. Hundreds of people* have already done it. don't be left behind.  
-            </Typography>
-            <Typography 
-              variant="body1" 
-              sx={{ mb: 1 }}
-            >
-              Feel free to use the same username or take the opportunity to start fresh. (ah, to begin again...)  we will be bringing over many of the old conversations/threads as well, in a sort of 'archived' form.
             </Typography>
             <Typography 
               variant="caption" 
