@@ -47,7 +47,7 @@ function HeaderUserProfile({ closeDrawer }) {
   }
 
   const handleNavigation = () => {
-    navigate('/profile');
+    navigate(`/profile/${user.sub}`);
     // Close the drawer if closeDrawer function is provided
     if (closeDrawer) {
       closeDrawer();
