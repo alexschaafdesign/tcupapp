@@ -1,4 +1,3 @@
-// ThreadStarterDesktop.js
 import React from 'react';
 import { Paper, Box, Avatar, Typography, Link, Tooltip, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -22,6 +21,16 @@ const ThreadStarterDesktop = ({
   handleLocalEditClick,
   setDeleteDialogOpen
 }) => {
+  // Check if this is an imported post (but only hide actions, not styling)
+  const isImported = post.is_imported === true;
+
+  const avatarSrc = isImported ? null : post.avatar_url;
+  
+  // Get the appropriate author name
+  const authorName = isImported 
+    ? post.imported_author_name 
+    : (post.username || (post.auth0_id?.startsWith('google-oauth2|') ? (post.name || post.email?.split('@')[0] || 'Google User') : 'User'));
+  
   return (
     <Paper
       elevation={0}
@@ -41,8 +50,8 @@ const ThreadStarterDesktop = ({
         post={post} 
         isMobile={false} 
         isThreadStarter={true}
-        canEditPost={canEditPost}
-        canDelete={canDelete}
+        canEditPost={canEditPost} // Allow editing for admins regardless of import status
+        canDelete={canDelete} // Allow deletion for admins regardless of import status
         handleLocalEditClick={handleLocalEditClick}
         setDeleteDialogOpen={setDeleteDialogOpen}
         navigateToUserProfile={navigateToUserProfile}
@@ -64,12 +73,12 @@ const ThreadStarterDesktop = ({
           minHeight: 120 
         }}>
           <Avatar 
-            src={post.avatar_url} 
-            alt={post.username || post.name || 'User'} 
+            src={avatarSrc} 
+            alt={authorName} 
             sx={{ 
               width: 60, 
               height: 60,
-              cursor: 'pointer' 
+              cursor: 'pointer'
             }}
             onClick={navigateToUserProfile}
           />
@@ -88,7 +97,7 @@ const ThreadStarterDesktop = ({
             }}
             onClick={navigateToUserProfile}
           >
-            {post.username || (post.auth0_id?.startsWith('google-oauth2|') ? (post.name || post.email?.split('@')[0] || 'Google User') : 'User')}
+            {authorName}
           </Typography>
           <Typography 
             variant="caption" 

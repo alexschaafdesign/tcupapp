@@ -6,7 +6,98 @@ import supabase from '../../lib/supabase.js';
 const router = express.Router();
 import { createReplyNotification } from '../notifications.js';
 
-
+const getThreadById = async (req, res) => {
+    const { threadId } = req.params;
+    
+    try {
+      // Get the thread and its replies
+      const { data: threadData, error: threadError } = await supabase
+        .from('forum_messages')
+        .select('*')
+        .eq('id', threadId)
+        .single();
+      
+      if (threadError) {
+        return res.status(404).json({ error: 'Thread not found' });
+      }
+      
+      const { data: repliesData, error: repliesError } = await supabase
+        .from('forum_messages')
+        .select('*')
+        .eq('parent_id', threadId)
+        .order('created_at', { ascending: true });
+      
+      if (repliesError) {
+        return res.status(500).json({ error: 'Failed to fetch replies' });
+      }
+      
+      // If these aren't imported posts, fetch user info from PostgreSQL as usual
+      // For imported posts, we'll use the imported_author_name directly
+      const authIds = [
+        ...new Set([
+          ...(!threadData.is_imported && threadData.auth0_id ? [threadData.auth0_id] : []),
+          ...repliesData
+            .filter(reply => !reply.is_imported && reply.auth0_id)
+            .map(reply => reply.auth0_id)
+        ])
+      ];
+      
+      let userInfo = {};
+      
+      if (authIds.length > 0) {
+        // Get user info from PostgreSQL for real users
+        // This is your existing code to fetch user avatars, etc.
+        const userResult = await pool.query(
+          'SELECT auth0_id, username, avatar_url FROM users WHERE auth0_id = ANY($1)',
+          [authIds]
+        );
+        
+        userInfo = userResult.rows.reduce((acc, user) => {
+          acc[user.auth0_id] = user;
+          return acc;
+        }, {});
+      }
+      
+      // Process the thread data
+      const processedThread = {
+        ...threadData,
+        // For imported posts, use the imported_author_name
+        // For regular posts, use the user info from PostgreSQL
+        author: threadData.is_imported 
+          ? threadData.imported_author_name 
+          : (userInfo[threadData.auth0_id]?.username || 'Unknown User'),
+        avatar_url: threadData.is_imported 
+          ? null // No avatar for imported posts
+          : userInfo[threadData.auth0_id]?.avatar_url,
+        date_display: threadData.is_imported
+          ? threadData.imported_date // Use the imported date text directly
+          : new Date(threadData.created_at).toLocaleString() // Format regular dates
+      };
+      
+      // Process the replies
+      const processedReplies = repliesData.map(reply => ({
+        ...reply,
+        author: reply.is_imported
+          ? reply.imported_author_name
+          : (userInfo[reply.auth0_id]?.username || 'Unknown User'),
+        avatar_url: reply.is_imported
+          ? null // No avatar for imported posts
+          : userInfo[reply.auth0_id]?.avatar_url,
+        date_display: reply.is_imported
+          ? reply.imported_date // Use the imported date text directly
+          : new Date(reply.created_at).toLocaleString() // Format regular dates
+      }));
+      
+      res.json({
+        thread: processedThread,
+        replies: processedReplies
+      });
+    } catch (error) {
+      console.error('Error in getThreadById:', error);
+      res.status(500).json({ error: 'An unexpected error occurred' });
+    }
+  };
+  
 
 router.get('/', async (req, res) => {
     try {
@@ -185,7 +276,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
 
 // Create new post
 router.post('/', authMiddleware, async (req, res) => {
-    const { title, content, tags, images } = req.body;
+    const { title, content, tags, images, is_imported, imported_author_name, imported_date } = req.body;
     const auth0Id = req.user.sub;
     
     try {
@@ -212,7 +303,11 @@ router.post('/', authMiddleware, async (req, res) => {
                 reply_count: 0,
                 is_thread_starter: true,
                 is_edited: false,
-                images: images || [] 
+                images: images || [],
+                // Add imported fields if provided
+                is_imported: is_imported || false,
+                imported_author_name: imported_author_name || null,
+                imported_date: imported_date || null
             }])
             .select()
             .single();
@@ -249,7 +344,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
 // Add reply to post
 router.post('/:id/reply', authMiddleware, async (req, res) => {
-    const { content, images } = req.body;
+    const { content, images, is_imported, imported_author_name, imported_date } = req.body;
     const { id: parentId } = req.params;
     const auth0Id = req.user.sub;
     
@@ -287,30 +382,27 @@ router.post('/:id/reply', authMiddleware, async (req, res) => {
                 parent_id: parentId,
                 auth0_id: auth0Id,
                 author: finalAuthor,
-                images: images || []
+                images: images || [],
+                // Add imported fields if provided
+                is_imported: is_imported || false,
+                imported_author_name: imported_author_name || null,
+                imported_date: imported_date || null
             }])
             .select()
             .single();
 
         if (error) throw error;
 
-        // Create notification for original post author
-        if (parentPost?.auth0_id && parentPost.auth0_id !== auth0Id) {
+        // Create notification for original post author (only for non-imported posts)
+        if (!is_imported && parentPost?.auth0_id && parentPost.auth0_id !== auth0Id) {
             await createReplyNotification(parentId, auth0Id, parentPost.auth0_id, reply.id);
-          }
+        }
 
         res.json({
             ...reply,
             avatar_url,
             username
         });
-
-        // After createReplyNotification
-        const checkNotif = await pool.query(
-            'SELECT * FROM notifications WHERE post_id = $1',
-            [parentId]
-        );
-        console.log('Created notification:', checkNotif.rows);
 
     } catch (error) {
         console.error('Error adding reply:', error);
@@ -595,7 +687,6 @@ router.post('/tags', authMiddleware, async (req, res) => {
     }
 });
 
-// Add this route to posts.js
 
 // Delete post
 router.delete('/:id', authMiddleware, async (req, res) => {
@@ -683,5 +774,68 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     }
   });
 
+  // Add these routes to your existing posts.js file
+
+// Import a thread from old forum content
+router.post('/import-thread', authMiddleware, async (req, res) => {
+    const { title, posts } = req.body;
+    const userId = req.auth.payload.sub; // current user's auth0_id
+    
+    try {
+      // Start a transaction
+      const { data: threadPost, error: threadError } = await supabase
+        .from('forum_messages')
+        .insert({
+          title,
+          content: posts[0].content,
+          is_thread_starter: true,
+          is_imported: true,
+          imported_author_name: posts[0].author,
+          imported_date: posts[0].date,
+          auth0_id: userId, // Use the current admin's ID for backend functions
+          created_at: new Date().toISOString(), // Use current date for created_at
+        })
+        .select();
+      
+      if (threadError) {
+        console.error('Error creating imported thread:', threadError);
+        return res.status(500).json({ error: 'Failed to create thread', details: threadError });
+      }
+      
+      const threadId = threadPost[0].id;
+      
+      // Add all the replies
+      for (let i = 1; i < posts.length; i++) {
+        const post = posts[i];
+        const { error: replyError } = await supabase
+          .from('forum_messages')
+          .insert({
+            content: post.content,
+            is_thread_starter: false,
+            parent_id: threadId,
+            is_imported: true,
+            imported_author_name: post.author,
+            imported_date: post.date,
+            auth0_id: userId, // Use the current admin's ID for backend functions
+            created_at: new Date().toISOString(), // Use current date for created_at
+          });
+        
+        if (replyError) {
+          console.error(`Error creating imported reply ${i}:`, replyError);
+          return res.status(500).json({ error: 'Failed to create reply', details: replyError });
+        }
+      }
+      
+      res.status(201).json({ success: true, threadId });
+    } catch (error) {
+      console.error('Error in import thread route:', error);
+      res.status(500).json({ error: 'An unexpected error occurred', details: error.message });
+    }
+  });
+  
+  // Modify your existing thread endpoint to handle imported posts
+  
+  // Use this updated function in your existing route
+  router.get('/thread/:threadId', getThreadById);
 
 export default router;

@@ -36,6 +36,8 @@ const TopBar = () => {
   // Define admin links
   const adminLinks = [
     { text: "add update", path: "/admin/updates" },
+    { text: "import thread", path: "/admin/import" },
+
   ];
   
   // Existing useEffect and handlers

@@ -29,7 +29,7 @@ import MainChatPage from "./pages/Chat/MainChatPage.js";
 import ViewSingleThread from "./pages/Chat/ViewSingleThread.js";
 import LandingPage from "./pages/LandingPage.js";
 import Privacy from "./pages/Privacy.js";
-import AdminImportPost from "./archived/pages/Chat/AdminImportPost.js";
+import AdminImportPost from "./pages/Chat/Components/OriginalAdminImportPost.js";
 import VRCForm from "./pages/VRC/VRCForm.js";
 import PowerPledgeForm from "./pages/PledgeAndAdvance/PowerPledge.js";
 import ImageDisplayPage from "./pages/ImageDisplayPage.js";
@@ -54,8 +54,10 @@ import Resources from "./pages/Resources/Resources.js";
 import ConversationDetail from "./pages/DirectMessages.js/ConversationDetail.js";
 import ConversationList from "./pages/DirectMessages.js/ConversationList.js";
 import WelcomePage from "./pages/Welcome.js";
-// Create or import the PwaUpdatePage
 import PwaUpdatePage from "./pages/PwaUpdatePage.js"; // Create this file
+import ForumImportTool from "./pages/Chat/ForumImportTool.js";
+import OriginalAdminImportPost from "./pages/Chat/Components/OriginalAdminImportPost.js";
+import HistoricalReplyForm from "./pages/Chat/Components/HistoricalReplyForm.js";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
@@ -139,6 +141,8 @@ function App() {
 
           {/* TCUP Updates */}
           <Route path="/admin/updates" element={<NewUpdate />} />
+          <Route path="/admin/import" element={<OriginalAdminImportPost />} />
+
           <Route path="/updates/:id" element={<SingleUpdatePost />} />
           <Route path="updates" element={<UpdatesPage />} />
           <Route path="updates/edit/:id" element={<UpdateEditForm />} />

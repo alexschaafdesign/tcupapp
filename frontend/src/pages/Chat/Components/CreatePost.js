@@ -24,8 +24,12 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
   const [newTag, setNewTag] = useState('');
   const [isAddingTag, setIsAddingTag] = useState(false);
   const [recentlyAddedTag, setRecentlyAddedTag] = useState(null);
-  const [images, setImages] = useState([]); // State for image uploads
-  const [isSubmitting, setIsSubmitting] = useState(false); // Track submission state
+  const [images, setImages] = useState([]); 
+  const [isSubmitting, setIsSubmitting] = useState(false); 
+
+  // 1) New local states for imported author + date
+  const [importedAuthorName, setImportedAuthorName] = useState('');
+  const [importedDate, setImportedDate] = useState('');
 
   const theme = useTheme();
 
@@ -38,67 +42,60 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
   const handleAddTag = async () => {
     if (!newTag.trim()) return;
 
-    setIsAddingTag(true); // Show loading state
+    setIsAddingTag(true);
 
-    // Generate a temporary tag with a unique ID
     const tempId = `temp-${Date.now()}`;
     const tempTag = { id: tempId, name: newTag.trim() };
 
-    // ✅ Show the new tag in UI immediately
     setTags(prevTags => [...prevTags, tempTag]);
     setSelectedTags(prev => [...prev, tempId]);
     setRecentlyAddedTag(tempId);
 
-    setNewTag(''); // Clear input field
+    setNewTag('');
 
     try {
-        const token = await getAccessTokenSilently();
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/tags`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify({ name: tempTag.name })
-        });
+      const token = await getAccessTokenSilently();
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/tags`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ name: tempTag.name })
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (response.status === 409) {
-            // If the tag already exists, use the existing tag ID
-            setSelectedTags(prev => [...prev.filter(id => id !== tempId), data.tag.id]);
-            setRecentlyAddedTag(data.tag.id);
-        } else if (response.ok) {
-            // ✅ Replace temporary tag with the real tag from the database
-            setTags(prevTags => prevTags.map(tag => 
-                tag.id === tempId ? data : tag
-            ));
-            setSelectedTags(prev => [...prev.filter(id => id !== tempId), data.id]);
-            setRecentlyAddedTag(data.id);
-        } else {
-            throw new Error(data.error);
-        }
+      if (response.status === 409) {
+        // Tag already exists
+        setSelectedTags(prev => [...prev.filter(id => id !== tempId), data.tag.id]);
+        setRecentlyAddedTag(data.tag.id);
+      } else if (response.ok) {
+        // Replace the temporary tag with the real tag
+        setTags(prevTags => prevTags.map(tag => (tag.id === tempId ? data : tag)));
+        setSelectedTags(prev => [...prev.filter(id => id !== tempId), data.id]);
+        setRecentlyAddedTag(data.id);
+      } else {
+        throw new Error(data.error);
+      }
     } catch (error) {
-        console.error('Error adding tag:', error);
-
-        // ❌ If an error occurs, remove the temp tag from the UI
-        setTags(prevTags => prevTags.filter(tag => tag.id !== tempId));
+      console.error('Error adding tag:', error);
+      setTags(prevTags => prevTags.filter(tag => tag.id !== tempId));
     } finally {
-        setIsAddingTag(false);
-        setTimeout(() => setRecentlyAddedTag(null), 2000); // Remove highlight after 2s
+      setIsAddingTag(false);
+      setTimeout(() => setRecentlyAddedTag(null), 2000);
     }
-};
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Check if there's either text content or images
     const contentState = editorState.getCurrentContent();
     const hasText = contentState.hasText();
     const hasImages = images.length > 0;
     
     if (!title.trim() || (!hasText && !hasImages)) {
-      // Either require a title with text content, or a title with images
+      // Either require text or images
       return;
     }
     
@@ -107,19 +104,29 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
     try {
       const token = await getAccessTokenSilently();
       const rawContent = convertToRaw(contentState);
-      
+
+      // 2) Build our post body
+      const bodyData = {
+        title,
+        content: JSON.stringify(rawContent),
+        tags: selectedTags,
+        images
+      };
+
+      // 3) If imported info is present, include in the request
+      if (importedAuthorName.trim() || importedDate.trim()) {
+        bodyData.is_imported = true;
+        bodyData.imported_author_name = importedAuthorName.trim() || null;
+        bodyData.imported_date = importedDate.trim() || null;
+      }
+
       const response = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({
-          title,
-          content: JSON.stringify(rawContent),
-          tags: selectedTags,
-          images: images // Include images array in the request
-        })
+        body: JSON.stringify(bodyData)
       });
 
       if (!response.ok) throw new Error('Failed to create post');
@@ -131,7 +138,9 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
       setTitle('');
       setSelectedTags([]);
       setEditorState(EditorState.createEmpty());
-      setImages([]); // Clear images after posting
+      setImages([]);
+      setImportedAuthorName('');
+      setImportedDate('');
     } catch (error) {
       console.error('Error creating post:', error);
     } finally {
@@ -152,12 +161,30 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
         autoFocus
       />
 
+      {/* 4) Imported author name + date fields */}
+      <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+        <TextField
+          label="Imported Author Name (Optional)"
+          value={importedAuthorName}
+          onChange={(e) => setImportedAuthorName(e.target.value)}
+          variant="outlined"
+          fullWidth
+        />
+        <TextField
+          label="Imported Date (Optional)"
+          value={importedDate}
+          onChange={(e) => setImportedDate(e.target.value)}
+          variant="outlined"
+          fullWidth
+          placeholder="e.g. 01/02/2018 3:45 PM"
+        />
+      </Box>
+
       <EditorWithFormatting 
         editorState={editorState}
         setEditorState={setEditorState}
       />
       
-      {/* Add the ChatImageUpload component */}
       <Box sx={{ my: 2 }}>
         <ChatImageUpload images={images} setImages={setImages} />
       </Box>
@@ -180,44 +207,34 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
                 variant="outlined"
                 sx={{
                   transition: 'background-color 0.3s ease, border-color 0.3s ease',
-
-                  // ✅ Background color logic
                   bgcolor: isNew
-                    ? theme.palette.success.light  // Highlight new tag
+                    ? theme.palette.success.light
                     : isActive
-                      ? theme.palette.primary.main  // Selected tag background (purple)
-                      : 'inherit', // Default state
-
-                  // ✅ Border logic - Remove border if it's new
+                      ? theme.palette.primary.main
+                      : 'inherit',
                   border: isNew
-                    ? "none" // ✅ Remove border if new
+                    ? "none"
                     : isActive
-                      ? `2px solid ${theme.palette.primary.main}`  // Active tags get a border
-                      : `1px solid ${theme.palette.neutral.light}`, // Default border
-
-                  // ✅ Text color logic
+                      ? `2px solid ${theme.palette.primary.main}`
+                      : `1px solid ${theme.palette.neutral.light}`,
                   color: isNew
                     ? theme.palette.text.primary
                     : isActive
-                      ? theme.palette.primary.contrastText // White text for active tags
+                      ? theme.palette.primary.contrastText
                       : theme.palette.text.primary,
-
-                  // ✅ Hover styles
                   '&:hover': {
                     bgcolor: isNew 
-                      ? theme.palette.success.dark  // Keep new tag highlighted
+                      ? theme.palette.success.dark
                       : isActive 
-                        ? `${theme.palette.primary.dark} !important` // Darker purple when active
-                        : theme.palette.action.hover, // Default MUI hover for inactive
-
+                        ? `${theme.palette.primary.dark} !important`
+                        : theme.palette.action.hover,
                     borderColor: isNew 
-                      ? "none" // ✅ Keep no border on hover if new
+                      ? "none"
                       : isActive 
-                        ? theme.palette.primary.dark // Darken the border on hover when active
-                        : theme.palette.neutral.light, // Keep normal border for inactive tags
-
+                        ? theme.palette.primary.dark
+                        : theme.palette.neutral.light,
                     color: isActive 
-                      ? theme.palette.primary.contrastText // Maintain white text for active hover
+                      ? theme.palette.primary.contrastText
                       : theme.palette.text.primary
                   }
                 }}
@@ -233,12 +250,12 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
             value={newTag}
             onChange={(e) => setNewTag(e.target.value)}
             variant="outlined"
-            disabled={isAddingTag} // Prevent input while adding
+            disabled={isAddingTag}
           />
           <Button 
             variant="contained" 
             onClick={handleAddTag}
-            disabled={!newTag.trim() || isAddingTag} // Prevent clicking while adding
+            disabled={!newTag.trim() || isAddingTag}
           >
             {isAddingTag ? 'Adding...' : 'Add'}
           </Button>
