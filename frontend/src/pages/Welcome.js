@@ -21,6 +21,8 @@ import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import palette from '../styles/colors/palette';
 import WarningIcon from '@mui/icons-material/Warning';
+import HandymanIcon from '@mui/icons-material/Handyman';
+
 
 const WelcomePage = () => {
   const { loginWithRedirect } = useAuth0();
@@ -196,7 +198,7 @@ const WelcomePage = () => {
                 mb: 0
               }}
             >
-              welcome to the new Cupboard!!!
+              welcome to the new Cupboard !!!
             </Typography>
           </Box>
 
@@ -230,7 +232,7 @@ const WelcomePage = () => {
                   textTransform: 'lowercase'
                 }}
               >
-                Important: You'll need a new account
+                you'll need a new account
               </Typography>
               <WarningIcon sx={{ color: palette.secondary.dark, ml: 1 }} />
             </Box>
@@ -249,7 +251,7 @@ const WelcomePage = () => {
             <Typography 
               variant="caption" 
             >
-             *technically not true at the time i'm writing this, but i'm just assuming it'll happen instantly
+             *technically not true at the time i'm writing this
             </Typography>
           </Paper>
 
@@ -280,15 +282,21 @@ const WelcomePage = () => {
               
               <FeatureBox 
                 icon={<ForumIcon />}
-                title="better forum / chat" 
-                description="Less clunky, more features, easier to use"
+                title="chat" 
+                description="Get advice, find bandmates, share resources"
               />
               
               <FeatureBox 
                 icon={<EventIcon />}
-                title="SHOW LIST" 
+                title="the official SHOW LIST" 
                 description="A comprehensive listing of every show on every day"
               />
+
+            <FeatureBox 
+                icon={<HandymanIcon />}
+                title="resources" 
+                description="Booking contacts, venue info, flyering locations, and more"
+              />            
               
               <FeatureBox 
                 icon={<PeopleIcon />}
