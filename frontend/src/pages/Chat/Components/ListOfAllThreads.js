@@ -56,6 +56,12 @@ const ListOfAllThreads = ({ posts }) => {
   };
 
   const formatDate = (date) => {
+    // For imported posts, just return the date as is
+    if (typeof date === 'string' && !date.includes('T')) {
+      return date;
+    }
+    
+    // For regular posts, format the date
     const now = new Date();
     const postDate = new Date(date);
     const diff = now - postDate;
@@ -102,16 +108,36 @@ const ListOfAllThreads = ({ posts }) => {
     );
   }
 
+
+
   return (
     <Paper elevation={0} sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
       <List sx={{ p: 0 }}>
         {posts.map((post) => {
           // Use the reply_count directly from the thread_listings view
           const replyCount = post.reply_count || 0;
-          // Check if there's last reply information
-          const hasReplies = replyCount > 0 && post.last_reply_at && post.last_reply_by;
+          
+          // Check if this is an imported post
+          const isImported = post.is_imported === true;
+          
+          // Show last reply info for all posts if it exists
+          const hasReplies = replyCount > 0 && post.last_reply_at;
+          
           // Check if thread is unread
           const unread = isThreadUnread(post);
+          
+          // Get the correct author name and date display
+          const authorName = isImported ? post.imported_author_name : post.author;
+          const dateDisplay = isImported ? post.imported_date : formatDate(post.created_at);
+          
+          // Get last reply info
+          const lastReplyBy = post.last_reply_by || '';
+          const lastReplyDate = post.last_reply_at ? formatDate(post.last_reply_at) : '';
+
+          // Derive the correct avatar source
+          // If it's imported, we give it a null or empty string 
+          // so MUI shows the fallback avatar
+          const avatarSrc = isImported ? null : post.avatar_url;
           
           return (
             <AuthWrapper 
@@ -144,8 +170,11 @@ const ListOfAllThreads = ({ posts }) => {
                         mb: 1
                       }}>
                         <Avatar 
-                          src={post.avatar_url} 
-                          sx={{ width: 40, height: 40 }}
+                          src={avatarSrc} 
+                          sx={{ 
+                            width: 40, 
+                            height: 40
+                          }}
                         />
                         <Box sx={{ flex: 1 }}>
                           <Typography 
@@ -158,9 +187,11 @@ const ListOfAllThreads = ({ posts }) => {
                           >
                             {post.title}
                           </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            by {post.author} · {formatDate(post.created_at)}
-                          </Typography>
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography variant="caption" color="text.secondary">
+                              by {authorName} · {dateDisplay}
+                            </Typography>
+                          </Box>
                         </Box>
                       </Box>
 
@@ -201,8 +232,11 @@ const ListOfAllThreads = ({ posts }) => {
                         }}
                       >
                         <Avatar 
-                          src={post.avatar_url} 
-                          sx={{ width: 50, height: 50 }}
+                          src={avatarSrc} 
+                          sx={{ 
+                            width: 50, 
+                            height: 50
+                          }}
                         />
                       </Box>
 
@@ -234,9 +268,11 @@ const ListOfAllThreads = ({ posts }) => {
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                           {/* Author Info and Stats on Left */}
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <Typography variant="caption" color="text.secondary">
-                              by {post.author} · {formatDate(post.created_at)}
-                            </Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <Typography variant="caption" color="text.secondary">
+                                by {authorName} · {dateDisplay}
+                              </Typography>
+                            </Box>
                             
                             <Typography variant="caption">
                               {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
@@ -244,9 +280,10 @@ const ListOfAllThreads = ({ posts }) => {
                           </Box>
                           
                           {/* Last Reply Info - Desktop Only, Right Aligned */}
+                          {/* Show for all posts with replies */}
                           {hasReplies && (
                             <Typography variant="caption" color="text.secondary">
-                              last reply by {post.last_reply_by} {formatDate(post.last_reply_at)}
+                              last reply by {lastReplyBy} {lastReplyDate}
                             </Typography>
                           )}
                         </Box>

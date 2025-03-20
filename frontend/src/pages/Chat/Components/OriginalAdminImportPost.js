@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Card, CardContent, TextField, Select, MenuItem, Button, Typography, Box, Chip, Alert, InputLabel, FormControl, Grid, Paper } from '@mui/material';
+import { 
+  Card, CardContent, TextField, Button, Typography, 
+  Box, Chip, Alert, Grid, Paper, FormControl, 
+  InputLabel
+} from '@mui/material';
 import { AccessTime, PersonOutline, LabelOutlined, Reply } from '@mui/icons-material';
 
-const AdminImportPost = () => {
+const OriginalAdminImportPost = () => {
   const { getAccessTokenSilently } = useAuth0();
-  const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
     content: '',
-    selectedUserId: '',
+    authorName: '', // Changed from selectedUserId to authorName
     postDate: new Date().toISOString().split('T')[0],
     postTime: new Date().toLocaleTimeString('en-US', { hour12: false }).substring(0, 5),
     tags: [],
@@ -17,22 +20,6 @@ const AdminImportPost = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const token = await getAccessTokenSilently();
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/users`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await response.json();
-        setUsers(data);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    };
-    fetchUsers();
-  }, [getAccessTokenSilently]);
 
   const getFormattedDateTime = () => {
     const dateTime = new Date(`${formData.postDate}T${formData.postTime}`);
@@ -48,7 +35,12 @@ const AdminImportPost = () => {
       const token = await getAccessTokenSilently();
       const timestamp = new Date(`${formData.postDate}T${formData.postTime}`).toISOString();
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/posts/import`, {
+      // Determine which endpoint to call based on whether it's a new thread or a reply
+      const endpoint = formData.parentThreadId 
+        ? `${process.env.REACT_APP_API_URL}/posts/${formData.parentThreadId}/reply`
+        : `${process.env.REACT_APP_API_URL}/posts`;
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,10 +49,11 @@ const AdminImportPost = () => {
         body: JSON.stringify({
           title: formData.title,
           content: formData.content,
-          userId: formData.selectedUserId,
-          createdAt: timestamp,
+          is_imported: true,
+          imported_author_name: formData.authorName,
+          imported_date: getFormattedDateTime(),
+          created_at: timestamp,
           tags: formData.tags,
-          parentThreadId: formData.parentThreadId || null
         })
       });
 
@@ -69,7 +62,7 @@ const AdminImportPost = () => {
         setFormData({
           title: '',
           content: '',
-          selectedUserId: '',
+          authorName: '',
           postDate: new Date().toISOString().split('T')[0],
           postTime: new Date().toLocaleTimeString('en-US', { hour12: false }).substring(0, 5),
           tags: [],
@@ -109,6 +102,7 @@ const AdminImportPost = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 placeholder="Title for new threads"
                 variant="outlined"
+                disabled={formData.parentThreadId !== ''}
                 InputProps={{
                   startAdornment: (
                     <Box className="mr-2 text-gray-400">
@@ -133,32 +127,22 @@ const AdminImportPost = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl fullWidth variant="outlined">
-                <InputLabel>Post as User</InputLabel>
-                <Select
-                  value={formData.selectedUserId}
-                  onChange={(e) => setFormData(prev => ({ ...prev, selectedUserId: e.target.value }))}
-                  label="Post as User"
-                  required
-                  startAdornment={
-                    <Box className="ml-2 mr-2 text-gray-400">
+              <TextField
+                fullWidth
+                label="Original Author Name"
+                value={formData.authorName}
+                onChange={(e) => setFormData(prev => ({ ...prev, authorName: e.target.value }))}
+                required
+                placeholder="Enter the original author's name"
+                variant="outlined"
+                InputProps={{
+                  startAdornment: (
+                    <Box className="mr-2 text-gray-400">
                       <PersonOutline />
                     </Box>
-                  }
-                >
-                  <MenuItem value="">
-                    <em>Select a user</em>
-                  </MenuItem>
-                  {[...users].sort((a, b) => {
-                    const nameA = (a.username || a.email || '').toLowerCase();
-                    const nameB = (b.username || b.email || '').toLowerCase();
-                    return nameA.localeCompare(nameB);
-                  }).map(user => (                    <MenuItem key={user.auth0_id} value={user.auth0_id}>
-                      {user.username || user.email}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                  ),
+                }}
+              />
             </Grid>
 
             <Grid item xs={12} sm={6}>
@@ -192,7 +176,7 @@ const AdminImportPost = () => {
                 <Box className="flex items-center text-gray-600">
                   <AccessTime className="mr-2" />
                   <Typography variant="body2">
-                    Will be posted as: {getFormattedDateTime()}
+                    Will be imported as: {getFormattedDateTime()}
                   </Typography>
                 </Box>
               </Paper>
@@ -225,6 +209,7 @@ const AdminImportPost = () => {
                 placeholder="community, events, etc."
                 variant="outlined"
                 helperText="Separate tags with commas"
+                disabled={formData.parentThreadId !== ''}
               />
               <Box className="mt-2 flex flex-wrap gap-2">
                 {formData.tags.map((tag, index) => (
@@ -268,4 +253,4 @@ const AdminImportPost = () => {
   );
 };
 
-export default AdminImportPost;
+export default OriginalAdminImportPost;
