@@ -264,7 +264,7 @@ const TopBar = () => {
                     '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.04)' }
                   }}
                   onClick={() => { 
-                    window.location.href = '/profile'; 
+                    navigate(`/profile/${user.sub}`);
                     handleProfileClose();
                   }}
                 >

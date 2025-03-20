@@ -130,7 +130,7 @@ function App() {
           isAuthenticated ? <Layout /> : <Navigate to="/welcome" />
         }>
           {/* index => "/" */}
-          <Route index element={<AboutTCUP />} />
+          <Route index element={<MainChatPage />} />
   
           {/* Additional routes => "/landing", "/powerpledge", etc. */}
           <Route path="landing" element={<LandingPage />} />
