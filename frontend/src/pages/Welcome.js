@@ -273,18 +273,9 @@ const WelcomePage = () => {
                     display: 'inline-block'
                   }}
                 >
-                  what we've got, uh, brewing
+                  what we've got, uh, brewing --
                 </Typography>
-                <Chip 
-                  label="new features" 
-                  size="small"
-                  sx={{ 
-                    ml: 2, 
-                    backgroundColor: 'rgba(156, 39, 176, 0.1)', 
-                    color: '#9c27b0',
-                    borderRadius: '4px',
-                  }} 
-                />
+                
               </Box>
               
               <FeatureBox 
