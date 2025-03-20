@@ -245,7 +245,6 @@ router.get('/conversation/:userId', authMiddleware, async (req, res) => {
 });
 
 // Get messages for a conversation with pagination
-// Get messages for a conversation with pagination
 router.get('/conversation-by-id/:conversationId', authMiddleware, async (req, res) => {
     try {
       const auth0_id = req.user.sub;
