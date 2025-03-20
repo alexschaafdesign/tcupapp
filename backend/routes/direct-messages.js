@@ -244,12 +244,18 @@ router.get('/conversation/:userId', authMiddleware, async (req, res) => {
   }
 });
 
+// Get messages for a conversation with pagination
+// Get messages for a conversation with pagination
 router.get('/conversation-by-id/:conversationId', authMiddleware, async (req, res) => {
     try {
       const auth0_id = req.user.sub;
       const conversationId = req.params.conversationId;
       
-      console.log(`Fetching conversation ${conversationId} for user ${auth0_id}`);
+      // Get pagination parameters
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      
+      console.log(`Fetching conversation ${conversationId} for user ${auth0_id} (page ${page}, limit ${limit})`);
       
       // Validate conversationId
       if (!conversationId) {
@@ -276,12 +282,36 @@ router.get('/conversation-by-id/:conversationId', authMiddleware, async (req, re
       // Get the other user's ID
       const otherUserId = conversation.user1 === auth0_id ? conversation.user2 : conversation.user1;
       
-      // Get messages between these two users
+      // Get total count for pagination info
+      const { count, error: countError } = await supabase
+        .from('direct_messages')
+        .select('*', { count: 'exact', head: true })
+        .or(`and(sender_id.eq.${auth0_id},recipient_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},recipient_id.eq.${auth0_id})`);
+        
+      if (countError) {
+        console.error('Error counting messages:', countError);
+        return res.status(500).json({ error: countError.message });
+      }
+      
+      const totalMessages = count;
+      const totalPages = Math.ceil(totalMessages / limit);
+      
+      // Calculate pagination for retrieving the most recent messages first
+      // For page 1, we want the most recent messages
+      // Higher page numbers mean we're going back in history
+      const from = Math.max(0, totalMessages - (page * limit));
+      const to = totalMessages - ((page - 1) * limit) - 1;
+      
+      console.log(`Pagination: Total ${totalMessages}, Page ${page}/${totalPages}, Range ${from}-${to}`);
+      
+      // Get messages between these two users with pagination
+      // Order by created_at descending to get most recent messages first
       const { data: messages, error } = await supabase
         .from('direct_messages')
         .select('*')
         .or(`and(sender_id.eq.${auth0_id},recipient_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},recipient_id.eq.${auth0_id})`)
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: false }) // Descending to get newest first
+        .range(from, to);
         
       if (error) {
         console.error('Error fetching messages:', error);
@@ -311,7 +341,7 @@ router.get('/conversation-by-id/:conversationId', authMiddleware, async (req, re
         }
       }));
       
-      // Mark messages as read if current user is recipient
+      // Mark messages as read if current user is recipient (only for current page)
       const messagesToMark = messages
         .filter(msg => msg.recipient_id === auth0_id && msg.read_at === null)
         .map(msg => msg.id);
@@ -339,7 +369,7 @@ router.get('/conversation-by-id/:conversationId', authMiddleware, async (req, re
         }
       }
       
-      // Return conversation data in a structured format
+      // Return conversation data in a structured format with pagination info
       res.json({
         conversation_id: conversation.id,
         messages: messagesWithProfiles,
@@ -347,6 +377,13 @@ router.get('/conversation-by-id/:conversationId', authMiddleware, async (req, re
           auth0_id: otherUserId,
           username: 'Unknown User', 
           avatar_url: null 
+        },
+        pagination: {
+          page,
+          limit,
+          total: totalMessages,
+          total_pages: totalPages,
+          has_more: page < totalPages
         }
       });
     } catch (error) {
