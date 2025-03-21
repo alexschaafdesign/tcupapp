@@ -1,9 +1,10 @@
-// Updated error handling in useApi.js
 import { useAuth0 } from '@auth0/auth0-react';
 import * as Sentry from "@sentry/react";
+import { useState } from 'react';
 
 export const useApi = () => {
   const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } = useAuth0();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const callApi = async (url, options = {}) => {
     try {
@@ -28,9 +29,11 @@ export const useApi = () => {
         console.error("Error getting access token:", tokenError);
         
         // Handle specific token errors
-        if (tokenError.message.includes("invalid refresh token") || 
-            tokenError.error === 'login_required') {
+        if (!isRedirecting && (tokenError.message.includes("invalid refresh token") || 
+            tokenError.error === 'login_required')) {
           console.log("Token error detected, redirecting to login...");
+          // Prevent multiple redirects
+          setIsRedirecting(true);
           // Force a new login
           loginWithRedirect({
             appState: { returnTo: window.location.pathname }
