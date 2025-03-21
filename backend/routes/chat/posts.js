@@ -365,8 +365,8 @@ router.post('/', authMiddleware, async (req, res) => {
               imported_date: imported_date || null,
               imported_avatar_url: imported_avatar_url || null, // <--- store it
               // If we parsed a valid date, override created_at
-              created_at: finalCreatedAt
-          }])
+              created_at: finalCreatedAt || new Date().toISOString()
+                      }])
           .select()
           .single();
 
