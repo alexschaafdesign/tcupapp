@@ -53,6 +53,8 @@ function UserProfile() {
   const { isAdmin } = useAuth(); // Add this to check admin role
   const { userId } = useParams();
   const [profileData, setProfileData] = useState(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+
 
 
   const endpoint = userId ? `${apiUrl}/users/profile/${userId}` : `${apiUrl}/users/profile`;
@@ -292,14 +294,16 @@ function UserProfile() {
     if (!file) return;
     try {
       setUploadError(null);
+      setAvatarUploading(true); // Show loading state
+      
       const imageUrl = await uploadImage(file, 'user-avatars');
-
+  
       const response = await callApi(`${apiUrl}/users/avatar`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ avatarUrl: imageUrl }),
       });
-
+  
       if (response.error) throw new Error(response.error);
       setAvatarUrl(imageUrl);
       setSuccessMessage('Profile picture updated successfully!');
@@ -307,6 +311,8 @@ function UserProfile() {
     } catch (error) {
       console.error('Error uploading avatar:', error);
       setUploadError('Failed to update profile picture. Please try again.');
+    } finally {
+      setAvatarUploading(false); // Hide loading state
     }
   };
 
@@ -521,67 +527,91 @@ function UserProfile() {
         <Box sx={{ px: 4, pb: 4, position: 'relative' }}>
           {/* Avatar - positioned to overlap the header */}
           <Box 
-            sx={{ 
-              position: 'relative',
-              mt: '-60px',
-              mb: 3,
-              width: 120,
-              height: 120,
-              mx: 'auto'
-            }}
-            onMouseEnter={() => setImageHover(true)}
-            onMouseLeave={() => setImageHover(false)}
-          >
-            <Avatar
-              src={avatarUrl || user?.picture} 
-              alt="Profile"
-              sx={{
-                width: 120,
-                height: 120,
-                border: '4px solid white',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                position: 'relative',
-                zIndex: 1,
-                transition: 'all 0.3s ease',
-                filter: imageHover ? 'brightness(0.8)' : 'brightness(1)'
-              }}
-            />
-            <Fade in={imageHover}>
-              <Box 
-                sx={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 2,
-                  cursor: 'pointer'
-                }}
-                onClick={() => document.getElementById('profile-image-input').click()}
-              >
-                <PhotoCameraIcon sx={{ color: 'white', mb: 1 }} />
-                <Typography variant="caption" sx={{ color: 'white' }}>
-                  Change Photo
-                </Typography>
-                <input
-                  id="profile-image-input"
-                  type="file"
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  onChange={(e) => {
-                    if (e.target.files?.[0]) {
-                      handleAvatarUpload(e.target.files[0]);
-                    }
-                  }}
-                />
-              </Box>
-            </Fade>
-          </Box>
-
+  sx={{ 
+    position: 'relative',
+    mt: '-60px',
+    mb: 3,
+    width: 120,
+    height: 120,
+    mx: 'auto'
+  }}
+  onMouseEnter={() => !avatarUploading && setImageHover(true)}
+  onMouseLeave={() => setImageHover(false)}
+>
+  <Avatar
+    src={avatarUrl || user?.picture} 
+    alt="Profile"
+    sx={{
+      width: 120,
+      height: 120,
+      border: '4px solid white',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      position: 'relative',
+      zIndex: 1,
+      transition: 'all 0.3s ease',
+      filter: (imageHover && !avatarUploading) ? 'brightness(0.8)' : 'brightness(1)'
+    }}
+  />
+  
+  {/* Loading Overlay */}
+  {avatarUploading && (
+    <Box 
+      sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 3,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        borderRadius: '50%',
+      }}
+    >
+      <CircularProgress size={40} sx={{ color: 'white' }} />
+    </Box>
+  )}
+  
+  {/* Edit Overlay - Only show when not uploading */}
+  <Fade in={imageHover && !avatarUploading}>
+    <Box 
+      sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 2,
+        cursor: 'pointer'
+      }}
+      onClick={() => !avatarUploading && document.getElementById('profile-image-input').click()}
+    >
+      <PhotoCameraIcon sx={{ color: 'white', mb: 1 }} />
+      <Typography variant="caption" sx={{ color: 'white' }}>
+        Change Photo
+      </Typography>
+      <input
+        id="profile-image-input"
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={(e) => {
+          if (e.target.files?.[0]) {
+            handleAvatarUpload(e.target.files[0]);
+          }
+        }}
+        disabled={avatarUploading}
+      />
+    </Box>
+  </Fade>
+</Box>
           {/* Username Heading */}
           <Box sx={{ textAlign: 'center', mb: 3 }}>
             <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
@@ -907,7 +937,7 @@ function UserProfile() {
         </Box>
       </Paper>
 
-      {/* Bands Section with improved styling */}
+      {/* Bands Section with improved styling -- hiding this and below for initial launch Mar 21 
 <Paper elevation={2} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
     <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
@@ -963,9 +993,9 @@ function UserProfile() {
       ))}
     </Grid>
   )}
-</Paper>
+</Paper>*/}
 
-{/* Favorite Bands Section */}
+{/* Favorite Bands Section - hiding for initial launch Mar 21 
 <Paper elevation={2} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
   <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 2 }}>
     Favorite Bands
@@ -1016,9 +1046,9 @@ function UserProfile() {
       ))}
     </Grid>
   )}
-</Paper>
+</Paper>*/}
 
-{/* Saved Shows Section */}
+{/* Saved Shows Section - hiding for initial launch Mar 21
 <Paper elevation={2} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
   <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 2 }}>
     Saved Shows
@@ -1071,7 +1101,7 @@ function UserProfile() {
       ))}
     </Grid>
   )}
-</Paper>
+</Paper> */}
 
 {/* Dialog for removing avatar */}
 <Dialog 

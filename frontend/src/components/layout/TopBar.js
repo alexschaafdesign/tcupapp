@@ -204,7 +204,9 @@ const TopBar = () => {
         </Box>
       )}
 
-      {/* Message icon - Only show when authenticated */}
+      {/* Hiding DMs for initial launch March 21 
+
+     Message icon - Only show when authenticated 
       {isAuthenticated && (
         <Box sx={{ mr: 2 }}>
           <Tooltip title="Messages">
@@ -218,7 +220,7 @@ const TopBar = () => {
             </IconButton>
           </Tooltip>
         </Box>
-      )}
+      )} */}
 
       {/* Notification Section - Only show when authenticated */}
       {isAuthenticated && <NotificationBell />}
