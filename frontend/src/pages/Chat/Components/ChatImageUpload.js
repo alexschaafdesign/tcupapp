@@ -15,7 +15,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 
 const MAX_IMAGES = 5;
-const MAX_SIZE_MB = 5;
+const MAX_SIZE_MB = 10;
 
 const ChatImageUpload = ({ images, setImages }) => {
   const { getAccessTokenSilently } = useAuth0();

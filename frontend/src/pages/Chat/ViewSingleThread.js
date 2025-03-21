@@ -193,9 +193,18 @@ const ViewSingleThread = () => {
   const fetchThread = async () => {
     try {
       const token = await getAccessTokenSilently();
+      console.log("Token retrieved:", !!token); // Debug without exposing token
+      
+      const headers = {
+        Authorization: `Bearer ${token}`
+      };
+      console.log("Auth header present:", !!headers.Authorization);
+      
       const response = await fetch(`${apiUrl}/posts/thread/${threadId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers
       });
+      
+      console.log("Response status:", response.status);
       const data = await response.json();
       setThreadData(data);
   

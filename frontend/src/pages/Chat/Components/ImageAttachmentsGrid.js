@@ -1,13 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import React, { useState } from 'react';
 import { Grid, Box, IconButton, Dialog } from '@mui/material';
 import { ZoomIn as ZoomInIcon, Close as CloseIcon } from '@mui/icons-material';
 
-// Image display component
 const ImageAttachmentsGrid = ({ images }) => {
   const [enlargedImage, setEnlargedImage] = useState(null);
-  
+  const [loadingStates, setLoadingStates] = useState({});
+
   if (!images || images.length === 0) return null;
+
+  console.log("Images array:", images);
+
+  const handleImageLoad = (index) => {
+    setLoadingStates(prev => ({...prev, [index]: false}));
+  };
+
+  const handleImageError = (image, index, e) => {
+    console.error(`Image failed to load: ${image.url}`, e);
+    setLoadingStates(prev => ({...prev, [index]: false}));
+    
+    // Try to reload with direct URL if there's a publicId
+    if (image.publicId) {
+      // If image has a publicId, we can try a different URL format
+      const directUrl = `https://res.cloudinary.com/dsll3ms2c/image/upload/${image.publicId}`;
+      e.target.src = directUrl;
+    }
+  };
   
   return (
     <>
@@ -37,7 +54,25 @@ const ImageAttachmentsGrid = ({ images }) => {
                   height: '100%',
                   objectFit: 'cover'
                 }}
+                onLoad={() => handleImageLoad(index)}
+                onError={(e) => handleImageError(image, index, e)}
               />
+              {loadingStates[index] !== false && (
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#f0f0f0'
+                }}>
+                  Loading...
+                </div>
+              )}
+
               <IconButton
                 size="small"
                 sx={{
