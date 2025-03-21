@@ -33,6 +33,7 @@ import parse from 'html-react-parser';
 import EditorWithFormatting from '../Chat/Components/EditorWithFormatting';
 import ChatImageUpload from '../Chat/Components/ChatImageUpload';
 import ImageAttachmentsGrid from '../Chat/Components/ImageAttachmentsGrid';
+
 const ConversationDetail = () => {
   const { conversationId } = useParams();
   const { getAccessTokenSilently, user } = useAuth0();
