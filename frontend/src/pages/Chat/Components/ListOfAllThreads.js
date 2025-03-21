@@ -55,18 +55,19 @@ const ListOfAllThreads = ({ posts }) => {
     return latestActivity > lastReadAt;
   };
 
-  const formatDate = (date) => {
-    // For imported posts, just return the date as is
-    if (typeof date === 'string' && !date.includes('T')) {
-      return date;
+  const formatDate = (rawDate) => {
+    // Attempt to parse
+    const postDate = new Date(rawDate);
+    if (isNaN(postDate.valueOf())) {
+      // If parse fails, just return the raw string
+      return rawDate;
     }
-    
-    // For regular posts, format the date
+  
     const now = new Date();
-    const postDate = new Date(date);
     const diff = now - postDate;
     const days = diff / (1000 * 60 * 60 * 24);
-
+  
+    // Same "today" / "yesterday" logic you already have
     if (days < 1) {
       if (postDate.getDate() === now.getDate()) {
         return `Today at ${postDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
@@ -76,6 +77,7 @@ const ListOfAllThreads = ({ posts }) => {
     if (days < 7) {
       return `${postDate.toLocaleDateString([], { weekday: 'long' })} at ${postDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     }
+    // If older than 7 days, show "Mar 19, 2025"
     return postDate.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
@@ -128,8 +130,8 @@ const ListOfAllThreads = ({ posts }) => {
           
           // Get the correct author name and date display
           const authorName = isImported ? post.imported_author_name : post.author;
-          const dateDisplay = isImported ? post.imported_date : formatDate(post.created_at);
-          
+          const dateDisplay = formatDate(post.created_at);    
+
           // Get last reply info
           const lastReplyBy = post.last_reply_by || '';
           const lastReplyDate = post.last_reply_at ? formatDate(post.last_reply_at) : '';
@@ -137,8 +139,9 @@ const ListOfAllThreads = ({ posts }) => {
           // Derive the correct avatar source
           // If it's imported, we give it a null or empty string 
           // so MUI shows the fallback avatar
-          const avatarSrc = isImported ? null : post.avatar_url;
-          
+  const avatarSrc = isImported
+  ? post.avatar_url // or post.imported_avatar_url directly
+  : post.avatar_url;          
           return (
             <AuthWrapper 
               key={post.id}

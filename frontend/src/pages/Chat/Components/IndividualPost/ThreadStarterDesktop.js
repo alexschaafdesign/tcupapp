@@ -24,13 +24,14 @@ const ThreadStarterDesktop = ({
   // Check if this is an imported post (but only hide actions, not styling)
   const isImported = post.is_imported === true;
 
-  const avatarSrc = isImported ? null : post.avatar_url;
-  
+  const avatarSrc = isImported
+  ? post.avatar_url // or post.imported_avatar_url directly
+  : post.avatar_url;  
   // Get the appropriate author name
   const authorName = isImported 
     ? post.imported_author_name 
-    : (post.username || (post.auth0_id?.startsWith('google-oauth2|') ? (post.name || post.email?.split('@')[0] || 'Google User') : 'User'));
-  
+    : (post.author || post.username || 'User');
+      
   return (
     <Paper
       elevation={0}
