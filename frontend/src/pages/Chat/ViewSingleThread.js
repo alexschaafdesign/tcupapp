@@ -23,6 +23,7 @@ import IndividualPost from './Components/IndividualPost';
 import { stateToHTML } from 'draft-js-export-html';
 import parse from 'html-react-parser';
 import ChatImageUpload from './Components/ChatImageUpload';
+import HistoricalReplyForm from './Components/HistoricalReplyForm';
 
 const ViewSingleThread = () => {
   const { threadId } = useParams();
@@ -41,6 +42,8 @@ const ViewSingleThread = () => {
   const [focusTrigger, setFocusTrigger] = useState(0);
   const [replyImages, setReplyImages] = useState([]);
   const [editEditorState, setEditEditorState] = useState(null);
+  const [showHistoricalForm, setShowHistoricalForm] = useState(false);
+
 
   
   // Theme for responsive design
@@ -53,6 +56,13 @@ const ViewSingleThread = () => {
   const canEditPost = (post) => {
     if (!user) return false;
     return post.auth0_id === user.sub || userRoles.includes('admin');
+  };
+
+  const handleHistoricalReplyCreated = (newReply) => {
+    setThreadData((prev) => ({
+      ...prev,
+      replies: [...prev.replies, newReply]
+    }));
   };
 
   const handleEditClick = (post) => {
@@ -183,7 +193,7 @@ const ViewSingleThread = () => {
   const fetchThread = async () => {
     try {
       const token = await getAccessTokenSilently();
-      const response = await fetch(`${apiUrl}/posts/${threadId}`, {
+      const response = await fetch(`${apiUrl}/posts/thread/${threadId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
@@ -609,6 +619,7 @@ const ViewSingleThread = () => {
           />
         </Paper>
       </Box>
+    
   
       {/* Post Reply & Historical Reply Buttons */}
       <Box sx={{ display: 'flex', gap: 2 }}>
@@ -620,6 +631,24 @@ const ViewSingleThread = () => {
           Post Reply
         </Button>
       </Box>
+
+    {/* A button only you (admin) can see to add a historical reply */}
+        <Button onClick={() => setShowHistoricalForm(true)}>
+          Add Historical Reply
+        </Button>
+      
+
+      {/* If showHistoricalForm is true, display the HistoricalReplyForm in a modal or inline */}
+      {showHistoricalForm && (
+        <Paper sx={{ mt: 2 }}>
+          <HistoricalReplyForm
+            threadId={threadId}
+            onReplyCreated={handleHistoricalReplyCreated}
+            onClose={() => setShowHistoricalForm(false)}
+          />
+        </Paper>
+      )}
+        
   
       {/* Editing Post Modal */}
 {editingPost && (

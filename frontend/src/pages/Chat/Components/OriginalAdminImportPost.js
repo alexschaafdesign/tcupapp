@@ -16,7 +16,8 @@ const OriginalAdminImportPost = () => {
     postDate: new Date().toISOString().split('T')[0],
     postTime: new Date().toLocaleTimeString('en-US', { hour12: false }).substring(0, 5),
     tags: [],
-    parentThreadId: ''
+    parentThreadId: '',
+    avatarUrl: '' // new field
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
@@ -54,6 +55,7 @@ const OriginalAdminImportPost = () => {
           imported_date: getFormattedDateTime(),
           created_at: timestamp,
           tags: formData.tags,
+          imported_avatar_url: formData.avatarUrl, // pass it
         })
       });
 
@@ -170,6 +172,14 @@ const OriginalAdminImportPost = () => {
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
+
+            <TextField
+              fullWidth
+              label="Imported Avatar URL"
+              value={formData.avatarUrl}
+              onChange={(e) => setFormData((prev) => ({ ...prev, avatarUrl: e.target.value }))}
+              placeholder="https://example.com/myavatar.png"
+            />
 
             <Grid item xs={12}>
               <Paper elevation={0} className="p-3 bg-gray-50">

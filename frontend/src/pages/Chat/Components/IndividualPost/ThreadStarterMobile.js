@@ -34,12 +34,14 @@ const ThreadStarterMobile = ({
   const isImported = post.is_imported === true;
   
   // Derive the correct avatar src
-  const avatarSrc = isImported ? null : post.avatar_url;
+  const avatarSrc = isImported
+  ? post.avatar_url // or post.imported_avatar_url directly
+  : post.avatar_url;
 
   // Derive the correct author name
   const authorName = isImported 
     ? post.imported_author_name 
-    : (post.username 
+    : (post.author 
        || (post.auth0_id?.startsWith('google-oauth2|') 
            ? (post.name || post.email?.split('@')[0] || 'Google User') 
            : 'User'));

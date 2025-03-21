@@ -8,6 +8,8 @@ import { createReplyNotification } from '../notifications.js';
 
 const getThreadById = async (req, res) => {
     const { threadId } = req.params;
+    console.log('Fetching thread with ID:', threadId);
+
     
     try {
       // Get the thread and its replies
@@ -20,6 +22,8 @@ const getThreadById = async (req, res) => {
       if (threadError) {
         return res.status(404).json({ error: 'Thread not found' });
       }
+
+      console.log('Supabase returned:', threadData, threadError);
       
       const { data: repliesData, error: repliesError } = await supabase
         .from('forum_messages')
@@ -43,11 +47,12 @@ const getThreadById = async (req, res) => {
       ];
       
       let userInfo = {};
+      let userResult; // Declare it here so it's in scope
       
       if (authIds.length > 0) {
         // Get user info from PostgreSQL for real users
         // This is your existing code to fetch user avatars, etc.
-        const userResult = await pool.query(
+        userResult = await pool.query(
           'SELECT auth0_id, username, avatar_url FROM users WHERE auth0_id = ANY($1)',
           [authIds]
         );
@@ -58,6 +63,13 @@ const getThreadById = async (req, res) => {
         }, {});
       }
       
+      console.log('authIds:', authIds);
+      if (userResult) {
+        console.log('Found userData rows:', userResult.rows);
+      } else {
+        console.log('No userResult because authIds was empty or an error occurred.');
+      }
+      
       // Process the thread data
       const processedThread = {
         ...threadData,
@@ -66,8 +78,8 @@ const getThreadById = async (req, res) => {
         author: threadData.is_imported 
           ? threadData.imported_author_name 
           : (userInfo[threadData.auth0_id]?.username || 'Unknown User'),
-        avatar_url: threadData.is_imported 
-          ? null // No avatar for imported posts
+          avatar_url: threadData.is_imported
+          ? threadData.imported_avatar_url // <-- use the custom URL for imported
           : userInfo[threadData.auth0_id]?.avatar_url,
         date_display: threadData.is_imported
           ? threadData.imported_date // Use the imported date text directly
@@ -80,8 +92,8 @@ const getThreadById = async (req, res) => {
         author: reply.is_imported
           ? reply.imported_author_name
           : (userInfo[reply.auth0_id]?.username || 'Unknown User'),
-        avatar_url: reply.is_imported
-          ? null // No avatar for imported posts
+          avatar_url: reply.is_imported
+          ? reply.imported_avatar_url   // Show the custom avatar if imported
           : userInfo[reply.auth0_id]?.avatar_url,
         date_display: reply.is_imported
           ? reply.imported_date // Use the imported date text directly
@@ -89,7 +101,7 @@ const getThreadById = async (req, res) => {
       }));
       
       res.json({
-        thread: processedThread,
+        post: processedThread,
         replies: processedReplies
       });
     } catch (error) {
@@ -98,6 +110,8 @@ const getThreadById = async (req, res) => {
     }
   };
   
+// Use this updated function in your existing route
+router.get('/thread/:threadId', getThreadById);
 
 router.get('/', async (req, res) => {
     try {
@@ -190,27 +204,48 @@ router.get('/', async (req, res) => {
             return acc;
         }, {});
 
-        const postsWithData = sortedThreadsData.map(post => {
-            // Find user data for thread author
-            const authorData = userData.find(u => u.auth0_id === post.auth0_id);
+        const postsWithData = sortedThreadsData.map((post) => {
+          // Find user data for thread author
+          const authorData = userData.find((u) => u.auth0_id === post.auth0_id);
+        
+          // Check if this is an imported post
+          const isImported = post.is_imported === true;
+        
+          // Derive avatar
+          const finalAvatarUrl = isImported
+            ? post.imported_avatar_url // fallback to DB column for imported avatar
+            : authorData?.avatar_url;  // real user’s avatar if not imported
+          
+          // If you also want a final author name (like "alex" or unknown):
+          const finalAuthorName = isImported
+            ? post.imported_author_name
+            : (authorData?.username || 'Unknown User');
+        
+          // Last replier logic
+          const lastReplyAuth0Id = lastReplyAuth0IdMap[post.id];
+          const lastReplierData = lastReplyAuth0Id
+            ? userData.find((u) => u.auth0_id === lastReplyAuth0Id)
+            : null;
+        
+          return {
+            ...post,
+            reply_count: replyCountMap[post.id] || 0,
+            last_reply_at: lastReplyMap[post.id] || null,
+            last_reply_by: lastReplierData?.username || lastReplyByMap[post.id] || null,
             
-            // Find user data for last replier (if exists)
-            const lastReplyAuth0Id = lastReplyAuth0IdMap[post.id];
-            const lastReplierData = lastReplyAuth0Id 
-                ? userData.find(u => u.auth0_id === lastReplyAuth0Id)
-                : null;
-                
-            return {
-                ...post,
-                reply_count: replyCountMap[post.id] || 0,
-                last_reply_at: lastReplyMap[post.id] || null,
-                last_reply_by: lastReplierData?.username || lastReplyByMap[post.id] || null,
-                avatar_url: authorData?.avatar_url,
-                username: authorData?.username,
-                tags: tagsByPostId[post.id] || []
-            };
+            // Use your new final avatar & author
+            avatar_url: finalAvatarUrl,
+            author: finalAuthorName, // optional if you want to rely on 'author'
+            
+            // Or if you prefer "username" for the front-end, set that too
+            username: isImported
+              ? post.imported_author_name
+              : (authorData?.username || 'Unknown User'),
+            
+            tags: tagsByPostId[post.id] || []
+          };
         });
-
+        
         res.json(postsWithData);
     } catch (error) {
         console.error('Error fetching posts:', error);
@@ -276,138 +311,180 @@ router.get('/:id', authMiddleware, async (req, res) => {
 
 // Create new post
 router.post('/', authMiddleware, async (req, res) => {
-    const { title, content, tags, images, is_imported, imported_author_name, imported_date } = req.body;
-    const auth0Id = req.user.sub;
-    
-    try {
-        const user = await pool.query(
-            'SELECT email, username, avatar_url FROM users WHERE auth0_id = $1',
-            [auth0Id]
-        );
+  const {
+      title,
+      content,
+      tags,
+      images,
+      is_imported,
+      imported_author_name,
+      imported_date,
+      imported_avatar_url // <-- new field
+  } = req.body;
 
-        if (user.rows.length === 0) {
-            return res.status(404).json({ error: 'User not found' });
-        }
+  const auth0Id = req.user.sub;
 
-        const { username, avatar_url } = user.rows[0];
-        const finalAuthor = username || user.rows[0].email || 'Anonymous';
+  try {
+      // First, verify the user
+      const user = await pool.query(
+          'SELECT email, username, avatar_url FROM users WHERE auth0_id = $1',
+          [auth0Id]
+      );
 
-        // Create post
-        const { data: post, error: postError } = await supabase
-            .from('forum_messages')
-            .insert([{
-                title,
-                content,
-                auth0_id: auth0Id,
-                author: finalAuthor,
-                reply_count: 0,
-                is_thread_starter: true,
-                is_edited: false,
-                images: images || [],
-                // Add imported fields if provided
-                is_imported: is_imported || false,
-                imported_author_name: imported_author_name || null,
-                imported_date: imported_date || null
-            }])
-            .select()
-            .single();
+      if (user.rows.length === 0) {
+          return res.status(404).json({ error: 'User not found' });
+      }
 
-        if (postError) throw postError;
+      const { username, avatar_url } = user.rows[0];
+      const finalAuthor = username || user.rows[0].email || 'Anonymous';
 
-        // Add tags
-        if (tags?.length > 0) {
-            await supabase
-                .from('post_tags')
-                .insert(tags.map(tagId => ({
-                    post_id: post.id,
-                    tag_id: tagId
-                })));
-        }
+      // If the post is imported and has a valid date, override created_at
+      let finalCreatedAt;
+      if (is_imported && imported_date) {
+          const parsedDate = new Date(imported_date);
+          if (!isNaN(parsedDate.valueOf())) {
+              finalCreatedAt = parsedDate.toISOString();
+          }
+      }
 
-        // Get tags for response
-        const { data: postTags } = await supabase
-            .from('post_tags')
-            .select('tag:tags(*)')
-            .eq('post_id', post.id);
+      // Create the post
+      const { data: post, error: postError } = await supabase
+          .from('forum_messages')
+          .insert([{
+              title,
+              content,
+              auth0_id: auth0Id, // The real "owner" in supabase
+              author: finalAuthor,
+              reply_count: 0,
+              is_thread_starter: true,
+              is_edited: false,
+              images: images || [],
+              // Imported fields
+              is_imported: is_imported || false,
+              imported_author_name: imported_author_name || null,
+              imported_date: imported_date || null,
+              imported_avatar_url: imported_avatar_url || null, // <--- store it
+              // If we parsed a valid date, override created_at
+              created_at: finalCreatedAt
+          }])
+          .select()
+          .single();
 
-        res.json({
-            ...post,
-            avatar_url,
-            username,
-            tags: postTags?.map(pt => pt.tag) || []
-        });
-    } catch (error) {
-        console.error('Error creating post:', error);
-        res.status(500).json({ error: error.message });
-    }
+      if (postError) throw postError;
+
+      // Add tags
+      if (tags?.length > 0) {
+          await supabase
+              .from('post_tags')
+              .insert(tags.map((tagId) => ({
+                  post_id: post.id,
+                  tag_id: tagId
+              })));
+      }
+
+      // Fetch tags for response
+      const { data: postTags } = await supabase
+          .from('post_tags')
+          .select('tag:tags(*)')
+          .eq('post_id', post.id);
+
+      // Return the new post data
+      res.json({
+          ...post,
+          avatar_url,   // The real user's avatar if not imported
+          username,
+          tags: postTags?.map((pt) => pt.tag) || []
+      });
+  } catch (error) {
+      console.error('Error creating post:', error);
+      res.status(500).json({ error: error.message });
+  }
 });
 
 // Add reply to post
 router.post('/:id/reply', authMiddleware, async (req, res) => {
-    const { content, images, is_imported, imported_author_name, imported_date } = req.body;
-    const { id: parentId } = req.params;
-    const auth0Id = req.user.sub;
-    
-    try {
-        const user = await pool.query(
-            'SELECT email, username, avatar_url FROM users WHERE auth0_id = $1',
-            [auth0Id]
-        );
+  const { 
+      content, 
+      images, 
+      is_imported, 
+      imported_author_name, 
+      imported_date 
+  } = req.body;
+  
+  const { id: parentId } = req.params;
+  const auth0Id = req.user.sub;
+  
+  try {
+      // 1) Verify the user exists
+      const user = await pool.query(
+          'SELECT email, username, avatar_url FROM users WHERE auth0_id = $1',
+          [auth0Id]
+      );
 
-        if (user.rows.length === 0) {
-            return res.status(404).json({ error: 'User not found' });
-        }
+      if (user.rows.length === 0) {
+          return res.status(404).json({ error: 'User not found' });
+      }
 
-        // Get original post author's auth0_id
-        const { data: parentPost } = await supabase
-            .from('forum_messages')
-            .select('auth0_id')
-            .eq('id', parentId)
-            .single();
+      // 2) Get original post's author (for notifications)
+      const { data: parentPost } = await supabase
+          .from('forum_messages')
+          .select('auth0_id')
+          .eq('id', parentId)
+          .single();
 
-        const { username, avatar_url } = user.rows[0];
-        const finalAuthor = username || user.rows[0].email || 'Anonymous';
+      const { username, avatar_url } = user.rows[0];
+      const finalAuthor = username || user.rows[0].email || 'Anonymous';
 
-        // Update parent's last_activity_at
-        await supabase
-            .from('forum_messages')
-            .update({ last_activity_at: new Date() })
-            .eq('id', parentId);
+      // 3) Update parent post's last_activity_at to "now"
+      await supabase
+          .from('forum_messages')
+          .update({ last_activity_at: new Date() })
+          .eq('id', parentId);
 
-        // Create reply
-        const { data: reply, error } = await supabase
-            .from('forum_messages')
-            .insert([{
-                content,
-                parent_id: parentId,
-                auth0_id: auth0Id,
-                author: finalAuthor,
-                images: images || [],
-                // Add imported fields if provided
-                is_imported: is_imported || false,
-                imported_author_name: imported_author_name || null,
-                imported_date: imported_date || null
-            }])
-            .select()
-            .single();
+      // 4) If this reply is imported and has a valid date, override created_at
+      let finalCreatedAt;
+      if (is_imported && imported_date) {
+          const parsedDate = new Date(imported_date);
+          if (!isNaN(parsedDate.valueOf())) {
+              finalCreatedAt = parsedDate.toISOString();
+          }
+      }
 
-        if (error) throw error;
+      // 5) Create the reply
+      const { data: reply, error } = await supabase
+          .from('forum_messages')
+          .insert([{
+              content,
+              parent_id: parentId,
+              auth0_id: auth0Id,
+              author: finalAuthor,
+              images: images || [],
+              is_imported: is_imported || false,
+              imported_author_name: imported_author_name || null,
+              imported_date: imported_date || null,
+              created_at: finalCreatedAt // override if valid
+          }])
+          .select()
+          .single();
 
-        // Create notification for original post author (only for non-imported posts)
-        if (!is_imported && parentPost?.auth0_id && parentPost.auth0_id !== auth0Id) {
-            await createReplyNotification(parentId, auth0Id, parentPost.auth0_id, reply.id);
-        }
+      if (error) throw error;
 
-        res.json({
-            ...reply,
-            avatar_url,
-            username
-        });
+      // 6) Create a notification for the original post author (only if non-imported)
+      if (!is_imported && parentPost?.auth0_id && parentPost.auth0_id !== auth0Id) {
+          await createReplyNotification(parentId, auth0Id, parentPost.auth0_id, reply.id);
+      }
 
-    } catch (error) {
-        console.error('Error adding reply:', error);
-        res.status(500).json({ error: error.message });
-    }
+      // 7) Return the new reply
+      res.json({
+          ...reply,
+          avatar_url,
+          username
+      });
+
+  } catch (error) {
+      console.error('Error adding reply:', error);
+      res.status(500).json({ error: error.message });
+  }
 });
 
 // Get reactions for a post
@@ -602,49 +679,50 @@ router.put('/edit/:id', authMiddleware, async (req, res) => {
 
 // Add historical reply to historical thread
 router.post('/:id/historical-reply', authMiddleware, async (req, res) => {
-    const { content, userId, createdAt } = req.body;
+  try {
     const { id: parentId } = req.params;
+    const { content, authorName, createdAt, avatarUrl } = req.body;
     
-    try {
-        // Verify user exists
-        const { rows: userRows } = await pool.query(
-            'SELECT username FROM users WHERE auth0_id = $1',
-            [userId]
-        );
+    // The "real" user performing the insert (likely the admin)
+    const auth0Id = req.user.sub;
 
-        if (!userRows.length) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-
-        // Create reply with custom timestamp
-        const { data: reply, error } = await supabase
-            .from('forum_messages')
-            .insert([{
-                content,
-                parent_id: parentId,
-                auth0_id: userId,
-                author: userRows[0].username,
-                created_at: createdAt
-            }])
-            .select()
-            .single();
-
-        if (error) throw error;
-
-        // Add user data
-        const userData = await pool.query(
-            'SELECT avatar_url FROM users WHERE auth0_id = $1',
-            [userId]
-        );
-
-        res.json({
-            ...reply,
-            avatar_url: userData.rows[0]?.avatar_url,
-            username: userRows[0].username
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    // Make sure we can parse createdAt
+    let finalCreatedAt = new Date();
+    if (createdAt) {
+      const parsed = new Date(createdAt);
+      if (!isNaN(parsed.valueOf())) {
+        finalCreatedAt = parsed;
+      }
     }
+
+    // Insert the new "imported" reply
+    const { data: reply, error } = await supabase
+      .from('forum_messages')
+      .insert([
+        {
+          parent_id: parentId,
+          content,
+          auth0_id: auth0Id,       // The row-level “owner” can be you (admin)
+          author: null,            // Regular author field is unused for imported
+          is_imported: true,
+          imported_author_name: authorName,
+          imported_date: createdAt,  // or a display string
+          imported_avatar_url: avatarUrl, // <-- store in the new column
+          created_at: finalCreatedAt.toISOString()
+        }
+      ])
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    // Return the newly created reply directly
+    res.json(reply);
+
+  } catch (error) {
+    console.error('Error adding historical reply:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Create a new tag
@@ -835,7 +913,5 @@ router.post('/import-thread', authMiddleware, async (req, res) => {
   
   // Modify your existing thread endpoint to handle imported posts
   
-  // Use this updated function in your existing route
-  router.get('/thread/:threadId', getThreadById);
 
 export default router;

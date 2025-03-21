@@ -25,17 +25,20 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
   const [isAddingTag, setIsAddingTag] = useState(false);
   const [recentlyAddedTag, setRecentlyAddedTag] = useState(null);
   const [images, setImages] = useState([]); 
-  const [isSubmitting, setIsSubmitting] = useState(false); 
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 1) New local states for imported author + date
+  // Imported/historical fields
   const [importedAuthorName, setImportedAuthorName] = useState('');
   const [importedDate, setImportedDate] = useState('');
+  const [importedAvatarUrl, setImportedAvatarUrl] = useState('');  // <--- new field
 
   const theme = useTheme();
 
   const handleTagToggle = (tagId) => {
-    setSelectedTags(prev => 
-      prev.includes(tagId) ? prev.filter(id => id !== tagId) : [...prev, tagId]
+    setSelectedTags((prev) =>
+      prev.includes(tagId)
+        ? prev.filter((id) => id !== tagId)
+        : [...prev, tagId]
     );
   };
 
@@ -47,40 +50,47 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
     const tempId = `temp-${Date.now()}`;
     const tempTag = { id: tempId, name: newTag.trim() };
 
-    setTags(prevTags => [...prevTags, tempTag]);
-    setSelectedTags(prev => [...prev, tempId]);
+    setTags((prevTags) => [...prevTags, tempTag]);
+    setSelectedTags((prev) => [...prev, tempId]);
     setRecentlyAddedTag(tempId);
-
     setNewTag('');
 
     try {
       const token = await getAccessTokenSilently();
       const response = await fetch(`${process.env.REACT_APP_API_URL}/tags`, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({ name: tempTag.name })
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ name: tempTag.name })
       });
 
       const data = await response.json();
 
       if (response.status === 409) {
         // Tag already exists
-        setSelectedTags(prev => [...prev.filter(id => id !== tempId), data.tag.id]);
+        setSelectedTags((prev) => [
+          ...prev.filter((id) => id !== tempId),
+          data.tag.id
+        ]);
         setRecentlyAddedTag(data.tag.id);
       } else if (response.ok) {
         // Replace the temporary tag with the real tag
-        setTags(prevTags => prevTags.map(tag => (tag.id === tempId ? data : tag)));
-        setSelectedTags(prev => [...prev.filter(id => id !== tempId), data.id]);
+        setTags((prevTags) =>
+          prevTags.map((tag) => (tag.id === tempId ? data : tag))
+        );
+        setSelectedTags((prev) => [
+          ...prev.filter((id) => id !== tempId),
+          data.id
+        ]);
         setRecentlyAddedTag(data.id);
       } else {
         throw new Error(data.error);
       }
     } catch (error) {
       console.error('Error adding tag:', error);
-      setTags(prevTags => prevTags.filter(tag => tag.id !== tempId));
+      setTags((prevTags) => prevTags.filter((tag) => tag.id !== tempId));
     } finally {
       setIsAddingTag(false);
       setTimeout(() => setRecentlyAddedTag(null), 2000);
@@ -89,23 +99,23 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const contentState = editorState.getCurrentContent();
     const hasText = contentState.hasText();
     const hasImages = images.length > 0;
-    
+
     if (!title.trim() || (!hasText && !hasImages)) {
-      // Either require text or images
+      // Must have either text or images in the post
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const token = await getAccessTokenSilently();
       const rawContent = convertToRaw(contentState);
 
-      // 2) Build our post body
+      // Build request body
       const bodyData = {
         title,
         content: JSON.stringify(rawContent),
@@ -113,11 +123,17 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
         images
       };
 
-      // 3) If imported info is present, include in the request
-      if (importedAuthorName.trim() || importedDate.trim()) {
+      // If user provided *any* of these imported fields, mark it as imported
+      const hasImportedInfo =
+        importedAuthorName.trim() ||
+        importedDate.trim() ||
+        importedAvatarUrl.trim();
+
+      if (hasImportedInfo) {
         bodyData.is_imported = true;
         bodyData.imported_author_name = importedAuthorName.trim() || null;
         bodyData.imported_date = importedDate.trim() || null;
+        bodyData.imported_avatar_url = importedAvatarUrl.trim() || null; // <--- included
       }
 
       const response = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
@@ -129,11 +145,13 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
         body: JSON.stringify(bodyData)
       });
 
-      if (!response.ok) throw new Error('Failed to create post');
+      if (!response.ok) {
+        throw new Error('Failed to create post');
+      }
 
       const newPost = await response.json();
       onPostCreated(newPost);
-      
+
       // Reset form
       setTitle('');
       setSelectedTags([]);
@@ -141,6 +159,7 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
       setImages([]);
       setImportedAuthorName('');
       setImportedDate('');
+      setImportedAvatarUrl(''); // reset avatar field
     } catch (error) {
       console.error('Error creating post:', error);
     } finally {
@@ -161,7 +180,7 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
         autoFocus
       />
 
-      {/* 4) Imported author name + date fields */}
+      {/* Imported fields row */}
       <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
         <TextField
           label="Imported Author Name (Optional)"
@@ -180,15 +199,26 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
         />
       </Box>
 
-      <EditorWithFormatting 
+      {/* Imported Avatar URL field */}
+      <TextField
+        label="Imported Avatar URL (Optional)"
+        value={importedAvatarUrl}
+        onChange={(e) => setImportedAvatarUrl(e.target.value)}
+        variant="outlined"
+        fullWidth
+        placeholder="e.g. https://example.com/myavatar.png"
+        sx={{ mb: 2 }}
+      />
+
+      <EditorWithFormatting
         editorState={editorState}
         setEditorState={setEditorState}
       />
-      
+
       <Box sx={{ my: 2 }}>
         <ChatImageUpload images={images} setImages={setImages} />
       </Box>
-      
+
       <Paper variant="outlined" sx={{ p: 2, mb: 3 }}>
         <Typography variant="subtitle2" sx={{ mb: 1 }}>
           Select Tags
@@ -203,37 +233,37 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
                 key={tag.id}
                 label={tag.name}
                 onClick={() => handleTagToggle(tag.id)}
-                color={isActive ? "primary" : "default"}
+                color={isActive ? 'primary' : 'default'}
                 variant="outlined"
                 sx={{
                   transition: 'background-color 0.3s ease, border-color 0.3s ease',
                   bgcolor: isNew
                     ? theme.palette.success.light
                     : isActive
-                      ? theme.palette.primary.main
-                      : 'inherit',
+                    ? theme.palette.primary.main
+                    : 'inherit',
                   border: isNew
-                    ? "none"
+                    ? 'none'
                     : isActive
-                      ? `2px solid ${theme.palette.primary.main}`
-                      : `1px solid ${theme.palette.neutral.light}`,
+                    ? `2px solid ${theme.palette.primary.main}`
+                    : `1px solid ${theme.palette.neutral.light}`,
                   color: isNew
                     ? theme.palette.text.primary
                     : isActive
-                      ? theme.palette.primary.contrastText
-                      : theme.palette.text.primary,
+                    ? theme.palette.primary.contrastText
+                    : theme.palette.text.primary,
                   '&:hover': {
-                    bgcolor: isNew 
+                    bgcolor: isNew
                       ? theme.palette.success.dark
-                      : isActive 
-                        ? `${theme.palette.primary.dark} !important`
-                        : theme.palette.action.hover,
-                    borderColor: isNew 
-                      ? "none"
-                      : isActive 
-                        ? theme.palette.primary.dark
-                        : theme.palette.neutral.light,
-                    color: isActive 
+                      : isActive
+                      ? `${theme.palette.primary.dark} !important`
+                      : theme.palette.action.hover,
+                    borderColor: isNew
+                      ? 'none'
+                      : isActive
+                      ? theme.palette.primary.dark
+                      : theme.palette.neutral.light,
+                    color: isActive
                       ? theme.palette.primary.contrastText
                       : theme.palette.text.primary
                   }
@@ -252,8 +282,8 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
             variant="outlined"
             disabled={isAddingTag}
           />
-          <Button 
-            variant="contained" 
+          <Button
+            variant="contained"
             onClick={handleAddTag}
             disabled={!newTag.trim() || isAddingTag}
           >
@@ -263,13 +293,13 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
       </Paper>
 
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button 
-          type="submit" 
-          variant="contained" 
+        <Button
+          type="submit"
+          variant="contained"
           color="primary"
           disabled={
-            isSubmitting || 
-            !title.trim() || 
+            isSubmitting ||
+            !title.trim() ||
             (!editorState.getCurrentContent().hasText() && images.length === 0)
           }
           endIcon={<SendIcon />}

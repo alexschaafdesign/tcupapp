@@ -36,12 +36,14 @@ const ReplyMobile = ({
   const isImported = post.is_imported === true;
 
   // Derive the correct avatar src
-  const avatarSrc = isImported ? null : post.avatar_url;
+  const avatarSrc = isImported
+  ? post.avatar_url // or post.imported_avatar_url directly
+  : post.avatar_url;
 
   // Get the appropriate author name
   const authorName = isImported 
     ? post.imported_author_name 
-    : (post.username || post.name || post.email || 'User');
+    : (post.author || post.name || post.email || 'User');
 
   // Get the appropriate date display
   const dateDisplay = isImported
@@ -166,7 +168,7 @@ const ReplyMobile = ({
           {/* If imported, show a note. Otherwise, show liked-by users. */}
           {isImported ? (
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              Archived post from previous forum
+              Transferred post from previous forum
             </Typography>
           ) : (
             likedUsers.length > 0 && (
