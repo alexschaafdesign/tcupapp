@@ -462,7 +462,7 @@ router.post('/:id/reply', authMiddleware, async (req, res) => {
               is_imported: is_imported || false,
               imported_author_name: imported_author_name || null,
               imported_date: imported_date || null,
-              created_at: finalCreatedAt // override if valid
+              created_at: finalCreatedAt || new Date().toISOString()
           }])
           .select()
           .single();
