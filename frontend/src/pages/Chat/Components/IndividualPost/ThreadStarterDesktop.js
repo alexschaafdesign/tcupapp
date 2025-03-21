@@ -5,7 +5,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import palette from '../../../../styles/colors/palette';
 import PostHeader from '../PostHeader';
 import ImageAttachmentsGrid from '../ImageAttachmentsGrid';
-
 const ThreadStarterDesktop = ({
   post,
   userHasLiked,

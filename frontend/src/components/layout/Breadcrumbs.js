@@ -34,7 +34,7 @@ const Breadcrumbs = () => {
   // Always call hooks at the top level, before any conditionals
   useEffect(() => {
     if (threadId) {
-      callApi(`${process.env.REACT_APP_API_URL}/posts/${threadId}`)
+      callApi(`${process.env.REACT_APP_API_URL}/posts/thread/${threadId}`)
         .then((data) => {
           if (data?.post?.title) {
             setThreadTitle(data.post.title);
