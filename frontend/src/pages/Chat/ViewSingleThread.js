@@ -43,7 +43,8 @@ const ViewSingleThread = () => {
   const [replyImages, setReplyImages] = useState([]);
   const [editEditorState, setEditEditorState] = useState(null);
   const [showHistoricalForm, setShowHistoricalForm] = useState(false);
-
+  const { loginWithRedirect } = useAuth0();
+  const [tokenError, setTokenError] = useState(false);
 
   
   // Theme for responsive design
@@ -252,6 +253,10 @@ const ViewSingleThread = () => {
   
       setPostReactions(reactionsByPost);
     } catch (error) {
+      if (error.message?.includes('invalid refresh token') || 
+          error.message?.includes('redirecting to login')) {
+        setTokenError(true);
+      }
       console.error("Error fetching thread:", error);
     } finally {
       setLoading(false);
@@ -530,6 +535,29 @@ const ViewSingleThread = () => {
   // Loading or not found states
   if (loading) return <CircularProgress />;
   if (!threadData?.post) return <Typography>Thread not found</Typography>;
+  
+  if (tokenError) {
+    return (
+      <Box sx={{ p: 2, textAlign: 'center' }}>
+        <Typography variant="h6" color="error" gutterBottom>
+          Authentication Error
+        </Typography>
+        <Typography paragraph>
+          Your login session has expired or is invalid on this device.
+        </Typography>
+        <Button 
+          variant="contained" 
+          color="primary"
+          onClick={() => loginWithRedirect({
+            appState: { returnTo: window.location.pathname }
+          })}
+        >
+          Log In Again
+        </Button>
+      </Box>
+    );
+  }
+
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
