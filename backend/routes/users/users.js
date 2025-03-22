@@ -420,6 +420,28 @@ router.put('/password', authMiddleware, async (req, res) => {
     }
   });
 
+router.post('/reset-password', async (req, res) => {
+    try {
+      const { email } = req.body;
+  
+      // Use Auth0's built-in password reset
+      await axios.post(
+        `https://${process.env.AUTH0_DOMAIN}/dbconnections/change_password`,
+        {
+          email: email,
+          connection: "Username-Password-Authentication",
+          client_id: process.env.AUTH0_CLIENT_ID
+        }
+      );
+  
+      res.json({ message: 'If this email exists in our system, a password reset link has been sent' });
+    } catch (error) {
+      console.error('Password reset error:', error.response?.data || error.message);
+      // Still return success message even if there's an error to prevent email enumeration
+      res.json({ message: 'If this email exists in our system, a password reset link has been sent' });
+    }
+});
+
 router.put('/email', authMiddleware, async (req, res) => {
     console.log("EMAIL ROUTE DEBUG:");
     console.log("Current NODE_ENV:", process.env.NODE_ENV);
@@ -518,5 +540,7 @@ router.put('/tagline', authMiddleware, async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
 
 export default router;
