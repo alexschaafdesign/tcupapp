@@ -449,11 +449,11 @@ const ViewSingleThread = () => {
       cleanText = reply.content || '';
     }
   
-    // Create blocks: Quote block, spacing block, and empty cursor block
+    // Use reply.author instead of reply.username
     const quoteBlock = new ContentBlock({
       key: genKey(),
       type: 'unstyled',
-      text: `[QUOTE="${reply.username}"]${cleanText}[/QUOTE]`,
+      text: `[QUOTE="${reply.author || 'User'}"]${cleanText}[/QUOTE]`,
     });
   
     const spacingBlock = new ContentBlock({ key: genKey(), type: 'unstyled', text: '' });
