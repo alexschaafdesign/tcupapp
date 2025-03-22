@@ -176,7 +176,7 @@ const Header = () => {
     { text: "venues", path: "/venues" },
     { text: "session musicians", path: "/sessionmusicians" },
     { text: "power pledge", path: "/powerpledge" },
-    { test: "flyering", path: "/flyering" }
+    { text: "flyering", path: "/flyering" }
   ].map(link => ({
     ...link,
     disabled: !isDevMode && link.devOnly,
@@ -222,7 +222,7 @@ const Header = () => {
 
   return (
     <>
-      {/* Desktop Vertical Header */}
+      {/* Desktop Vertical Header - Now with scrolling */}
       <AppBar 
         position="fixed"
         sx={{
@@ -236,18 +236,38 @@ const Header = () => {
           display: { xs: "none", md: "block" },
           "& *": { zIndex: 2 },
           zIndex: 1200, // Ensure it's above other content
-          ...noiseBackground
+          ...noiseBackground,
+          overflowY: 'auto', // Enable vertical scrolling
+          overflowX: 'hidden', // Prevent horizontal scrolling
         }}
       >
-        <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-          {/* Logo Section */}
-          <Box sx={{ pt: 2, pb: 1, px: 2, textAlign: "center" }}>
+        <Box 
+          sx={{ 
+            display: "flex", 
+            flexDirection: "column", 
+            minHeight: "100%", // Changed from height to minHeight
+            pb: 2 // Add padding at the bottom for better scroll appearance
+          }}
+        >
+          {/* Logo Section - Fixed at the top */}
+          <Box 
+            sx={{ 
+              pt: 2, 
+              pb: 1, 
+              px: 2, 
+              textAlign: "center", 
+              position: "sticky", 
+              top: 0, 
+              zIndex: 3,
+              backgroundColor: "rgba(236, 236, 236, 0.9)", // Semi-transparent background
+              backdropFilter: "blur(5px)" // Add blur effect for better visibility of fixed header
+            }}
+          >
             <Logo size="desktop" />
+            <CustomDivider />
           </Box>
           
-          <CustomDivider />
-          
-          {/* Navigation Links */}
+          {/* Navigation Links - Scrollable */}
           <List sx={{ width: "100%", px: 2, py: 0 }}>
             <Box sx={{ mb: 2 }}>
               <ExpandableMenu 
@@ -285,11 +305,26 @@ const Header = () => {
             {/* Show user profile for all authenticated users */}
             {isAuthenticated && (
               <>
-            <CustomDivider />
-            
+                <CustomDivider />
+                <HeaderUserProfile closeDrawer={closeDrawer} />
               </>
             )}
             
+            {/* Admin section remains conditional */}
+            {isAuthenticated && isAdmin && (
+              <>
+                <Box sx={{ mb: 2, px: 2 }}>
+                  <ExpandableMenu 
+                    title="admin"
+                    isExpanded={expandedMenus.admin}
+                    setIsExpanded={() => toggleMenu('admin')}
+                    links={adminLinks}
+                    closeDrawer={closeDrawer}
+                  />
+                </Box>
+                <CustomDivider />
+              </>
+            )}
            
             <List sx={{ px: 2 }}>
               <NavLink 
@@ -343,7 +378,8 @@ const Header = () => {
             width: "250px",
             background: 'linear-gradient(180deg, #ECECEC 0%, #FFFFFF 100%)',
             color: '#000000',
-            ...noiseBackground
+            ...noiseBackground,
+            overflowY: 'auto' // Add scrolling to the mobile drawer too
           }
         }}
       >
@@ -390,9 +426,8 @@ const Header = () => {
             {/* Show user profile for all authenticated users */}
             {isAuthenticated && (
               <>
-            <HeaderUserProfile closeDrawer={closeDrawer} />
-            <CustomDivider />
-            
+                <HeaderUserProfile closeDrawer={closeDrawer} />
+                <CustomDivider />
               </>
             )}
             
