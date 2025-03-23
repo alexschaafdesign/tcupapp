@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import palette from '../../../../styles/colors/palette';
 import PostHeader from '../PostHeader';
-import ImageAttachmentsGrid from '../ImageAttachmentsGrid';
+import ImageAttachmentsGrid from '../Post/ImageAttachmentsGrid';
 
 const ThreadStarterDesktop = ({
   post,

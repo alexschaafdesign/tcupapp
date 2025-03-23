@@ -13,7 +13,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import HistoryIcon from '@mui/icons-material/History';
 import palette from '../../../../styles/colors/palette';
-import ImageAttachmentsGrid from '../ImageAttachmentsGrid';
+import ImageAttachmentsGrid from '../Post/ImageAttachmentsGrid';
 
 const ReplyMobile = ({
   post,

@@ -32,7 +32,7 @@ import { stateToHTML } from 'draft-js-export-html';
 import parse from 'html-react-parser';
 import EditorWithFormatting from '../Chat/Components/EditorWithFormatting';
 import ChatImageUpload from '../Chat/Components/ChatImageUpload';
-import ImageAttachmentsGrid from '../Chat/Components/ImageAttachmentsGrid';
+import ImageAttachmentsGrid from '../Chat/Components/Post/ImageAttachmentsGrid';
 
 const ConversationDetail = () => {
   const { conversationId } = useParams();
