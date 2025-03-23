@@ -85,7 +85,7 @@ const ExpandableMenu = ({ title, isExpanded, setIsExpanded, links, closeOtherMen
 // Logo component for reuse
 const Logo = ({ size = "desktop", onClick = null }) => {
   const sizes = {
-    desktop: { logo: "140px", theFont: "16px", cupboardFont: "25px" },
+    desktop: { logo: "100px", theFont: "16px", cupboardFont: "25px" },
     mobile: { logo: "40px", theFont: "12px", cupboardFont: "18px" },
     drawer: { logo: "100px", theFont: "16px", cupboardFont: "25px" }
   };
