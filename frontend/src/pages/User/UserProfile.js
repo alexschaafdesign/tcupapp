@@ -107,6 +107,36 @@ function UserProfile() {
 
   const [isOwnProfile, setIsOwnProfile] = useState(false);
 
+  // 1. Add a reset function to clear component state when the route changes
+  const resetProfileState = () => {
+    setUsername('');
+    setProfileAvatarUrl(null);
+    setEmail('');
+    setTagline('');
+    setBio('');
+    setUserBands([]);
+    setSavedShows([]);
+    setFavoriteBands([]);
+    setClaimedBands([]);
+    setIsLoaded(false);
+    setProfileData(null);
+    setIsEditingUsername(false);
+    setIsEditingTagline(false);
+    setIsEditingBio(false);
+    setIsEditingEmail(false);
+  };
+
+  // 2. Add a useEffect that listens for userId changes and resets state
+  useEffect(() => {
+    // Reset all profile state when userId changes
+    resetProfileState();
+    
+    // Check if this is the current user's profile
+    if (isAuthenticated && user) {
+      setIsOwnProfile(!userId || userId === user.sub);
+    }
+  }, [userId, isAuthenticated, user]);
+
   // Helper function to get initials for avatar fallback
   const getInitials = (name) => {
     if (!name) return '?';
@@ -257,7 +287,7 @@ function UserProfile() {
 // Replace your fetchData function in the useEffect with this version
   useEffect(() => {
   const fetchData = async () => {
-    if (isAuthenticated && !isLoaded) {
+    if (isAuthenticated) {
       try {
         console.log('Fetching profile data for endpoint:', endpoint);
         
