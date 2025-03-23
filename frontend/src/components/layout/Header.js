@@ -300,16 +300,8 @@ const Header = () => {
             </Box>
           </List>
   
-         {/* Auth Section */}
+         {/* Auth Section - Removed HeaderUserProfile from desktop */}
          <Box sx={{ mt: "auto", zIndex: 2 }}>
-            {/* Show user profile for all authenticated users */}
-            {isAuthenticated && (
-              <>
-                <CustomDivider />
-                <HeaderUserProfile closeDrawer={closeDrawer} />
-              </>
-            )}
-            
             {/* Admin section remains conditional */}
             {isAuthenticated && isAdmin && (
               <>
@@ -423,7 +415,7 @@ const Header = () => {
           </List>
 
           <Box sx={{ mt: "auto", zIndex: 2 }}>
-            {/* Show user profile for all authenticated users */}
+            {/* Keep HeaderUserProfile ONLY in the mobile drawer */}
             {isAuthenticated && (
               <>
                 <HeaderUserProfile closeDrawer={closeDrawer} />
