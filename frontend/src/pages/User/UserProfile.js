@@ -55,6 +55,8 @@ function UserProfile() {
   const { userId } = useParams();
   const [profileData, setProfileData] = useState(null);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
 
   const endpoint = userId ? `${apiUrl}/users/profile/${userId}` : `${apiUrl}/users/profile`;
   
@@ -106,6 +108,13 @@ function UserProfile() {
   const [showSuccess, setShowSuccess] = useState(false);
 
   const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const [editedUsername, setEditedUsername] = useState('');
+
+  const startEditingUsername = () => {
+    setEditedUsername(username); // Initialize edit field with current username
+    setIsEditingUsername(true);
+    setIsEditing(true); // Set the global editing flag
+  };
 
   // 1. Add a reset function to clear component state when the route changes
   const resetProfileState = () => {
@@ -162,21 +171,6 @@ function UserProfile() {
     }
   }, [isAuthenticated, userId, user]);
   
-  useEffect(() => {
-    const fetchData = async () => {
-      if (isAuthenticated && !isLoaded) {
-        try {
-          const data = await callApi(endpoint);
-          setProfileData(data); // Save the fetched data to state
-          setIsLoaded(true);
-        } catch (err) {
-          console.error('Error fetching user data:', err);
-        }
-      }
-    };
-
-    fetchData();
-  }, [isAuthenticated, isLoaded, callApi, endpoint]);
 
   useEffect(() => {
     async function checkToken() {
@@ -285,9 +279,10 @@ function UserProfile() {
   };
 
 // Replace your fetchData function in the useEffect with this version
-  useEffect(() => {
+useEffect(() => {
   const fetchData = async () => {
-    if (isAuthenticated) {
+    // Only fetch if authenticated, not editing, and not already loaded
+    if (isAuthenticated && !isEditing && !isLoaded) {
       try {
         console.log('Fetching profile data for endpoint:', endpoint);
         
@@ -296,20 +291,17 @@ function UserProfile() {
         
         if (profileData) {
           if (profileData.username) setUsername(profileData.username);
-          if (profileData.avatar_url) setProfileAvatarUrl(profileData.avatar_url); // Use local state setter
+          if (profileData.avatar_url) setProfileAvatarUrl(profileData.avatar_url);
           if (profileData.email) setEmail(profileData.email);
           if (profileData.tagline) setTagline(profileData.tagline);
           if (profileData.bio) setBio(profileData.bio);
         }
 
         if (isOwnProfile && profileData.avatar_url) {
-          setAvatarUrl(profileData.avatar_url); // Using original variable name
+          setAvatarUrl(profileData.avatar_url);
         }
-      
-      
         
         // If this is looking at the current user's profile, fetch additional data
-        // Otherwise skip fetching bands, shows, etc. for other users
         if (!userId || userId === user?.sub) {
           const [bandsData, showsData, favoritesData, claimedData] = await Promise.all([
             callApi(`${apiUrl}/users/bands`),
@@ -331,7 +323,12 @@ function UserProfile() {
   };
 
   fetchData();
-}, [isAuthenticated, isLoaded, callApi, endpoint, apiUrl, setAvatarUrl, isOwnProfile, userId, user?.sub]);
+}, [isAuthenticated, isLoaded, callApi, endpoint, apiUrl, setAvatarUrl, isOwnProfile, userId, user?.sub, isEditing]);
+
+const handleCancelUsernameEdit = () => {
+  setIsEditingUsername(false);
+  setIsEditing(false); // Clear the editing flag
+};
 
   // === Avatar Upload / Removal Handlers ===
   const handleAvatarUpload = async (file) => {
@@ -390,9 +387,9 @@ function UserProfile() {
 
   // === Profile Info Update Handlers ===
   const handleUsernameUpdate = async () => {
-    if (!isOwnProfile) return; // Prevent unauthorized edits
+    if (!isOwnProfile) return;
     
-    if (!username) {
+    if (!editedUsername) {
       setUsernameError('Username cannot be empty');
       return;
     }
@@ -404,12 +401,15 @@ function UserProfile() {
       const response = await callApi(`${apiUrl}/users/username`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username }),
+        body: JSON.stringify({ username: editedUsername }),
       });
-
+  
       if (response.error) throw new Error(response.error);
       
+      // Update the real username state only after successful API call
+      setUsername(editedUsername);
       setIsEditingUsername(false);
+      setIsEditing(false); // Clear the editing flag
       setSuccessMessage('Username updated successfully!');
       setShowSuccess(true);
     } catch (error) {
@@ -712,13 +712,13 @@ function UserProfile() {
                   disabled={isChangingBio}
                 />
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                  <Button 
-                    onClick={() => setIsEditingBio(false)} 
-                    variant="outlined"
-                    startIcon={<CloseIcon />}
-                  >
-                    Cancel
-                  </Button>
+                <IconButton 
+                  size="small" 
+                  onClick={handleCancelUsernameEdit}
+                  sx={{ border: '1px solid', borderColor: 'divider' }}
+                >
+                  <CloseIcon />
+                </IconButton>
                   <Button 
                     onClick={handleBioUpdate} 
                     variant="contained"
@@ -775,7 +775,7 @@ function UserProfile() {
                       <IconButton 
                         size="small" 
                         color="primary" 
-                        onClick={() => setIsEditingUsername(true)}
+                        onClick={startEditingUsername} // Use the function we defined
                         sx={{ '&:hover': { background: 'rgba(103, 58, 183, 0.1)' } }}
                       >
                         <EditIcon fontSize="small" />
@@ -785,52 +785,48 @@ function UserProfile() {
                 </Box>
                 
                 {isEditingUsername ? (
-                  <Fade in={isEditingUsername}>
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-                      <TextField
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        size="small"
-                        fullWidth
-                        error={!!usernameError}
-                        helperText={usernameError}
-                        disabled={isChangingUsername}
-                        autoFocus
-                        InputProps={{ sx: { borderRadius: 2 } }}
-                      />
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                        <IconButton 
-                          color="primary" 
-                          size="small" 
-                          onClick={handleUsernameUpdate} 
-                          disabled={isChangingUsername}
-                          sx={{ 
-                            bgcolor: 'primary.main', 
-                            color: 'white',
-                            '&:hover': { bgcolor: 'primary.dark' }
-                          }}
-                        >
-                          {isChangingUsername ? <CircularProgress size={20} /> : <CheckIcon />}
-                        </IconButton>
-                        <IconButton 
-                          size="small" 
-                          onClick={() => setIsEditingUsername(false)}
-                          sx={{ border: '1px solid', borderColor: 'divider' }}
-                        >
-                          <CloseIcon />
-                        </IconButton>
-                       
-                      </Box>
-                    </Box>
-                    
-                  </Fade>
-                  
-                ) : (
-                  <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
-                    {username || user?.name}
-                  </Typography>
-                   
-                )}
+              <Fade in={isEditingUsername}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+                  <TextField
+                    value={editedUsername} // Use editedUsername instead of username
+                    onChange={(e) => setEditedUsername(e.target.value)} // Update editedUsername
+                    size="small"
+                    fullWidth
+                    error={!!usernameError}
+                    helperText={usernameError}
+                    disabled={isChangingUsername}
+                    autoFocus
+                    InputProps={{ sx: { borderRadius: 2 } }}
+                  />
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                    <IconButton 
+                      color="primary" 
+                      size="small" 
+                      onClick={handleUsernameUpdate} 
+                      disabled={isChangingUsername}
+                      sx={{ 
+                        bgcolor: 'primary.main', 
+                        color: 'white',
+                        '&:hover': { bgcolor: 'primary.dark' }
+                      }}
+                    >
+                      {isChangingUsername ? <CircularProgress size={20} /> : <CheckIcon />}
+                    </IconButton>
+                    <IconButton 
+                      size="small" 
+                      onClick={handleCancelUsernameEdit}
+                      sx={{ border: '1px solid', borderColor: 'divider' }}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  </Box>
+                </Box>
+              </Fade>
+            ) : (
+              <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+                {username || user?.name}
+              </Typography>
+            )}
                 
               </Box>
             </Grid>
