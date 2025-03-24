@@ -34,7 +34,7 @@ const getNavLinks = (isDevMode) => {
       { text: "about TCUP", path: "/about", icon: <InfoIcon fontSize="small" /> },
       { text: "join TCUP", path: "https://airtable.com/appWhJi1YbIsdiXrw/pagHJycS1fOI0TGLS/form", external: true, icon: <GroupAddIcon fontSize="small" /> },
       { text: "power pledge", path: "/powerpledge", icon: <LocalActivityIcon fontSize="small" /> },
-      { text: "venue report card", path: "https://airtable.com/appBxG22efe9yoPaa/pagoL9lvXsNovlvak/form", icon: <AssessmentIcon fontSize="small" /> },
+      { text: "venue report card", path: "https://airtable.com/appBxG22efe9yoPaa/pagoL9lvXsNovlvak/form", external: true, icon: <AssessmentIcon fontSize="small" /> },
 
     ].map(link => ({
       ...link,
