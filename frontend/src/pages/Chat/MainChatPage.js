@@ -25,6 +25,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import CreatePost from './Components/CreatePost';
 import ListOfAllThreads from './Components/ListOfAllThreads';
 import AuthContentOverlay from '../../components/auth/AuthOverlay';
+import palette from '../../styles/colors/palette';
 
 const ForumContainer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -135,7 +136,7 @@ const ForumContainer = () => {
                 size="small"
                 color={showFilters ? "primary" : "default"}
                 onClick={() => setShowFilters(!showFilters)}
-                sx={{ border: 1, borderColor: 'divider' }}
+                sx={{ border: 1, borderColor: 'divider', color: palette.primary.main }}
               >
                 <FilterIcon />
               </IconButton>
