@@ -9,32 +9,39 @@ import { createReplyNotification } from '../notifications.js';
 
 
 router.get('/', async (req, res) => {
-    try {
-        const { tags } = req.query;
-        const tagIds = tags ? tags.split(',').map(Number) : [];
-        
-        // Get threads
-        let query = supabase
-            .from('forum_messages')
-            .select('*')
-            .is('parent_id', null);
+  try {
+      const { tags } = req.query;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 20;
+      const offset = (page - 1) * limit;
+      const tagIds = tags ? tags.split(',').map(Number) : [];
+      
+      // Get threads with pagination
+      let query = supabase
+          .from('forum_messages')
+          .select('*', { count: 'exact' }) // Get total count for pagination
+          .is('parent_id', null)
+          .order('created_at', { ascending: false }) // Consider this for consistent ordering
+          .range(offset, offset + limit - 1); // Add LIMIT and OFFSET
 
-        if (tagIds.length > 0) {
-            // Filter by tags if needed
-            const { data: taggedThreadIds } = await supabase
-                .from('post_tags')
-                .select('post_id')
-                .in('tag_id', tagIds);
-            
-            const postIds = taggedThreadIds.map(t => t.post_id);
-            if (postIds.length > 0) {
-                query = query.in('id', postIds);
-            } else {
-                return res.json([]);
-            }
-        }
-
-        const { data: threadsData } = await query;
+      if (tagIds.length > 0) {
+          // Filter by tags if needed
+          const { data: taggedThreadIds } = await supabase
+              .from('post_tags')
+              .select('post_id')
+              .in('tag_id', tagIds);
+          
+          const postIds = taggedThreadIds.map(t => t.post_id);
+          if (postIds.length > 0) {
+              query = query.in('id', postIds);
+          } else {
+              return res.json({ 
+                  posts: [],
+                  pagination: { page, limit, total: 0, pages: 0 }
+              });
+          }
+      }
+        const { data: threadsData, count } = await query;
         if (!threadsData || threadsData.length === 0) {
             return res.json([]);
         }
@@ -141,22 +148,29 @@ router.get('/', async (req, res) => {
           };
         });
         
-        res.json(postsWithData);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-        res.status(500).json({ error: error.message });
-    }
+        res.json({
+          posts: postsWithData,
+          pagination: {
+              page,
+              limit,
+              total: count,
+              pages: Math.ceil(count / limit)
+          }
+      });
+  } catch (error) {
+      console.error('Error fetching posts:', error);
+      res.status(500).json({ error: error.message });
+  }
 });
 
 const getThreadById = async (req, res) => {
   const { threadId } = req.params;
-  console.log('Fetching thread with ID:', threadId);
-  console.log('User from auth:', req.user?.sub);
-
-
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 50; // Higher limit for replies
+  const offset = (page - 1) * limit;
   
   try {
-    // Get the thread and its replies
+    // Get the thread (main post)
     const { data: threadData, error: threadError } = await supabase
       .from('forum_messages')
       .select('*')
@@ -166,18 +180,21 @@ const getThreadById = async (req, res) => {
     if (threadError) {
       return res.status(404).json({ error: 'Thread not found' });
     }
-
-    console.log('Supabase returned:', threadData, threadError);
     
-    const { data: repliesData, error: repliesError } = await supabase
+    // Get replies with pagination
+    const { data: repliesData, count, error: repliesError } = await supabase
       .from('forum_messages')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('parent_id', threadId)
-      .order('created_at', { ascending: true });
+      .order('created_at', { ascending: true })
+      .range(offset, offset + limit - 1);
     
     if (repliesError) {
       return res.status(500).json({ error: 'Failed to fetch replies' });
     }
+
+    console.log('Supabase returned:', threadData, threadError);
+    
     
     // If these aren't imported posts, fetch user info from PostgreSQL as usual
     // For imported posts, we'll use the imported_author_name directly
@@ -246,7 +263,13 @@ const getThreadById = async (req, res) => {
     
     res.json({
       post: processedThread,
-      replies: processedReplies
+      replies: processedReplies,
+      pagination: {
+        page,
+        limit,
+        total: count,
+        pages: Math.ceil(count / limit)
+      }
     });
   } catch (error) {
     console.error('Error in getThreadById:', error);

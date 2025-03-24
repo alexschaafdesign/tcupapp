@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Avatar, List, ListItem, Paper, useMediaQuery, useTheme, CircularProgress } from '@mui/material';
+import { Box, Typography, Avatar, List, ListItem, Paper, useMediaQuery, useTheme, CircularProgress, Pagination } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AuthWrapper from '../../../components/auth/AuthWrapper';
 import { useAuth0 } from '@auth0/auth0-react';
 import ActiveTags from './ActiveTags';
 import { useApi } from '../../../hooks/useApi';
 
-const ListOfAllThreads = ({ posts }) => {
+const ListOfAllThreads = ({ posts, pagination, onPageChange }) => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth0();
   const theme = useTheme();
@@ -113,6 +113,7 @@ const ListOfAllThreads = ({ posts }) => {
 
 
   return (
+    <>
     <Paper elevation={0} sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
       <List sx={{ p: 0 }}>
         {posts.map((post) => {
@@ -139,9 +140,9 @@ const ListOfAllThreads = ({ posts }) => {
           // Derive the correct avatar source
           // If it's imported, we give it a null or empty string 
           // so MUI shows the fallback avatar
-  const avatarSrc = isImported
-  ? post.avatar_url // or post.imported_avatar_url directly
-  : post.avatar_url;      
+          const avatarSrc = isImported
+          ? post.avatar_url // or post.imported_avatar_url directly
+          : post.avatar_url;      
       
           return (
             <AuthWrapper 
@@ -301,7 +302,21 @@ const ListOfAllThreads = ({ posts }) => {
         })}
       </List>
     </Paper>
-  );
+
+    {/* Pagination controls */}
+    {pagination && pagination.pages > 1 && (
+      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+        <Pagination 
+          count={pagination.pages} 
+          page={pagination.page} 
+          onChange={(e, page) => onPageChange(page)}
+          color="primary"
+          size={isMobile ? "small" : "medium"}
+        />
+      </Box>
+    )}
+  </>
+);
 };
 
 export default ListOfAllThreads;
