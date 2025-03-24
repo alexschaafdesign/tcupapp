@@ -25,7 +25,6 @@ const getNavLinks = (isDevMode) => {
     resourceLinks: [
       { text: "venues", path: "/venues", icon: <PlaceIcon fontSize="small" /> },
       { text: "session musicians", path: "/sessionmusicians", icon: <MusicNoteIcon fontSize="small" /> },
-      { text: "power pledge", path: "/powerpledge", icon: <LocalActivityIcon fontSize="small" /> },
       { text: "flyering", path: "/flyering", icon: <CampaignIcon fontSize="small" /> }
     ].map(link => ({
       ...link,

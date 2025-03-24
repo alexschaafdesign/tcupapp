@@ -42,7 +42,7 @@ const menuTypographyProps = {
   fontFamily: typography.h5.fontFamily,
   textTransform: "lowercase",
   fontSize: typography.body2.fontSize,
-  letterSpacing: "-0.3px",
+  letterSpacing: "0.2px !important", 
 };
 
 // Common icon style
@@ -88,7 +88,7 @@ const CustomDivider = ({ container = false }) => (
     width: container ? '100%' : 'calc(100% - 32px)', 
     mx: 'auto', 
     my: 0.5,
-    backgroundColor: palette.neutral.twenty
+    color: palette.neutral.twenty
   }} />
 );
 
@@ -166,8 +166,20 @@ const ExpandableMenu = ({ title, isExpanded, setIsExpanded, links, closeDrawer, 
           primary={title}
           primaryTypographyProps={menuTypographyProps}
         />
-        {isExpanded ? <ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} /> : <ExpandMoreIcon />}
-      </ListItem>
+{isExpanded ? 
+  <ExpandMoreIcon sx={{ 
+    transform: 'rotate(180deg)', 
+    fontSize: '1rem',  // Make smaller (default is ~1.5rem)
+    color: 'rgba(0, 0, 0, 0.4)', // Make lighter
+    opacity: 0.7  // Additional subtlety
+  }} /> 
+  : 
+  <ExpandMoreIcon sx={{ 
+    fontSize: '1rem',  // Make smaller
+    color: 'rgba(0, 0, 0, 0.4)', // Make lighter
+    opacity: 0.7  // Additional subtlety
+  }} />
+}      </ListItem>
       <Collapse in={isExpanded}>
         <Box sx={{ 
           backgroundColor: 'rgba(0, 0, 0, 0.02)',
@@ -210,20 +222,18 @@ const AuthButtons = ({ isAuthenticated, loginWithRedirect, logout, closeDrawer }
 
   return (
     <ListItem
-      button
-      onClick={handleAuth}
-      sx={{
-        color: "#000000",
-        cursor: "pointer",
-        fontFamily: typography.h5.fontFamily,
-        textTransform: "lowercase",
-        "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
-        py: 0.5,
-      }}
-    >
+  button
+  onClick={handleAuth}
+  sx={{
+    ...navItemStyles, // Add this to maintain consistency
+    color: "#000000",
+    cursor: "pointer",
+    "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
+  }}
+>
       <ListItemIcon sx={{ 
         ...iconStyle,
-        color: palette.primary.main,
+        color: palette.error.main,
       }}>
         {isAuthenticated ? <ExitToAppIcon fontSize="small" /> : <LoginIcon fontSize="small" />}
       </ListItemIcon>
@@ -500,7 +510,6 @@ const Header = () => {
           <Logo size="drawer" onClick={closeDrawer} />
         </Box>
         
-        <CustomDivider />
         
         <List sx={{ px: 2, py: 0, zIndex: 2 }}>
           <Box sx={{ mb: 2 }}>
@@ -514,7 +523,6 @@ const Header = () => {
             />
           </Box>
           
-          <CustomDivider container={true} />
           
           {mainLinks.map((link, index) => (
             <NavLink 
@@ -541,7 +549,6 @@ const Header = () => {
           {isAuthenticated && (
             <>
               <HeaderUserProfile closeDrawer={closeDrawer} />
-              <CustomDivider />
             </>
           )}
           
