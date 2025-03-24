@@ -1,4 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth } from "../../hooks/useAuth";
+
+// Material UI components
 import {
   Box,
   IconButton,
@@ -6,18 +11,76 @@ import {
   List,
   ListItem,
   ListItemText,
+  ListItemIcon,
   AppBar,
   Divider,
   Collapse,
 } from "@mui/material";
+
+// Icons
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useNavigate, Link, useLocation } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
-import { useAuth } from "../../hooks/useAuth";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import LoginIcon from "@mui/icons-material/Login";
+
+// Local components and data
 import HeaderUserProfile from "./HeaderUserProfile";
 import palette from "../../styles/colors/palette";
-import { ContactSupport } from "@mui/icons-material";
+import getNavLinks from "./NavigationItems";
+import { typography } from "../../styles/typography"; // Update this path as needed
+
+// Layout constants
+const LAYOUT = {
+  SIDEBAR_WIDTH: '224px',
+  DRAWER_WIDTH: '250px',
+  MOBILE_HEADER_HEIGHT: '60px'
+};
+
+
+// Shared typography style
+const menuTypographyProps = {
+  fontFamily: typography.h5.fontFamily,
+  textTransform: "lowercase",
+  fontSize: typography.body2.fontSize,
+  letterSpacing: "-0.3px",
+};
+
+// Common icon style
+const iconStyle = {
+  minWidth: 30,
+  mr: 0.5
+};
+
+// Common styles for nav items
+const navItemStyles = {
+  borderRadius: "8px",
+  fontFamily: typography.h5.fontFamily,
+  textTransform: "lowercase",
+  px: 1.5, 
+  py: 0.25,
+  mb: 0.5,
+  "&:hover": {
+    backgroundColor: "rgba(97, 56, 179, 0.15)",
+  },
+};
+
+// Common background style for noise texture
+const noiseBackground = {
+  "&::before": {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: 'url("https://res.cloudinary.com/dsll3ms2c/image/upload/v1740072216/noisebg_for_header_xyr0ou.png")',
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    opacity: 0.15,
+    zIndex: 1,
+  }
+};
 
 // Component for consistent dividers
 const CustomDivider = ({ container = false }) => (
@@ -25,36 +88,83 @@ const CustomDivider = ({ container = false }) => (
     width: container ? '100%' : 'calc(100% - 32px)', 
     mx: 'auto', 
     my: 0.5,
-    backgroundColor: palette.neutral.gray
+    backgroundColor: palette.neutral.twenty
   }} />
 );
 
-// Component for expandable dropdown menus
-const ExpandableMenu = ({ title, isExpanded, setIsExpanded, links, closeOtherMenus, closeDrawer }) => {
+// NavLink component
+const NavLink = ({ link, closeDrawer }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isActive = location.pathname === link.path;
+
+  const handleClick = () => {
+    if (!link.external && !link.disabled) {
+      navigate(link.path);
+      if (closeDrawer) closeDrawer();
+    }
+  };
+
+  return (
+    <ListItem
+      component={link.external ? "a" : "div"}
+      href={link.external ? link.path : undefined}
+      target={link.external ? "_blank" : undefined}
+      rel={link.external ? "noopener noreferrer" : undefined}
+      button={!link.external}
+      disabled={link.disabled}
+      onClick={handleClick}
+      sx={{
+        ...navItemStyles,
+        color: isActive ? "#6138B3" : "#000000",
+        backgroundColor: isActive ? "rgba(97, 56, 179, 0.15)" : "transparent",
+        cursor: link.disabled ? "not-allowed" : "pointer",
+        opacity: link.disabled ? 0.5 : 1,
+      }}
+    >
+      {link.icon && (
+        <ListItemIcon sx={{ 
+          ...iconStyle,
+          color: isActive ? palette.primary.main : palette.neutral.twenty,
+        }}>
+          {link.icon}
+        </ListItemIcon>
+      )}
+      <ListItemText
+        primary={link.text}
+        primaryTypographyProps={menuTypographyProps}
+      />
+    </ListItem>
+  );
+};
+
+// ExpandableMenu component
+const ExpandableMenu = ({ title, isExpanded, setIsExpanded, links, closeDrawer, icon }) => {
   return (
     <Box sx={{ mb: 1 }}>
       <ListItem
         button
-        onClick={() => {
-          setIsExpanded(!isExpanded);
-          if (!isExpanded && closeOtherMenus) closeOtherMenus();
-        }}
+        onClick={() => setIsExpanded(!isExpanded)}
         sx={{
-          ...navItemStyles, // Use shared styles
-          mb: -1, // Override mb from navItemStyles
+          ...navItemStyles,
+          mb: -1,
           color: title === "admin" ? "green" : "#000000",
           cursor: "pointer",
           backgroundColor: isExpanded ? "rgba(97, 56, 179, 0.15)" : "transparent",
           ml: 0
         }}
       >
+        {icon && (
+          <ListItemIcon sx={{ 
+            ...iconStyle,
+            color: palette.neutral.twenty,
+          }}>            
+            {icon}
+          </ListItemIcon>
+        )}
         <ListItemText
           primary={title}
-          primaryTypographyProps={{ 
-            fontFamily: "'Courier New', monospace",
-            textTransform: "lowercase",
-            fontSize: "16px",
-          }}
+          primaryTypographyProps={menuTypographyProps}
         />
         {isExpanded ? <ExpandMoreIcon sx={{ transform: 'rotate(180deg)' }} /> : <ExpandMoreIcon />}
       </ListItem>
@@ -82,7 +192,50 @@ const ExpandableMenu = ({ title, isExpanded, setIsExpanded, links, closeOtherMen
   );
 };
 
-// Logo component for reuse
+// Auth buttons component
+const AuthButtons = ({ isAuthenticated, loginWithRedirect, logout, closeDrawer }) => {
+  const handleAuth = () => {
+    if (isAuthenticated) {
+      logout({ 
+        logoutParams: {
+          returnTo: process.env.REACT_APP_AUTH0_REDIRECT_URI || window.location.origin
+        }
+      });
+    } else {
+      loginWithRedirect();
+    }
+    
+    if (closeDrawer) closeDrawer();
+  };
+
+  return (
+    <ListItem
+      button
+      onClick={handleAuth}
+      sx={{
+        color: "#000000",
+        cursor: "pointer",
+        fontFamily: typography.h5.fontFamily,
+        textTransform: "lowercase",
+        "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
+        py: 0.5,
+      }}
+    >
+      <ListItemIcon sx={{ 
+        ...iconStyle,
+        color: palette.primary.main,
+      }}>
+        {isAuthenticated ? <ExitToAppIcon fontSize="small" /> : <LoginIcon fontSize="small" />}
+      </ListItemIcon>
+      <ListItemText
+        primary={isAuthenticated ? "logout" : "login"}
+        primaryTypographyProps={menuTypographyProps}
+      />
+    </ListItem>
+  );
+};
+
+// Logo component
 const Logo = ({ size = "desktop", onClick = null }) => {
   const sizes = {
     desktop: { logo: "100px", theFont: "16px", cupboardFont: "25px" },
@@ -123,7 +276,7 @@ const Logo = ({ size = "desktop", onClick = null }) => {
       />
       <Box
         sx={{
-          fontFamily: "'Geist Mono', monospace",
+          fontFamily: typography.h5.fontFamily,
           ml: size === "mobile" ? 2 : 0,
           textAlign: size !== "mobile" ? "center" : "left",
           mb: -1
@@ -140,7 +293,25 @@ const Logo = ({ size = "desktop", onClick = null }) => {
   );
 };
 
+// Main Header component
 const Header = () => {
+  // Initialize hooks
+  const navigate = useNavigate();
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { isAdmin } = useAuth();
+  const isDevMode = process.env.NODE_ENV === "development";
+  
+  // Get navigation items
+  const { 
+    mainLinks, 
+    resourceLinks, 
+    organizeLinks, 
+    adminLinks,
+    contactLink,
+    menuIcons
+  } = getNavLinks(isDevMode);
+  
+  // State management
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [expandedMenus, setExpandedMenus] = useState({
     resources: false,
@@ -148,7 +319,7 @@ const Header = () => {
     admin: false
   });
   
-  // Function to close the drawer
+  // Event handlers
   const closeDrawer = () => setDrawerOpen(false);
   
   const toggleMenu = (menu) => {
@@ -161,40 +332,6 @@ const Header = () => {
     });
   };
 
-  const navigate = useNavigate();
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
-  const isDevMode = process.env.NODE_ENV === "development";
-  const { isAdmin } = useAuth();
-
-  // Define all navigation links
-  const navLinks = [
-    { text: "chat", path: "/chat" },
-    { text: "show list", path: "/shows" }
-  ];
-
-  const resourceLinks = [
-    { text: "venues", path: "/venues" },
-    { text: "session musicians", path: "/sessionmusicians" },
-    { text: "power pledge", path: "/powerpledge" },
-    { text: "flyering", path: "/flyering" }
-  ].map(link => ({
-    ...link,
-    disabled: !isDevMode && link.devOnly,
-  }));
-  
-  const organizeLinks = [
-    { text: "about TCUP", path: "/about" },
-    { text: "join TCUP", path: "https://airtable.com/appWhJi1YbIsdiXrw/pagHJycS1fOI0TGLS/form", external: true },
-    { text: "power pledge", path: "/powerpledge" },
-  ].map(link => ({
-    ...link,
-    disabled: !isDevMode && link.devOnly,
-  }));
-  
-  const adminLinks = [
-    { text: "add update", path: "/admin/updates" },
-  ];
-
   const toggleDrawer = (open) => (event) => {
     if (event?.type === 'keydown' && (event?.key === 'Tab' || event?.key === 'Shift')) {
       return;
@@ -202,358 +339,254 @@ const Header = () => {
     setDrawerOpen(open);
   };
 
-  // Common background style for noise texture
-  const noiseBackground = {
-    "&::before": {
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      background: 'url("https://res.cloudinary.com/dsll3ms2c/image/upload/v1740072216/noisebg_for_header_xyr0ou.png")',
-      backgroundSize: 'cover',
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'center',
-      opacity: 0.15,
-      zIndex: 1,
-    }
-  };
-
-  return (
-    <>
-      {/* Desktop Vertical Header - Now with scrolling */}
-      <AppBar 
-        position="fixed"
-        sx={{
-          width: '224px',
-          height: '100vh',
-          left: 0,
-          top: 0,
-          background: 'linear-gradient(180deg, #ECECEC 0%, #FFFFFF 100%)',
-          boxShadow: '1px 0px 4px rgba(0, 0, 0, 0.1)',
-          color: '#000000',
-          display: { xs: "none", md: "block" },
-          "& *": { zIndex: 2 },
-          zIndex: 1200, // Ensure it's above other content
-          ...noiseBackground,
-          overflowY: 'auto', // Enable vertical scrolling
-          overflowX: 'hidden', // Prevent horizontal scrolling
+  // Render methods
+  const renderDesktopSidebar = () => (
+    <AppBar 
+      position="fixed"
+      sx={{
+        width: LAYOUT.SIDEBAR_WIDTH,
+        height: '100vh',
+        left: 0,
+        top: 0,
+        background: 'linear-gradient(180deg, #ECECEC 0%, #FFFFFF 100%)',
+        boxShadow: '1px 0px 4px rgba(0, 0, 0, 0.1)',
+        color: '#000000',
+        display: { xs: "none", md: "block" },
+        "& *": { zIndex: 2 },
+        zIndex: 1200,
+        ...noiseBackground,
+        overflowY: 'auto',
+        overflowX: 'hidden',
+      }}
+    >
+      <Box 
+        sx={{ 
+          display: "flex", 
+          flexDirection: "column", 
+          minHeight: "100%",
+          pb: 2
         }}
       >
+        {/* Logo Section */}
         <Box 
           sx={{ 
-            display: "flex", 
-            flexDirection: "column", 
-            minHeight: "100%", // Changed from height to minHeight
-            pb: 2 // Add padding at the bottom for better scroll appearance
+            pt: 1.5, 
+            pb: 3, 
+            px: 2, 
+            textAlign: "center", 
+            position: "sticky", 
+            top: 0, 
+            zIndex: 3,
+            backgroundColor: "rgba(236, 236, 236, 0.9)",
+            backdropFilter: "blur(5px)"
           }}
         >
-          {/* Logo Section - Fixed at the top */}
-          <Box 
-            sx={{ 
-              pt: 1.5, 
-              pb: 3, 
-              px: 2, 
-              textAlign: "center", 
-              position: "sticky", 
-              top: 0, 
-              zIndex: 3,
-              backgroundColor: "rgba(236, 236, 236, 0.9)", // Semi-transparent background
-              backdropFilter: "blur(5px)" // Add blur effect for better visibility of fixed header
-            }}
-          >
-            <Logo size="desktop" />
+          <Logo size="desktop" />
+        </Box>
+        
+        {/* Navigation Links */}
+        <List sx={{ width: "100%", px: 2, py: 0 }}>
+          <Box sx={{ mb: 1 }}>
+            <ExpandableMenu 
+              title="tcup"
+              isExpanded={expandedMenus.tcup}
+              setIsExpanded={() => toggleMenu('tcup')}
+              links={organizeLinks}
+              closeDrawer={closeDrawer}
+              icon={menuIcons.tcup}
+            />
           </Box>
           
-          {/* Navigation Links - Scrollable */}
-          <List sx={{ width: "100%", px: 2, py: 0 }}>
-            <Box sx={{ mb: 1 }}>
-              <ExpandableMenu 
-                title="tcup"
-                isExpanded={expandedMenus.tcup}
-                setIsExpanded={() => toggleMenu('tcup')}
-                links={organizeLinks}
-                closeDrawer={closeDrawer}
-              />
-            </Box>
-            
-            
-            {navLinks.map((link, index) => (
-              <NavLink 
-                key={index} 
-                link={link} 
-                closeDrawer={closeDrawer}
-              />
-            ))}
-            
-            <Box sx={{ mb: 1 }}>
-              <ExpandableMenu 
-                title="resources"
-                isExpanded={expandedMenus.resources}
-                setIsExpanded={() => toggleMenu('resources')}
-                links={resourceLinks}
-                closeDrawer={closeDrawer}
-              />
-            </Box>
-          </List>
-  
-         {/* Auth Section - Removed HeaderUserProfile from desktop */}
-         <Box sx={{ mt: "auto", zIndex: 2 }}>
-            {/* Admin section remains conditional */}
-            {isAuthenticated && isAdmin && (
-              <>
-                <Box sx={{ mb: 1, px: 2 }}>
-                  <ExpandableMenu 
-                    title="admin"
-                    isExpanded={expandedMenus.admin}
-                    setIsExpanded={() => toggleMenu('admin')}
-                    links={adminLinks}
-                    closeDrawer={closeDrawer}
-                  />
-                </Box>
-                <CustomDivider />
-              </>
-            )}
-           
-            <List sx={{ px: 2 }}>
-              <NavLink 
-                link={{ text: "contact", path: "/contact" }}
-                closeDrawer={closeDrawer}
-              />
-              <AuthButtons 
-                isAuthenticated={isAuthenticated} 
-                loginWithRedirect={loginWithRedirect}
-                logout={logout}
-                closeDrawer={closeDrawer}
-              />
-            </List>
+          {mainLinks.map((link, index) => (
+            <NavLink 
+              key={index} 
+              link={link} 
+              closeDrawer={closeDrawer}
+            />
+          ))}
+          
+          <Box sx={{ mb: 1 }}>
+            <ExpandableMenu 
+              title="resources"
+              isExpanded={expandedMenus.resources}
+              setIsExpanded={() => toggleMenu('resources')}
+              links={resourceLinks}
+              closeDrawer={closeDrawer}
+              icon={menuIcons.resources}
+            />
           </Box>
+        </List>
+
+        {/* Auth Section */}
+        <Box sx={{ mt: "auto", zIndex: 2 }}>
+          {/* Admin section remains conditional */}
+          {isAuthenticated && isAdmin && (
+            <>
+              <Box sx={{ mb: 1, px: 2 }}>
+                <ExpandableMenu 
+                  title="admin"
+                  isExpanded={expandedMenus.admin}
+                  setIsExpanded={() => toggleMenu('admin')}
+                  links={adminLinks}
+                  closeDrawer={closeDrawer}
+                  icon={adminLinks[0].icon}
+                />
+              </Box>
+              <CustomDivider />
+            </>
+          )}
+          
+          <List sx={{ px: 2 }}>
+            <NavLink 
+              link={contactLink}
+              closeDrawer={closeDrawer}
+            />
+            <AuthButtons 
+              isAuthenticated={isAuthenticated} 
+              loginWithRedirect={loginWithRedirect}
+              logout={logout}
+              closeDrawer={closeDrawer}
+            />
+          </List>
         </Box>
-      </AppBar>
-  
-      {/* Mobile Header */}
-      <AppBar
-        position="sticky"
-        sx={{
-          backgroundColor: "#F5F5F5",
-          display: { xs: "flex", md: "none" },
-          flexDirection: "row",
-          padding: "10px 20px",
-          height: "60px",
-          width: "100%",
-          alignItems: "center",
-          boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1)',
+      </Box>
+    </AppBar>
+  );
+
+  const renderMobileHeader = () => (
+    <AppBar
+      position="sticky"
+      sx={{
+        backgroundColor: "#F5F5F5",
+        display: { xs: "flex", md: "none" },
+        flexDirection: "row",
+        padding: "10px 20px",
+        height: LAYOUT.MOBILE_HEADER_HEIGHT,
+        width: "100%",
+        alignItems: "center",
+        boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1)',
+        color: '#000000',
+        ...noiseBackground
+      }}
+    >
+      <Logo size="mobile" />
+
+      <IconButton
+        sx={{ marginLeft: "auto", color: "#000000", zIndex: 2 }}
+        onClick={toggleDrawer(true)}
+      >
+        <MenuIcon />
+      </IconButton>
+    </AppBar>
+  );
+
+  const renderMobileDrawer = () => (
+    <Drawer 
+      anchor="left" 
+      open={drawerOpen} 
+      onClose={toggleDrawer(false)}
+      PaperProps={{
+        sx: {
+          width: LAYOUT.DRAWER_WIDTH,
+          background: 'linear-gradient(180deg, #ECECEC 0%, #FFFFFF 100%)',
           color: '#000000',
-          ...noiseBackground
-        }}
-      >
-        <Logo size="mobile" />
-  
-        <IconButton
-          sx={{ marginLeft: "auto", color: "#000000", zIndex: 2 }}
-          onClick={toggleDrawer(true)}
-        >
-          <MenuIcon />
-        </IconButton>
-      </AppBar>
-  
-      {/* Mobile Drawer */}
-      <Drawer 
-        anchor="left" 
-        open={drawerOpen} 
-        onClose={toggleDrawer(false)}
-        PaperProps={{
-          sx: {
-            width: "250px",
-            background: 'linear-gradient(180deg, #ECECEC 0%, #FFFFFF 100%)',
-            color: '#000000',
-            ...noiseBackground,
-            overflowY: 'auto' // Add scrolling to the mobile drawer too
-          }
-        }}
-      >
-        <Box sx={{ py: 2, display: "flex", flexDirection: "column", height: "100%" }}>
-          <Box sx={{ px: 2, textAlign: "center", mb: 2 }}>
-            <Logo size="drawer" onClick={closeDrawer} />
-          </Box>
-          
-          <CustomDivider />
-          
-          <List sx={{ px: 2, py: 0, zIndex: 2 }}>
-            <Box sx={{ mb: 2 }}>
-              <ExpandableMenu 
-                title="tcup"
-                isExpanded={expandedMenus.tcup}
-                setIsExpanded={() => toggleMenu('tcup')}
-                links={organizeLinks}
-                closeDrawer={closeDrawer}
-              />
-            </Box>
-            
-            <CustomDivider container={true} />
-            
-            {navLinks.map((link, index) => (
-              <NavLink 
-                key={index} 
-                link={link} 
-                closeDrawer={closeDrawer}
-              />
-            ))}
-            
-            <Box sx={{ mb: 2 }}>
-              <ExpandableMenu 
-                title="resources"
-                isExpanded={expandedMenus.resources}
-                setIsExpanded={() => toggleMenu('resources')}
-                links={resourceLinks}
-                closeDrawer={closeDrawer}
-              />
-            </Box>
-          </List>
-
-          <Box sx={{ mt: "auto", zIndex: 2 }}>
-            {/* Keep HeaderUserProfile ONLY in the mobile drawer */}
-            {isAuthenticated && (
-              <>
-                <HeaderUserProfile closeDrawer={closeDrawer} />
-                <CustomDivider />
-              </>
-            )}
-            
-            {/* Admin section remains conditional */}
-            {isAuthenticated && isAdmin && (
-              <>
-                <Box sx={{ mb: 2, px: 2 }}>
-                  <ExpandableMenu 
-                    title="admin"
-                    isExpanded={expandedMenus.admin}
-                    setIsExpanded={() => toggleMenu('admin')}
-                    links={adminLinks}
-                    closeDrawer={closeDrawer}
-                  />
-                </Box>
-                <CustomDivider />
-              </>
-            )}
-
-            <List sx={{ px: 2 }}>
-              <NavLink 
-                link={{ text: "contact", path: "/contact" }}
-                closeDrawer={closeDrawer}
-              />
-              <AuthButtons 
-                isAuthenticated={isAuthenticated} 
-                loginWithRedirect={loginWithRedirect}
-                logout={logout}
-                closeDrawer={closeDrawer}
-              />
-            </List>
-          </Box>
-        </Box>
-      </Drawer>
-  
-      {/* Content Margin Offset */}
-      <Box sx={{ marginLeft: { xs: 0, md: "224px" } }} />
-    </>
-  );
-};
-
-// Common styles that can be shared between NavLink and menu items
-const navItemStyles = {
-  borderRadius: "8px",
-  fontFamily: "'Courier New', monospace",
-  textTransform: "lowercase",
-  px: 1.5, 
-  py: 0.25,
-  mb: 0.5,
-  "&:hover": {
-    backgroundColor: "rgba(97, 56, 179, 0.15)",
-  },
-};
-
-// Extract NavLink as a functional component
-const NavLink = ({ link, closeDrawer }) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const isActive = location.pathname === link.path;
-
-  const handleClick = () => {
-    if (!link.external && !link.disabled) {
-      navigate(link.path);
-      // Close the drawer
-      if (closeDrawer) closeDrawer();
-    }
-  };
-
-  return (
-    <ListItem
-      component={link.external ? "a" : "div"}
-      href={link.external ? link.path : undefined}
-      target={link.external ? "_blank" : undefined}
-      rel={link.external ? "noopener noreferrer" : undefined}
-      button={!link.external}
-      disabled={link.disabled}
-      onClick={handleClick}
-      sx={{
-        ...navItemStyles,
-        color: isActive ? "#6138B3" : "#000000",
-        backgroundColor: isActive ? "rgba(97, 56, 179, 0.15)" : "transparent",
-        cursor: link.disabled ? "not-allowed" : "pointer",
-        opacity: link.disabled ? 0.5 : 1,
-      }}
-    >
-      <ListItemText
-        primary={link.text}
-        sx={{
-          fontFamily: "'Courier New', monospace",
-          textTransform: "lowercase",
-          fontSize: "16px",
-        }}
-      />
-    </ListItem>
-  );
-};
-
-// Extract Auth buttons as a functional component
-const AuthButtons = ({ isAuthenticated, loginWithRedirect, logout, closeDrawer }) => {
-  const handleAuth = () => {
-    if (isAuthenticated) {
-      logout({ 
-        logoutParams: {
-          returnTo: process.env.REACT_APP_AUTH0_REDIRECT_URI || window.location.origin
+          ...noiseBackground,
+          overflowY: 'auto'
         }
-      });
-    } else {
-      loginWithRedirect();
-    }
-    
-    // Close the drawer
-    if (closeDrawer) closeDrawer();
-  };
-
-  return (
-    <ListItem
-      button
-      onClick={handleAuth}
-      sx={{
-        color: "#000000",
-        cursor: "pointer",
-        fontFamily: "'Courier New', monospace",
-        textTransform: "lowercase",
-        "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
-        py: 0.5,
       }}
     >
-      <ListItemText
-        primary={isAuthenticated ? "logout" : "login"}
-        primaryTypographyProps={{ 
-          fontFamily: "'Courier New', monospace",
-          textTransform: "lowercase",
-          fontSize: "16px",
-        }}
-      />
-    </ListItem>
+      <Box sx={{ py: 2, display: "flex", flexDirection: "column", height: "100%" }}>
+        <Box sx={{ px: 2, textAlign: "center", mb: 2 }}>
+          <Logo size="drawer" onClick={closeDrawer} />
+        </Box>
+        
+        <CustomDivider />
+        
+        <List sx={{ px: 2, py: 0, zIndex: 2 }}>
+          <Box sx={{ mb: 2 }}>
+            <ExpandableMenu 
+              title="tcup"
+              isExpanded={expandedMenus.tcup}
+              setIsExpanded={() => toggleMenu('tcup')}
+              links={organizeLinks}
+              closeDrawer={closeDrawer}
+              icon={menuIcons.tcup}
+            />
+          </Box>
+          
+          <CustomDivider container={true} />
+          
+          {mainLinks.map((link, index) => (
+            <NavLink 
+              key={index} 
+              link={link} 
+              closeDrawer={closeDrawer}
+            />
+          ))}
+          
+          <Box sx={{ mb: 2 }}>
+            <ExpandableMenu 
+              title="resources"
+              isExpanded={expandedMenus.resources}
+              setIsExpanded={() => toggleMenu('resources')}
+              links={resourceLinks}
+              closeDrawer={closeDrawer}
+              icon={menuIcons.resources}
+            />
+          </Box>
+        </List>
+
+        <Box sx={{ mt: "auto", zIndex: 2 }}>
+          {/* Keep HeaderUserProfile ONLY in the mobile drawer */}
+          {isAuthenticated && (
+            <>
+              <HeaderUserProfile closeDrawer={closeDrawer} />
+              <CustomDivider />
+            </>
+          )}
+          
+          {/* Admin section remains conditional */}
+          {isAuthenticated && isAdmin && (
+            <>
+              <Box sx={{ mb: 2, px: 2 }}>
+                <ExpandableMenu 
+                  title="admin"
+                  isExpanded={expandedMenus.admin}
+                  setIsExpanded={() => toggleMenu('admin')}
+                  links={adminLinks}
+                  closeDrawer={closeDrawer}
+                  icon={adminLinks[0].icon}
+                />
+              </Box>
+              <CustomDivider />
+            </>
+          )}
+
+          <List sx={{ px: 2 }}>
+            <NavLink 
+              link={contactLink}
+              closeDrawer={closeDrawer}
+            />
+            <AuthButtons 
+              isAuthenticated={isAuthenticated} 
+              loginWithRedirect={loginWithRedirect}
+              logout={logout}
+              closeDrawer={closeDrawer}
+            />
+          </List>
+        </Box>
+      </Box>
+    </Drawer>
+  );
+
+  // Main render
+  return (
+    <>
+      {renderDesktopSidebar()}
+      {renderMobileHeader()}
+      {renderMobileDrawer()}
+      <Box sx={{ marginLeft: { xs: 0, md: LAYOUT.SIDEBAR_WIDTH } }} />
+    </>
   );
 };
 
