@@ -58,6 +58,7 @@ import PwaUpdatePage from "./pages/PwaUpdatePage.js"; // Create this file
 import ForumImportTool from "./pages/Chat/ForumImportTool.js";
 import OriginalAdminImportPost from "./pages/Chat/Components/OriginalAdminImportPost.js";
 import HistoricalReplyForm from "./pages/Chat/Components/HistoricalReplyForm.js";
+import AdminDashboard from "./pages/Admin/AdminDashboard.js";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
@@ -139,7 +140,8 @@ function App() {
           <Route path="about" element={<AboutTCUP />} />
           <Route path="contact" element={<ContactForm />} />
 
-          {/* TCUP Updates */}
+          {/* Admin*/}
+          <Route path="admin" element={<AdminDashboard />} />          
           <Route path="/admin/updates" element={<NewUpdate />} />
           <Route path="/admin/import" element={<OriginalAdminImportPost />} />
 
@@ -168,6 +170,8 @@ function App() {
           <Route path="shows/add" element={<ShowForm />} />
           <Route path="shows/:id/edit" element={<EditShowPage />} />
           <Route path="shows/:id" element={<ShowProfile />} />
+
+  
   
           {/* Forum/Thread */}
           <Route path="chat" element={<MainChatPage />} />

@@ -24,7 +24,6 @@ const TopBar = () => {
   
   // State for dropdowns
   const [profileOpen, setProfileOpen] = useState(false);
-  const [adminOpen, setAdminOpen] = useState(false);
   
   // State for unread messages count
   const [unreadMessages, setUnreadMessages] = useState(0);
@@ -33,12 +32,7 @@ const TopBar = () => {
   const profileBtnRef = useRef(null);
   const adminBtnRef = useRef(null);
   
-  // Define admin links
-  const adminLinks = [
-    { text: "add update", path: "/admin/updates" },
-    { text: "import thread", path: "/admin/import" },
 
-  ];
   
   // Existing useEffect and handlers
   useEffect(() => {
@@ -87,21 +81,13 @@ const TopBar = () => {
   
   const handleProfileClick = () => {
     setProfileOpen(prev => !prev);
-    setAdminOpen(false); // Close admin menu when profile is opened
   };
   
   const handleProfileClose = () => {
     setProfileOpen(false);
   };
-  
-  const handleAdminClick = () => {
-    setAdminOpen(prev => !prev);
-    setProfileOpen(false); // Close profile menu when admin is opened
-  };
-  
-  const handleAdminClose = () => {
-    setAdminOpen(false);
-  };
+
+
   
   const handleLogout = () => {
     logout({ 
@@ -154,53 +140,20 @@ const TopBar = () => {
       {/* Admin menu - Only show for admins on desktop */}
       {isAuthenticated && isAdmin && (
         <Box sx={{ display: { xs: 'none', md: 'block' }, mr: 2 }}>
-          <Button
-            ref={adminBtnRef}
-            onClick={handleAdminClick}
-            sx={{
-              color: 'white',
-              textTransform: 'uppercase',
-              fontFamily: "'Courier New', monospace",
-              fontWeight: 'bold',
-              '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+          <Button 
+            variant="text" 
+            onClick={() => navigate('/admin')}
+            sx={{ 
+              color: 'white', 
+              borderColor: 'white',
+              '&:hover': { 
+                borderColor: 'white', 
+                backgroundColor: 'rgba(255, 255, 255, 0.1)' 
               }
             }}
-            endIcon={<ExpandMoreIcon sx={{ transform: adminOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.3s', ml: -0.5 }} />}
           >
-            admin
+            ADMIN
           </Button>
-          
-          {adminOpen && (
-            <ClickAwayListener onClickAway={handleAdminClose}>
-              <Paper 
-                sx={{
-                  ...getDropdownStyle(adminBtnRef),
-                  width: '180px'
-                }}
-              >
-                {adminLinks.map((link, index) => (
-                  <Box 
-                    key={index}
-                    sx={{ 
-                      px: 2, 
-                      py: 1, 
-                      cursor: 'pointer',
-                      fontFamily: "'Courier New', monospace",
-                      textTransform: 'lowercase',
-                      '&:hover': { bgcolor: 'rgba(97, 56, 179, 0.15)' }
-                    }}
-                    onClick={() => { 
-                      window.location.href = link.path; 
-                      handleAdminClose();
-                    }}
-                  >
-                    {link.text}
-                  </Box>
-                ))}
-              </Paper>
-            </ClickAwayListener>
-          )}
         </Box>
       )}
 

@@ -1,0 +1,247 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Container,
+  Paper,
+  Typography,
+  Grid,
+  Button,
+  IconButton,
+  Tooltip,
+} from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import PeopleIcon from '@mui/icons-material/People';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+import { useAuth } from '../../hooks/useAuth';
+import AuthWrapper from '../../components/auth/AuthWrapper';
+
+const AdminDashboard = () => {
+  const navigate = useNavigate();
+  const { isAdmin } = useAuth(); // or your user roles logic
+
+  // If you're not using an AuthWrapper around the entire page, you can do a check here
+  if (!isAdmin) {
+    return (
+      <Box sx={{ textAlign: 'center', p: 4 }}>
+        <Typography variant="h6">Access Denied</Typography>
+      </Box>
+    );
+  }
+
+  // Example action handlers. You can simply use navigate if each action is a route,
+  // or call backend triggers if these actions are direct calls.
+  const handleCreateUpdate = () => {
+    navigate('/admin/updates/create');
+  };
+
+  const handleViewUsers = () => {
+    navigate('/admin/users');
+  };
+
+  const handleRunScrapers = () => {
+    // Maybe hits a backend route or shows a loading spinner
+    // For now, just an example
+    alert('Running show scrapers...');
+  };
+
+  return (
+    <Container maxWidth="lg" sx={{ py: 5 }}>
+      <Paper
+        elevation={4}
+        sx={{
+          p: { xs: 3, md: 5 },
+          borderRadius: 3,
+          position: 'relative',
+          overflow: 'hidden',
+          // Sample gradient "accent bar" on the left:
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '6px',
+            height: '100%',
+            background: 'linear-gradient(180deg, #9c27b0, #f50057)',
+          },
+          // Same subtle hover effect you’ve used:
+          transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+          '&:hover': {
+            transform: 'translateY(-3px)',
+            boxShadow: '0 10px 20px rgba(0,0,0,0.1)',
+          },
+        }}
+      >
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 'bold',
+            mb: 2,
+            background: 'linear-gradient(45deg, #9c27b0 30%, #f50057 90%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            textTransform: 'uppercase',
+            position: 'relative',
+            display: 'inline-block',
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              bottom: -8,
+              left: 0,
+              width: '60px',
+              height: '3px',
+              background: 'linear-gradient(45deg, #9c27b0 30%, #f50057 90%)',
+            },
+          }}
+        >
+          Admin Dashboard
+        </Typography>
+
+        <Typography variant="subtitle1" sx={{ color: 'text.secondary', mb: 4 }}>
+          Welcome! Use the tools below to manage site content and data.
+        </Typography>
+
+        <Grid container spacing={3}>
+          {/* CREATE UPDATE */}
+          <Grid item xs={12} sm={6} md={4}>
+            <Paper
+              elevation={2}
+              sx={{
+                p: 3,
+                borderRadius: 2,
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                transition: 'all 0.3s',
+                '&:hover': {
+                  boxShadow: 4,
+                  transform: 'translateY(-2px)',
+                },
+              }}
+            >
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+                  Create Update
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  Post a new front-page update or announcement.
+                </Typography>
+              </Box>
+              <Box sx={{ textAlign: 'right' }}>
+                <Tooltip title="Create a new update" placement="top">
+                  <IconButton
+                    onClick={handleCreateUpdate}
+                    sx={{
+                      bgcolor: 'action.hover',
+                      transition: 'all 0.3s',
+                      '&:hover': {
+                        bgcolor: 'action.selected',
+                      },
+                    }}
+                  >
+                    <AddCircleOutlineIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Paper>
+          </Grid>
+
+          {/* RUN SHOW SCRAPERS */}
+          <Grid item xs={12} sm={6} md={4}>
+            <Paper
+              elevation={2}
+              sx={{
+                p: 3,
+                borderRadius: 2,
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                transition: 'all 0.3s',
+                '&:hover': {
+                  boxShadow: 4,
+                  transform: 'translateY(-2px)',
+                },
+              }}
+            >
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+                  Run Show Scrapers
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  Fetch and update shows from external sources.
+                </Typography>
+              </Box>
+              <Box sx={{ textAlign: 'right' }}>
+                <Tooltip title="Run scrapers now" placement="top">
+                  <IconButton
+                    onClick={handleRunScrapers}
+                    sx={{
+                      bgcolor: 'action.hover',
+                      transition: 'all 0.3s',
+                      '&:hover': {
+                        bgcolor: 'action.selected',
+                      },
+                    }}
+                  >
+                    <PlayCircleOutlineIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Paper>
+          </Grid>
+
+          {/* VIEW USERS */}
+          <Grid item xs={12} sm={6} md={4}>
+            <Paper
+              elevation={2}
+              sx={{
+                p: 3,
+                borderRadius: 2,
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                transition: 'all 0.3s',
+                '&:hover': {
+                  boxShadow: 4,
+                  transform: 'translateY(-2px)',
+                },
+              }}
+            >
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+                  View Users
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  Review and manage registered users & roles.
+                </Typography>
+              </Box>
+              <Box sx={{ textAlign: 'right' }}>
+                <Tooltip title="View user list" placement="top">
+                  <IconButton
+                    onClick={handleViewUsers}
+                    sx={{
+                      bgcolor: 'action.hover',
+                      transition: 'all 0.3s',
+                      '&:hover': {
+                        bgcolor: 'action.selected',
+                      },
+                    }}
+                  >
+                    <PeopleIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Paper>
+          </Grid>
+
+          {/* Add more Admin tiles as needed */}
+        </Grid>
+      </Paper>
+    </Container>
+  );
+};
+
+export default AdminDashboard;

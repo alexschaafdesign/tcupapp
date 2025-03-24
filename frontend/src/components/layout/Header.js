@@ -430,16 +430,24 @@ const Header = () => {
         {/* Auth Section */}
         <Box sx={{ mt: "auto", zIndex: 2 }}>
           {/* Admin section remains conditional */}
+          {/* Admin link: only on mobile drawer */}
           {isAuthenticated && isAdmin && (
             <>
-              <Box sx={{ mb: 1, px: 2 }}>
-                <ExpandableMenu 
-                  title="admin"
-                  isExpanded={expandedMenus.admin}
-                  setIsExpanded={() => toggleMenu('admin')}
-                  links={adminLinks}
+              <Box 
+                sx={{ 
+                  mb: 2, 
+                  px: 2, 
+                  // Hide on md+ so it only shows in the mobile drawer
+                  display: { xs: 'block', md: 'none', lg: 'none', xl: 'none' } 
+                }}
+              >
+                <NavLink
+                  link={{
+                    path: '/admin',
+                    text: 'Admin Dashboard',
+                    icon: adminLinks[0]?.icon,
+                  }}
                   closeDrawer={closeDrawer}
-                  icon={adminLinks[0].icon}
                 />
               </Box>
               <CustomDivider />
@@ -553,16 +561,24 @@ const Header = () => {
           )}
           
           {/* Admin section remains conditional */}
+          {/* Admin link: only on mobile drawer */}
           {isAuthenticated && isAdmin && (
             <>
-              <Box sx={{ mb: 2, px: 2 }}>
-                <ExpandableMenu 
-                  title="admin"
-                  isExpanded={expandedMenus.admin}
-                  setIsExpanded={() => toggleMenu('admin')}
-                  links={adminLinks}
+              <Box 
+                sx={{ 
+                  mb: 2, 
+                  px: 2, 
+                  // Hide on md+ so it only shows in the mobile drawer
+                  display: { xs: 'block', md: 'none' } 
+                }}
+              >
+                <NavLink
+                  link={{
+                    path: '/admin',
+                    text: 'Admin Dashboard',
+                    icon: adminLinks[0]?.icon,
+                  }}
                   closeDrawer={closeDrawer}
-                  icon={adminLinks[0].icon}
                 />
               </Box>
               <CustomDivider />
