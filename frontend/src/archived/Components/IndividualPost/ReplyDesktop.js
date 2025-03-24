@@ -3,7 +3,7 @@ import { Paper, Box, Avatar, Typography, Link, Tooltip, IconButton } from '@mui/
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import HistoryIcon from '@mui/icons-material/History'; // Add this for imported content
-import palette from '../../../../styles/colors/palette';
+import palette from '../../../styles/colors/palette';
 import ImageAttachmentsGrid from '../Post/ImageAttachmentsGrid';
 
 const ReplyDesktop = ({

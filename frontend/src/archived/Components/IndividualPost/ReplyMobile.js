@@ -12,8 +12,8 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import HistoryIcon from '@mui/icons-material/History';
-import palette from '../../../../styles/colors/palette';
-import ImageAttachmentsGrid from '../Post/ImageAttachmentsGrid';
+import palette from '../../../styles/colors/palette';
+import ImageAttachmentsGrid from '../../../pages/Chat/Components/Post/ImageAttachmentsGrid';
 
 const ReplyMobile = ({
   post,

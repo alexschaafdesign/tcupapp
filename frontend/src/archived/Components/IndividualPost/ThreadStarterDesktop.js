@@ -2,9 +2,9 @@ import React from 'react';
 import { Paper, Box, Avatar, Typography, Link, Tooltip, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import palette from '../../../../styles/colors/palette';
-import PostHeader from '../PostHeader';
-import ImageAttachmentsGrid from '../Post/ImageAttachmentsGrid';
+import palette from '../../../styles/colors/palette';
+import PostHeader from './PostHeader';
+import ImageAttachmentsGrid from '../../../pages/Chat/Components/Post/ImageAttachmentsGrid';
 
 const ThreadStarterDesktop = ({
   post,

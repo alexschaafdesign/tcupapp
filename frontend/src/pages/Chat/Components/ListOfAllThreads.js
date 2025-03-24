@@ -141,7 +141,8 @@ const ListOfAllThreads = ({ posts }) => {
           // so MUI shows the fallback avatar
   const avatarSrc = isImported
   ? post.avatar_url // or post.imported_avatar_url directly
-  : post.avatar_url;          
+  : post.avatar_url;      
+      
           return (
             <AuthWrapper 
               key={post.id}

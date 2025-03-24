@@ -5,7 +5,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import HistoryIcon from '@mui/icons-material/History'; // Add this import
 import palette from '../../../styles/colors/palette';
-
 const PostHeader = ({ 
   post,
   isMobile,

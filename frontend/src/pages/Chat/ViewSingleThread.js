@@ -19,7 +19,7 @@ import { useSearchParams } from 'react-router-dom';
 import ReactionBar from './Components/ReactionBar';
 import EditorWithFormatting from './Components/EditorWithFormatting';
 import ActiveTags from './Components/ActiveTags';
-import IndividualPost from './Components/IndividualPost';
+import Post from './Components/Post';
 import { stateToHTML } from 'draft-js-export-html';
 import parse from 'html-react-parser';
 import ChatImageUpload from './Components/ChatImageUpload';
@@ -567,9 +567,10 @@ const ViewSingleThread = () => {
       </Box>
   
       {/* Thread Starter Card */}
-      <IndividualPost 
+      <Post 
         post={threadData.post}
         isThreadStarter={true}
+        isReply={false}
         isHighlighted={threadData.post.id === Number(highlightedReplyId)}
         user={user}
         handleLikeClick={handleLikeClick}
@@ -578,6 +579,8 @@ const ViewSingleThread = () => {
         postReactions={postReactions}
         handleEditClick={handleEditClick}
         canEditPost={canEditPost(threadData.post)}
+        userRoles={userRoles}
+        getAccessTokenSilently={getAccessTokenSilently}
       />
 
       <ActiveTags tags={threadData.post.tags} limit={3} />
@@ -593,7 +596,7 @@ const ViewSingleThread = () => {
   
       {/* Render Replies */}
       {threadData.replies.map((reply) => (
-        <IndividualPost 
+        <Post 
           key={reply.id}
           post={reply}
           isReply={true}
@@ -607,9 +610,11 @@ const ViewSingleThread = () => {
           highlightedReplyId={highlightedReplyId}
           handleEditClick={handleEditClick}
           canEditPost={canEditPost(reply)}
+          userRoles={userRoles}
+          getAccessTokenSilently={getAccessTokenSilently}
         />
       ))}
-  
+        
       {/* Reply Editor */}
       <Box ref={replyBoxRef} sx={{ mt: 3, scrollMarginTop: '64px' }}>
         <Paper sx={{ p: 2, mb: 2 }}>

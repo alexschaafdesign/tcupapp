@@ -107,7 +107,7 @@ const ForumContainer = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: isMobile ? 2 : 0, px: isMobile ? 1 : 2 }}>
+    <Container maxWidth="lg" sx={{ py: isMobile ? 0 : 0, px: isMobile ? 1 : 2 }}>
       
       {/* Header with Latest Posts and Buttons */}
       <Box 
@@ -116,7 +116,7 @@ const ForumContainer = () => {
           justifyContent: 'space-between', 
           alignItems: 'center', 
           mb: { xs: 2, sm: 3 },
-          mt: { xs: 2, sm: 0 } 
+          mt: { xs: 0, sm: 0 } 
         }}
       >
         {/* Left-aligned "LATEST POSTS" */}
