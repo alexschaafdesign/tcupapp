@@ -24,7 +24,7 @@ const CustomDivider = ({ container = false }) => (
   <Divider sx={{ 
     width: container ? '100%' : 'calc(100% - 32px)', 
     mx: 'auto', 
-    my: 1,
+    my: 0.5,
     backgroundColor: palette.neutral.gray
   }} />
 );
@@ -32,7 +32,7 @@ const CustomDivider = ({ container = false }) => (
 // Component for expandable dropdown menus
 const ExpandableMenu = ({ title, isExpanded, setIsExpanded, links, closeOtherMenus, closeDrawer }) => {
   return (
-    <Box sx={{ mb: 2 }}>
+    <Box sx={{ mb: 1 }}>
       <ListItem
         button
         onClick={() => {
@@ -252,8 +252,8 @@ const Header = () => {
           {/* Logo Section - Fixed at the top */}
           <Box 
             sx={{ 
-              pt: 2, 
-              pb: 1, 
+              pt: 1.5, 
+              pb: 3, 
               px: 2, 
               textAlign: "center", 
               position: "sticky", 
@@ -264,12 +264,11 @@ const Header = () => {
             }}
           >
             <Logo size="desktop" />
-            <CustomDivider />
           </Box>
           
           {/* Navigation Links - Scrollable */}
           <List sx={{ width: "100%", px: 2, py: 0 }}>
-            <Box sx={{ mb: 2 }}>
+            <Box sx={{ mb: 1 }}>
               <ExpandableMenu 
                 title="tcup"
                 isExpanded={expandedMenus.tcup}
@@ -279,7 +278,6 @@ const Header = () => {
               />
             </Box>
             
-            <CustomDivider container={true} />
             
             {navLinks.map((link, index) => (
               <NavLink 
@@ -289,7 +287,7 @@ const Header = () => {
               />
             ))}
             
-            <Box sx={{ mb: 2 }}>
+            <Box sx={{ mb: 1 }}>
               <ExpandableMenu 
                 title="resources"
                 isExpanded={expandedMenus.resources}
@@ -305,7 +303,7 @@ const Header = () => {
             {/* Admin section remains conditional */}
             {isAuthenticated && isAdmin && (
               <>
-                <Box sx={{ mb: 2, px: 2 }}>
+                <Box sx={{ mb: 1, px: 2 }}>
                   <ExpandableMenu 
                     title="admin"
                     isExpanded={expandedMenus.admin}
@@ -467,8 +465,8 @@ const navItemStyles = {
   fontFamily: "'Courier New', monospace",
   textTransform: "lowercase",
   px: 1.5, 
-  py: 0.5,
-  mb: 1,
+  py: 0.25,
+  mb: 0.5,
   "&:hover": {
     backgroundColor: "rgba(97, 56, 179, 0.15)",
   },
@@ -544,7 +542,7 @@ const AuthButtons = ({ isAuthenticated, loginWithRedirect, logout, closeDrawer }
         fontFamily: "'Courier New', monospace",
         textTransform: "lowercase",
         "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
-        py: 1.5,
+        py: 0.5,
       }}
     >
       <ListItemText
