@@ -94,22 +94,7 @@ function App() {
     registerUser();
   }, [isAuthenticated, user, isLoading, callApi]);
 
-  // Check for PWA users
-  useEffect(() => {
-    const checkForPwa = () => {
-      if (window.matchMedia('(display-mode: standalone)').matches) {
-        if (!localStorage.getItem('new_pwa_notice_shown')) {
-          localStorage.setItem('new_pwa_notice_shown', 'true');
-          // Redirect to the PWA update page
-          window.location.href = '/pwa-update';
-        }
-      }
-    };
-    
-    if (isAuthenticated !== undefined) { // Only run after auth state is determined
-      checkForPwa();
-    }
-  }, [isAuthenticated]);
+
 
   // Show loading state while Auth0 is initializing
   if (isLoading) {
