@@ -399,34 +399,7 @@ const WelcomePage = () => {
                   </Button>
                 </Box>
                 
-                <Divider sx={{ my: 2 }} />
                 
-                <Box 
-                  sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'center',
-                    mt: 2
-                  }}
-                >
-                  <Link 
-                    href="/pwa-update" 
-                    underline="hover"
-                    sx={{ 
-                      fontSize: '0.875rem',
-                      color: '#9c27b0',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      "&:hover": {
-                        color: "#f50057",
-                      },
-                    }}
-                  >
-                    <PhoneAndroidIcon sx={{ mr: 0.5, fontSize: '1rem' }} />
-                    using the old mobile app? click here
-                  </Link>
-                </Box>
               </Paper>
             </Grid>
           </Grid>

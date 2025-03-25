@@ -91,3 +91,6 @@ root.render(
 );
 
 serviceWorkerRegistration.register();
+localStorage.removeItem('new_pwa_notice_shown');
+
+

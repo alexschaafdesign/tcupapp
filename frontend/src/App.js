@@ -94,7 +94,19 @@ function App() {
     registerUser();
   }, [isAuthenticated, user, isLoading, callApi]);
 
-
+  useEffect(() => {
+    const checkForPwa = () => {
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        // Instead of redirecting, just log that it's a PWA
+        console.log('Running as PWA');
+        // No redirect happens now
+      }
+    };
+    
+    if (isAuthenticated !== undefined) {
+      checkForPwa();
+    }
+  }, [isAuthenticated]);
 
   // Show loading state while Auth0 is initializing
   if (isLoading) {
