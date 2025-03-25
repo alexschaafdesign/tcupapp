@@ -1,23 +1,23 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "tCUPBOARD",
+  "name": "the Cupboard",
   "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
+  {
+    "src": "https://res.cloudinary.com/dsll3ms2c/image/upload/v1742923428/64_e6v6cs.ico",
+    "sizes": "64x64 32x32 24x24 16x16",
+    "type": "image/x-icon"
+  },
+  {
+    "src": "https://res.cloudinary.com/dsll3ms2c/image/upload/c_scale,w_192,h_192/v1742923428/512_r8fbg2.png",
+    "type": "image/png",
+    "sizes": "192x192"
+  },
+  {
+    "src": "https://res.cloudinary.com/dsll3ms2c/image/upload/v1742923428/512_r8fbg2.png",
+    "type": "image/png",
+    "sizes": "512x512"
+  }
+],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",

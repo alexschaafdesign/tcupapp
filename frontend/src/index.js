@@ -6,6 +6,9 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import App from './App.js';
 import theme from './styles/theme.js';
 import * as Sentry from "@sentry/react";
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+
+
 
 // Disable React's default error overlay in development mode
 if (process.env.NODE_ENV === "development") {
@@ -77,6 +80,7 @@ root.render(
       );
     }}
   >
+    
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
@@ -85,3 +89,5 @@ root.render(
     </ThemeProvider>
   </Auth0Provider>
 );
+
+serviceWorkerRegistration.register();
