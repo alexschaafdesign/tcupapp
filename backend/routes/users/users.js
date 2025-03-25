@@ -522,8 +522,8 @@ router.put('/tagline', authMiddleware, async (req, res) => {
       const auth0Id = req.user.sub; // Extract Auth0 ID from request
 
       // Validate tagline length
-      if (!tagline || tagline.length > 16) {
-          return res.status(400).json({ error: 'Tagline must be between 1 and 16 characters.' });
+      if (!tagline || tagline.length > 32) {
+          return res.status(400).json({ error: 'Tagline must be between 1 and 32 characters.' });
       }
 
       // Update tagline in PostgreSQL

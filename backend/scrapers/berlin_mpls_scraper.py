@@ -1,4 +1,6 @@
+import sys
 import re
+import json
 import time
 from datetime import datetime
 from dateutil import parser
@@ -10,9 +12,6 @@ from bs4 import BeautifulSoup
 from db_utils import connect_to_db, insert_show, get_venue_id
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-
-# Set ChromeDriver path (adjust if needed)
-CHROMEDRIVER_PATH = '/usr/local/bin/chromedriver'
 
 def split_band_names(band_string):
     """Splits a band string into individual names, removing extra delimiters."""
@@ -32,7 +31,7 @@ def run_berlin_mpls_scraper():
     added_shows = []
     errors = []
 
-    print("Starting BerlinMPLS scraper...")
+    sys.stderr.write("Starting BerlinMPLS scraper...\n")
 
     # Configure Chrome options
     chrome_options = Options()
@@ -41,12 +40,12 @@ def run_berlin_mpls_scraper():
     chrome_options.add_argument('--disable-dev-shm-usage')
 
     try:
-        service = Service(CHROMEDRIVER_PATH)
+        service = Service('/usr/local/bin/chromedriver')
         driver = webdriver.Chrome(service=service, options=chrome_options)
-        print("Chrome initialized successfully")
+        sys.stderr.write("Chrome initialized successfully\n")
     except Exception as e:
         err_msg = f"Error initializing Chrome: {e}"
-        print(err_msg)
+        sys.stderr.write(err_msg + "\n")
         errors.append(err_msg)
         return {
             'scraper_name': 'berlin_mpls',
@@ -57,12 +56,12 @@ def run_berlin_mpls_scraper():
         }
 
     url = 'https://www.berlinmpls.com/calendar'
-    print(f"Navigating to {url}")
+    sys.stderr.write(f"Navigating to {url}\n")
     try:
         driver.get(url)
     except Exception as e:
         err_msg = f"Error navigating to {url}: {e}"
-        print(err_msg)
+        sys.stderr.write(err_msg + "\n")
         errors.append(err_msg)
         driver.quit()
         return {
@@ -78,10 +77,10 @@ def run_berlin_mpls_scraper():
         WebDriverWait(driver, 10).until(
             EC.presence_of_all_elements_located((By.CLASS_NAME, 'eventlist-event--upcoming'))
         )
-        print("Event cards loaded successfully.")
+        sys.stderr.write("Event cards loaded successfully.\n")
     except Exception as e:
         err_msg = f"Error waiting for event cards: {e}"
-        print(err_msg)
+        sys.stderr.write(err_msg + "\n")
         errors.append(err_msg)
         driver.quit()
         return {
@@ -95,15 +94,14 @@ def run_berlin_mpls_scraper():
     # Parse the page with BeautifulSoup
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     event_cards = soup.find_all("article", class_="eventlist-event--upcoming")
-    print(f"Found {len(event_cards)} event cards.")
+    sys.stderr.write(f"Found {len(event_cards)} event cards.\n")
 
-    # Connect to the database
     try:
         conn = connect_to_db()
         cursor = conn.cursor()
     except Exception as e:
         err_msg = f"DB connection error: {e}"
-        print(err_msg)
+        sys.stderr.write(err_msg + "\n")
         errors.append(err_msg)
         driver.quit()
         return {
@@ -114,12 +112,11 @@ def run_berlin_mpls_scraper():
             'errors': errors,
         }
 
-    # Get the venue ID for Berlin
     try:
         venue_id = get_venue_id(cursor, "Berlin")
     except Exception as e:
         err_msg = f"Error getting venue ID for Berlin: {e}"
-        print(err_msg)
+        sys.stderr.write(err_msg + "\n")
         errors.append(err_msg)
         conn.close()
         driver.quit()
@@ -131,7 +128,6 @@ def run_berlin_mpls_scraper():
             'errors': errors,
         }
 
-    # Process each event card
     for card in event_cards:
         event_name = None
         event_link = None
@@ -178,15 +174,15 @@ def run_berlin_mpls_scraper():
                         start = parser.parse(combined_str)
                     except Exception as e:
                         err_msg = f"Could not parse datetime '{combined_str}': {e}"
-                        print(err_msg)
+                        sys.stderr.write(err_msg + "\n")
                         errors.append(err_msg)
                 else:
                     err_msg = "No time element found on event page."
-                    print(err_msg)
+                    sys.stderr.write(err_msg + "\n")
                     errors.append(err_msg)
             except Exception as e:
                 err_msg = f"Error processing event page for {event_name}: {e}"
-                print(err_msg)
+                sys.stderr.write(err_msg + "\n")
                 errors.append(err_msg)
                 continue
 
@@ -202,39 +198,42 @@ def run_berlin_mpls_scraper():
         bands = list(dict.fromkeys(band.strip() for band in bands if band.strip()))
         bands_str = ", ".join(bands)
 
-        # Process the event: Insert into the database
         try:
+            # Insert the event into the database
             show_id, was_inserted = insert_show(conn, cursor, venue_id, bands_str, start, event_link, flyer_image)
             if was_inserted:
                 added_count += 1
                 added_shows.append(show_id)
-                print(f"Inserted event: {event_name} on {start}")
+                sys.stderr.write(f"Inserted event: {event_name} on {start}\n")
             else:
                 duplicate_count += 1
-                print(f"Duplicate event skipped: {event_name} on {start}")
+                sys.stderr.write(f"Duplicate event skipped: {event_name} on {start}\n")
         except Exception as e:
             err_msg = f"Error processing event '{event_name}': {e}"
-            print(err_msg)
+            sys.stderr.write(err_msg + "\n")
             errors.append(err_msg)
             conn.rollback()
             continue
 
-    # Commit changes and close DB connection
-    conn.commit()
+    try:
+        conn.commit()
+    except Exception as e:
+        err_msg = f"Error committing DB changes: {e}"
+        sys.stderr.write(err_msg + "\n")
+        errors.append(err_msg)
     cursor.close()
     conn.close()
-
     driver.quit()
 
-    # Return a log of the run
-    return {
+    log = {
         'scraper_name': 'berlin_mpls',
         'added_count': added_count,
         'duplicate_count': duplicate_count,
         'added_shows': added_shows,
         'errors': errors,
     }
+    return log
 
 if __name__ == "__main__":
     log = run_berlin_mpls_scraper()
-    print("Scraper Log:", log)
+    print(json.dumps(log))
