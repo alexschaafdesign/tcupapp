@@ -116,18 +116,6 @@ router.get('/profile', authMiddleware, async (req, res) => {
   }
 });
 
-// Get all users
-router.get('/', authMiddleware, async (req, res) => {
-  try {
-      const { rows } = await pool.query('SELECT auth0_id, username, email FROM users ORDER BY username');
-    //  console.log('Users fetched:', rows);
-      res.json(rows);
-  } catch (error) {
-      console.error('Error fetching users:', error);
-      res.status(500).json({ error: error.message });
-  }
-});
-
 // In your users.js file, add or update the route to handle profile/:auth0Id
 router.get('/profile/:auth0Id', authMiddleware, async (req, res) => {
   try {
@@ -166,6 +154,20 @@ router.get('/profile/:auth0Id', authMiddleware, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+// Get all users
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+      const { rows } = await pool.query('SELECT auth0_id, username, email FROM users ORDER BY username');
+    //  console.log('Users fetched:', rows);
+      res.json(rows);
+  } catch (error) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ error: error.message });
+  }
+});
+
+
 
 // Get user's bands
 router.get('/bands', authMiddleware, async (req, res) => {

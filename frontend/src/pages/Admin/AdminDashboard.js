@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -15,12 +15,15 @@ import PeopleIcon from '@mui/icons-material/People';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import { useAuth } from '../../hooks/useAuth';
 import AuthWrapper from '../../components/auth/AuthWrapper';
+import ScraperAdminPanel from './ScraperAdminPanel';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { isAdmin } = useAuth(); // or your user roles logic
+  const { isAdmin } = useAuth();
+  // Always call your hooks
+  const [showScraperPanel, setShowScraperPanel] = useState(false);
 
-  // If you're not using an AuthWrapper around the entire page, you can do a check here
+  // Now conditionally render based on isAdmin
   if (!isAdmin) {
     return (
       <Box sx={{ textAlign: 'center', p: 4 }}>
@@ -29,20 +32,15 @@ const AdminDashboard = () => {
     );
   }
 
-  // Example action handlers. You can simply use navigate if each action is a route,
-  // or call backend triggers if these actions are direct calls.
+
+
+  // Example action handlers for other tiles
   const handleCreateUpdate = () => {
     navigate('/admin/updates/create');
   };
 
   const handleViewUsers = () => {
     navigate('/admin/users');
-  };
-
-  const handleRunScrapers = () => {
-    // Maybe hits a backend route or shows a loading spinner
-    // For now, just an example
-    alert('Running show scrapers...');
   };
 
   return (
@@ -54,7 +52,6 @@ const AdminDashboard = () => {
           borderRadius: 3,
           position: 'relative',
           overflow: 'hidden',
-          // Sample gradient "accent bar" on the left:
           '&::before': {
             content: '""',
             position: 'absolute',
@@ -64,7 +61,6 @@ const AdminDashboard = () => {
             height: '100%',
             background: 'linear-gradient(180deg, #9c27b0, #f50057)',
           },
-          // Same subtle hover effect you’ve used:
           transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
           '&:hover': {
             transform: 'translateY(-3px)',
@@ -174,9 +170,9 @@ const AdminDashboard = () => {
                 </Typography>
               </Box>
               <Box sx={{ textAlign: 'right' }}>
-                <Tooltip title="Run scrapers now" placement="top">
+                <Tooltip title="Toggle Scraper Panel" placement="top">
                   <IconButton
-                    onClick={handleRunScrapers}
+                    onClick={() => setShowScraperPanel((prev) => !prev)}
                     sx={{
                       bgcolor: 'action.hover',
                       transition: 'all 0.3s',
@@ -236,9 +232,14 @@ const AdminDashboard = () => {
               </Box>
             </Paper>
           </Grid>
-
-          {/* Add more Admin tiles as needed */}
         </Grid>
+
+        {/* Render the ScraperAdminPanel when toggled */}
+        {showScraperPanel && (
+          <Box sx={{ mt: 4 }}>
+            <ScraperAdminPanel />
+          </Box>
+        )}
       </Paper>
     </Container>
   );

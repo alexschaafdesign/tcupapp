@@ -8,7 +8,7 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 from db_utils import connect_to_db, insert_show, get_venue_id
 
-def run_331club_scraper():
+def run_331_club_scraper():
     """
     Runs the scraper for 331 Club events and returns a log dict containing:
       - scraper_name: Name identifier of the scraper.
@@ -282,5 +282,5 @@ def run_331club_scraper():
     }
 
 if __name__ == "__main__":
-    log = run_331club_scraper()
+    log = run_331_club_scraper()
     print("Scraper Log:", log)

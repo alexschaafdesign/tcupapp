@@ -444,7 +444,7 @@ const Header = () => {
                 <NavLink
                   link={{
                     path: '/admin',
-                    text: 'Admin Dashboard',
+                    text: 'Admin',
                     icon: adminLinks[0]?.icon,
                   }}
                   closeDrawer={closeDrawer}
