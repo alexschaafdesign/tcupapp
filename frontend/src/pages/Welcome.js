@@ -257,56 +257,12 @@ const WelcomePage = () => {
 
           {/* Main Content Section */}
           <Grid container spacing={4} sx={{ mb: 4 }}>
-            {/* Left Column: Features */}
+            {/* Login Section - First on mobile, second on desktop */}
             <Grid item xs={12} md={6} sx={{ 
               position: 'relative',
-              zIndex: 1
+              zIndex: 1,
+              order: { xs: 1, md: 2 } // 1st on mobile, 2nd on desktop
             }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <Typography 
-                  variant="h5" 
-                  sx={{
-                    fontWeight: 'bold',
-                    background: 'linear-gradient(45deg, #9c27b0 30%, #f50057 90%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    textTransform: 'lowercase',
-                    position: 'relative',
-                    display: 'inline-block'
-                  }}
-                >
-                  what we've got, uh, brewing --
-                </Typography>
-                
-              </Box>
-              
-              <FeatureBox 
-                icon={<ForumIcon />}
-                title="chat" 
-                description="Get advice, find bandmates, share resources"
-              />
-              
-              <FeatureBox 
-                icon={<EventIcon />}
-                title="the official SHOW LIST" 
-                description="A comprehensive listing of every show on every day"
-              />
-
-            <FeatureBox 
-                icon={<HandymanIcon />}
-                title="resources" 
-                description="Booking contacts, venue info, flyering locations, and more"
-              />            
-              
-              <FeatureBox 
-                icon={<PeopleIcon />}
-                title="band profiles (coming soon)" 
-                description="having to use IG for everything is so 2024"
-              />
-            </Grid>
-            
-            {/* Right Column: Sign-up/Sign-in */}
-            <Grid item xs={12} md={6} sx={{ position: 'relative', zIndex: 1 }}>
               <Paper 
                 elevation={2} 
                 sx={{ 
@@ -401,6 +357,55 @@ const WelcomePage = () => {
                 
                 
               </Paper>
+            </Grid>
+            
+            {/* Features Section - Second on mobile, first on desktop */}
+            <Grid item xs={12} md={6} sx={{ 
+              position: 'relative',
+              zIndex: 1,
+              order: { xs: 2, md: 1 } // 2nd on mobile, 1st on desktop
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Typography 
+                  variant="h5" 
+                  sx={{
+                    fontWeight: 'bold',
+                    background: 'linear-gradient(45deg, #9c27b0 30%, #f50057 90%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    textTransform: 'lowercase',
+                    position: 'relative',
+                    display: 'inline-block'
+                  }}
+                >
+                  what we've got, uh, brewing --
+                </Typography>
+                
+              </Box>
+              
+              <FeatureBox 
+                icon={<ForumIcon />}
+                title="chat" 
+                description="Get advice, find bandmates, share resources"
+              />
+              
+              <FeatureBox 
+                icon={<EventIcon />}
+                title="the official SHOW LIST" 
+                description="A comprehensive listing of every show on every day"
+              />
+
+            <FeatureBox 
+                icon={<HandymanIcon />}
+                title="resources" 
+                description="Booking contacts, venue info, flyering locations, and more"
+              />            
+              
+              <FeatureBox 
+                icon={<PeopleIcon />}
+                title="band profiles (coming soon)" 
+                description="having to use IG for everything is so 2024"
+              />
             </Grid>
           </Grid>
           

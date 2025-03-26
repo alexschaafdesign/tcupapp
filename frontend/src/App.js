@@ -37,7 +37,6 @@ import FlyeringForm from "./pages/Flyering/FlyeringForm.js";
 import FlyeringTable from "./pages/Flyering/FlyeringTable.js";
 import EditFlyeringForm from "./pages/Flyering/EditFlyeringForm.js";
 import PledgePhotos from "./pages/PledgeAndAdvance/PledgePhotos.js";
-import TCUPNewsletter from "./pages/Newsletter.js";
 import TCUPAdvance from "./pages/PledgeAndAdvance/TCUPAdvance.js";
 import PledgeSuccess from "./pages/PledgeAndAdvance/PledgeSuccess.js";
 import PledgeTracker from "./pages/PledgeAndAdvance/PledgeTracker.js";
@@ -59,6 +58,9 @@ import ForumImportTool from "./pages/Chat/ForumImportTool.js";
 import OriginalAdminImportPost from "./pages/Chat/Components/OriginalAdminImportPost.js";
 import HistoricalReplyForm from "./pages/Chat/Components/HistoricalReplyForm.js";
 import AdminDashboard from "./pages/Admin/AdminDashboard.js";
+import VenueReportCardPage from "./pages/VRC/VenueReportCardPage.js";
+import JoinTCUP from "./pages/TCUP/JoinTCUP.js";
+import Newsletter from "./pages/TCUP/Newsletter.js";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
@@ -136,6 +138,9 @@ function App() {
           <Route path="landing" element={<LandingPage />} />
           <Route path="about" element={<AboutTCUP />} />
           <Route path="contact" element={<ContactForm />} />
+          <Route path="/venuereportcard" element={<VenueReportCardPage />} />
+          <Route path="/join" element={<JoinTCUP />} />
+
 
           {/* Admin*/}
           <Route path="admin" element={<AdminDashboard />} />          
@@ -168,7 +173,7 @@ function App() {
           <Route path="shows/:id/edit" element={<EditShowPage />} />
           <Route path="shows/:id" element={<ShowProfile />} />
 
-  
+
   
           {/* Forum/Thread */}
           <Route path="chat" element={<MainChatPage />} />
@@ -176,7 +181,7 @@ function App() {
           <Route path="import" element={<AdminImportPost />} />
           <Route path="test-auth" element={<AuthTest />} />
           <Route path="vrc" element={<VRCForm />} />
-          <Route path="newsletter" element={<TCUPNewsletter />} />
+          <Route path="newsletter" element={<Newsletter />} />
           <Route path="pledgephotos" element={<PledgePhotos />} />
           <Route path="calendar" element={<CalendarEvents />} />
   

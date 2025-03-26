@@ -14,6 +14,8 @@ import WorkIcon from "@mui/icons-material/Work";
 import React from "react";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import AssessmentIcon from "@mui/icons-material/Assessment";
+import NewspaperIcon from '@mui/icons-material/Newspaper';
+
 
 
 const getNavLinks = (isDevMode) => {
@@ -32,9 +34,11 @@ const getNavLinks = (isDevMode) => {
     })),
     organizeLinks: [
       { text: "about TCUP", path: "/about", icon: <InfoIcon fontSize="small" /> },
-      { text: "join TCUP", path: "https://airtable.com/appWhJi1YbIsdiXrw/pagHJycS1fOI0TGLS/form", external: true, icon: <GroupAddIcon fontSize="small" /> },
+      { text: "newsletter", path: "/newsletter", icon: <NewspaperIcon fontSize="small" /> },
+
+      { text: "join TCUP", path: "/join", icon: <GroupAddIcon fontSize="small" /> },
       { text: "power pledge", path: "/powerpledge", icon: <LocalActivityIcon fontSize="small" /> },
-      { text: "venue report card", path: "https://airtable.com/appBxG22efe9yoPaa/pagoL9lvXsNovlvak/form", external: true, icon: <AssessmentIcon fontSize="small" /> },
+      { text: "venue report card", path: "/venuereportcard", icon: <AssessmentIcon fontSize="small" /> },
 
     ].map(link => ({
       ...link,
