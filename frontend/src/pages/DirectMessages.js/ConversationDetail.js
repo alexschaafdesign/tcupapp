@@ -11,16 +11,19 @@ import {
   Paper, 
   IconButton,
   Divider,
-  useTheme,
+  Collapse,
   useMediaQuery,
+  useTheme,
   Snackbar,
-  Alert,
-  LinearProgress
+  Alert
 } from '@mui/material';
 import { 
   ArrowBack as ArrowBackIcon, 
   Send as SendIcon,
-  ExpandMore as ExpandMoreIcon 
+  Attachment as AttachmentIcon,
+  KeyboardArrowDown as ExpandMoreIcon,
+  KeyboardArrowUp as ExpandLessIcon,
+  Reply as ReplyIcon
 } from '@mui/icons-material';
 import {
   EditorState,
@@ -33,6 +36,7 @@ import parse from 'html-react-parser';
 import EditorWithFormatting from '../Chat/Components/EditorWithFormatting';
 import ChatImageUpload from '../Chat/Components/ChatImageUpload';
 import ImageAttachmentsGrid from '../Chat/Components/Post/ImageAttachmentsGrid';
+import linkifyHtml from 'linkify-html';
 
 const ConversationDetail = () => {
   const { conversationId } = useParams();
@@ -47,15 +51,17 @@ const ConversationDetail = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [showImageUpload, setShowImageUpload] = useState(false);
+  const [expandedMessages, setExpandedMessages] = useState(false);
+  const [showReplyForm, setShowReplyForm] = useState(false);
+  const replyFormRef = useRef(null);
   const MESSAGES_PER_PAGE = 10;
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
-  
-  // Theme for responsive design
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  // Fetch initial conversation data (most recent messages)
+  
+  // API Calls
   const fetchConversation = async (reset = false) => {
     try {
       setError(null);
@@ -66,26 +72,21 @@ const ConversationDetail = () => {
       }
       
       const token = await getAccessTokenSilently();
-      const response = await fetch(`${apiUrl}/direct-messages/conversation-by-id/${conversationId}?page=1&limit=${MESSAGES_PER_PAGE}`, {
-        headers: { 
-          Authorization: `Bearer ${token}` 
-        },
+      const response = await fetch(`${apiUrl}/direct-messages/conversation-by-id/${conversationId}?page=1&limit=1000`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
       
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`Error response (${response.status}):`, errorText);
         throw new Error(`Failed to load conversation: ${response.status}`);
       }
       
       const data = await response.json();
       
       if (data.messages) {
-        setMessages(data.messages);
+        setMessages(data.messages.reverse()); // Reverse to get oldest first
         setHasMore(data.pagination.has_more);
         setPage(1);
-      } else {
-        console.warn("No messages found in response:", data);
+            } else {
         setMessages([]);
         setHasMore(false);
       }
@@ -101,7 +102,6 @@ const ConversationDetail = () => {
     }
   };
   
-  // Load more (older) messages
   const loadMoreMessages = async () => {
     if (loadingMore || !hasMore) return;
     
@@ -111,9 +111,7 @@ const ConversationDetail = () => {
       
       const token = await getAccessTokenSilently();
       const response = await fetch(`${apiUrl}/direct-messages/conversation-by-id/${conversationId}?page=${nextPage}&limit=${MESSAGES_PER_PAGE}`, {
-        headers: { 
-          Authorization: `Bearer ${token}` 
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       
       if (!response.ok) {
@@ -123,10 +121,10 @@ const ConversationDetail = () => {
       const data = await response.json();
       
       if (data.messages && data.messages.length > 0) {
-        // Append older messages to the end of the messages array
-        setMessages(prevMessages => [...prevMessages, ...data.messages]);
+        setMessages(prevMessages => [...data.messages.reverse(), ...prevMessages]);
         setPage(nextPage);
         setHasMore(data.pagination.has_more);
+      
       } else {
         setHasMore(false);
       }
@@ -138,15 +136,8 @@ const ConversationDetail = () => {
     }
   };
 
-  useEffect(() => {
-    if (conversationId && user?.sub) {
-      fetchConversation();
-    }
-  }, [conversationId, user]);
-
   const handleSendMessage = async () => {
     try {
-      // Don't send if the message is empty (no text and no images)
       if (!messageEditorState.getCurrentContent().hasText() && messageImages.length === 0) {
         return;
       }
@@ -158,7 +149,6 @@ const ConversationDetail = () => {
       const contentState = messageEditorState.getCurrentContent();
       const rawContent = JSON.stringify(convertToRaw(contentState));
       
-      // Now using the conversationId/send endpoint
       const response = await fetch(`${apiUrl}/direct-messages/${conversationId}/send`, {
         method: 'POST',
         headers: {
@@ -172,19 +162,15 @@ const ConversationDetail = () => {
       });
   
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`Send message error (${response.status}):`, errorText);
         throw new Error(`Failed to send message: ${response.status}`);
       }
       
       const newMessage = await response.json();
-      
-      // Add the new message to the TOP of the UI
-      setMessages(prev => [newMessage, ...prev]);
-  
-      // Clear the message editor and images
+      setMessages(prev => [...prev, newMessage]);
       setMessageEditorState(EditorState.createEmpty());
       setMessageImages([]);
+      setShowImageUpload(false);
+      setShowReplyForm(false);
     } catch (error) {
       console.error('Error sending message:', error);
       setError(error.message || "Failed to send message");
@@ -193,7 +179,7 @@ const ConversationDetail = () => {
     }
   };
 
-  // Navigate back to the messages list
+  // Event Handlers
   const handleBackClick = () => {
     navigate('/messages');
   };
@@ -202,329 +188,464 @@ const ConversationDetail = () => {
     setError(null);
   };
 
-  // Render the message content
-  const renderMessageContent = (content) => {
-    if (!content) {
-      return <Typography variant="body2">No content</Typography>;
+  const toggleImageUpload = () => {
+    setShowImageUpload(!showImageUpload);
+  };
+  
+  const toggleExpandMessages = () => {
+    setExpandedMessages(!expandedMessages);
+  };
+
+  const containerRef = useRef(null);
+
+  
+  const handleReplyClick = () => {
+    setShowReplyForm(true);
+    
+    // Increase the delay to give the reply form time to render
+    setTimeout(() => {
+      if (replyFormRef.current) {
+        replyFormRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end', // scroll so the reply form is fully visible at the bottom
+        });
+      }
+    }, 500);
+  };
+
+  // Utility Functions
+  const formatMessageDate = (dateString) => {
+    if (!dateString) return '';
+    
+    const date = new Date(dateString);
+    const today = new Date();
+    const isToday = date.toDateString() === today.toDateString();
+    
+    if (isToday) {
+      return date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
     }
     
+    const thisYear = date.getFullYear() === today.getFullYear();
+    
+    if (thisYear) {
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+    
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
+  const linkifyOptions = {
+    defaultProtocol: 'https', // so "google.com" becomes "https://google.com"
+    // You can add more config if needed
+  };
+  
+  const renderMessageContent = (content) => {
+    if (!content) return <Typography variant="body1">No content</Typography>;
+  
     try {
       const contentObj = typeof content === 'string' ? JSON.parse(content) : content;
-      
-      // Verify we have proper Draft.js content with blocks
       if (!contentObj || !contentObj.blocks) {
-        return <Typography variant="body2">{typeof content === 'string' ? content : JSON.stringify(content)}</Typography>;
+        return <Typography variant="body1">{typeof content === 'string' ? content : JSON.stringify(content)}</Typography>;
       }
-      
+  
+      // 1) Convert Draft.js raw to HTML
       const contentState = convertFromRaw(contentObj);
-      const html = stateToHTML(contentState, {
-        // Customize HTML conversion options if needed
+      let html = stateToHTML(contentState, {
         inlineStyles: {
           BOLD: { element: 'strong' },
           ITALIC: { element: 'em' },
         }
       });
-      
-      return parse(html);
+  
+      // 2) Linkify the HTML
+      html = linkifyHtml(html, linkifyOptions);
+  
+      // 3) Optionally transform <a> tags to add target="_blank" if missing
+      const parseOptions = {
+        replace: (domNode) => {
+          if (domNode.name === 'a' && domNode.attribs && !domNode.attribs.target) {
+            domNode.attribs.target = '_blank';
+          }
+        }
+      };
+  
+      // 4) Parse final HTML into React elements
+      return parse(html, parseOptions);
     } catch (error) {
       console.error("Error rendering message content:", error);
-      // Fallback for non-parsable content
-      return <Typography variant="body2">{typeof content === 'string' ? content : 'Unreadable content'}</Typography>;
+      return <Typography variant="body1">{typeof content === 'string' ? content : 'Unreadable content'}</Typography>;
     }
   };
 
+  // Effects
+  useEffect(() => {
+    if (conversationId && user?.sub) {
+      fetchConversation();
+    }
+  }, [conversationId, user]);
+
+  // Determine which messages to show
+  const DEFAULT_VISIBLE = 3;
+  const messagesToShow = !expandedMessages && messages.length > DEFAULT_VISIBLE
+    ? messages.slice(-DEFAULT_VISIBLE)
+    : messages;
+    
+  const hiddenMessagesCount = messages.length - messagesToShow.length;
+
   // Loading state
-  if (loading) return (
-    <Container maxWidth="lg" sx={{ 
-      py: 4, 
-      height: 'calc(100vh - 75px)', 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center' 
-    }}>
-      <CircularProgress />
-    </Container>
-  );
+  if (loading) {
+    return (
+      <Container maxWidth="md" sx={{ 
+        py: 4, 
+        height: 'calc(100vh - 75px)', 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center' 
+      }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
-    <Container 
-      maxWidth="lg" 
-      sx={{ 
-        py: { xs: 1, sm: 2 },
-        px: { xs: 1, sm: 2 },
-        height: 'calc(100vh - 75px)',
+    <Container maxWidth="md" ref={containerRef} sx={{ 
+      pt: 2, 
+      pb: 4,
+      px: { xs: 1, sm: 2 },
+      height: '100%',
+      minHeight: 'calc(100vh - 75px)',
+      display: 'flex',
+      flexDirection: 'column',
+      bgcolor: 'white',
+      overflowY: 'auto'
+    }}>
+      {/* Simplified header with back button and conversation info */}
+      <Box sx={{ 
+        py: 1,
         display: 'flex',
-        flexDirection: 'column'
-      }}
-    >
-      {/* Header with back button and user info */}
-      <Paper 
-        elevation={1}
-        sx={{ 
-          p: 1.5, 
-          mb: 1,
-          display: 'flex',
-          alignItems: 'center',
-          borderRadius: 2,
-          bgcolor: 'background.paper'
-        }}
-      >
+        alignItems: 'center',
+        borderBottom: '1px solid',
+        borderColor: 'divider',
+        mb: 2
+      }}>
         <IconButton 
           onClick={handleBackClick} 
-          size="small" 
-          sx={{ mr: 1, color: 'text.secondary' }}
+          edge="start"
+          sx={{ color: 'text.secondary' }}
           aria-label="Back to messages"
         >
           <ArrowBackIcon />
         </IconButton>
         
-        <Avatar 
-          alt={otherUser?.username || 'User'} 
-          src={otherUser?.avatar_url} 
-          sx={{ width: 40, height: 40, mr: 2 }}
-        />
-        
-        <Typography variant="h6" component="div" sx={{ fontWeight: 500, flexGrow: 1 }}>
-          {otherUser?.username || 'Unknown User'}
-        </Typography>
-        
-        {error && (
-          <Button 
-            variant="outlined" 
-            color="error" 
-            size="small"
-            onClick={fetchConversation}
-          >
-            Retry
-          </Button>
-        )}
-      </Paper>
-      
-      {/* Message Editor - At the top */}
-      <Paper 
-        elevation={2}
-        sx={{ 
-          p: 1.5, 
-          borderRadius: 2,
-          bgcolor: 'background.paper',
-          mb: 1
-        }}
-      >
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <EditorWithFormatting
-            editorState={messageEditorState}
-            setEditorState={setMessageEditorState}
-            placeholder="Type a message..."
-          />
-          
-          <Box sx={{ mt: 0.5 }}>
-            <ChatImageUpload 
-              images={messageImages} 
-              setImages={setMessageImages} 
-            />
-          </Box>
-          
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 0.5 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              endIcon={<SendIcon />}
-              onClick={handleSendMessage}
-              disabled={
-                sendingMessage ||
-                !otherUser || 
-                (!messageEditorState.getCurrentContent().hasText() && messageImages.length === 0)
-              }
-              sx={{ 
-                borderRadius: 6,
-                px: 3,
-                textTransform: 'none'
-              }}
-            >
-              {sendingMessage ? 'Sending...' : 'Send'}
-            </Button>
-          </Box>
-        </Box>
-      </Paper>
-      
-      {/* Messages Container - Flex grow to fill available space */}
-      <Paper 
-        elevation={1}
-        sx={{ 
+        <Typography variant="h6" sx={{ 
+          fontWeight: 400, 
           flexGrow: 1,
-          display: 'flex', 
-          flexDirection: 'column',
-          borderRadius: 2,
-          position: 'relative', // For loading indicator
-          overflow: 'auto' // Allow scrolling in the messages container
-        }}
-      >
-        {/* Loading progress indicator */}
-        {loadingMore && (
-          <LinearProgress 
-            sx={{ 
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: 2,
-              zIndex: 2
-            }}
-          />
-        )}
-        
-        {/* Messages listed newest to oldest (top to bottom) */}
-        <Box 
-          sx={{ 
-            py: 1.5,
-            px: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1.5
-          }}
-        >
-          {!messages || messages.length === 0 ? (
-            <Box sx={{ 
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexGrow: 1,
-              py: 4
-            }}>
-              <Typography 
-                color="text.secondary" 
+          ml: 1,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
+        }}>
+          Back to inbox
+        </Typography>
+      </Box>
+      
+      {/* Conversation subject */}
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h3">
+          Conversation with{' '}
+          <Box component="span" sx={{ fontWeight: 'bold' }}>
+            {otherUser?.username || 'Unknown User'}
+          </Box>
+        </Typography>
+      </Box>
+      
+      {/* Messages list - Gmail style */}
+      <Box sx={{ 
+        flexGrow: 1,
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        {messages.length === 0 ? (
+          <Paper elevation={0} sx={{ 
+            p: 3, 
+            textAlign: 'center',
+            border: '1px dashed',
+            borderColor: 'divider',
+            borderRadius: 1
+          }}>
+            <Typography color="text.secondary">
+              No messages in this conversation yet. Click Reply to start the conversation.
+            </Typography>
+          </Paper>
+        ) : (
+          <>
+            {/* Show collapsed indicator if there are hidden messages */}
+            {hiddenMessagesCount > 0 && (
+              <Button
+                onClick={toggleExpandMessages}
+                startIcon={<ExpandMoreIcon />}
                 sx={{ 
-                  p: 3, 
-                  bgcolor: 'background.paper', 
-                  borderRadius: 2,
-                  boxShadow: 1
+                  alignSelf: 'center',
+                  mb: 2,
+                  textTransform: 'none',
+                  color: 'text.secondary',
+                  bgcolor: 'rgba(0,0,0,0.04)',
+                  '&:hover': {
+                    bgcolor: 'rgba(0,0,0,0.08)'
+                  }
                 }}
               >
-                No messages yet. Start the conversation!
-              </Typography>
-            </Box>
-          ) : (
-            // Display messages newest first
-            messages.map((message, index) => {
+                Show {hiddenMessagesCount} earlier message{hiddenMessagesCount !== 1 ? 's' : ''}
+              </Button>
+            )}
+            
+            {/* Display messages */}
+            {messagesToShow.map((message, index) => {
               const isCurrentUser = message.sender_id === user?.sub;
-              const isPreviousSameSender = index > 0 && messages[index - 1].sender_id === message.sender_id;
+              const formattedDate = formatMessageDate(message.created_at);
+              const senderName = isCurrentUser ? 'You' : otherUser?.username || 'Unknown User';
+              const isLast = index === messagesToShow.length - 1;
               
               return (
-                <Box 
+                <Paper
                   key={message.id}
+                  elevation={0}
                   sx={{
-                    alignSelf: isCurrentUser ? 'flex-end' : 'flex-start',
-                    maxWidth: { xs: '85%', sm: '70%' },
-                    display: 'flex',
-                    flexDirection: 'column',
-                    mt: isPreviousSameSender ? 0.5 : 1.5
+                    p: 2,
+                    mb: isLast ? 0 : 2,
+                    borderRadius: 1, 
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    bgcolor: 'white'
                   }}
                 >
-                  {/* Show avatar for first message in a series */}
-                  {!isPreviousSameSender && !isCurrentUser && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5, ml: 0.5 }}>
-                      <Avatar 
-                        alt={otherUser?.username || 'User'} 
-                        src={otherUser?.avatar_url} 
-                        sx={{ width: 24, height: 24, mr: 1 }}
-                      />
-                      <Typography variant="caption" color="text.secondary">
-                        {otherUser?.username || 'Unknown User'}
+                  {/* Message header */}
+                  <Box sx={{
+                    mb: 2,
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}>
+                    <Avatar 
+                      src={isCurrentUser ? user?.picture : otherUser?.avatar_url}
+                      alt={senderName}
+                      sx={{ width: 40, height: 40, mr: 1.5 }}
+                    />
+                    
+                    <Box sx={{ flexGrow: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'baseline' }}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                          {senderName}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                          {formattedDate}
+                        </Typography>
+                      </Box>
+                      <Typography variant="body2" color="text.secondary">
+                        to {isCurrentUser ? otherUser?.username : 'you'}
                       </Typography>
                     </Box>
-                  )}
-                  
-                  <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                    {/* Message bubble */}
-                    <Paper 
-                      elevation={0}
-                      sx={{ 
-                        p: 1.5, 
-                        borderRadius: 2,
-                        bgcolor: isCurrentUser 
-                          ? 'primary.main' 
-                          : 'background.paper',
-                        color: isCurrentUser 
-                          ? 'primary.contrastText' 
-                          : 'text.primary',
-                        borderTopLeftRadius: (!isPreviousSameSender && !isCurrentUser) ? 0 : 2,
-                        borderTopRightRadius: (!isPreviousSameSender && isCurrentUser) ? 0 : 2,
-                        boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.08)',
-                        wordBreak: 'break-word'
-                      }}
-                    >
-                      {renderMessageContent(message.content)}
-                      
-                      {/* Show images if present */}
-                      {message.images && message.images.length > 0 && (
-                        <Box sx={{ mt: 1 }}>
-                          <ImageAttachmentsGrid images={message.images} />
-                        </Box>
-                      )}
-                      
-                      {/* Timestamp inside bubble at bottom right */}
-                      <Typography 
-                        variant="caption" 
-                        sx={{ 
-                          display: 'block',
-                          textAlign: 'right',
-                          mt: 0.5,
-                          opacity: 0.8,
-                          fontSize: '0.7rem'
-                        }}
+                    
+                    {/* Only show reply button directly on messages if needed */}
+                    {isLast && !showReplyForm && (
+                      <IconButton 
+                        size="small" 
+                        onClick={handleReplyClick}
+                        sx={{ color: 'text.secondary' }}
                       >
-                        {message.created_at ? new Date(message.created_at).toLocaleTimeString([], { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
-                        }) : ''}
-                      </Typography>
-                    </Paper>
+                        <ReplyIcon fontSize="small" />
+                      </IconButton>
+                    )}
                   </Box>
-                </Box>
-              );
-            })
+                  
+                  {/* Message content */}
+                  <Box sx={{ pl: 7 }}>
+                    <Box sx={{ typography: 'body1', lineHeight: 1.6, mb: 2 }}>
+                      {renderMessageContent(message.content)}
+                    </Box>
+                    
+                    {/* Show images if present */}
+                    {message.images && message.images.length > 0 && (
+                      <Box sx={{ mb: 2 }}>
+                        <ImageAttachmentsGrid images={message.images} />
+                      </Box>
+                    )}
+                  </Box>
+                </Paper>
+                  );
+                })}
+              </>
+            )}
+          </Box>
+          
+          {/* If all messages viewed, show expand less button */}
+          {expandedMessages && messages.length > 2 && (
+            <Button
+              onClick={toggleExpandMessages}
+              startIcon={<ExpandLessIcon />}
+              sx={{ 
+                alignSelf: 'center',
+                my: 2,
+                textTransform: 'none',
+                color: 'text.secondary'
+              }}
+            >
+              Show less
+            </Button>
           )}
           
-          {/* Load More button (at the bottom to load older messages) */}
-          {hasMore && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1, mb: 1 }}>
+          {/* Reply button - Only show if compose area is hidden */}
+          {!showReplyForm && (
+            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-start' }}>
               <Button
-                variant="outlined"
-                size="small"
-                endIcon={<ExpandMoreIcon />}
-                onClick={loadMoreMessages}
-                disabled={loadingMore}
+                variant="contained"
+                startIcon={<ReplyIcon />}
+                onClick={handleReplyClick}
                 sx={{ 
                   borderRadius: 4,
-                  py: 0.5,
+                  px: 3,
+                  py: 1,
+                  textTransform: 'none',
+                  bgcolor: '#f2f2f2',
+                  color: 'text.primary',
                   boxShadow: 1,
-                  bgcolor: 'background.paper'
+                  '&:hover': {
+                    bgcolor: '#e0e0e0',
+                    boxShadow: 2
+                  }
                 }}
               >
-                {loadingMore ? (
-                  <CircularProgress size={16} sx={{ mr: 1 }} />
-                ) : (
-                  'Load older messages'
-                )}
+                Reply
               </Button>
             </Box>
           )}
-        </Box>
-      </Paper>
-      
-      {/* Error Snackbar */}
-      <Snackbar 
-        open={!!error} 
-        autoHideDuration={6000} 
-        onClose={handleCloseError}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseError} severity="error" sx={{ width: '100%' }}>
-          {error}
-        </Alert>
-      </Snackbar>
-    </Container>
-  );
-};
-
-export default ConversationDetail;
+          
+          {/* Reply composition area - Only visible after clicking Reply */}
+          <Collapse
+              in={showReplyForm}
+              onEntered={() => {
+                // Scroll the container (if it’s scrollable) or the window
+                if (containerRef.current) {
+                  containerRef.current.scrollTo({
+                    top: containerRef.current.scrollHeight,
+                    behavior: 'smooth',
+                  });
+                } else {
+                  window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth',
+                  });
+                }
+                // Optionally, trigger focus on the reply editor if you can access its ref
+                // For example, if EditorWithFormatting passes its ref upward or accepts an onEntered callback
+              }}
+            >         
+           <Box 
+              ref={replyFormRef}
+              sx={{ 
+                mt: 3,
+                p: 2,
+                borderRadius: 1, 
+                border: '1px solid',
+                borderColor: 'divider',
+                bgcolor: 'white',
+                boxShadow: 1
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
+                  Reply to {otherUser?.username || 'Unknown User'}
+                </Typography>
+                <IconButton 
+                  size="small" 
+                  onClick={() => setShowReplyForm(false)}
+                  sx={{ color: 'text.secondary' }}
+                >
+                  <ExpandLessIcon />
+                </IconButton>
+              </Box>
+              
+              <Divider sx={{ mb: 2 }} />
+              
+              <Box sx={{ mb: 2 }}>
+                <EditorWithFormatting
+                  editorState={messageEditorState}
+                  setEditorState={setMessageEditorState}
+                  placeholder="Compose your reply here..."
+                  autoFocus={true}
+                />
+              </Box>
+              
+              {showImageUpload && (
+                <Box sx={{ mb: 2, p: 1, border: '1px dashed', borderColor: 'divider', borderRadius: 1 }}>
+                  <ChatImageUpload 
+                    images={messageImages} 
+                    setImages={setMessageImages}
+                  />
+                </Box>
+              )}
+              
+              <Box sx={{ 
+                display: 'flex', 
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                pt: 1,
+                borderTop: '1px solid',
+                borderColor: 'divider'
+              }}>
+                <Button
+                  startIcon={<AttachmentIcon />}
+                  onClick={toggleImageUpload}
+                  color="primary"
+                  variant="text"
+                  sx={{ textTransform: 'none' }}
+                >
+                  {showImageUpload ? 'Hide Attachments' : 'Add Attachments'}
+                  {!showImageUpload && messageImages.length > 0 && ` (${messageImages.length})`}
+                </Button>
+                
+                <Button
+                  variant="contained"
+                  color="primary"
+                  endIcon={<SendIcon />}
+                  onClick={handleSendMessage}
+                  disabled={sendingMessage || !otherUser || (!messageEditorState.getCurrentContent().hasText() && messageImages.length === 0)}
+                  sx={{ 
+                    borderRadius: 4,
+                    px: 3,
+                    textTransform: 'none'
+                  }}
+                >
+                  {sendingMessage ? 'Sending...' : 'Send'}
+                </Button>
+              </Box>
+            </Box>
+          </Collapse>
+          
+          {/* Error Snackbar */}
+          <Snackbar 
+            open={!!error} 
+            autoHideDuration={6000} 
+            onClose={handleCloseError}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          >
+            <Alert onClose={handleCloseError} severity="error" sx={{ width: '100%' }}>
+              {error}
+            </Alert>
+          </Snackbar>
+        </Container>
+      );
+    };
+    
+    export default ConversationDetail;

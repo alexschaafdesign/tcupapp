@@ -90,7 +90,7 @@ function DynamicFilterComponent({ filters, navigate }) {
             }
           }}
         >
-          the <b>SHOW LIST</b>
+          the <b> Lalala</b>
         </Typography>
         
         {/* Action Buttons */}
