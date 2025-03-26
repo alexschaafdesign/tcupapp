@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Configure base URL based on environment
 const BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://portal.tcupboard.org/api'
+  ? 'https://tcupboard.org/api'
   : 'http://localhost:3001/api';
 
 // Create axios instance with default config

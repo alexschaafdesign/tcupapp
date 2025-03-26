@@ -25,7 +25,7 @@ Sentry.init({
     Sentry.replayIntegration(),
   ],
   tracesSampleRate: process.env.NODE_ENV === "production" ? 1.0 : 0.5,
-  tracePropagationTargets: ["localhost", /^https:\/\/portal\.tcupboard\.org\/api/, /^https:\/\/tcupmn\.org\/api/],
+  tracePropagationTargets: ["localhost", /^https:\/\/tcupboard\.org\/api/, /^https:\/\/tcupmn\.org\/api/],
   replaysSessionSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
   replaysOnErrorSampleRate: 1.0,
 });
@@ -47,8 +47,8 @@ if (currentEnv === 'staging') {
   redirectUri = 'https://staging.tcupboard.org/callback';
   logoutReturnTo = 'https://staging.tcupboard.org';
 } else if (currentEnv === 'production') {
-  redirectUri = 'https://portal.tcupboard.org/callback';
-  logoutReturnTo = 'https://portal.tcupboard.org';
+  redirectUri = 'https://tcupboard.org/callback';
+  logoutReturnTo = 'https://tcupboard.org';
 }
 
 console.log('Redirect URI:', redirectUri);

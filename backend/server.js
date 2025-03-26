@@ -72,7 +72,7 @@ const allowedOriginsMap = {
     'https://staging.tcupboard.org'
   ],
   production: [
-    'https://portal.tcupboard.org',
+    'https://tcupboard.org',
     'https://tcupmn.org'
   ]
 };
@@ -157,7 +157,7 @@ app.post('/index.php?api/oauth2/token', async (req, res) => {
   const XENFORO_URL = 'https://tcupboard.org';
   const CLIENT_ID = process.env.REACT_APP_XENFORO_CLIENT_ID;
   const REDIRECT_URI = process.env.NODE_ENV === 'production'
-    ? 'https://portal.tcupboard.org/callback'
+    ? 'https://tcupboard.org/callback'
     : 'http://localhost:3002/callback';
 
   try {
