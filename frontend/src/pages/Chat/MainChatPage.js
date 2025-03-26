@@ -25,6 +25,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import CreatePost from './Components/CreatePost';
 import ListOfAllThreads from './Components/ListOfAllThreads';
 import AuthContentOverlay from '../../components/auth/AuthOverlay';
+import palette from '../../styles/colors/palette';
 
 const ForumContainer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,6 +35,8 @@ const ForumContainer = () => {
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const { getAccessTokenSilently, isAuthenticated } = useAuth0();
+  const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, pages: 0 });
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -66,23 +69,33 @@ const ForumContainer = () => {
     const fetchPosts = async () => {
       try {
         let url = `${apiUrl}/posts`;
+        
+        // Add page and limit parameters
+        const queryParams = new URLSearchParams();
         if (selectedTags.length > 0) {
-          url += `?tags=${selectedTags.join(',')}`;
+          queryParams.append('tags', selectedTags.join(','));
         }
+        queryParams.append('page', pagination.page.toString());
+        queryParams.append('limit', pagination.limit.toString());
+        
+        url = `${url}?${queryParams.toString()}`;
         
         console.log('Fetching posts from:', url);
         const response = await fetch(url); 
         const data = await response.json();
         
-        // Debug the data structure
         console.log('Posts data from API:', data);
-        if (data.length > 0) {
-          console.log('First post structure:', data[0]);
-          console.log('Reply count type:', typeof data[0].reply_count);
-          console.log('Reply count value:', data[0].reply_count);
-        }
         
-        setPosts(Array.isArray(data) ? data : []);
+        // Handle the new response format that includes posts and pagination
+        if (data && data.posts) {
+          setPosts(data.posts);
+          setPagination(data.pagination || pagination);
+        } else if (Array.isArray(data)) {
+          // Fallback for backward compatibility
+          setPosts(data);
+        } else {
+          setPosts([]);
+        }
       } catch (error) {
         console.error('Error fetching posts:', error);
         setPosts([]);
@@ -91,7 +104,14 @@ const ForumContainer = () => {
       }
     };
     fetchPosts();
-  }, [apiUrl, selectedTags]);
+  }, [apiUrl, selectedTags, pagination.page, pagination.limit]);
+
+  const handlePageChange = (event, newPage) => {
+    setPagination(prev => ({
+      ...prev,
+      page: newPage
+    }));
+  };
 
   const handlePostCreated = (newPost) => {
     setPosts([newPost, ...posts]);
@@ -107,7 +127,7 @@ const ForumContainer = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: isMobile ? 2 : 0, px: isMobile ? 1 : 2 }}>
+    <Container maxWidth="lg" sx={{ py: isMobile ? 0 : 0, px: isMobile ? 1 : 2 }}>
       
       {/* Header with Latest Posts and Buttons */}
       <Box 
@@ -116,7 +136,7 @@ const ForumContainer = () => {
           justifyContent: 'space-between', 
           alignItems: 'center', 
           mb: { xs: 2, sm: 3 },
-          mt: { xs: 2, sm: 0 } 
+          mt: { xs: 0, sm: 0 } 
         }}
       >
         {/* Left-aligned "LATEST POSTS" */}
@@ -135,7 +155,7 @@ const ForumContainer = () => {
                 size="small"
                 color={showFilters ? "primary" : "default"}
                 onClick={() => setShowFilters(!showFilters)}
-                sx={{ border: 1, borderColor: 'divider' }}
+                sx={{ border: 1, borderColor: 'divider', color: palette.primary.main }}
               >
                 <FilterIcon />
               </IconButton>
@@ -259,7 +279,11 @@ const ForumContainer = () => {
       ) : posts.length > 0 ? (
         <Box sx={{ mb: 4, bgcolor: 'background.paper', borderRadius: '8px' }}>
           <AuthContentOverlay>
-            <ListOfAllThreads posts={posts} />
+            <ListOfAllThreads 
+              posts={posts} 
+              pagination={pagination}
+              onPageChange={handlePageChange}
+            />
           </AuthContentOverlay>
         </Box>
       ) : (
@@ -269,6 +293,7 @@ const ForumContainer = () => {
           </Typography>
         </Box>
       )}
+      
     </Container>
   );
 };

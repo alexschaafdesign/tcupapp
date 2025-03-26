@@ -7,6 +7,19 @@ import authMiddleware from '../middleware/auth.js';
 
 const router = express.Router();
 
+export async function createReactionNotification(postId, actorId, postAuthorId, reactionType) {
+  try {
+    if (actorId === postAuthorId) return; // Don't notify users of their own reactions
+    
+    await pool.query(
+      'INSERT INTO notifications (user_id, post_id, actor_id, type, reaction_type) VALUES ($1, $2, $3, $4, $5)',
+      [postAuthorId, postId, actorId, 'reaction', reactionType]
+    );
+  } catch (error) {
+    console.error('Error creating reaction notification:', error);
+  }
+}
+
 // Create notification for reply
 export async function createReplyNotification(postId, actorId, originalPostAuthorId, replyId) {
   try {

@@ -25,7 +25,7 @@ export const typography = {
       fontSize: '0.875rem',
     },
     body1: {
-      fontSize: '1rem',
+      fontSize: '0.875rem',
     },
     body2: {
       fontSize: '0.875rem',

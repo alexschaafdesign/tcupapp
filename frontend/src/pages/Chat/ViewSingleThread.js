@@ -19,10 +19,11 @@ import { useSearchParams } from 'react-router-dom';
 import ReactionBar from './Components/ReactionBar';
 import EditorWithFormatting from './Components/EditorWithFormatting';
 import ActiveTags from './Components/ActiveTags';
-import IndividualPost from './Components/IndividualPost';
+import Post from './Components/Post';
 import { stateToHTML } from 'draft-js-export-html';
 import parse from 'html-react-parser';
 import ChatImageUpload from './Components/ChatImageUpload';
+import HistoricalReplyForm from './Components/HistoricalReplyForm';
 
 const ViewSingleThread = () => {
   const { threadId } = useParams();
@@ -41,6 +42,8 @@ const ViewSingleThread = () => {
   const [focusTrigger, setFocusTrigger] = useState(0);
   const [replyImages, setReplyImages] = useState([]);
   const [editEditorState, setEditEditorState] = useState(null);
+  const [showHistoricalForm, setShowHistoricalForm] = useState(false);
+
 
   
   // Theme for responsive design
@@ -53,6 +56,13 @@ const ViewSingleThread = () => {
   const canEditPost = (post) => {
     if (!user) return false;
     return post.auth0_id === user.sub || userRoles.includes('admin');
+  };
+
+  const handleHistoricalReplyCreated = (newReply) => {
+    setThreadData((prev) => ({
+      ...prev,
+      replies: [...prev.replies, newReply]
+    }));
   };
 
   const handleEditClick = (post) => {
@@ -183,9 +193,18 @@ const ViewSingleThread = () => {
   const fetchThread = async () => {
     try {
       const token = await getAccessTokenSilently();
-      const response = await fetch(`${apiUrl}/posts/${threadId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      console.log("Token retrieved:", !!token); // Debug without exposing token
+      
+      const headers = {
+        Authorization: `Bearer ${token}`
+      };
+      console.log("Auth header present:", !!headers.Authorization);
+      
+      const response = await fetch(`${apiUrl}/posts/thread/${threadId}`, {
+        headers
       });
+      
+      console.log("Response status:", response.status);
       const data = await response.json();
       setThreadData(data);
   
@@ -430,11 +449,11 @@ const ViewSingleThread = () => {
       cleanText = reply.content || '';
     }
   
-    // Create blocks: Quote block, spacing block, and empty cursor block
+    // Use reply.author instead of reply.username
     const quoteBlock = new ContentBlock({
       key: genKey(),
       type: 'unstyled',
-      text: `[QUOTE="${reply.username}"]${cleanText}[/QUOTE]`,
+      text: `[QUOTE="${reply.author || 'User'}"]${cleanText}[/QUOTE]`,
     });
   
     const spacingBlock = new ContentBlock({ key: genKey(), type: 'unstyled', text: '' });
@@ -513,7 +532,7 @@ const ViewSingleThread = () => {
   if (!threadData?.post) return <Typography>Thread not found</Typography>;
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 0 }}>
       {/* Mobile Back Button */}
       {isMobile && (
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
@@ -548,9 +567,10 @@ const ViewSingleThread = () => {
       </Box>
   
       {/* Thread Starter Card */}
-      <IndividualPost 
+      <Post 
         post={threadData.post}
         isThreadStarter={true}
+        isReply={false}
         isHighlighted={threadData.post.id === Number(highlightedReplyId)}
         user={user}
         handleLikeClick={handleLikeClick}
@@ -559,6 +579,8 @@ const ViewSingleThread = () => {
         postReactions={postReactions}
         handleEditClick={handleEditClick}
         canEditPost={canEditPost(threadData.post)}
+        userRoles={userRoles}
+        getAccessTokenSilently={getAccessTokenSilently}
       />
 
       <ActiveTags tags={threadData.post.tags} limit={3} />
@@ -574,7 +596,7 @@ const ViewSingleThread = () => {
   
       {/* Render Replies */}
       {threadData.replies.map((reply) => (
-        <IndividualPost 
+        <Post 
           key={reply.id}
           post={reply}
           isReply={true}
@@ -588,9 +610,11 @@ const ViewSingleThread = () => {
           highlightedReplyId={highlightedReplyId}
           handleEditClick={handleEditClick}
           canEditPost={canEditPost(reply)}
+          userRoles={userRoles}
+          getAccessTokenSilently={getAccessTokenSilently}
         />
       ))}
-  
+        
       {/* Reply Editor */}
       <Box ref={replyBoxRef} sx={{ mt: 3, scrollMarginTop: '64px' }}>
         <Paper sx={{ p: 2, mb: 2 }}>
@@ -609,6 +633,7 @@ const ViewSingleThread = () => {
           />
         </Paper>
       </Box>
+    
   
       {/* Post Reply & Historical Reply Buttons */}
       <Box sx={{ display: 'flex', gap: 2 }}>
@@ -620,6 +645,24 @@ const ViewSingleThread = () => {
           Post Reply
         </Button>
       </Box>
+
+    {/* A button only you (admin) can see to add a historical reply */}
+        <Button onClick={() => setShowHistoricalForm(true)}>
+          Add Historical Reply
+        </Button>
+      
+
+      {/* If showHistoricalForm is true, display the HistoricalReplyForm in a modal or inline */}
+      {showHistoricalForm && (
+        <Paper sx={{ mt: 2 }}>
+          <HistoricalReplyForm
+            threadId={threadId}
+            onReplyCreated={handleHistoricalReplyCreated}
+            onClose={() => setShowHistoricalForm(false)}
+          />
+        </Paper>
+      )}
+        
   
       {/* Editing Post Modal */}
 {editingPost && (

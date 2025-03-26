@@ -39,6 +39,8 @@ const palette = {
     white: colors.neutral[100],
     light: colors.neutral[98],
     gray: colors.neutral[50],
+    darkish: colors.neutral[30],
+    twenty: colors.neutral[20],
     dark: colors.neutral[10],
     black: colors.neutral[0]
   },

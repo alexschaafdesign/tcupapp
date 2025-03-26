@@ -1,7 +1,7 @@
 // EditPostDialog.js
 import React from 'react';
 import { Dialog } from '@mui/material';
-import EditPost from '../EditPost';
+import EditPostForm from '../../EditPostForm';
 
 const EditPostDialog = ({ open, onClose, onSave, post }) => {
   return (
@@ -11,7 +11,7 @@ const EditPostDialog = ({ open, onClose, onSave, post }) => {
       maxWidth="md"
       fullWidth
     >
-      <EditPost 
+      <EditPostForm
         post={post}
         onClose={onClose}
         onSave={onSave}

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Avatar, List, ListItem, Paper, useMediaQuery, useTheme, CircularProgress } from '@mui/material';
+import { Box, Typography, Avatar, List, ListItem, Paper, useMediaQuery, useTheme, CircularProgress, Pagination } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AuthWrapper from '../../../components/auth/AuthWrapper';
 import { useAuth0 } from '@auth0/auth0-react';
 import ActiveTags from './ActiveTags';
 import { useApi } from '../../../hooks/useApi';
 
-const ListOfAllThreads = ({ posts }) => {
+const ListOfAllThreads = ({ posts, pagination, onPageChange }) => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth0();
   const theme = useTheme();
@@ -55,12 +55,19 @@ const ListOfAllThreads = ({ posts }) => {
     return latestActivity > lastReadAt;
   };
 
-  const formatDate = (date) => {
+  const formatDate = (rawDate) => {
+    // Attempt to parse
+    const postDate = new Date(rawDate);
+    if (isNaN(postDate.valueOf())) {
+      // If parse fails, just return the raw string
+      return rawDate;
+    }
+  
     const now = new Date();
-    const postDate = new Date(date);
     const diff = now - postDate;
     const days = diff / (1000 * 60 * 60 * 24);
-
+  
+    // Same "today" / "yesterday" logic you already have
     if (days < 1) {
       if (postDate.getDate() === now.getDate()) {
         return `Today at ${postDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
@@ -70,6 +77,7 @@ const ListOfAllThreads = ({ posts }) => {
     if (days < 7) {
       return `${postDate.toLocaleDateString([], { weekday: 'long' })} at ${postDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     }
+    // If older than 7 days, show "Mar 19, 2025"
     return postDate.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
@@ -102,17 +110,40 @@ const ListOfAllThreads = ({ posts }) => {
     );
   }
 
+
+
   return (
+    <>
     <Paper elevation={0} sx={{ bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
       <List sx={{ p: 0 }}>
         {posts.map((post) => {
           // Use the reply_count directly from the thread_listings view
           const replyCount = post.reply_count || 0;
-          // Check if there's last reply information
-          const hasReplies = replyCount > 0 && post.last_reply_at && post.last_reply_by;
+          
+          // Check if this is an imported post
+          const isImported = post.is_imported === true;
+          
+          // Show last reply info for all posts if it exists
+          const hasReplies = replyCount > 0 && post.last_reply_at;
+          
           // Check if thread is unread
           const unread = isThreadUnread(post);
           
+          // Get the correct author name and date display
+          const authorName = isImported ? post.imported_author_name : post.author;
+          const dateDisplay = formatDate(post.created_at);    
+
+          // Get last reply info
+          const lastReplyBy = post.last_reply_by || '';
+          const lastReplyDate = post.last_reply_at ? formatDate(post.last_reply_at) : '';
+
+          // Derive the correct avatar source
+          // If it's imported, we give it a null or empty string 
+          // so MUI shows the fallback avatar
+          const avatarSrc = isImported
+          ? post.avatar_url // or post.imported_avatar_url directly
+          : post.avatar_url;      
+      
           return (
             <AuthWrapper 
               key={post.id}
@@ -144,8 +175,11 @@ const ListOfAllThreads = ({ posts }) => {
                         mb: 1
                       }}>
                         <Avatar 
-                          src={post.avatar_url} 
-                          sx={{ width: 40, height: 40 }}
+                          src={avatarSrc} 
+                          sx={{ 
+                            width: 40, 
+                            height: 40
+                          }}
                         />
                         <Box sx={{ flex: 1 }}>
                           <Typography 
@@ -158,9 +192,11 @@ const ListOfAllThreads = ({ posts }) => {
                           >
                             {post.title}
                           </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            by {post.author} · {formatDate(post.created_at)}
-                          </Typography>
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography variant="caption" color="text.secondary">
+                              by {authorName} · {dateDisplay}
+                            </Typography>
+                          </Box>
                         </Box>
                       </Box>
 
@@ -201,8 +237,11 @@ const ListOfAllThreads = ({ posts }) => {
                         }}
                       >
                         <Avatar 
-                          src={post.avatar_url} 
-                          sx={{ width: 50, height: 50 }}
+                          src={avatarSrc} 
+                          sx={{ 
+                            width: 50, 
+                            height: 50
+                          }}
                         />
                       </Box>
 
@@ -234,9 +273,11 @@ const ListOfAllThreads = ({ posts }) => {
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                           {/* Author Info and Stats on Left */}
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <Typography variant="caption" color="text.secondary">
-                              by {post.author} · {formatDate(post.created_at)}
-                            </Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <Typography variant="caption" color="text.secondary">
+                                by {authorName} · {dateDisplay}
+                              </Typography>
+                            </Box>
                             
                             <Typography variant="caption">
                               {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
@@ -244,9 +285,10 @@ const ListOfAllThreads = ({ posts }) => {
                           </Box>
                           
                           {/* Last Reply Info - Desktop Only, Right Aligned */}
+                          {/* Show for all posts with replies */}
                           {hasReplies && (
                             <Typography variant="caption" color="text.secondary">
-                              last reply by {post.last_reply_by} {formatDate(post.last_reply_at)}
+                              last reply by {lastReplyBy} {lastReplyDate}
                             </Typography>
                           )}
                         </Box>
@@ -260,7 +302,21 @@ const ListOfAllThreads = ({ posts }) => {
         })}
       </List>
     </Paper>
-  );
+
+    {/* Pagination controls */}
+    {pagination && pagination.pages > 1 && (
+      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+        <Pagination 
+          count={pagination.pages} 
+          page={pagination.page} 
+          onChange={(e, page) => onPageChange(page)}
+          color="primary"
+          size={isMobile ? "small" : "medium"}
+        />
+      </Box>
+    )}
+  </>
+);
 };
 
 export default ListOfAllThreads;

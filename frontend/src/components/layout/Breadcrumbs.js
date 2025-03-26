@@ -26,6 +26,7 @@ const Breadcrumbs = () => {
   const location = useLocation();
   const { threadId } = useParams();
   const [threadTitle, setThreadTitle] = useState(null);
+  const [username, setUsername] = useState(null);
   const { callApi } = useApi();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -34,7 +35,7 @@ const Breadcrumbs = () => {
   // Always call hooks at the top level, before any conditionals
   useEffect(() => {
     if (threadId) {
-      callApi(`${process.env.REACT_APP_API_URL}/posts/${threadId}`)
+      callApi(`${process.env.REACT_APP_API_URL}/posts/thread/${threadId}`)
         .then((data) => {
           if (data?.post?.title) {
             setThreadTitle(data.post.title);
@@ -42,7 +43,22 @@ const Breadcrumbs = () => {
         })
         .catch((err) => console.error("Failed to fetch thread title:", err));
     }
-  }, [threadId, callApi]);
+    
+    // Check if we're on a profile page and fetch the username
+    const profileIndex = pathnames.findIndex(path => path === "profile");
+    if (profileIndex !== -1 && profileIndex < pathnames.length - 1) {
+      const auth0Id = pathnames[profileIndex + 1];
+      callApi(`${process.env.REACT_APP_API_URL}/users/profile/${auth0Id}`)
+        .then((data) => {
+          if (data?.username) {
+            setUsername(data.username);
+          }
+        })
+        .catch((err) => console.error("Failed to fetch username:", err));
+    } else {
+      setUsername(null);
+    }
+  }, [pathnames, threadId, callApi]);
 
   // Don't render breadcrumbs on mobile devices
   if (isMobile) {
@@ -68,6 +84,13 @@ const Breadcrumbs = () => {
         // For thread pages, just use "Thread" instead of the full title
         if (threadId && value === threadId) {
           displayName = "Thread";
+        }
+        
+        // For profile pages, use the username if available
+        if (value === "profile" && username && !isLast) {
+          displayName = "User Profile";
+        } else if (username && isLast && pathnames[index - 1] === "profile") {
+          displayName = username;
         }
 
         // Apply character limit

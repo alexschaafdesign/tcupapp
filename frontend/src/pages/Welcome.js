@@ -21,6 +21,8 @@ import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import palette from '../styles/colors/palette';
 import WarningIcon from '@mui/icons-material/Warning';
+import HandymanIcon from '@mui/icons-material/Handyman';
+
 
 const WelcomePage = () => {
   const { loginWithRedirect } = useAuth0();
@@ -28,14 +30,19 @@ const WelcomePage = () => {
   // Function to handle login with Auth0
   const handleLogin = () => {
     loginWithRedirect({
-      screen_hint: 'login'
+      authorizationParams: {
+        screen_hint: 'login',
+      }
     });
   };
+  
 
   // Function to handle signup with Auth0
   const handleSignup = () => {
     loginWithRedirect({
-      screen_hint: 'signup'
+      authorizationParams: {
+        screen_hint: 'signup',
+      }
     });
   };
 
@@ -191,7 +198,7 @@ const WelcomePage = () => {
                 mb: 0
               }}
             >
-              welcome to the new Cupboard!!!
+              welcome to the new Cupboard !!!
             </Typography>
           </Box>
 
@@ -225,7 +232,7 @@ const WelcomePage = () => {
                   textTransform: 'lowercase'
                 }}
               >
-                Important: You'll need a new account
+                you'll need a new account
               </Typography>
               <WarningIcon sx={{ color: palette.secondary.dark, ml: 1 }} />
             </Box>
@@ -242,73 +249,20 @@ const WelcomePage = () => {
               BUT it just takes five seconds (i swear) to set up a new one. Hundreds of people* have already done it. don't be left behind.  
             </Typography>
             <Typography 
-              variant="body1" 
-              sx={{ mb: 1 }}
-            >
-              Feel free to use the same username or take the opportunity to start fresh. (ah, to begin again...)  we will be bringing over many of the old conversations/threads as well, in a sort of 'archived' form.
-            </Typography>
-            <Typography 
               variant="caption" 
             >
-             *technically not true at the time i'm writing this, but i'm just assuming it'll happen instantly
+             *technically not true at the time i'm writing this
             </Typography>
           </Paper>
 
           {/* Main Content Section */}
           <Grid container spacing={4} sx={{ mb: 4 }}>
-            {/* Left Column: Features */}
+            {/* Login Section - First on mobile, second on desktop */}
             <Grid item xs={12} md={6} sx={{ 
               position: 'relative',
-              zIndex: 1
+              zIndex: 1,
+              order: { xs: 1, md: 2 } // 1st on mobile, 2nd on desktop
             }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <Typography 
-                  variant="h5" 
-                  sx={{
-                    fontWeight: 'bold',
-                    background: 'linear-gradient(45deg, #9c27b0 30%, #f50057 90%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    textTransform: 'lowercase',
-                    position: 'relative',
-                    display: 'inline-block'
-                  }}
-                >
-                  what we've got, uh, brewing
-                </Typography>
-                <Chip 
-                  label="new features" 
-                  size="small"
-                  sx={{ 
-                    ml: 2, 
-                    backgroundColor: 'rgba(156, 39, 176, 0.1)', 
-                    color: '#9c27b0',
-                    borderRadius: '4px',
-                  }} 
-                />
-              </Box>
-              
-              <FeatureBox 
-                icon={<ForumIcon />}
-                title="better forum / chat" 
-                description="Less clunky, more features, easier to use"
-              />
-              
-              <FeatureBox 
-                icon={<EventIcon />}
-                title="SHOW LIST" 
-                description="A comprehensive listing of every show on every day"
-              />
-              
-              <FeatureBox 
-                icon={<PeopleIcon />}
-                title="band profiles (coming soon)" 
-                description="having to use IG for everything is so 2024"
-              />
-            </Grid>
-            
-            {/* Right Column: Sign-up/Sign-in */}
-            <Grid item xs={12} md={6} sx={{ position: 'relative', zIndex: 1 }}>
               <Paper 
                 elevation={2} 
                 sx={{ 
@@ -401,35 +355,57 @@ const WelcomePage = () => {
                   </Button>
                 </Box>
                 
-                <Divider sx={{ my: 2 }} />
                 
-                <Box 
-                  sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'center',
-                    mt: 2
+              </Paper>
+            </Grid>
+            
+            {/* Features Section - Second on mobile, first on desktop */}
+            <Grid item xs={12} md={6} sx={{ 
+              position: 'relative',
+              zIndex: 1,
+              order: { xs: 2, md: 1 } // 2nd on mobile, 1st on desktop
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Typography 
+                  variant="h5" 
+                  sx={{
+                    fontWeight: 'bold',
+                    background: 'linear-gradient(45deg, #9c27b0 30%, #f50057 90%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    textTransform: 'lowercase',
+                    position: 'relative',
+                    display: 'inline-block'
                   }}
                 >
-                  <Link 
-                    href="/pwa-update" 
-                    underline="hover"
-                    sx={{ 
-                      fontSize: '0.875rem',
-                      color: '#9c27b0',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      "&:hover": {
-                        color: "#f50057",
-                      },
-                    }}
-                  >
-                    <PhoneAndroidIcon sx={{ mr: 0.5, fontSize: '1rem' }} />
-                    using the old mobile app? click here
-                  </Link>
-                </Box>
-              </Paper>
+                  what we've got, uh, brewing --
+                </Typography>
+                
+              </Box>
+              
+              <FeatureBox 
+                icon={<ForumIcon />}
+                title="chat" 
+                description="Get advice, find bandmates, share resources"
+              />
+              
+              <FeatureBox 
+                icon={<EventIcon />}
+                title="the official SHOW LIST" 
+                description="A comprehensive listing of every show on every day"
+              />
+
+            <FeatureBox 
+                icon={<HandymanIcon />}
+                title="resources" 
+                description="Booking contacts, venue info, flyering locations, and more"
+              />            
+              
+              <FeatureBox 
+                icon={<PeopleIcon />}
+                title="band profiles (coming soon)" 
+                description="having to use IG for everything is so 2024"
+              />
             </Grid>
           </Grid>
           

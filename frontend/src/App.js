@@ -29,7 +29,7 @@ import MainChatPage from "./pages/Chat/MainChatPage.js";
 import ViewSingleThread from "./pages/Chat/ViewSingleThread.js";
 import LandingPage from "./pages/LandingPage.js";
 import Privacy from "./pages/Privacy.js";
-import AdminImportPost from "./archived/pages/Chat/AdminImportPost.js";
+import AdminImportPost from "./pages/Chat/Components/OriginalAdminImportPost.js";
 import VRCForm from "./pages/VRC/VRCForm.js";
 import PowerPledgeForm from "./pages/PledgeAndAdvance/PowerPledge.js";
 import ImageDisplayPage from "./pages/ImageDisplayPage.js";
@@ -37,7 +37,6 @@ import FlyeringForm from "./pages/Flyering/FlyeringForm.js";
 import FlyeringTable from "./pages/Flyering/FlyeringTable.js";
 import EditFlyeringForm from "./pages/Flyering/EditFlyeringForm.js";
 import PledgePhotos from "./pages/PledgeAndAdvance/PledgePhotos.js";
-import TCUPNewsletter from "./pages/Newsletter.js";
 import TCUPAdvance from "./pages/PledgeAndAdvance/TCUPAdvance.js";
 import PledgeSuccess from "./pages/PledgeAndAdvance/PledgeSuccess.js";
 import PledgeTracker from "./pages/PledgeAndAdvance/PledgeTracker.js";
@@ -54,8 +53,14 @@ import Resources from "./pages/Resources/Resources.js";
 import ConversationDetail from "./pages/DirectMessages.js/ConversationDetail.js";
 import ConversationList from "./pages/DirectMessages.js/ConversationList.js";
 import WelcomePage from "./pages/Welcome.js";
-// Create or import the PwaUpdatePage
 import PwaUpdatePage from "./pages/PwaUpdatePage.js"; // Create this file
+import ForumImportTool from "./pages/Chat/ForumImportTool.js";
+import OriginalAdminImportPost from "./pages/Chat/Components/OriginalAdminImportPost.js";
+import HistoricalReplyForm from "./pages/Chat/Components/HistoricalReplyForm.js";
+import AdminDashboard from "./pages/Admin/AdminDashboard.js";
+import VenueReportCardPage from "./pages/VRC/VenueReportCardPage.js";
+import JoinTCUP from "./pages/TCUP/JoinTCUP.js";
+import Newsletter from "./pages/TCUP/Newsletter.js";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
@@ -91,19 +96,16 @@ function App() {
     registerUser();
   }, [isAuthenticated, user, isLoading, callApi]);
 
-  // Check for PWA users
   useEffect(() => {
     const checkForPwa = () => {
       if (window.matchMedia('(display-mode: standalone)').matches) {
-        if (!localStorage.getItem('new_pwa_notice_shown')) {
-          localStorage.setItem('new_pwa_notice_shown', 'true');
-          // Redirect to the PWA update page
-          window.location.href = '/pwa-update';
-        }
+        // Instead of redirecting, just log that it's a PWA
+        console.log('Running as PWA');
+        // No redirect happens now
       }
     };
     
-    if (isAuthenticated !== undefined) { // Only run after auth state is determined
+    if (isAuthenticated !== undefined) {
       checkForPwa();
     }
   }, [isAuthenticated]);
@@ -130,15 +132,21 @@ function App() {
           isAuthenticated ? <Layout /> : <Navigate to="/welcome" />
         }>
           {/* index => "/" */}
-          <Route index element={<AboutTCUP />} />
+          <Route index element={<MainChatPage />} />
   
           {/* Additional routes => "/landing", "/powerpledge", etc. */}
           <Route path="landing" element={<LandingPage />} />
           <Route path="about" element={<AboutTCUP />} />
           <Route path="contact" element={<ContactForm />} />
+          <Route path="/venuereportcard" element={<VenueReportCardPage />} />
+          <Route path="/join" element={<JoinTCUP />} />
 
-          {/* TCUP Updates */}
+
+          {/* Admin*/}
+          <Route path="admin" element={<AdminDashboard />} />          
           <Route path="/admin/updates" element={<NewUpdate />} />
+          <Route path="/admin/import" element={<OriginalAdminImportPost />} />
+
           <Route path="/updates/:id" element={<SingleUpdatePost />} />
           <Route path="updates" element={<UpdatesPage />} />
           <Route path="updates/edit/:id" element={<UpdateEditForm />} />
@@ -164,6 +172,8 @@ function App() {
           <Route path="shows/add" element={<ShowForm />} />
           <Route path="shows/:id/edit" element={<EditShowPage />} />
           <Route path="shows/:id" element={<ShowProfile />} />
+
+
   
           {/* Forum/Thread */}
           <Route path="chat" element={<MainChatPage />} />
@@ -171,7 +181,7 @@ function App() {
           <Route path="import" element={<AdminImportPost />} />
           <Route path="test-auth" element={<AuthTest />} />
           <Route path="vrc" element={<VRCForm />} />
-          <Route path="newsletter" element={<TCUPNewsletter />} />
+          <Route path="newsletter" element={<Newsletter />} />
           <Route path="pledgephotos" element={<PledgePhotos />} />
           <Route path="calendar" element={<CalendarEvents />} />
   

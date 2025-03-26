@@ -1,8 +1,27 @@
 import React from 'react';
 import palette from '../../../styles/colors/palette';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Tooltip } from '@mui/material';
+import HistoryIcon from '@mui/icons-material/History'; // Add this import
 
 const PostHeader = ({ post, isMobile, isThreadStarter }) => {
+  // Check if this is an imported post
+  const isImported = post.is_imported === true;
+  
+  // Get the appropriate date display
+  const getDateDisplay = () => {
+    // For imported posts, use the imported_date directly
+    if (isImported && post.imported_date) {
+      return post.imported_date;
+    }
+    
+    // For regular posts, format the timestamp
+    try {
+      return new Date(post.created_at).toLocaleString();
+    } catch (e) {
+      return ''; // Fallback if date parsing fails
+    }
+  };
+
   // If it's a thread starter
   if (isThreadStarter) {
     // Mobile layout for thread starter
@@ -19,7 +38,14 @@ const PostHeader = ({ post, isMobile, isThreadStarter }) => {
             alignItems: 'center'
           }}
         >
-          <Typography variant="h4">{post.title}</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography variant="h4">{post.title}</Typography>
+            {isImported && (
+              <Tooltip title="Imported from previous forum">
+                <HistoryIcon sx={{ ml: 2, fontSize: '1.5rem' }} />
+              </Tooltip>
+            )}
+          </Box>
         </Box>
       );
     }
@@ -35,9 +61,12 @@ const PostHeader = ({ post, isMobile, isThreadStarter }) => {
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        <Typography variant="h4">{post.title}</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Typography variant="h4">{post.title}</Typography>
+
+        </Box>
         <Typography variant="body2" sx={{ color: palette.text.secondary }}>
-          {new Date(post.created_at).toLocaleString()}
+          {getDateDisplay()}
         </Typography>
       </Box>
     );
@@ -75,7 +104,7 @@ const PostHeader = ({ post, isMobile, isThreadStarter }) => {
       alignItems: 'center' 
     }}>
       <Typography variant="caption" color="text.secondary">
-        {new Date(post.created_at).toLocaleString()}
+        {isImported && post.imported_date ? post.imported_date : new Date(post.created_at).toLocaleString()}
       </Typography>
       
       {/* Edit/Delete buttons should be included here */}

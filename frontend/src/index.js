@@ -6,6 +6,9 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import App from './App.js';
 import theme from './styles/theme.js';
 import * as Sentry from "@sentry/react";
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+
+
 
 // Disable React's default error overlay in development mode
 if (process.env.NODE_ENV === "development") {
@@ -22,7 +25,7 @@ Sentry.init({
     Sentry.replayIntegration(),
   ],
   tracesSampleRate: process.env.NODE_ENV === "production" ? 1.0 : 0.5,
-  tracePropagationTargets: ["localhost", /^https:\/\/portal\.tcupboard\.org\/api/, /^https:\/\/tcupmn\.org\/api/],
+  tracePropagationTargets: ["localhost", /^https:\/\/tcupboard\.org\/api/, /^https:\/\/tcupmn\.org\/api/],
   replaysSessionSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
   replaysOnErrorSampleRate: 1.0,
 });
@@ -44,8 +47,8 @@ if (currentEnv === 'staging') {
   redirectUri = 'https://staging.tcupboard.org/callback';
   logoutReturnTo = 'https://staging.tcupboard.org';
 } else if (currentEnv === 'production') {
-  redirectUri = 'https://portal.tcupboard.org/callback';
-  logoutReturnTo = 'https://portal.tcupboard.org';
+  redirectUri = 'https://tcupboard.org/callback';
+  logoutReturnTo = 'https://tcupboard.org';
 }
 
 console.log('Redirect URI:', redirectUri);
@@ -77,6 +80,7 @@ root.render(
       );
     }}
   >
+    
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
@@ -85,3 +89,8 @@ root.render(
     </ThemeProvider>
   </Auth0Provider>
 );
+
+serviceWorkerRegistration.register();
+localStorage.removeItem('new_pwa_notice_shown');
+
+

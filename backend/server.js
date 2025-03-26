@@ -32,6 +32,10 @@ import contactRouter from './routes/contact.js';
 import uploadRouter from './routes/upload.js';
 import readStatusRouter from './routes/chat/read-status.js'
 import directMessagesRouter from './routes/direct-messages.js'
+import scrapersRouter from './routes/admin/run-scrapers.js'
+
+import compression from 'compression';
+
 
 // 2) Optional debugging/logging to confirm environment vars are loaded
 console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -62,6 +66,9 @@ pool.connect((err, client, release) => {
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+app.use(compression());
+
+
 // 5) Define allowed origins per environment
 const allowedOriginsMap = {
   development: [
@@ -71,7 +78,7 @@ const allowedOriginsMap = {
     'https://staging.tcupboard.org'
   ],
   production: [
-    'https://portal.tcupboard.org',
+    'https://tcupboard.org',
     'https://tcupmn.org'
   ]
 };
@@ -131,6 +138,8 @@ app.use('/api/contact', contactRouter)
 app.use('/api/upload', uploadRouter)
 app.use('/api/read-status', readStatusRouter);
 app.use('/api/direct-messages', directMessagesRouter)
+app.use('/api/scrapers', scrapersRouter)
+
 
 
 
@@ -154,7 +163,7 @@ app.post('/index.php?api/oauth2/token', async (req, res) => {
   const XENFORO_URL = 'https://tcupboard.org';
   const CLIENT_ID = process.env.REACT_APP_XENFORO_CLIENT_ID;
   const REDIRECT_URI = process.env.NODE_ENV === 'production'
-    ? 'https://portal.tcupboard.org/callback'
+    ? 'https://tcupboard.org/callback'
     : 'http://localhost:3002/callback';
 
   try {

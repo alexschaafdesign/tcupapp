@@ -34,7 +34,6 @@ const AboutTCUP = () => {
         {/* Main Section with staggered layout */}
        {/* Main Section with staggered layout */}
 
-       <WelcomeSection />
 
  {/* Latest Updates Section */}
  <Fade in={true} timeout={1000} style={{ transitionDelay: '200ms' }}>

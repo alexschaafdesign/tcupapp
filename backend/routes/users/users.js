@@ -116,18 +116,6 @@ router.get('/profile', authMiddleware, async (req, res) => {
   }
 });
 
-// Get all users
-router.get('/', authMiddleware, async (req, res) => {
-  try {
-      const { rows } = await pool.query('SELECT auth0_id, username, email FROM users ORDER BY username');
-    //  console.log('Users fetched:', rows);
-      res.json(rows);
-  } catch (error) {
-      console.error('Error fetching users:', error);
-      res.status(500).json({ error: error.message });
-  }
-});
-
 // In your users.js file, add or update the route to handle profile/:auth0Id
 router.get('/profile/:auth0Id', authMiddleware, async (req, res) => {
   try {
@@ -166,6 +154,20 @@ router.get('/profile/:auth0Id', authMiddleware, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+// Get all users
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+      const { rows } = await pool.query('SELECT auth0_id, username, email FROM users ORDER BY username');
+    //  console.log('Users fetched:', rows);
+      res.json(rows);
+  } catch (error) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ error: error.message });
+  }
+});
+
+
 
 // Get user's bands
 router.get('/bands', authMiddleware, async (req, res) => {
@@ -420,6 +422,28 @@ router.put('/password', authMiddleware, async (req, res) => {
     }
   });
 
+router.post('/reset-password', async (req, res) => {
+    try {
+      const { email } = req.body;
+  
+      // Use Auth0's built-in password reset
+      await axios.post(
+        `https://${process.env.AUTH0_DOMAIN}/dbconnections/change_password`,
+        {
+          email: email,
+          connection: "Username-Password-Authentication",
+          client_id: process.env.AUTH0_CLIENT_ID
+        }
+      );
+  
+      res.json({ message: 'If this email exists in our system, a password reset link has been sent' });
+    } catch (error) {
+      console.error('Password reset error:', error.response?.data || error.message);
+      // Still return success message even if there's an error to prevent email enumeration
+      res.json({ message: 'If this email exists in our system, a password reset link has been sent' });
+    }
+});
+
 router.put('/email', authMiddleware, async (req, res) => {
     console.log("EMAIL ROUTE DEBUG:");
     console.log("Current NODE_ENV:", process.env.NODE_ENV);
@@ -498,8 +522,8 @@ router.put('/tagline', authMiddleware, async (req, res) => {
       const auth0Id = req.user.sub; // Extract Auth0 ID from request
 
       // Validate tagline length
-      if (!tagline || tagline.length > 16) {
-          return res.status(400).json({ error: 'Tagline must be between 1 and 16 characters.' });
+      if (!tagline || tagline.length > 32) {
+          return res.status(400).json({ error: 'Tagline must be between 1 and 32 characters.' });
       }
 
       // Update tagline in PostgreSQL
@@ -518,5 +542,7 @@ router.put('/tagline', authMiddleware, async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
 
 export default router;

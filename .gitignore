@@ -33,3 +33,4 @@ scrapers/credentials.json
 
 flyway/*.conf
 other_scripts
+backend/scrapers/credentials.json

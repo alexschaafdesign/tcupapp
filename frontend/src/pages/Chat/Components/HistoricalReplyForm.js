@@ -1,28 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Typography, TextField, Button, Select, MenuItem } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button
+} from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const HistoricalReplyForm = ({ threadId, onReplyCreated, onClose }) => {
   const { getAccessTokenSilently } = useAuth0();
-  const [users, setUsers] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     content: '',
-    selectedUserId: '',
-    createdAt: new Date().toISOString().slice(0, 16)
+    authorName: '',
+    createdAt: new Date().toISOString().slice(0, 16),
+    avatarUrl: '' // New: store the custom avatar
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const token = await getAccessTokenSilently();
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/users`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await response.json();
-      setUsers(data);
-    };
-    fetchUsers();
-  }, [getAccessTokenSilently]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +23,7 @@ const HistoricalReplyForm = ({ threadId, onReplyCreated, onClose }) => {
 
     try {
       const token = await getAccessTokenSilently();
-      const response = await fetch(
+      const resp = await fetch(
         `${process.env.REACT_APP_API_URL}/posts/${threadId}/historical-reply`,
         {
           method: 'POST',
@@ -40,19 +33,23 @@ const HistoricalReplyForm = ({ threadId, onReplyCreated, onClose }) => {
           },
           body: JSON.stringify({
             content: formData.content,
-            userId: formData.selectedUserId,
-            createdAt: formData.createdAt
+            authorName: formData.authorName,
+            createdAt: formData.createdAt,
+            avatarUrl: formData.avatarUrl // pass the new field
           })
         }
       );
 
-      if (response.ok) {
-        const reply = await response.json();
-        onReplyCreated(reply);
-        onClose();
+      if (!resp.ok) {
+        throw new Error('Failed to add historical reply');
       }
+
+      const reply = await resp.json();
+      // Tell parent about the new reply
+      onReplyCreated(reply);
+      onClose();
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error adding historical reply:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -60,48 +57,64 @@ const HistoricalReplyForm = ({ threadId, onReplyCreated, onClose }) => {
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>Add Historical Reply</Typography>
-      
+      <Typography variant="h6" gutterBottom>
+        Add Historical Reply
+      </Typography>
+
+      {/* Reply Content */}
       <TextField
-        fullWidth
+        label="Reply Content"
         multiline
         rows={4}
-        label="Reply Content"
-        value={formData.content}
-        onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+        fullWidth
         required
         margin="normal"
+        value={formData.content}
+        onChange={(e) =>
+          setFormData((prev) => ({ ...prev, content: e.target.value }))
+        }
       />
 
-      <Select
-        fullWidth
-        value={formData.selectedUserId}
-        onChange={(e) => setFormData(prev => ({ ...prev, selectedUserId: e.target.value }))}
-        label="Post as User"
-        required
-        margin="dense"
-      >
-        <MenuItem value="">Select a user</MenuItem>
-        {users.map(user => (
-          <MenuItem key={user.auth0_id} value={user.auth0_id}>
-            {user.username || user.email}
-          </MenuItem>
-        ))}
-      </Select>
-
+      {/* Historical Author Name */}
       <TextField
+        label="Historical Author Name"
         fullWidth
-        type="datetime-local"
-        label="Reply Date/Time"
-        value={formData.createdAt}
-        onChange={(e) => setFormData(prev => ({ ...prev, createdAt: e.target.value }))}
         required
         margin="normal"
+        value={formData.authorName}
+        onChange={(e) =>
+          setFormData((prev) => ({ ...prev, authorName: e.target.value }))
+        }
+      />
+
+      {/* Historical Avatar URL */}
+      <TextField
+        label="Historical Avatar URL (Optional)"
+        fullWidth
+        margin="normal"
+        value={formData.avatarUrl}
+        onChange={(e) =>
+          setFormData((prev) => ({ ...prev, avatarUrl: e.target.value }))
+        }
+        placeholder="https://example.com/my-avatar.png"
+      />
+
+      {/* Historical Date/Time */}
+      <TextField
+        type="datetime-local"
+        label="Reply Date/Time"
+        fullWidth
+        required
+        margin="normal"
+        value={formData.createdAt}
+        onChange={(e) =>
+          setFormData((prev) => ({ ...prev, createdAt: e.target.value }))
+        }
       />
 
       <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
         <Button type="submit" variant="contained" disabled={isSubmitting}>
-          {isSubmitting ? 'Adding Reply...' : 'Add Reply'}
+          {isSubmitting ? 'Saving…' : 'Add Reply'}
         </Button>
         <Button variant="outlined" onClick={onClose}>
           Cancel
