@@ -90,7 +90,7 @@ function DynamicFilterComponent({ filters, navigate }) {
             }
           }}
         >
-          the <b> Lalala</b>
+          the <b>SHOW LIST</b>
         </Typography>
         
         {/* Action Buttons */}
@@ -100,20 +100,45 @@ function DynamicFilterComponent({ filters, navigate }) {
           alignItems: 'center'
         }}>
           {/* Search Filters Button */}
-          <Button 
-            onClick={toggleExpanded}
-            color="primary"
-            size="medium"
-            variant="contained"
-            startIcon={<SearchIcon />}
-            sx={{ 
-              borderRadius: 30,
-              height: 44,
-              px: 2
-            }}
-          >
-            Search
-          </Button>
+            <Box sx={{ display: 'flex' }}>
+              {/* Icon-only on xs, full button on sm and up */}
+              <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+                <IconButton 
+                  onClick={toggleExpanded}
+                  color="primary"
+                  size="medium"
+                  sx={{ 
+                    bgcolor: 'secondary.main',
+                    color: 'black',
+                    '&:hover': {
+                      bgcolor: 'secondary.dark',
+                    },
+                    height: 44,
+                    width: 44
+                  }}
+                >
+                  <SearchIcon />
+                </IconButton>
+              </Box>
+              
+              {/* Full button on sm and up, hidden on xs */}
+              <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <Button 
+                  onClick={toggleExpanded}
+                  color="primary"
+                  size="medium"
+                  variant="contained"
+                  startIcon={<SearchIcon />}
+                  sx={{ 
+                    borderRadius: 30,
+                    height: 44,
+                    px: 2
+                  }}
+                >
+                  Search
+                </Button>
+              </Box>
+            </Box>
 
           {/* Add Show Button - Always Visible */}
           <Button

@@ -24,6 +24,8 @@ import { stateToHTML } from 'draft-js-export-html';
 import parse from 'html-react-parser';
 import ChatImageUpload from './Components/ChatImageUpload';
 import HistoricalReplyForm from './Components/HistoricalReplyForm';
+import linkifyHtml from 'linkify-html';
+
 
 const ViewSingleThread = () => {
   const { threadId } = useParams();
@@ -263,135 +265,62 @@ const ViewSingleThread = () => {
     fetchUserRoles();
   }, [threadId, getAccessTokenSilently, apiUrl, user]);
 
-  // Safely render post content (including quotes)
-  const renderContent = (content) => {
-    try {
-      // Parse the content
-      const contentObj = typeof content === 'string' ? JSON.parse(content) : content;
-      const contentState = convertFromRaw(contentObj);
-      const plainText = contentState.getPlainText();
-  
-      // HTML options for stateToHTML conversion
-      const exportOptions = {
-        entityStyleFn: (entity) => {
-          const entityType = entity.get('type').toLowerCase();
-          if (entityType === 'link') {
-            const data = entity.getData();
-            return {
-              element: 'a',
-              attributes: {
-                href: data.url,
-                target: '_blank',
-                rel: 'noopener noreferrer',
-                className: 'post-link'
-              }
-            };
-          }
-        }
+// Define your export options if you don't have them already
+const exportOptions = {
+  entityStyleFn: (entity) => {
+    const entityType = entity.get('type').toLowerCase();
+    if (entityType === 'link') {
+      const data = entity.getData();
+      return {
+        element: 'a',
+        attributes: {
+          href: data.url,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          className: 'post-link',
+        },
       };
-  
-      // Handle quotes
-      if (plainText.includes('[QUOTE="') && plainText.includes('[/QUOTE]')) {
-        const parts = [];
-        const quoteRegex = /\[QUOTE="([^"]+)"\]([\s\S]*?)\[\/QUOTE\]/g;
-        let match;
-        let lastIndex = 0;
-  
-        while ((match = quoteRegex.exec(plainText)) !== null) {
-          // Add text before the quote
-          if (match.index > lastIndex) {
-            const beforeText = plainText.substring(lastIndex, match.index);
-            // For text parts, we'll convert that portion to HTML
-            const textBlocks = beforeText.split('\n').map((line, i) => 
-              `<p key="line-${i}">${line}</p>`
-            ).join('');
-            
-            parts.push(
-              <Box key={`text-${lastIndex}`} sx={{ my: 1 }}>
-                {parse(textBlocks)}
-              </Box>
-            );
-          }
-  
-          // Add the quote
-          const author = match[1];
-          const quoteText = match[2].trim();
-          parts.push(
-            <Paper
-              key={`quote-${match.index}`}
-              elevation={0}
-              sx={{
-                borderLeft: '4px solid',
-                borderColor: 'primary.main',
-                bgcolor: 'rgba(0,0,0,0.05)',
-                p: 2,
-                my: 2,
-                maxWidth: '100%',
-              }}
-            >
-              <Typography variant="subtitle2" color="primary" fontWeight="bold">
-                {author} wrote:
-              </Typography>
-              <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-                {quoteText}
-              </Typography>
-            </Paper>
-          );
-  
-          lastIndex = match.index + match[0].length;
-        }
-  
-        // Add text after the last quote
-        if (lastIndex < plainText.length) {
-          const afterText = plainText.substring(lastIndex);
-          const textBlocks = afterText.split('\n').map((line, i) => 
-            `<p key="line-${i}">${line}</p>`
-          ).join('');
-          
-          parts.push(
-            <Box key={`text-${lastIndex}`} sx={{ my: 1 }}>
-              {parse(textBlocks)}
-            </Box>
-          );
-        }
-  
-        return <Box sx={{ mt: 1 }}>{parts}</Box>;
-      }
-      
-      // For non-quoted content, convert to HTML with preserved links
-      const html = stateToHTML(contentState, exportOptions);
-      
-      return (
-        <Box 
-          sx={{ 
-            mt: 1,
-            // Style links in the content
-            '& a.post-link': {
-              color: 'primary.main',
-              textDecoration: 'underline',
-              '&:hover': {
-                textDecoration: 'none'
-              }
-            },
-            // Preserve paragraph spacing
-            '& p': {
-              my: 1
-            }
-          }}
-        >
-          {parse(html)}
-        </Box>
-      );
-    } catch (error) {
-      console.error('Error rendering content:', error);
-      // Fallback for plain text or parsing errors
-      return (
-        <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap', my: 1 }}>
-          {typeof content === 'string' ? content : JSON.stringify(content)}
-        </Typography>
-      );
     }
-  };
+  },
+};
+
+const linkifyOptions = {
+  defaultProtocol: 'https',
+  // you can include other options if needed
+};
+
+  // Safely render post content (including quotes)
+ 
+const renderContent = (content) => {
+  if (!content) return <Typography variant="body1">No content</Typography>;
+  
+  try {
+    const contentObj = typeof content === 'string' ? JSON.parse(content) : content;
+    if (!contentObj || !contentObj.blocks) {
+      return <Typography variant="body1">{typeof content === 'string' ? content : JSON.stringify(content)}</Typography>;
+    }
+    // Convert Draft.js raw to HTML
+    const contentState = convertFromRaw(contentObj);
+    let html = stateToHTML(contentState, exportOptions);
+    
+    // Pass the HTML through linkifyHtml so that plain URLs become <a> tags.
+    html = linkifyHtml(html, linkifyOptions);
+    
+    // Parse the final HTML into React elements.
+    const parseOptions = {
+      replace: (domNode) => {
+        if (domNode.name === 'a' && domNode.attribs && !domNode.attribs.target) {
+          domNode.attribs.target = '_blank';
+        }
+      },
+    };
+    
+    return parse(html, parseOptions);
+  } catch (error) {
+    console.error('Error rendering post content:', error);
+    return <Typography variant="body1">{typeof content === 'string' ? content : 'Unreadable content'}</Typography>;
+  }
+};
 
   const handleLikeClick = async (postId) => {
     if (!user) return;
