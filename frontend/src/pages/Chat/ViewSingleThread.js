@@ -532,7 +532,7 @@ const ViewSingleThread = () => {
   if (!threadData?.post) return <Typography>Thread not found</Typography>;
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 0 }}>
       {/* Mobile Back Button */}
       {isMobile && (
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
