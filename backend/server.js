@@ -34,6 +34,9 @@ import readStatusRouter from './routes/chat/read-status.js'
 import directMessagesRouter from './routes/direct-messages.js'
 import scrapersRouter from './routes/admin/run-scrapers.js'
 
+import compression from 'compression';
+
+
 // 2) Optional debugging/logging to confirm environment vars are loaded
 console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('APP_ENV (or ENV):', process.env.APP_ENV || process.env.ENV);
@@ -62,6 +65,9 @@ pool.connect((err, client, release) => {
 // 4) Create the Express app
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+app.use(compression());
+
 
 // 5) Define allowed origins per environment
 const allowedOriginsMap = {
