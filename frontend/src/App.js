@@ -61,6 +61,7 @@ import AdminDashboard from "./pages/Admin/AdminDashboard.js";
 import VenueReportCardPage from "./pages/VRC/VenueReportCardPage.js";
 import JoinTCUP from "./pages/TCUP/JoinTCUP.js";
 import Newsletter from "./pages/TCUP/Newsletter.js";
+import { MessageProvider } from "./pages/DirectMessages.js/MessageBadge.js";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
@@ -117,6 +118,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <MessageProvider>
       <ProfileSync />
       <Routes>
         {/* Public routes that don't require authentication */}
@@ -231,6 +233,7 @@ function App() {
           />
         </Route>
       </Routes>
+      </MessageProvider>
     </ThemeProvider>
   );
 }

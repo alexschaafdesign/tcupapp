@@ -38,6 +38,7 @@ import ChatImageUpload from '../Chat/Components/ChatImageUpload';
 import ImageAttachmentsGrid from '../Chat/Components/Post/ImageAttachmentsGrid';
 import linkifyHtml from 'linkify-html';
 import { LinkDecorator } from '../Chat/Components/LinkDecorator';
+import { useMessages } from './MessageBadge';
 
 const ConversationDetail = () => {
   const { conversationId } = useParams();
@@ -63,6 +64,38 @@ const ConversationDetail = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { refreshUnreadCount } = useMessages();
+
+// In your ConversationDetail component
+// Mark conversation as read when opened
+useEffect(() => {
+  const markAsRead = async () => {
+    if (conversationId) {
+      try {
+        // Call your existing endpoint with the correct path
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/direct-messages/${conversationId}/read`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${await getAccessTokenSilently()}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          // After successfully marking as read, refresh badge count
+          refreshUnreadCount();
+        } else {
+          console.error('Failed to mark conversation as read:', await response.text());
+        }
+      } catch (error) {
+        console.error('Error marking conversation as read:', error);
+      }
+    }
+  };
+  
+  markAsRead();
+}, [conversationId, getAccessTokenSilently, refreshUnreadCount]);
+
   
   // API Calls
   const fetchConversation = async (reset = false) => {
