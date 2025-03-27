@@ -15,12 +15,16 @@ import { Send as SendIcon } from '@mui/icons-material';
 import theme from '../../../styles/theme';
 import { useTheme } from '@mui/material/styles';
 import ChatImageUpload from './ChatImageUpload';
+import { LinkDecorator } from './LinkDecorator';
+
+const initialEditorState = EditorState.createEmpty(LinkDecorator);
+
 
 const CreatePost = ({ onPostCreated, tags, setTags }) => {
   const { getAccessTokenSilently } = useAuth0();
   const [title, setTitle] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [editorState, setEditorState] = useState(initialEditorState);
   const [newTag, setNewTag] = useState('');
   const [isAddingTag, setIsAddingTag] = useState(false);
   const [recentlyAddedTag, setRecentlyAddedTag] = useState(null);
@@ -99,22 +103,22 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const contentState = editorState.getCurrentContent();
     const hasText = contentState.hasText();
     const hasImages = images.length > 0;
-
+  
     if (!title.trim() || (!hasText && !hasImages)) {
       // Must have either text or images in the post
       return;
     }
-
+  
     setIsSubmitting(true);
-
+  
     try {
       const token = await getAccessTokenSilently();
       const rawContent = convertToRaw(contentState);
-
+  
       // Build request body
       const bodyData = {
         title,
@@ -122,20 +126,20 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
         tags: selectedTags,
         images
       };
-
+  
       // If user provided *any* of these imported fields, mark it as imported
       const hasImportedInfo =
         importedAuthorName.trim() ||
         importedDate.trim() ||
         importedAvatarUrl.trim();
-
+  
       if (hasImportedInfo) {
         bodyData.is_imported = true;
         bodyData.imported_author_name = importedAuthorName.trim() || null;
         bodyData.imported_date = importedDate.trim() || null;
-        bodyData.imported_avatar_url = importedAvatarUrl.trim() || null; // <--- included
+        bodyData.imported_avatar_url = importedAvatarUrl.trim() || null;
       }
-
+  
       const response = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
         method: 'POST',
         headers: {
@@ -144,22 +148,26 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
         },
         body: JSON.stringify(bodyData)
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to create post');
       }
-
+  
       const newPost = await response.json();
       onPostCreated(newPost);
-
+  
       // Reset form
-      setTitle('');
-      setSelectedTags([]);
-      setEditorState(EditorState.createEmpty());
-      setImages([]);
-      setImportedAuthorName('');
-      setImportedDate('');
-      setImportedAvatarUrl(''); // reset avatar field
+      const resetForm = () => {
+        setTitle('');
+        setSelectedTags([]);
+        // Create a fresh editor state with the same decorator
+        setEditorState(EditorState.createEmpty(LinkDecorator));
+        setImages([]);
+        setImportedAuthorName('');
+        setImportedDate('');
+        setImportedAvatarUrl('');
+      };
+      
     } catch (error) {
       console.error('Error creating post:', error);
     } finally {

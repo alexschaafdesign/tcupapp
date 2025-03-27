@@ -25,7 +25,7 @@ import parse from 'html-react-parser';
 import ChatImageUpload from './Components/ChatImageUpload';
 import HistoricalReplyForm from './Components/HistoricalReplyForm';
 import linkifyHtml from 'linkify-html';
-
+import { LinkDecorator } from './Components/LinkDecorator';
 
 const ViewSingleThread = () => {
   const { threadId } = useParams();
@@ -40,7 +40,7 @@ const ViewSingleThread = () => {
   const [postReactions, setPostReactions] = useState({});
   const [userRoles, setUserRoles] = useState([]);
   const navigate = useNavigate();
-  const [replyEditorState, setReplyEditorState] = useState(EditorState.createEmpty());
+  const [replyEditorState, setReplyEditorState] = useState(EditorState.createEmpty(LinkDecorator));
   const [focusTrigger, setFocusTrigger] = useState(0);
   const [replyImages, setReplyImages] = useState([]);
   const [editEditorState, setEditEditorState] = useState(null);
@@ -77,12 +77,13 @@ const ViewSingleThread = () => {
         : post.content;
       
       const contentState = convertFromRaw(contentObj);
-      const newEditorState = EditorState.createWithContent(contentState);
+      // Use LinkDecorator here
+      const newEditorState = EditorState.createWithContent(contentState, LinkDecorator);
       setEditEditorState(newEditorState);
     } catch (error) {
       console.error('Error initializing editor:', error);
       // Fallback to empty editor if there's an error
-      setEditEditorState(EditorState.createEmpty());
+      setEditEditorState(EditorState.createEmpty(LinkDecorator));
     }
   };
 
@@ -291,6 +292,7 @@ const linkifyOptions = {
 
   // Safely render post content (including quotes)
  
+// Updated renderContent function for ViewSingleThread.js
 const renderContent = (content) => {
   if (!content) return <Typography variant="body1">No content</Typography>;
   
@@ -299,18 +301,53 @@ const renderContent = (content) => {
     if (!contentObj || !contentObj.blocks) {
       return <Typography variant="body1">{typeof content === 'string' ? content : JSON.stringify(content)}</Typography>;
     }
-    // Convert Draft.js raw to HTML
+    
+    // Convert Draft.js raw to HTML with better link handling
     const contentState = convertFromRaw(contentObj);
-    let html = stateToHTML(contentState, exportOptions);
+    let html = stateToHTML(contentState, {
+      inlineStyles: {
+        BOLD: { element: 'strong' },
+        ITALIC: { element: 'em' },
+        UNDERLINE: { element: 'u' }
+      },
+      entityStyleFn: (entity) => {
+        const entityType = entity.get('type').toLowerCase();
+        if (entityType === 'link') {
+          const data = entity.getData();
+          return {
+            element: 'a',
+            attributes: {
+              href: data.url,
+              target: '_blank',
+              rel: 'noopener noreferrer',
+              className: 'post-link',
+            },
+          };
+        }
+      },
+    });
     
-    // Pass the HTML through linkifyHtml so that plain URLs become <a> tags.
-    html = linkifyHtml(html, linkifyOptions);
+    // Linkify any plain URLs that weren't already converted to links
+    html = linkifyHtml(html, {
+      defaultProtocol: 'https',
+      attributes: {
+        target: '_blank',
+        rel: 'noopener noreferrer',
+        class: 'post-link'
+      }
+    });
     
-    // Parse the final HTML into React elements.
+    // Parse the final HTML into React elements
     const parseOptions = {
       replace: (domNode) => {
-        if (domNode.name === 'a' && domNode.attribs && !domNode.attribs.target) {
-          domNode.attribs.target = '_blank';
+        if (domNode.name === 'a' && domNode.attribs) {
+          // Ensure all links have target="_blank" and proper rel attribute
+          if (!domNode.attribs.target) {
+            domNode.attribs.target = '_blank';
+          }
+          if (!domNode.attribs.rel) {
+            domNode.attribs.rel = 'noopener noreferrer';
+          }
         }
       },
     };
@@ -390,7 +427,8 @@ const renderContent = (content) => {
   
     // Build ContentState and EditorState
     const newContentState = ContentState.createFromBlockArray([quoteBlock, spacingBlock, emptyBlock]);
-    let newEditorState = EditorState.createWithContent(newContentState);
+    // Use LinkDecorator here
+    let newEditorState = EditorState.createWithContent(newContentState, LinkDecorator);
   
     // Position cursor in empty block
     const blockArray = newContentState.getBlocksAsArray();

@@ -30,14 +30,10 @@ import {
 } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
 import Editor from 'draft-js-plugins-editor';
-import createLinkifyPlugin from 'draft-js-linkify-plugin';
-import 'draft-js-linkify-plugin/lib/plugin.css'; // optional default styles
+import { LinkDecorator } from './LinkDecorator';
+import 'draft-js/dist/Draft.css';
 
-const linkifyPlugin = createLinkifyPlugin({
-  target: '_blank',
-});
-const plugins = [linkifyPlugin];
-
+// Export options for HTML conversion
 const exportOptions = {
   entityStyleFn: (entity) => {
     const entityType = entity.get('type').toLowerCase();
@@ -56,8 +52,13 @@ const exportOptions = {
   },
 };
 
+// We have two options for fixing the issue:
+
+// Option 1: Don't use the LinkDecorator directly here, but pass the initialized EditorState from parent
+// Option 2: Create editor state with proper handling to avoid reinitialization issues
+
 const EditorWithFormatting = forwardRef(
-  ({ editorState, setEditorState, autoFocus, focusTrigger, onSave }, ref) => {
+  ({ editorState, setEditorState, autoFocus, placeholder = "Enter your text here...", onSave }, ref) => {
     const editorRef = useRef(null);
     const [linkDialogOpen, setLinkDialogOpen] = useState(false);
     const [linkUrl, setLinkUrl] = useState('');
@@ -125,12 +126,15 @@ const EditorWithFormatting = forwardRef(
       const content = editorState.getCurrentContent();
       const selection = editorState.getSelection();
       let newState;
+      
       if (!selection.isCollapsed()) {
+        // Text is selected, convert to link
         const contentWithEntity = content.createEntity('LINK', 'MUTABLE', { url: linkUrl });
         const entityKey = contentWithEntity.getLastCreatedEntityKey();
         newState = EditorState.push(editorState, contentWithEntity, 'create-entity');
         newState = RichUtils.toggleLink(newState, selection, entityKey);
       } else {
+        // No text selected, insert new link with text
         const contentWithEntity = content.createEntity('LINK', 'MUTABLE', { url: linkUrl });
         const entityKey = contentWithEntity.getLastCreatedEntityKey();
         const contentWithText = Modifier.insertText(content, selection, linkText);
@@ -142,10 +146,12 @@ const EditorWithFormatting = forwardRef(
         newState = EditorState.forceSelection(newState, newSelection);
         newState = RichUtils.toggleLink(newState, newSelection, entityKey);
       }
+      
       setEditorState(newState);
       setLinkDialogOpen(false);
       setLinkUrl('');
       setLinkText('');
+      
       setTimeout(() => {
         if (editorRef.current) {
           editorRef.current.focus();
@@ -260,9 +266,9 @@ const EditorWithFormatting = forwardRef(
             editorState={editorState}
             onChange={setEditorState}
             handleKeyCommand={handleKeyCommand}
-            plugins={plugins}
-            placeholder="Enter your post here..."
+            placeholder={placeholder}
             spellCheck={true}
+            // We don't need to specify plugins here since we're using the editorState from parent
           />
         </Box>
 
@@ -313,30 +319,4 @@ const EditorWithFormatting = forwardRef(
   }
 );
 
-const PostEditor = () => {
-  const [savedContent, setSavedContent] = useState(null);
-
-  const handleSave = (content) => {
-    setSavedContent(content);
-    console.log('Content saved:', content);
-  };
-
-  return (
-    <div>
-      <h2>Create Post</h2>
-      <EditorWithFormatting autoFocus={true} onSave={handleSave} />
-      {savedContent && (
-        <div>
-          <h3>Preview</h3>
-          <div
-            dangerouslySetInnerHTML={{ __html: savedContent.html }}
-            style={{ border: '1px solid #ccc', padding: '10px', marginTop: '10px' }}
-          />
-        </div>
-      )}
-    </div>
-  );
-};
-
-export { EditorWithFormatting, PostEditor };
 export default EditorWithFormatting;

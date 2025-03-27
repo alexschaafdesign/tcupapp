@@ -1,7 +1,22 @@
+import React from 'react';
 import { CompositeDecorator } from 'draft-js';
 
-// Link decorator component as a named export
-export const LinkComponent = (props) => {
+// Only focus on explicit links and URLs with http/https
+// This prevents over-detection that can cause loops
+const linkStrategy = (contentBlock, callback, contentState) => {
+  contentBlock.findEntityRanges(
+    (character) => {
+      const entityKey = character.getEntity();
+      return (
+        entityKey !== null &&
+        contentState.getEntity(entityKey).getType() === 'LINK'
+      );
+    },
+    callback
+  );
+};
+
+const LinkComponent = (props) => {
   const { url } = props.contentState.getEntity(props.entityKey).getData();
   return (
     <a
@@ -15,52 +30,10 @@ export const LinkComponent = (props) => {
   );
 };
 
-// Existing decorator for explicit LINK entities
-const linkEntityDecorator = {
-  strategy: (contentBlock, callback, contentState) => {
-    contentBlock.findEntityRanges(
-      (character) => {
-        const entityKey = character.getEntity();
-        return (
-          entityKey !== null &&
-          contentState.getEntity(entityKey).getType() === 'LINK'
-        );
-      },
-      callback
-    );
-  },
-  component: LinkComponent,
-};
-
-// New decorator to detect plain text URLs using a regex
-const regexUrlDecorator = {
-  strategy: (contentBlock, callback) => {
-    const text = contentBlock.getText();
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    let match;
-    while ((match = urlRegex.exec(text)) !== null) {
-      const start = match.index;
-      const end = start + match[0].length;
-      callback(start, end);
-    }
-  },
-  component: (props) => {
-    const url = props.decoratedText;
-    return (
-      <a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ color: '#2196f3', textDecoration: 'underline' }}
-      >
-        {props.children}
-      </a>
-    );
-  },
-};
-
-// Combine both decorators
+// Create a single instance of the decorator
 export const LinkDecorator = new CompositeDecorator([
-  linkEntityDecorator,
-  regexUrlDecorator,
+  {
+    strategy: linkStrategy,
+    component: LinkComponent
+  }
 ]);

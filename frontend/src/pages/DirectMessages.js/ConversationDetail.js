@@ -37,6 +37,7 @@ import EditorWithFormatting from '../Chat/Components/EditorWithFormatting';
 import ChatImageUpload from '../Chat/Components/ChatImageUpload';
 import ImageAttachmentsGrid from '../Chat/Components/Post/ImageAttachmentsGrid';
 import linkifyHtml from 'linkify-html';
+import { LinkDecorator } from '../Chat/Components/LinkDecorator';
 
 const ConversationDetail = () => {
   const { conversationId } = useParams();
@@ -45,7 +46,9 @@ const ConversationDetail = () => {
   const [otherUser, setOtherUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [messageEditorState, setMessageEditorState] = useState(EditorState.createEmpty());
+  const [messageEditorState, setMessageEditorState] = useState(
+    EditorState.createEmpty(LinkDecorator)
+  );
   const [messageImages, setMessageImages] = useState([]);
   const [sendingMessage, setSendingMessage] = useState(false);
   const [page, setPage] = useState(1);
@@ -167,8 +170,8 @@ const ConversationDetail = () => {
       
       const newMessage = await response.json();
       setMessages(prev => [...prev, newMessage]);
-      setMessageEditorState(EditorState.createEmpty());
-      setMessageImages([]);
+      setMessageEditorState(EditorState.createEmpty(LinkDecorator));
+       setMessageImages([]);
       setShowImageUpload(false);
       setShowReplyForm(false);
     } catch (error) {
@@ -260,29 +263,41 @@ const ConversationDetail = () => {
         return <Typography variant="body1">{typeof content === 'string' ? content : JSON.stringify(content)}</Typography>;
       }
   
-      // 1) Convert Draft.js raw to HTML
+      // Convert Draft.js raw to HTML with proper link handling
       const contentState = convertFromRaw(contentObj);
       let html = stateToHTML(contentState, {
         inlineStyles: {
           BOLD: { element: 'strong' },
           ITALIC: { element: 'em' },
+        },
+        entityStyleFn: (entity) => {
+          const entityType = entity.get('type').toLowerCase();
+          if (entityType === 'link') {
+            const data = entity.getData();
+            return {
+              element: 'a',
+              attributes: {
+                href: data.url,
+                target: '_blank',
+                rel: 'noopener noreferrer'
+              }
+            };
+          }
         }
       });
   
-      // 2) Linkify the HTML
+      // You can still linkify regular text URLs if needed
       html = linkifyHtml(html, linkifyOptions);
   
-      // 3) Optionally transform <a> tags to add target="_blank" if missing
-      const parseOptions = {
+      // Parse final HTML into React elements
+      return parse(html, {
         replace: (domNode) => {
           if (domNode.name === 'a' && domNode.attribs && !domNode.attribs.target) {
             domNode.attribs.target = '_blank';
+            domNode.attribs.rel = 'noopener noreferrer';
           }
         }
-      };
-  
-      // 4) Parse final HTML into React elements
-      return parse(html, parseOptions);
+      });
     } catch (error) {
       console.error("Error rendering message content:", error);
       return <Typography variant="body1">{typeof content === 'string' ? content : 'Unreadable content'}</Typography>;
