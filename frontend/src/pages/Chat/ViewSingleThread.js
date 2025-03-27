@@ -359,6 +359,27 @@ const renderContent = (content) => {
       },
     });
     
+    // Process BBCode quote tags with a regex
+    html = html.replace(/\[QUOTE="([^"]+)"\]([\s\S]*?)\[\/QUOTE\]/g, (match, username, quoteContent) => {
+      return `
+        <div class="quoted-content" style="margin: 10px 0; padding: 10px; border-left: 4px solid #7C60DD; background-color: rgba(124, 96, 221, 0.05);">
+          <div style="font-weight: bold; margin-bottom: 5px; color: #7C60DD;">
+            ${username} wrote:
+          </div>
+          <div>${quoteContent.trim()}</div>
+        </div>
+      `;
+    });
+    
+    // Also handle quotes without username
+    html = html.replace(/\[QUOTE\]([\s\S]*?)\[\/QUOTE\]/g, (match, quoteContent) => {
+      return `
+        <div class="quoted-content" style="margin: 10px 0; padding: 10px; border-left: 4px solid #7C60DD; background-color: rgba(124, 96, 221, 0.05);">
+          <div>${quoteContent.trim()}</div>
+        </div>
+      `;
+    });
+    
     // Linkify any plain URLs that weren't already converted to links
     html = linkifyHtml(html, {
       defaultProtocol: 'https',
