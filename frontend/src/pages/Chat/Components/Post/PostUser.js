@@ -1,13 +1,16 @@
 import React from 'react';
-import { Box, Avatar, Typography, Tooltip } from '@mui/material';
+import { Box, Avatar, Typography, Tooltip, IconButton } from '@mui/material';
 import HistoryIcon from '@mui/icons-material/History';
+import EmailIcon from '@mui/icons-material/Email'; // Import the email icon
+
 
 const PostUser = ({ 
   post, 
   isImported = false, 
   size = "medium", 
   navigateToUserProfile,
-  showTagline = true 
+  showTagline = true,
+  onSendDM  // Add this new prop for handling DM clicks
 }) => {
   // Determine sizes based on the size prop
   const avatarSizes = {
@@ -33,6 +36,46 @@ const PostUser = ({
       console.warn('navigateToUserProfile is not defined or not a function');
     }
   };
+
+    // Define a handler for the DM button
+    const handleSendDM = (e) => {
+      e.stopPropagation();
+      console.log("DM icon clicked in PostUser");
+      if (typeof onSendDM === 'function') {
+        console.log("onSendDM is a function, calling it");
+        onSendDM(post);
+      } else {
+        console.log("onSendDM is not a function", onSendDM);
+      }
+    };
+    
+  const ActionIcons = () => (
+    <Box sx={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      mt: 0.5, 
+      justifyContent: size === 'large' ? 'center' : 'flex-start'
+    }}>
+      <Tooltip title="Send direct message">
+        <IconButton 
+          size="small" 
+          onClick={handleSendDM}
+          disabled={isImported} // Disable for imported posts
+          sx={{ 
+            p: 0.5, 
+            color: 'primary.main',
+            opacity: isImported ? 0.5 : 1,
+            '&:hover': { 
+              backgroundColor: 'rgba(0, 0, 0, 0.04)' 
+            } 
+          }}
+        >
+          <EmailIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      {/* Future social icons would go here */}
+    </Box>
+  );
   
   // Vertical layout (for sidebar)
   if (size === "large") {
@@ -84,6 +127,10 @@ const PostUser = ({
             </Tooltip>
           )}
         </Typography>
+        
+        {/* Add the action icons row */}
+        <ActionIcons />
+        
         {showTagline && post.tagline && (
           <Typography 
             variant="caption" 
@@ -102,7 +149,7 @@ const PostUser = ({
   
   // Horizontal layout (for mobile/compact)
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
       <Avatar
         src={avatarSrc}
         alt={authorName}
@@ -138,6 +185,10 @@ const PostUser = ({
             </Tooltip>
           )}
         </Typography>
+        
+        {/* Add the action icons row */}
+        <ActionIcons />
+        
         {showTagline && post.tagline && (
           <Typography variant="caption" color="text.secondary">
             {post.tagline}

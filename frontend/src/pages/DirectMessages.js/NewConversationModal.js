@@ -15,9 +15,9 @@ import ChatImageUpload from '../Chat/Components/ChatImageUpload';
 import { EditorState, convertToRaw } from 'draft-js';
 import { LinkDecorator } from '../Chat/Components/LinkDecorator';
 
-const NewConversationModal = ({ onConversationCreated }) => {
+const NewConversationModal = ({ initialUser, onConversationCreated, onClose }) => {
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(initialUser || null);
   const [loading, setLoading] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [error, setError] = useState(null);
@@ -26,6 +26,13 @@ const NewConversationModal = ({ onConversationCreated }) => {
   const { getAccessTokenSilently } = useAuth0();
   const apiUrl = process.env.REACT_APP_API_URL;
   
+  useEffect(() => {
+    if (initialUser) {
+      setSelectedUser(initialUser);
+      console.log("Initialized with user:", initialUser);
+    }
+  }, [initialUser]);
+
   // Fetch users for autocomplete
   useEffect(() => {
     const fetchUsers = async () => {
@@ -122,9 +129,10 @@ const NewConversationModal = ({ onConversationCreated }) => {
       )}
       
       <Autocomplete
+        value={selectedUser}  // This is important - it sets the initial value
         options={users}
         loading={loadingUsers}
-        getOptionLabel={(option) => option.username || ''}
+        getOptionLabel={(option) => option?.username || ""}
         renderOption={(props, option) => (
           <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
             <Avatar 
@@ -185,7 +193,7 @@ const NewConversationModal = ({ onConversationCreated }) => {
         setImages={setMessageImages} 
       />
       
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
         <Button
           variant="contained"
           onClick={handleStartConversation}
@@ -196,6 +204,9 @@ const NewConversationModal = ({ onConversationCreated }) => {
           }
         >
           {loading ? <CircularProgress size={24} /> : 'Send Message'}
+        </Button>
+        <Button variant="outlined" onClick={onClose}>
+          Cancel
         </Button>
       </Box>
     </Box>

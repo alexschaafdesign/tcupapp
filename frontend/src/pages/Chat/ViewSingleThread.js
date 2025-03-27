@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { createClient } from '@supabase/supabase-js';
-import { Container, Link, Tooltip, Chip, Typography, Button, Avatar, Box, CircularProgress, Paper, IconButton, Dialog, useMediaQuery, useTheme } from '@mui/material';
+import { Container, Link, Tooltip, Chip, Typography, Button, Avatar, Box, CircularProgress, Paper, IconButton, Dialog, DialogContent, useMediaQuery, useTheme } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon, ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import {
   EditorState,
@@ -26,6 +26,7 @@ import ChatImageUpload from './Components/ChatImageUpload';
 import HistoricalReplyForm from './Components/HistoricalReplyForm';
 import linkifyHtml from 'linkify-html';
 import { LinkDecorator } from './Components/LinkDecorator';
+import NewConversationModal from '../DirectMessages.js/NewConversationModal';
 
 const ViewSingleThread = () => {
   const { threadId } = useParams();
@@ -45,6 +46,8 @@ const ViewSingleThread = () => {
   const [replyImages, setReplyImages] = useState([]);
   const [editEditorState, setEditEditorState] = useState(null);
   const [showHistoricalForm, setShowHistoricalForm] = useState(false);
+  const [dmModalOpen, setDmModalOpen] = useState(false);
+  const [selectedDmUser, setSelectedDmUser] = useState(null);
 
 
   
@@ -66,6 +69,35 @@ const ViewSingleThread = () => {
       replies: [...prev.replies, newReply]
     }));
   };
+
+
+// Add these handler functions
+const handleOpenDM = (post) => {
+  console.log("Opening DM for post:", post);
+  
+  // Create a user object from the post data
+  const user = {
+    auth0_id: post.auth0_id,
+    username: post.author || post.username || post.imported_author_name || "Unknown User",
+    avatar_url: post.avatar_url
+  };
+  
+  console.log("Created user object:", user);
+  setSelectedDmUser(user);
+  setDmModalOpen(true);
+};
+
+const handleCloseDM = () => {
+  setDmModalOpen(false);
+  setSelectedDmUser(null);
+};
+
+const handleConversationCreated = (conversationInfo) => {
+  console.log("Conversation created:", conversationInfo);
+  handleCloseDM();
+  // Optionally navigate to the DM conversation
+  // navigate(`/messages/${conversationInfo.id}`);
+};
 
   const handleEditClick = (post) => {
     setEditingPost(post);
@@ -548,6 +580,7 @@ const renderContent = (content) => {
         canEditPost={canEditPost(threadData.post)}
         userRoles={userRoles}
         getAccessTokenSilently={getAccessTokenSilently}
+        onSendDM={handleOpenDM} // Add this line
       />
 
       <ActiveTags tags={threadData.post.tags} limit={3} />
@@ -579,6 +612,7 @@ const renderContent = (content) => {
           canEditPost={canEditPost(reply)}
           userRoles={userRoles}
           getAccessTokenSilently={getAccessTokenSilently}
+          onSendDM={handleOpenDM} // Add this line
         />
       ))}
         
@@ -700,8 +734,23 @@ const renderContent = (content) => {
         </Button>
       </Box>
     </Box>
+   
   </Box>
 )}
+ <Dialog
+        open={dmModalOpen}
+        onClose={handleCloseDM}
+        aria-labelledby="new-conversation-modal"
+        maxWidth="md"
+      >
+        <DialogContent sx={{ p: 4 }}>
+          <NewConversationModal 
+            initialUser={selectedDmUser}
+            onConversationCreated={handleConversationCreated}
+            onClose={handleCloseDM}
+          />
+        </DialogContent>
+      </Dialog>
     </Container>
   );
 };
