@@ -24,7 +24,8 @@ const Post = ({
     highlightedReplyId,
     canEditPost = false,
     userRoles = [],
-    getAccessTokenSilently  // Add this prop
+    getAccessTokenSilently,  // Add this prop
+    onSendDM  // Add this prop
   }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -155,6 +156,7 @@ const Post = ({
                   size="small"
                   navigateToUserProfile={navigateToUserProfile}
                   showTagline={false}
+                  onSendDM={() => onSendDM && onSendDM(post)} // Add this line
                 />
                 
                 {!isImported && (
@@ -210,6 +212,7 @@ const Post = ({
                 isImported={isImported}
                 size="large"
                 navigateToUserProfile={navigateToUserProfile}
+                onSendDM={() => onSendDM && onSendDM(post)} // Add this line
               />
               
               {/* Right side: Content and footer */}
