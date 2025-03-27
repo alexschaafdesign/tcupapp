@@ -9,7 +9,8 @@ import Breadcrumbs from './Breadcrumbs';
 import NotificationBell from './NotificationBell';
 import palette from '../../styles/colors/palette';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChatIcon from '@mui/icons-material/Chat';
+import MailIcon from "@mui/icons-material/Mail"; // Import the inbox/mail icon
+import MessageBadge from '../../pages/DirectMessages.js/MessageBadge';
 
 const TopBar = () => {
   // Existing state and hooks
@@ -159,21 +160,11 @@ const TopBar = () => {
 
 
      {/* Message icon - Only show when authenticated  */}
-      {isAuthenticated && (
+     {isAuthenticated && (
         <Box sx={{ mr: 2 }}>
-          <Tooltip title="Messages">
-            <IconButton 
-              onClick={handleMessageClick}
-              sx={{ color: 'white' }}
-            >
-              <Badge badgeContent={unreadMessages} color="error">
-                <ChatIcon />
-              </Badge>
-            </IconButton>
-          </Tooltip>
+          <MessageBadge iconColor="white" />
         </Box>
       )}
-
       {/* Notification Section - Only show when authenticated */}
       {isAuthenticated && <NotificationBell />}
     

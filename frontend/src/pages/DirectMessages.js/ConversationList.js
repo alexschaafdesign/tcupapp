@@ -241,7 +241,7 @@ const ConversationList = () => {
                   <ListItemText
                     primary={
                       <Typography variant="subtitle1" fontWeight={
-                        conversation.unread ? 600 : 400
+                        conversation.unread_count ? 600 : 400
                       }>
                         {conversation.other_user?.username || 'Unknown User'}
                       </Typography>
@@ -249,7 +249,7 @@ const ConversationList = () => {
                     secondary={
                       <React.Fragment>
                         <Typography
-                          sx={{ display: 'inline', color: conversation.unread ? 'text.primary' : 'text.secondary', fontWeight: conversation.unread ? 500 : 400 }}
+                          sx={{ display: 'inline', color: conversation.unread_count ? 'text.primary' : 'text.secondary', fontWeight: conversation.unread_count ? 500 : 400 }}
                           component="span"
                           variant="body2"
                         >

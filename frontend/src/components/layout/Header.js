@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useAuth } from "../../hooks/useAuth";
@@ -15,6 +15,8 @@ import {
   AppBar,
   Divider,
   Collapse,
+  Badge,
+  Tooltip
 } from "@mui/material";
 
 // Icons
@@ -22,12 +24,14 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import LoginIcon from "@mui/icons-material/Login";
+import MailIcon from "@mui/icons-material/Mail"; // Import the inbox/mail icon
 
 // Local components and data
 import HeaderUserProfile from "./HeaderUserProfile";
 import palette from "../../styles/colors/palette";
 import getNavLinks from "./NavigationItems";
 import { typography } from "../../styles/typography"; // Update this path as needed
+import MessageBadge from "../../pages/DirectMessages.js/MessageBadge";
 
 // Layout constants
 const LAYOUT = {
@@ -303,11 +307,39 @@ const Logo = ({ size = "desktop", onClick = null }) => {
   );
 };
 
+// Inbox/DM Button Component
+const InboxButton = ({ unreadCount = 0, navigate, onClick }) => {
+  const handleClick = () => {
+    navigate('/messages');
+    if (onClick) onClick();
+  };
+
+  return (
+    <Tooltip title="Messages">
+      <IconButton
+        onClick={handleClick}
+        sx={{ 
+          color: "#000000", 
+          zIndex: 2,
+        }}
+      >
+        {unreadCount > 0 ? (
+          <Badge badgeContent={unreadCount} color="error">
+            <MailIcon />
+          </Badge>
+        ) : (
+          <MailIcon />
+        )}
+      </IconButton>
+    </Tooltip>
+  );
+};
+
 // Main Header component
 const Header = () => {
   // Initialize hooks
   const navigate = useNavigate();
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, logout, getAccessTokenSilently } = useAuth0();
   const { isAdmin } = useAuth();
   const isDevMode = process.env.NODE_ENV === "development";
   
@@ -329,6 +361,37 @@ const Header = () => {
     admin: false
   });
   
+  // State for unread messages count
+  const [unreadMessageCount, setUnreadMessageCount] = useState(0);
+  
+  // Fetch unread message count
+  useEffect(() => {
+    const fetchUnreadMessages = async () => {
+      if (isAuthenticated) {
+        try {
+          const conversations = await fetch(`${process.env.REACT_APP_API_URL}/direct-messages/conversations`, {
+            headers: {
+              Authorization: `Bearer ${await getAccessTokenSilently()}`
+            }
+          }).then(res => res.json());
+          
+          // Sum up unread counts from all conversations
+          const totalUnread = conversations.reduce(
+            (sum, conv) => sum + (conv.unread_count || 0),
+            0
+          );
+          setUnreadMessageCount(totalUnread);
+        } catch (err) {
+          console.error('Error fetching unread messages:', err);
+        }
+      }
+    };
+
+    fetchUnreadMessages();
+    const interval = setInterval(fetchUnreadMessages, 60000); // Poll every minute
+    return () => clearInterval(interval);
+  }, [isAuthenticated, getAccessTokenSilently]);
+  
   // Event handlers
   const closeDrawer = () => setDrawerOpen(false);
   
@@ -347,6 +410,46 @@ const Header = () => {
       return;
     }
     setDrawerOpen(open);
+  };
+
+  // Custom messages link component for consistent styling
+  const MessagesLink = ({ closeDrawer }) => {
+    const location = useLocation();
+    const isActive = location.pathname === '/messages';
+    
+    const handleClick = () => {
+      navigate('/messages');
+      if (closeDrawer) closeDrawer();
+    };
+    
+    return (
+      <ListItem
+        button
+        onClick={handleClick}
+        sx={{
+          ...navItemStyles,
+          color: isActive ? "#6138B3" : "#000000",
+          backgroundColor: isActive ? "rgba(97, 56, 179, 0.15)" : "transparent",
+        }}
+      >
+        <ListItemIcon sx={{ 
+          ...iconStyle,
+          color: isActive ? palette.primary.main : palette.neutral.twenty,
+        }}>
+          {unreadMessageCount > 0 ? (
+            <Badge badgeContent={unreadMessageCount} color="error">
+              <MailIcon fontSize="small" />
+            </Badge>
+          ) : (
+            <MailIcon fontSize="small" />
+          )}
+        </ListItemIcon>
+        <ListItemText
+          primary="messages"
+          primaryTypographyProps={menuTypographyProps}
+        />
+      </ListItem>
+    );
   };
 
   // Render methods
@@ -425,6 +528,8 @@ const Header = () => {
               icon={menuIcons.resources}
             />
           </Box>
+          
+
         </List>
 
         {/* Auth Section */}
@@ -489,12 +594,15 @@ const Header = () => {
     >
       <Logo size="mobile" />
 
-      <IconButton
-        sx={{ marginLeft: "auto", color: "#000000", zIndex: 2 }}
-        onClick={toggleDrawer(true)}
-      >
-        <MenuIcon />
-      </IconButton>
+      <Box sx={{ marginLeft: "auto", display: "flex", alignItems: "center", zIndex: 2 }}>
+        {/* Add Inbox Button to Mobile Header if authenticated */}
+        {isAuthenticated && (
+          <MessageBadge 
+            iconColor="#000000" 
+            buttonSx={{ zIndex: 2 }}
+          />
+        )}
+      </Box>
     </AppBar>
   );
 
@@ -550,6 +658,11 @@ const Header = () => {
               icon={menuIcons.resources}
             />
           </Box>
+          
+          {/* Add Messages link to mobile drawer */}
+          {isAuthenticated && (
+            <MessagesLink closeDrawer={closeDrawer} />
+          )}
         </List>
 
         <Box sx={{ mt: "auto", zIndex: 2 }}>
