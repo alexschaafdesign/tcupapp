@@ -5,10 +5,11 @@ import { Close as CloseIcon } from '@mui/icons-material';
 import EditorWithFormatting from './EditorWithFormatting';
 import ChatImageUpload from './ChatImageUpload';
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
+import { LinkDecorator } from './LinkDecorator';
 
 const EditPostForm = ({ post, onClose, onSave }) => {
   const { getAccessTokenSilently, user } = useAuth0();
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [editorState, setEditorState] = useState(EditorState.createEmpty(LinkDecorator));
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -17,26 +18,27 @@ const EditPostForm = ({ post, onClose, onSave }) => {
   useEffect(() => {
     // Initialize the editor with the post content
     if (post && post.content) {
-        try {
-          const contentObj = typeof post.content === 'string' 
-            ? JSON.parse(post.content) 
-            : post.content;
-          
-          // Create a new empty editor state first
-          let newEditorState = EditorState.createEmpty();
-          
-          // Then apply the content from the post
-          const contentState = convertFromRaw(contentObj);
-          newEditorState = EditorState.createWithContent(contentState);
-          
-          // Update the state with this clean version
-          setEditorState(newEditorState);
-        } catch (e) {
-          console.error('Error parsing post content:', e);
-          setEditorState(EditorState.createEmpty());
-        }
+      try {
+        const contentObj = typeof post.content === 'string' 
+          ? JSON.parse(post.content) 
+          : post.content;
+        
+        // Create a new empty editor state first, using LinkDecorator
+        let newEditorState = EditorState.createEmpty(LinkDecorator);
+        
+        // Then apply the content from the post
+        const contentState = convertFromRaw(contentObj);
+        newEditorState = EditorState.createWithContent(contentState, LinkDecorator);
+        
+        // Update the state with this clean version
+        setEditorState(newEditorState);
+      } catch (e) {
+        console.error('Error parsing post content:', e);
+        // Use LinkDecorator here too
+        setEditorState(EditorState.createEmpty(LinkDecorator));
       }
-
+    }
+  
     // Initialize images if they exist
     if (post && post.images) {
       setImages(post.images || []);

@@ -21,7 +21,8 @@ import {
 } from '@mui/material';
 import { 
   Add as AddIcon,
-  Close as CloseIcon
+  Close as CloseIcon,
+  Create as CreateIcon
 } from '@mui/icons-material';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
@@ -112,7 +113,7 @@ const ConversationList = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: isMobile ? 2 : 4, px: isMobile ? 1 : 2 }}>
+    <Container maxWidth="lg" sx={{ py: isMobile ? 0 : 0, px: isMobile ? 1 : 2 }}>
       {/* Header with Messages title and New Message button */}
       <Box 
         sx={{ 
@@ -120,11 +121,11 @@ const ConversationList = () => {
           justifyContent: 'space-between', 
           alignItems: 'center', 
           mb: { xs: 2, sm: 3 },
-          mt: { xs: 2, sm: 0 } 
+          mt: { xs: 0, sm: 0 } 
         }}
       >
         <Typography 
-          variant={isMobile ? "h5" : "h3"} 
+          variant={isMobile ? "h3" : "h3"} 
           sx={{ color: 'text.primary' }}
         >
           MESSAGES
@@ -147,15 +148,15 @@ const ConversationList = () => {
                 size="small"
                 color="primary"
                 onClick={() => setIsModalOpen(true)}
-                sx={{ bgcolor: 'primary.main', color: 'white', '&:hover': { bgcolor: 'primary.dark' } }}
+                sx={{ bgcolor: 'secondary.main', color: 'black', '&:hover': { bgcolor: 'secondary.dark' } }}
               >
-                <AddIcon />
+                <CreateIcon />
               </IconButton>
             ) : (
               <Button 
                 variant="contained" 
                 size="small"
-                startIcon={<AddIcon />} 
+                startIcon={<CreateIcon />} 
                 onClick={() => setIsModalOpen(true)}
               >
                 New Message
@@ -227,7 +228,8 @@ const ConversationList = () => {
                     py: 2,
                     '&:hover': { 
                       bgcolor: 'rgba(0, 0, 0, 0.04)' 
-                    }
+                    },
+                    cursor: 'pointer'
                   }}
                 >
                   <ListItemAvatar>

@@ -62,9 +62,12 @@ const TopBar = () => {
       if (isAuthenticated) {
         try {
           const conversations = await callApi(`${apiUrl}/direct-messages/conversations`);
-          const unreadCount = conversations.reduce((total, conv) => 
-            total + (conv.unread_count || 0), 0);
-          setUnreadMessages(unreadCount);
+          // Now each conversation has `unread_count` for the current user
+          const totalUnread = conversations.reduce(
+            (sum, conv) => sum + (conv.unread_count || 0),
+            0
+          );
+          setUnreadMessages(totalUnread);
         } catch (err) {
           console.error('Error fetching unread messages:', err);
         }
@@ -72,10 +75,7 @@ const TopBar = () => {
     };
 
     fetchUnreadMessages();
-    
-    // You could set up polling here to periodically check for new messages
-    const interval = setInterval(fetchUnreadMessages, 60000); // check every minute
-    
+    const interval = setInterval(fetchUnreadMessages, 60000); // e.g. poll every minute
     return () => clearInterval(interval);
   }, [isAuthenticated, apiUrl, callApi]);
   
@@ -157,9 +157,8 @@ const TopBar = () => {
         </Box>
       )}
 
-      {/* Hiding DMs for initial launch March 21 
 
-     Message icon - Only show when authenticated 
+     {/* Message icon - Only show when authenticated  */}
       {isAuthenticated && (
         <Box sx={{ mr: 2 }}>
           <Tooltip title="Messages">
@@ -173,7 +172,7 @@ const TopBar = () => {
             </IconButton>
           </Tooltip>
         </Box>
-      )} */}
+      )}
 
       {/* Notification Section - Only show when authenticated */}
       {isAuthenticated && <NotificationBell />}

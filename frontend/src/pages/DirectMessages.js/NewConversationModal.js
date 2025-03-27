@@ -13,6 +13,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import EditorWithFormatting from '../Chat/Components/EditorWithFormatting';
 import ChatImageUpload from '../Chat/Components/ChatImageUpload';
 import { EditorState, convertToRaw } from 'draft-js';
+import { LinkDecorator } from '../Chat/Components/LinkDecorator';
 
 const NewConversationModal = ({ onConversationCreated }) => {
   const [users, setUsers] = useState([]);
@@ -20,7 +21,7 @@ const NewConversationModal = ({ onConversationCreated }) => {
   const [loading, setLoading] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [error, setError] = useState(null);
-  const [messageEditorState, setMessageEditorState] = useState(EditorState.createEmpty());
+  const [messageEditorState, setMessageEditorState] = useState(EditorState.createEmpty(LinkDecorator));
   const [messageImages, setMessageImages] = useState([]);
   const { getAccessTokenSilently } = useAuth0();
   const apiUrl = process.env.REACT_APP_API_URL;

@@ -144,6 +144,11 @@ const conversationsWithProfiles = conversations.map(conv => {
       lastMessage = "Message content unavailable";
     }
     
+    const unreadCountForThisUser = 
+    conv.user1 === auth0_id 
+      ? conv.unread_count_user1 
+      : conv.unread_count_user2;
+
     return {
       id: conv.id,
       other_user: userProfileMap[otherUserId] || { 
@@ -153,9 +158,8 @@ const conversationsWithProfiles = conversations.map(conv => {
       },
       last_message: lastMessage,
       last_message_at: conv.latest_message_at,
-      unread: conv.user1 === auth0_id ? 
-        conv.unread_count_user1 > 0 : 
-        conv.unread_count_user2 > 0
+      unread_count: unreadCountForThisUser,  // <-- Return numeric unread
+
     };
   });
       
