@@ -1,4 +1,4 @@
-// knexfile.js
+// knexfile.cjs
 require('dotenv').config({ path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development' });
 
 module.exports = {
@@ -10,11 +10,12 @@ module.exports = {
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       port: process.env.DB_PORT || 5432,
-      searchPath: ['development', 'public'] // Set your development schema
+      searchPath: ['development', 'public'],
+      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
     },
     migrations: {
       directory: './db/migrations',
-      schemaName: 'development' // Specify where migrations should run
+      schemaName: 'development'
     }
   },
   production: {
@@ -25,11 +26,12 @@ module.exports = {
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       port: process.env.DB_PORT || 5432,
-      searchPath: ['production', 'public'] // Set your production schema
+      searchPath: ['production', 'public'],
+      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
     },
     migrations: {
       directory: './db/migrations',
-      schemaName: 'production' // Specify where migrations should run
+      schemaName: 'production'
     }
   }
 };
