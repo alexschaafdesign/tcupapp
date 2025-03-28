@@ -44,7 +44,6 @@ const PreviewCard = styled(Paper)(({ theme }) => ({
   borderRadius: theme.spacing(1),
   backgroundColor: '#f8f8f8',
   boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-  height: '100%',
   display: 'flex',
   flexDirection: 'column',
   position: 'relative',
@@ -206,98 +205,110 @@ const BandBasics = ({ formData, updateFormData }) => {
             </Grid>
             
             <Grid item xs={12} md={5}>
-              <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <SectionTitle variant="h6" align="center" sx={{ alignSelf: 'flex-start', mb: 3 }}>
-                  Profile Image
-                </SectionTitle>
-                
-                <ProfileImageAdjuster
-                  initialImage={formData.profile_image}
-                  onSave={async (file) => {
-                    try {
-                      setIsProfileUploading(true);
-                      const uploadedUrl = await uploadToCloudinary(file, "band_profile_image_upload", true);
-                      if (uploadedUrl) {
-                        updateFormData({ profile_image: uploadedUrl });
-                      }
-                    } catch (error) {
-                      console.error('Upload error:', error);
-                      alert('Failed to upload image. Please try again.');
-                    } finally {
-                      setIsProfileUploading(false);
-                      setProfileUploadProgress(0);
-                    }
-                  }}
-                  onDelete={() => updateFormData({ profile_image: null })}
-                  isUploading={isProfileUploading}
-                  uploadProgress={profileUploadProgress}
-                />
-                
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 2, textAlign: 'center' }}>
-                  This image will be your band's primary visual identity across the platform.
-                  Best dimensions are 500x500 pixels.
-                </Typography>
-              </Box>
-              
-              <Zoom in={showPreview} style={{ transitionDelay: showPreview ? '300ms' : '0ms' }}>
-                <PreviewCard elevation={3}>
-                  <Typography variant="h6" color="primary" gutterBottom>
-                    Profile Preview
-                  </Typography>
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column',
+                height: '100%' // Ensure the container takes full height
+              }}>
+                {/* Profile Image Section */}
+                <Box sx={{ mb: 4 }}>
+                  <SectionTitle variant="h6" sx={{ mb: 3 }}>
+                    Profile Image
+                  </SectionTitle>
                   
-                  <Box sx={{ mt: 1, mb: 2, display: 'flex', alignItems: 'center' }}>
-                    <Box
-                      component="img"
-                      src={formData.profile_image || "https://via.placeholder.com/60?text=Band"}
-                      alt="Band preview"
-                      sx={{
-                        width: 60,
-                        height: 60,
-                        borderRadius: '50%',
-                        objectFit: 'cover',
-                        mr: 2,
-                        border: `2px solid ${colorTokens.primary.light}`
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <ProfileImageAdjuster
+                      initialImage={formData.profile_image}
+                      onSave={async (file) => {
+                        try {
+                          setIsProfileUploading(true);
+                          const uploadedUrl = await uploadToCloudinary(file, "band_profile_image_upload", true);
+                          if (uploadedUrl) {
+                            updateFormData({ profile_image: uploadedUrl });
+                          }
+                        } catch (error) {
+                          console.error('Upload error:', error);
+                          alert('Failed to upload image. Please try again.');
+                        } finally {
+                          setIsProfileUploading(false);
+                          setProfileUploadProgress(0);
+                        }
                       }}
+                      onDelete={() => updateFormData({ profile_image: null })}
+                      isUploading={isProfileUploading}
+                      uploadProgress={profileUploadProgress}
                     />
-                    <Box>
-                      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                        {formData.name || "Your Band Name"}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {formData.location || "Location"} • {formData.yearFormed ? `Est. ${formData.yearFormed}` : "Year"}
-                      </Typography>
-                    </Box>
+                    
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 2, textAlign: 'center' }}>
+                      This image will be your band's primary visual identity across the platform.
+                      Best dimensions are 500x500 pixels.
+                    </Typography>
                   </Box>
-                  
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      mb: 2,
-                      fontStyle: 'italic',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis'
-                    }}
-                  >
-                    {formData.originStory || "Your band's origin story will appear here..."}
-                  </Typography>
-                  
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      display: '-webkit-box',
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis'
-                    }}
-                  >
-                    {formData.bio || "Your band's bio will appear here..."}
-                  </Typography>
-                </PreviewCard>
-              </Zoom>
+                </Box>
+                
+                {/* Preview Card Section - Contained within the parent Grid item */}
+                <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                  <Zoom in={showPreview} style={{ transitionDelay: showPreview ? '300ms' : '0ms' }}>
+                    <PreviewCard elevation={3}>
+                      <Typography variant="h6" color="primary" gutterBottom>
+                        Profile Preview
+                      </Typography>
+                      
+                      <Box sx={{ mt: 1, mb: 2, display: 'flex', alignItems: 'center' }}>
+                        <Box
+                          component="img"
+                          src={formData.profile_image || "https://via.placeholder.com/60?text=Band"}
+                          alt="Band preview"
+                          sx={{
+                            width: 60,
+                            height: 60,
+                            borderRadius: '50%',
+                            objectFit: 'cover',
+                            mr: 2,
+                            border: `2px solid ${colorTokens.primary.light}`
+                          }}
+                        />
+                        <Box>
+                          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                            {formData.name || "Your Band Name"}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {formData.location || "Location"} • {formData.yearFormed ? `Est. ${formData.yearFormed}` : "Year"}
+                          </Typography>
+                        </Box>
+                      </Box>
+                      
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          mb: 2,
+                          fontStyle: 'italic',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {formData.originStory || "Your band's origin story will appear here..."}
+                      </Typography>
+                      
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          display: '-webkit-box',
+                          WebkitLineClamp: 3,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {formData.bio || "Your band's bio will appear here..."}
+                      </Typography>
+                    </PreviewCard>
+                  </Zoom>
+                </Box>
+              </Box>
             </Grid>
           </Grid>
         </Box>

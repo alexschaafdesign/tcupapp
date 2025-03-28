@@ -4,12 +4,13 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Box, Typography, List, ListItem, ListItemText, ListItemAvatar, 
   Avatar, Chip, Button, Divider, CircularProgress, 
-  Link, Card, CardContent, Grid
+  Link, Card, CardContent, Grid, IconButton
 } from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
-  Visibility as VisibilityIcon
+  Visibility as VisibilityIcon,
+  MusicNote as MusicNoteIcon
 } from '@mui/icons-material';
 import useApi from '../../../hooks/useApi';
 
@@ -17,6 +18,7 @@ const UserBands = ({ isOwnProfile }) => {
   const [bands, setBands] = useState([]);
   const [drafts, setDrafts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { apiClient } = useApi();
   
@@ -24,6 +26,7 @@ const UserBands = ({ isOwnProfile }) => {
     const fetchBands = async () => {
       try {
         setLoading(true);
+        setError(null);
         // Get user bands (published and drafts)
         const response = await apiClient.get('/bands/user');
         
@@ -32,13 +35,39 @@ const UserBands = ({ isOwnProfile }) => {
         setDrafts(response.data.filter(band => band.is_draft));
       } catch (error) {
         console.error('Error fetching bands:', error);
+        setError('Failed to load bands. Please try again.');
       } finally {
         setLoading(false);
       }
     };
     
-    fetchBands();
-  }, [apiClient]);
+    if (isOwnProfile) {
+      fetchBands();
+    } else {
+      // For non-owners, just get published bands associated with this user
+      const fetchPublicBands = async () => {
+        try {
+          setLoading(true);
+          setError(null);
+          // This would be a different endpoint that gets bands claimed by a user
+          // We'll use the URL parameter to get the user's ID
+          const userId = window.location.pathname.split('/').pop();
+          if (userId) {
+            const response = await apiClient.get(`/bands/user/${userId}/public`);
+            setBands(response.data);
+          }
+          setDrafts([]);
+        } catch (error) {
+          console.error('Error fetching public bands:', error);
+          setError('Failed to load bands. Please try again.');
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      fetchPublicBands();
+    }
+  }, [apiClient, isOwnProfile]);
   
   const handleContinueEditing = (draftId) => {
     navigate(`/bands/form/${draftId}`);
@@ -48,6 +77,23 @@ const UserBands = ({ isOwnProfile }) => {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
         <CircularProgress size={40} />
+      </Box>
+    );
+  }
+  
+  if (error) {
+    return (
+      <Box sx={{ textAlign: 'center', p: 3 }}>
+        <Typography color="error">{error}</Typography>
+        {isOwnProfile && (
+          <Button 
+            variant="outlined" 
+            sx={{ mt: 2 }} 
+            onClick={() => window.location.reload()}
+          >
+            Retry
+          </Button>
+        )}
       </Box>
     );
   }
@@ -105,7 +151,7 @@ const UserBands = ({ isOwnProfile }) => {
                         alt={draft.name}
                         sx={{ bgcolor: 'primary.main' }}
                       >
-                        {draft.name ? draft.name[0].toUpperCase() : 'B'}
+                        {draft.name ? draft.name[0].toUpperCase() : <MusicNoteIcon />}
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
@@ -151,7 +197,9 @@ const UserBands = ({ isOwnProfile }) => {
                       src={band.profile_image} 
                       alt={band.name}
                       sx={{ mr: 1.5, width: 48, height: 48 }}
-                    />
+                    >
+                      {!band.profile_image && <MusicNoteIcon />}
+                    </Avatar>
                     <Box>
                       <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
                         {band.name}
@@ -177,7 +225,7 @@ const UserBands = ({ isOwnProfile }) => {
                     <Button
                       size="small"
                       component={RouterLink}
-                      to={`/bands/${band.custom_slug || band.id}`}
+                      to={`/bands/${band.custom_slug || band.slug || band.id}`}
                       startIcon={<VisibilityIcon />}
                       variant="outlined"
                     >
