@@ -593,7 +593,7 @@ const Header = () => {
       }}
     >
       <Logo size="mobile" />
-
+  
       <Box sx={{ marginLeft: "auto", display: "flex", alignItems: "center", zIndex: 2 }}>
         {/* Add Inbox Button to Mobile Header if authenticated */}
         {isAuthenticated && (
@@ -602,6 +602,17 @@ const Header = () => {
             buttonSx={{ zIndex: 2 }}
           />
         )}
+        {/* Add back the hamburger menu icon */}
+        <IconButton
+          onClick={toggleDrawer(true)}
+          sx={{ 
+            color: "#000000",
+            zIndex: 2,
+            ml: 1 // Add margin to separate from the inbox icon
+          }}
+        >
+          <MenuIcon />
+        </IconButton>
       </Box>
     </AppBar>
   );
