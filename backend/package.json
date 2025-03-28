@@ -7,7 +7,7 @@
     "server": "NODE_ENV=development nodemon server.js",
     "start": "NODE_OPTIONS=--openssl-legacy-provider node server.js",
     "dev": "nodemon -r dotenv/config server.js",
-    "migrate": "knex migrate:latest --env development --knexfile ./migrate-config.cjs",
+    "migrate:dev": "knex migrate:latest --env development --knexfile ./migrate-config.cjs",
     "migrate:production": "knex migrate:latest --env production --knexfile ./migrate-config.cjs",
     "migrate:make": "knex migrate:make --knexfile ./migrate-config.cjs --migrations-extension cjs",
     "migrate:rollback": "knex migrate:rollback --env development --knexfile ./migrate-config.cjs"

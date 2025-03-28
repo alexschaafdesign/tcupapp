@@ -11,10 +11,12 @@ import {
   Badge as BadgeIcon,
   Key as KeyIcon,
   Email as EmailIcon,
-  Edit as EditIcon
+  Edit as EditIcon,
+  MusicNote as MusicNoteIcon
 } from '@mui/icons-material';
 import { useProfile } from '../../../contexts/ProfileContext';
 import EditableField from './EditableField';
+import UserBands from './UserBands';
 
 const ProfileTabs = ({ isOwnProfile, onPasswordChange, showFeedback }) => {
   const theme = useTheme();
@@ -232,10 +234,20 @@ const ProfileTabs = ({ isOwnProfile, onPasswordChange, showFeedback }) => {
         )}
       </Box>
 
+      {/* Bands Tab */}
+      <Box role="tabpanel" hidden={activeTab !== 2} sx={{ p: 0 }}>
+        {activeTab === 2 && (
+          <CardContent>
+            <UserBands isOwnProfile={isOwnProfile} />
+          </CardContent>
+        )}
+      </Box>
+
+
       {/* Settings Tab - Only visible for own profile */}
       {isOwnProfile && (
-        <Box role="tabpanel" hidden={activeTab !== 2} sx={{ p: 0 }}>
-          {activeTab === 2 && (
+        <Box role="tabpanel" hidden={activeTab !== 3} sx={{ p: 0 }}>
+          {activeTab === 3 && (
             <CardContent>
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 500 }}>
                 Account Settings
