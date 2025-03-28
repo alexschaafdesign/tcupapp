@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import PropTypes from "prop-types";
-import ProfileImageAdjuster from "../../../components/ProfileImageAdjuster";
-import colorTokens from "../../../styles/colors/palette";
+import ProfileImageAdjuster from "../../../../components/ProfileImageAdjuster";
+import colorTokens from "../../../../styles/colors/palette";
 
 // Styled components
 const StepContainer = styled(Box)(({ theme }) => ({
