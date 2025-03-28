@@ -7,7 +7,7 @@ import VenuesTable from "./pages/Venues/VenuesTable.js";
 import VenueProfile from "./pages/Venues/VenueProfile.js";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./styles/theme"; // Import your custom theme
-import BandForm from "./pages/Bands/BandForm.js";
+import BandForm from "./pages/Bands/BandForm/BandForm.js";
 import FullBandList from "./pages/Bands/FullBandList.js";
 import BandProfile from "./pages/Bands/BandProfile.js";
 import TCUPPeopleForm from "./pages/TCUPPeopleForm.js";
