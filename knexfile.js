@@ -1,38 +1,35 @@
-// Update with your config settings.
+// knexfile.js
+require('dotenv').config({ path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development' });
 
-/**
- * @type { Object.<string, import("knex").Knex.Config> }
- */
 module.exports = {
   development: {
-    client: 'pg',
+    client: 'postgresql',
     connection: {
-      host: '127.0.0.1', // Localhost
-      user: 'aschaaf',
-      password: 'notthesame',
-      database: 'tcup_db',
+      host: process.env.DB_HOST || 'localhost',
+      database: process.env.DB_NAME,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      port: process.env.DB_PORT || 5432,
+      searchPath: ['development', 'public'] // Set your development schema
     },
     migrations: {
-      directory: './migrations',
-    },
-    seeds: {
-      directory: './seeds',
-    },
+      directory: './db/migrations',
+      schemaName: 'development' // Specify where migrations should run
+    }
   },
   production: {
-    client: 'pg',
+    client: 'postgresql',
     connection: {
-      host: '159.203.63.94', // Cloud database host
-      user: 'aschaaf',
-      password: 'notthesame',
-      database: 'tcup_db',
-      ssl: { rejectUnauthorized: false }, // If using SSL
+      host: process.env.DB_HOST,
+      database: process.env.DB_NAME,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      port: process.env.DB_PORT || 5432,
+      searchPath: ['production', 'public'] // Set your production schema
     },
     migrations: {
-      directory: './migrations',
-    },
-    seeds: {
-      directory: './seeds',
-    },
-  },
+      directory: './db/migrations',
+      schemaName: 'production' // Specify where migrations should run
+    }
+  }
 };
