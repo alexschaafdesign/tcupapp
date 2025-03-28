@@ -485,52 +485,59 @@ router.get('/:postId/reactions', authMiddleware, async (req, res) => {
   });
   
 // Add/update reaction
+// In posts.js, update the route for adding reactions:
 router.post('/:postId/reactions', authMiddleware, async (req, res) => {
-    try {
-      console.log('Request body:', req.body);
-      console.log('User ID:', req.user?.sub);
-      console.log('Post ID:', req.params.postId);
-      const { type } = req.body;
-      const userId = req.user.sub; // from Auth0
-  
-      // Check if user already reacted
-      const { data: existing } = await supabase
-        .from('user_reactions')
-        .select()
-        .eq('post_id', req.params.postId)
-        .eq('user_id', userId)
-        .single();
-  
-      if (existing) {
-        // Update existing reaction
-        await supabase
-          .from('user_reactions')
-          .update({ type })
-          .eq('post_id', req.params.postId)
-          .eq('user_id', userId);
-      } else {
-        // Create new reaction
-        await supabase
-          .from('user_reactions')
-          .insert({
-            post_id: req.params.postId,
-            user_id: userId,
-            type
-          });
-      }
-  
-      // Update reaction count
-      const { data: counts } = await supabase
+  try {
+    const { type } = req.body;
+    const userId = req.user.sub; // from Auth0
+    const postId = req.params.postId;
+
+    // Get the post to check who authored it
+    const { data: post, error: postError } = await supabase
+      .from('forum_messages')
+      .select('auth0_id')
+      .eq('id', postId)
+      .single();
+    
+    if (postError) throw postError;
+    
+    // Check if user already reacted
+    const { data: existing } = await supabase
       .from('user_reactions')
-      .select('type, count', { count: 'exact' })
-      .eq('post_id', req.params.postId);
-  
-      res.json(counts);
-    } catch (error) {
-      console.error('Error details:', error);
-      res.status(500).json({ error: error.message });
+      .select()
+      .eq('post_id', postId)
+      .eq('user_id', userId)
+      .single();
+
+    if (existing) {
+      // Update existing reaction
+      await supabase
+        .from('user_reactions')
+        .update({ type })
+        .eq('post_id', postId)
+        .eq('user_id', userId);
+    } else {
+      // Create new reaction
+      await supabase
+        .from('user_reactions')
+        .insert({
+          post_id: postId,
+          user_id: userId,
+          type
+        });
+      
+      // Create notification for the post author (only for new reactions)
+      if (post && post.auth0_id && post.auth0_id !== userId) {
+        await createReactionNotification(postId, userId, post.auth0_id, type);
+      }
     }
-  });
+
+    // Rest of your code...
+  } catch (error) {
+    console.error('Error details:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
   // POST /api/posts/import
   router.post('/import', authMiddleware, async (req, res) => {
