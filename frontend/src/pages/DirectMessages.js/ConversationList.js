@@ -38,6 +38,10 @@ const ConversationList = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -192,7 +196,8 @@ const ConversationList = () => {
         </Box>
         <Box sx={{ p: isMobile ? 2 : 3 }}>
           <NewConversationModal 
-            onConversationCreated={handleConversationCreated}
+          onClose={() => setIsModalOpen(false)}  // Change this line
+          onConversationCreated={handleConversationCreated}
           />
         </Box>
       </Dialog>

@@ -4,10 +4,7 @@ from dotenv import load_dotenv
 import os
 from pathlib import Path
 
-backend_dir = Path(__file__).parents[1] / 'backend'
-load_dotenv(backend_dir / '.env')
-env = os.getenv('NODE_ENV', 'development')
-load_dotenv(backend_dir / f'.env.{env}')
+load_dotenv()  # This loads .env file from current directory
 
 def connect_to_db():
     """Establish a connection to the database."""
