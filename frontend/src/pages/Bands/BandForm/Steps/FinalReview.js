@@ -32,7 +32,7 @@ import EventIcon from '@mui/icons-material/Event';
 import ImageIcon from '@mui/icons-material/Image';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
-import colorTokens from "../../../styles/colors/palette";
+import palette from "../../../../styles/colors/palette";
 
 // Styled components
 const StepContainer = styled(Box)(({ theme }) => ({
@@ -41,7 +41,7 @@ const StepContainer = styled(Box)(({ theme }) => ({
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
-  color: colorTokens.primary.dark,
+  color: palette.primary.dark,
   position: 'relative',
   '&:after': {
     content: '""',
@@ -50,7 +50,7 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
     left: 0,
     width: 40,
     height: 3,
-    backgroundColor: colorTokens.primary.main,
+    backgroundColor: palette.primary.main,
     borderRadius: 2,
   }
 }));
@@ -68,7 +68,7 @@ const ProfilePaper = styled(Paper)(({ theme }) => ({
     left: 0,
     right: 0,
     height: '5px',
-    background: `linear-gradient(to right, ${colorTokens.primary.main}, ${colorTokens.secondary.main})`,
+    background: `linear-gradient(to right, ${palette.primary.main}, ${palette.secondary.main})`,
   }
 }));
 
@@ -115,11 +115,11 @@ const EditButton = styled(Button)(({ theme }) => ({
 
 const StatusChip = styled(Chip)(({ theme, statustype }) => ({
   backgroundColor: statustype === 'complete' 
-    ? `${colorTokens.success.light}20` 
-    : `${colorTokens.error.light}20`,
+    ? `${palette.success.light}20` 
+    : `${palette.error.light}20`,
   color: statustype === 'complete' 
-    ? colorTokens.success.dark 
-    : colorTokens.error.dark,
+    ? palette.success.dark 
+    : palette.error.dark,
   fontWeight: 500
 }));
 
@@ -237,7 +237,7 @@ const FinalReview = ({ formData }) => {
                         width: 100, 
                         height: 100, 
                         mr: 3, 
-                        bgcolor: colorTokens.primary.light,
+                        bgcolor: palette.primary.light,
                         fontSize: '2rem'
                       }}
                     >
@@ -274,7 +274,7 @@ const FinalReview = ({ formData }) => {
                           sx={{ 
                             mr: 0.5, 
                             mb: 0.5,
-                            backgroundColor: `${colorTokens.secondary.light}20`
+                            backgroundColor: `${palette.secondary.light}20`
                           }} 
                         />
                       ))}
@@ -302,7 +302,7 @@ const FinalReview = ({ formData }) => {
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <GroupIcon sx={{ mr: 1, color: colorTokens.primary.main }} />
+                      <GroupIcon sx={{ mr: 1, color: palette.primary.main }} />
                       <Typography variant="h6">Band Members</Typography>
                     </Box>
                     <StatusChip 
@@ -318,7 +318,7 @@ const FinalReview = ({ formData }) => {
                       {formData.members.map((member, index) => (
                         <ListItem key={index} sx={{ py: 1 }}>
                           <ListItemIcon>
-                            <Avatar sx={{ bgcolor: `${colorTokens.primary.main}40` }}>
+                            <Avatar sx={{ bgcolor: `${palette.primary.main}40` }}>
                               {member.name ? member.name.charAt(0).toUpperCase() : "M"}
                             </Avatar>
                           </ListItemIcon>
@@ -382,7 +382,7 @@ const FinalReview = ({ formData }) => {
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <MusicNoteIcon sx={{ mr: 1, color: colorTokens.secondary.main }} />
+                      <MusicNoteIcon sx={{ mr: 1, color: palette.secondary.main }} />
                       <Typography variant="h6">Music & Releases</Typography>
                     </Box>
                     <StatusChip 
@@ -398,7 +398,7 @@ const FinalReview = ({ formData }) => {
                       {formData.releases.filter(release => release.title).map((release, index) => (
                         <ListItem key={index} sx={{ py: 1 }}>
                           <ListItemIcon>
-                            <AlbumIcon sx={{ color: colorTokens.secondary.main }} />
+                            <AlbumIcon sx={{ color: palette.secondary.main }} />
                           </ListItemIcon>
                           <ListItemText
                             primary={release.title}
@@ -486,7 +486,7 @@ const FinalReview = ({ formData }) => {
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <StoreIcon sx={{ mr: 1, color: colorTokens.secondary.main }} />
+                      <StoreIcon sx={{ mr: 1, color: palette.secondary.main }} />
                       <Typography variant="h6">Merch & Contact</Typography>
                     </Box>
                     <StatusChip 
@@ -536,7 +536,7 @@ const FinalReview = ({ formData }) => {
                     
                     {formData.bandemail && (
                       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                        <EmailIcon sx={{ mr: 1, color: colorTokens.primary.main }} />
+                        <EmailIcon sx={{ mr: 1, color: palette.primary.main }} />
                         <Typography variant="body1">
                           {formData.bandemail}
                         </Typography>
@@ -597,7 +597,7 @@ const FinalReview = ({ formData }) => {
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <EventIcon sx={{ mr: 1, color: colorTokens.primary.main }} />
+                      <EventIcon sx={{ mr: 1, color: palette.primary.main }} />
                       <Typography variant="h6">Performance Info</Typography>
                     </Box>
                     <StatusChip 
@@ -677,7 +677,7 @@ const FinalReview = ({ formData }) => {
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <ImageIcon sx={{ mr: 1, color: colorTokens.secondary.main }} />
+                      <ImageIcon sx={{ mr: 1, color: palette.secondary.main }} />
                       <Typography variant="h6">Band Images</Typography>
                     </Box>
                     <StatusChip 

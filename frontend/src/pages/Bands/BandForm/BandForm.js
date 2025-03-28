@@ -21,7 +21,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import colorTokens from "../../../styles/colors/palette";
+import palette from "../../../styles/colors/palette";
 
 // Step Components
 import BandBasics from "./Steps/BandBasics";
@@ -30,6 +30,7 @@ import MusicReleases from "./Steps/MusicReleases";
 import MerchContact from "./Steps/MerchContact";
 import PerformanceInfo from "./Steps/PerformanceInfo";
 import AdditionalMedia from "./Steps/AdditionalMedia";
+import ProfileCustomization from "./Steps/ProfileCustomization";
 import FinalReview from "./Steps/FinalReview";
 
 // Helper function to create a slug
@@ -112,6 +113,15 @@ const BandForm = ({ isEdit = false }) => {
     
     // Additional Media
     other_images: bandDataFromState?.other_images || [],
+    
+    // Profile Customization
+    customSlug: bandDataFromState?.customSlug || "",
+    profileTheme: bandDataFromState?.profileTheme || "default",
+    headerLayout: bandDataFromState?.headerLayout || "classic",
+    featuredContent: bandDataFromState?.featuredContent || [],
+    backgroundImage: bandDataFromState?.backgroundImage || null,
+    backgroundPattern: bandDataFromState?.backgroundPattern || "none",
+    profileBadges: bandDataFromState?.profileBadges || [],
   });
 
   // Define the steps
@@ -122,6 +132,7 @@ const BandForm = ({ isEdit = false }) => {
     "Merch & Contact",
     "Performance Info",
     "Additional Media",
+    "Customize",
     "Review"
   ];
 
@@ -294,6 +305,8 @@ const BandForm = ({ isEdit = false }) => {
       case 5:
         return <AdditionalMedia formData={formData} updateFormData={updateFormData} />;
       case 6:
+        return <ProfileCustomization formData={formData} updateFormData={updateFormData} />;
+      case 7:
         return <FinalReview formData={formData} />;
       default:
         return <div>Unknown step</div>;
@@ -308,7 +321,7 @@ const BandForm = ({ isEdit = false }) => {
           p: 3, 
           my: 4,
           borderRadius: 2,
-          background: `linear-gradient(to bottom, ${colorTokens.primary.light}10, ${colorTokens.background.default})` 
+          background: `linear-gradient(to bottom, ${palette.primary.light}10, ${palette.background.default})` 
         }}
       >
         <Typography variant="h3" align="center" gutterBottom sx={{ mb: 4 }}>

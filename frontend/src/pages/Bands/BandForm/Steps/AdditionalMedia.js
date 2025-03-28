@@ -25,8 +25,7 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import ImageIcon from '@mui/icons-material/Image';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import InfoIcon from '@mui/icons-material/Info';
-import colorTokens from "../../../styles/colors/palette";
-
+import palette from "../../../../styles/colors/palette";
 // Styled components
 const StepContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -34,7 +33,7 @@ const StepContainer = styled(Box)(({ theme }) => ({
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
-  color: colorTokens.primary.dark,
+  color: palette.primary.dark,
   position: 'relative',
   '&:after': {
     content: '""',
@@ -43,7 +42,7 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
     left: 0,
     width: 40,
     height: 3,
-    backgroundColor: colorTokens.primary.main,
+    backgroundColor: palette.primary.main,
     borderRadius: 2,
   }
 }));
@@ -98,12 +97,12 @@ const UploadZone = styled(Paper)(({ theme, isdragactive }) => ({
   borderStyle: 'dashed',
   borderWidth: 2,
   borderRadius: theme.spacing(2),
-  borderColor: isdragactive === 'true' ? colorTokens.primary.main : theme.palette.divider,
-  backgroundColor: isdragactive === 'true' ? `${colorTokens.primary.light}10` : theme.palette.background.paper,
+  borderColor: isdragactive === 'true' ? palette.primary.main : theme.palette.divider,
+  backgroundColor: isdragactive === 'true' ? `${palette.primary.light}10` : theme.palette.background.paper,
   transition: 'all 0.3s ease',
   '&:hover': {
-    borderColor: colorTokens.primary.main,
-    backgroundColor: `${colorTokens.primary.light}05`,
+    borderColor: palette.primary.main,
+    backgroundColor: `${palette.primary.light}05`,
   }
 }));
 
@@ -272,7 +271,7 @@ const AdditionalMedia = ({ formData, updateFormData }) => {
                     or behind-the-scenes images."
               placement="right"
             >
-              <InfoIcon fontSize="small" sx={{ ml: 1, color: colorTokens.primary.light, cursor: 'help' }} />
+              <InfoIcon fontSize="small" sx={{ ml: 1, color: palette.primary.light, cursor: 'help' }} />
             </Tooltip>
           </SectionTitle>
           
@@ -351,7 +350,7 @@ const AdditionalMedia = ({ formData, updateFormData }) => {
                   </Box>
                 ) : (
                   <Box>
-                    <AddPhotoAlternateIcon sx={{ fontSize: 48, color: colorTokens.primary.main, mb: 2 }} />
+                    <AddPhotoAlternateIcon sx={{ fontSize: 48, color: palette.primary.main, mb: 2 }} />
                     <Typography variant="h6" gutterBottom>
                       Drag & Drop Images Here
                     </Typography>
@@ -375,7 +374,7 @@ const AdditionalMedia = ({ formData, updateFormData }) => {
               <Grid item xs={12} sm={6}>
                 <Paper sx={{ p: 2, height: '100%' }}>
                   <Typography variant="subtitle1" gutterBottom>
-                    <ImageIcon sx={{ mr: 1, verticalAlign: 'middle', color: colorTokens.primary.main }} />
+                    <ImageIcon sx={{ mr: 1, verticalAlign: 'middle', color: palette.primary.main }} />
                     Do Include:
                   </Typography>
                   <Box component="ul" sx={{ pl: 2, mt: 1 }}>
@@ -390,7 +389,7 @@ const AdditionalMedia = ({ formData, updateFormData }) => {
               <Grid item xs={12} sm={6}>
                 <Paper sx={{ p: 2, height: '100%' }}>
                   <Typography variant="subtitle1" gutterBottom>
-                    <DeleteIcon sx={{ mr: 1, verticalAlign: 'middle', color: colorTokens.error.main }} />
+                    <DeleteIcon sx={{ mr: 1, verticalAlign: 'middle', color: palette.error.main }} />
                     Avoid:
                   </Typography>
                   <Box component="ul" sx={{ pl: 2, mt: 1 }}>
