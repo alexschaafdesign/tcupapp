@@ -1,7 +1,7 @@
 // File: UserProfile.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Paper, Typography } from '@mui/material';
+import { Container, Paper, Typography, Box } from '@mui/material';
 
 // Hooks
 import { useAuth0 } from '@auth0/auth0-react';
@@ -49,6 +49,11 @@ const UserProfile = () => {
     return <NotAuthenticated />;
   }
 
+  const showFeedback = (msg) => {
+    setSuccessMessage(msg);
+    setShowSuccess(true);
+  };
+
   return (
     <ProfileProvider>
       <Feedback
@@ -57,30 +62,27 @@ const UserProfile = () => {
         onClose={() => setShowSuccess(false)}
       />
       
-      <ProfileHeader 
-        isOwnProfile={isOwnProfile}
-        showFeedback={(msg) => {
-          setSuccessMessage(msg);
-          setShowSuccess(true);
-        }}
-      />
-      
-      <ProfileTabs 
-        isOwnProfile={isOwnProfile} 
-        onPasswordChange={() => setShowPasswordDialog(true)}
-        showFeedback={(msg) => {
-          setSuccessMessage(msg);
-          setShowSuccess(true);
-        }}
-      />
+      <Container maxWidth="md" sx={{ mt: 3, mb: 6 }}>
+        <Box sx={{ mb: 2 }}>
+          <ProfileHeader 
+            isOwnProfile={isOwnProfile}
+            showFeedback={showFeedback}
+          />
+        </Box>
+        
+        <Box sx={{ mt: 3 }}>
+          <ProfileTabs 
+            isOwnProfile={isOwnProfile} 
+            onPasswordChange={() => setShowPasswordDialog(true)}
+            showFeedback={showFeedback}
+          />
+        </Box>
+      </Container>
       
       <PasswordDialog
         open={showPasswordDialog}
         onClose={() => setShowPasswordDialog(false)}
-        showFeedback={(msg) => {
-          setSuccessMessage(msg);
-          setShowSuccess(true);
-        }}
+        showFeedback={showFeedback}
       />
     </ProfileProvider>
   );

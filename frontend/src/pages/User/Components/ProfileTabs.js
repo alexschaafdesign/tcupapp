@@ -17,6 +17,7 @@ import {
 import { useProfile } from '../../../contexts/ProfileContext';
 import EditableField from './EditableField';
 import UserBands from './UserBands';
+import DraftsTab from './DraftsTab';
 
 const ProfileTabs = ({ isOwnProfile, onPasswordChange, showFeedback }) => {
   const theme = useTheme();
@@ -54,6 +55,12 @@ const ProfileTabs = ({ isOwnProfile, onPasswordChange, showFeedback }) => {
           <Tab 
             label="About" 
             icon={<ChatBubbleIcon />} 
+            iconPosition="start"
+            sx={{ minHeight: 48, textTransform: 'none', fontSize: '0.9rem' }}
+          />
+          <Tab 
+            label="Band Drafts" 
+            icon={<MusicNoteIcon />} 
             iconPosition="start"
             sx={{ minHeight: 48, textTransform: 'none', fontSize: '0.9rem' }}
           />
@@ -210,7 +217,7 @@ const ProfileTabs = ({ isOwnProfile, onPasswordChange, showFeedback }) => {
           </CardContent>
         )}
       </Box>
-
+  
       {/* About Tab */}
       <Box role="tabpanel" hidden={activeTab !== 1} sx={{ p: 0 }}>
         {activeTab === 1 && (
@@ -233,17 +240,16 @@ const ProfileTabs = ({ isOwnProfile, onPasswordChange, showFeedback }) => {
           </CardContent>
         )}
       </Box>
-
-      {/* Bands Tab */}
+  
+      {/* Band Drafts Tab */}
       <Box role="tabpanel" hidden={activeTab !== 2} sx={{ p: 0 }}>
         {activeTab === 2 && (
           <CardContent>
-            <UserBands isOwnProfile={isOwnProfile} />
+            <DraftsTab />
           </CardContent>
         )}
       </Box>
-
-
+  
       {/* Settings Tab - Only visible for own profile */}
       {isOwnProfile && (
         <Box role="tabpanel" hidden={activeTab !== 3} sx={{ p: 0 }}>
@@ -267,6 +273,7 @@ const ProfileTabs = ({ isOwnProfile, onPasswordChange, showFeedback }) => {
         </Box>
       )}
     </Card>
+  
   );
 };
 

@@ -195,6 +195,7 @@ function App() {
           {/* Bands */}
           <Route path="bands" element={<FullBandList />} />
           <Route path="bands/add" element={<BandForm isEdit={false} />} />
+          <Route path="bands/form/:draftId" element={<BandForm isDraft={true} />} />
           <Route path="bands/:bandSlug" element={<BandProfile />} />
           <Route path="bands/:bandid/edit" element={<BandForm isEdit />} />
   

@@ -13,7 +13,7 @@ import pg from 'pg';
 
 // Route imports
 import venuesRoutes from './routes/venues.js';
-import tcupbandsRouter from './routes/bands.js';
+import bandsRouter from './routes/bands.js';
 import showsRouter from './routes/shows.js';
 import peopleRouter from './routes/people.js';
 import usersRouter from './routes/users/users.js';
@@ -119,7 +119,7 @@ app.use((req, res, next) => {
 
 // 10) Mount your routes (make sure these come after the CORS and body-parser middleware)
 app.use('/api/venues', venuesRoutes);
-app.use('/api/bands', tcupbandsRouter);
+app.use('/api/bands', bandsRouter);
 app.use('/api/shows', showsRouter);
 app.use('/api/people', peopleRouter);
 app.use('/api/users', usersRouter);
@@ -140,7 +140,9 @@ app.use('/api/read-status', readStatusRouter);
 app.use('/api/direct-messages', directMessagesRouter)
 app.use('/api/scrapers', scrapersRouter)
 
-
+app.get('/api/bands/simple-test', (req, res) => {
+  res.json({ message: 'Simple test route works' });
+});
 
 
 

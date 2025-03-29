@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Box,
   Stepper,
@@ -197,6 +197,7 @@ const BandForm = ({ isEdit = false }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [draftId, setDraftId] = useState(bandid || null);
   const [saveAttempted, setSaveAttempted] = useState(false); // Track if save was attempted
+
   
   const apiUrl = process.env.REACT_APP_API_URL;
   const bandDataFromState = location.state?.band;
@@ -262,6 +263,9 @@ const BandForm = ({ isEdit = false }) => {
     profileBadges: bandDataFromState?.profileBadges || [],
   });
 
+  const lastSavedData = useRef(JSON.stringify(formData));
+
+
   // Check if step is completed
   const isStepComplete = (step) => {
     if (step === 0) {
@@ -277,6 +281,7 @@ const BandForm = ({ isEdit = false }) => {
     return completedSteps[step] || false;
   };
 
+  // API test
   useEffect(() => {
     console.log('Current API URL configured as:', apiUrl);
     // Test if the API is available
@@ -292,22 +297,25 @@ const BandForm = ({ isEdit = false }) => {
   // Create a saveProgress function using the useCallback hook
   const saveProgress = useCallback(
     debounce(async (currentFormData, currentStep) => {
-      // Safety checks
+      // Add more extensive debugging
+      console.log('🔍 Debug: saveProgress called');
+      
       if (!currentFormData) {
         console.error('FormData is undefined in saveProgress');
         return;
       }
       
-      // Only proceed if name exists or we're on step 0
       if (!currentFormData.name && currentStep !== 0) {
         console.log('No band name yet, not saving');
         return;
       }
       
-      // Make sure we have authentication
-      if (!isAuthenticated || !tokenReady) {
-        console.error('Authentication not ready, cannot save');
-        setErrorMessage('Please log in to save your progress');
+      // Check authentication status first
+      console.log('🔍 Auth status:', { isAuthenticated, tokenReady });
+      
+      if (!isAuthenticated) {
+        console.log('Not authenticated, cannot save');
+        setErrorMessage('Please log in to save your band information');
         return;
       }
       
@@ -316,13 +324,31 @@ const BandForm = ({ isEdit = false }) => {
         setIsSaving(true);
         setSaveAttempted(true);
         
-        // Get a fresh token for each request
-        const token = await getAccessTokenSilently();
+        // Get a fresh token with more detailed debugging
+        let token;
+        try {
+          console.log('🔍 Attempting to get token...');
+          token = await getAccessTokenSilently({
+            audience: process.env.REACT_APP_AUTH0_AUDIENCE,
+            scope: "openid profile email"
+          });
+          
+          // Log the first few characters of the token for debugging
+          if (token) {
+            console.log(`🔍 Token received (first 10 chars): ${token.substring(0, 10)}...`);
+            console.log(`🔍 Token length: ${token.length}`);
+          } else {
+            console.error('🔍 Token is empty or undefined!');
+          }
+        } catch (tokenError) {
+          console.error('Failed to get authentication token:', tokenError);
+          setErrorMessage(`Authentication error: ${tokenError.message}`);
+          return;
+        }
         
-        // Make sure apiUrl is correct
         const saveUrl = `${apiUrl}/bands/draft`;
         console.log('Save URL:', saveUrl);
-        
+
         // Structure the request body
         const draftData = {
           id: draftId,
@@ -333,71 +359,69 @@ const BandForm = ({ isEdit = false }) => {
               yearFormed: currentFormData.yearFormed || "",
               originStory: currentFormData.originStory || "",
               bio: currentFormData.bio || ""
-            },
-            // Include other form fields as needed
+            }
           },
           currentStep: stepKeys[currentStep] || 'bandBasics'
         };
         
-        // Add a timeout to prevent excessive API calls
-        await new Promise(resolve => setTimeout(resolve, 300));
+        // Log the full request details
+        console.log('🔍 API Request:', {
+          url: `${apiUrl}/bands/draft`,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token.substring(0, 10)}...` : 'NO TOKEN!'
+          },
+          withCredentials: true,
+          body: JSON.stringify(draftData).substring(0, 100) + '...' // Log first 100 chars
+        });
         
-        console.log('Sending authenticated request with token');
-        
+        // Make the request
         const response = await fetch(saveUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Include the auth token here
+            'Authorization': `Bearer ${token}`
           },
           credentials: 'include',
           body: JSON.stringify(draftData)
         });
         
+        // Improved error handling
         if (!response.ok) {
-          const errorText = await response.text().catch(() => '');
-          
-          if (response.status === 401) {
-            console.error('Authentication rejected by server. Status:', response.status, errorText);
-            throw new Error('Authentication failed. Please try logging in again.');
-          } else {
-            throw new Error(`Server error (${response.status}): ${errorText || response.statusText}`);
-          }
+          const errorText = await response.text().catch(() => 'No error details');
+          console.error(`Server returned ${response.status}: ${errorText}`);
+          throw new Error(`Server error (${response.status})`);
         }
         
-        const data = await response.json();
+        // Parse the response only if it's JSON
+        const contentType = response.headers.get('content-type');
+        let data;
+        if (contentType && contentType.includes('application/json')) {
+          data = await response.json();
+        } else {
+          data = { success: true }; // Default for non-JSON responses
+        }
+        
         console.log('Draft saved successfully:', data);
         
         if (data.isNew && data.bandId) {
           setDraftId(data.bandId);
-          navigate(`/bands/form/${data.bandId}`, { replace: true });
+          window.history.replaceState({}, '', `/bands/form/${data.bandId}`);
         }
         
         setLastSaved(new Date());
-        setErrorMessage(""); // Clear any previous error
+        setErrorMessage("");
       } catch (error) {
         console.error('Error saving draft:', error);
         setErrorMessage(`Failed to save draft: ${error.message}`);
       } finally {
         setIsSaving(false);
       }
-    }, 2000),
-    [draftId, apiUrl, navigate, stepKeys, isAuthenticated, tokenReady, getAccessTokenSilently]
+    }, 3000),
+    [draftId, apiUrl, stepKeys, isAuthenticated, tokenReady, getAccessTokenSilently]
   );
 
-  // Auto-save when form data changes
-  useEffect(() => {
-    const shouldAutoSave = (formData.name || draftId) && isAuthenticated && tokenReady;
-    
-    if (shouldAutoSave && !isSaving) {
-      console.log("Auto-save triggered");
-      saveProgress(formData, activeStep);
-    } else if (!isAuthenticated) {
-      console.log("Not auto-saving - user not authenticated");
-    } else if (!tokenReady) {
-      console.log("Not auto-saving - token not ready");
-    }
-  }, [formData.name, draftId, activeStep, isSaving, isAuthenticated, tokenReady]);
 
   // Save before user leaves the page
   useEffect(() => {
@@ -456,10 +480,26 @@ const BandForm = ({ isEdit = false }) => {
       if (!draftId) return;
       
       try {
+        // Get a fresh Auth0 token
+        let token;
+        try {
+          token = await getAccessTokenSilently();
+          console.log('Token obtained for draft fetch:', token ? 'Yes' : 'No');
+        } catch (tokenError) {
+          console.error('Failed to get authentication token:', tokenError);
+          return;
+        }
+        
         const response = await fetch(`${apiUrl}/bands/draft/${draftId}`, {
-          credentials: 'include' // Important for auth
+          headers: {
+            'Authorization': `Bearer ${token}` // Add authorization header
+          },
+          credentials: 'include'
         });
+        
         if (!response.ok) throw new Error('Failed to fetch draft');
+        
+    
         
         const draftData = await response.json();
         
@@ -601,16 +641,31 @@ const BandForm = ({ isEdit = false }) => {
   }, [isEdit, bandid, bandDataFromState, apiUrl, draftId]);
 
   // Handle step navigation
-  const handleNext = () => {
-    setActiveStep((prevStep) => prevStep + 1);
-    window.scrollTo(0, 0);
-  };
+  // Remove the form-data change auto-save useEffect
 
-  const handleBack = () => {
-    setActiveStep((prevStep) => prevStep - 1);
-    window.scrollTo(0, 0);
-  };
+// Instead, modify the handleNext and handleBack functions to save
+const handleNext = () => {
+  // Save the current step data before moving to the next step
+  if (formData.name && isAuthenticated && tokenReady && !isSaving) {
+    saveProgress(formData, activeStep);
+    lastSavedData.current = JSON.stringify(formData);
+  }
+  
+  setActiveStep((prevStep) => prevStep + 1);
+  window.scrollTo(0, 0);
+};
 
+// Optionally, you could also save on back if you want to preserve changes
+const handleBack = () => {
+  // You can decide if you want to save on back navigation too
+  if (formData.name && isAuthenticated && tokenReady && !isSaving) {
+    saveProgress(formData, activeStep);
+    lastSavedData.current = JSON.stringify(formData);
+  }
+  
+  setActiveStep((prevStep) => prevStep - 1);
+  window.scrollTo(0, 0);
+};
   // Manual save handler
   const handleManualSave = async () => {
     console.log("Manual save triggered");
@@ -662,7 +717,7 @@ const BandForm = ({ isEdit = false }) => {
       </Box>
     );
   };
-  
+
   // Function to update form data
   const updateFormData = (sectionData) => {
     setFormData(prevData => ({
@@ -765,6 +820,18 @@ const BandForm = ({ isEdit = false }) => {
           {isEdit ? "Edit Your Band" : "Add Your Band"}
         </Typography>
         
+        {/* Authentication warning - new addition */}
+        {!isAuthenticated && (
+          <Box sx={{ mb: 3, p: 2, bgcolor: 'warning.light', borderRadius: 1 }}>
+            <Typography variant="body1" fontWeight="medium">
+              Authentication Required
+            </Typography>
+            <Typography variant="body2">
+              You need to be logged in to save band information. Your progress won't be saved.
+            </Typography>
+          </Box>
+        )}
+        
         <Stepper 
           activeStep={activeStep} 
           alternativeLabel={!isMobile}
@@ -792,16 +859,17 @@ const BandForm = ({ isEdit = false }) => {
             Back
           </Button>
           
-          {/* Manual save button */}
+          {/* Updated save button with auth check */}
           <Button
             variant="outlined"
-            color="info"
+            color={!isAuthenticated ? "warning" : "info"}
             onClick={handleManualSave}
-            disabled={isSaving || !formData.name}
+            disabled={isSaving || !formData.name || !isAuthenticated || !tokenReady}
             startIcon={isSaving ? <CircularProgress size={16} /> : <SaveIcon />}
           >
-            Save Draft
+            {!isAuthenticated ? "Login Required" : "Save Draft"}
           </Button>
+          
           <Box>
             {activeStep === steps.length - 1 ? (
               <Button
@@ -809,7 +877,7 @@ const BandForm = ({ isEdit = false }) => {
                 color="primary"
                 onClick={() => setShowConfirmDialog(true)}
                 endIcon={<CheckCircleIcon />}
-                disabled={isSubmitting}
+                disabled={isSubmitting || (!isAuthenticated && !isEdit)}
               >
                 {isSubmitting ? <CircularProgress size={24} /> : (isEdit ? "Update Band" : "Submit Band")}
               </Button>
