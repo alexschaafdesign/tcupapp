@@ -2,16 +2,26 @@ import React from 'react';
 import { Box } from '@mui/material';
 import Header from './Header';
 import TopBar from './TopBar.js';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
 
-const Layout = () => {
+const Layout = ({ publicAccess = false }) => {
+  const { isAuthenticated } = useAuth0();
+  const location = useLocation();
+
+  // If this is not a public route and user is not authenticated, redirect to welcome
+  if (!publicAccess && !isAuthenticated) {
+    return <Navigate to="/welcome" state={{ from: location }} />;
+  }
+
   return (
     <Box sx={{ display: 'flex' }}>
       {/* TopBar component replaces the simple purple bar */}
-      <TopBar />
+      <TopBar isPublic={publicAccess} />
+
       
       {/* Navigation */}
-      <Header />
+      <Header isPublic={publicAccess} />
       
       {/* Content wrapper */}
       <Box
@@ -27,10 +37,10 @@ const Layout = () => {
         {/* Centered content */}
         <Box
           sx={{
-            maxWidth: { xs: '100%', sm: '90%', md: '1200px', lg: '1400px' }, // Wider on larger screens
-            mx: 'auto', // Centers the box
+            maxWidth: { xs: '100%', sm: '90%', md: '1200px', lg: '1400px' }, 
+            mx: 'auto',
             width: '100%',
-            px: { xs: 2, sm: 3, md: 4, lg: 3 }, // Adds padding for different breakpoints
+            px: { xs: 2, sm: 3, md: 4, lg: 3 },
             py: 4,
           }}
         >

@@ -8,9 +8,9 @@ const AuthWrapper = ({
   requiredRoles = [],
   mode = 'block',  // 'block', 'view-only', 'modal'
   viewOnlyContent = null,
-  authMessage = null
+  authMessage = "Please log in to continue"
 }) => {
-  const { user, isAuthenticated, isAdmin, isModerator, hasRole, userRoles, loginWithRedirect } = useAuth();
+  const { user, isAuthenticated, isAdmin, isModerator, hasRole, userRoles } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
   // Check if user has required roles
@@ -24,17 +24,15 @@ const AuthWrapper = ({
   // User has permission if authenticated and has required roles
   const hasPermission = isAuthenticated && hasRequiredRole;
   
-  // Determine appropriate auth message
-  const defaultAuthMessage = isAuthenticated
-    ? "You need administrator or moderator privileges to perform this action."
-    : "You must be logged in with appropriate privileges to perform this action.";
-  
-  const finalAuthMessage = authMessage || defaultAuthMessage;
+  // Create role-specific message if needed
+  const roleMessage = requiredRoles.length > 0 && isAuthenticated
+    ? "You need additional permissions to access this feature."
+    : authMessage;
 
   // If user has permission, render normally
   if (hasPermission) {
     return renderContent 
-      ? renderContent({ showAuth: true, openAuthModal: () => setAuthModalOpen(true) }) 
+      ? renderContent({ showAuth: true }) 
       : children;
   }
 
@@ -47,6 +45,7 @@ const AuthWrapper = ({
   if (mode === 'modal') {
     const handleAuthRequired = (e) => {
       e.preventDefault();
+      e.stopPropagation();
       setAuthModalOpen(true);
     };
 
@@ -58,27 +57,24 @@ const AuthWrapper = ({
         <AuthModal 
           open={authModalOpen} 
           onClose={() => setAuthModalOpen(false)}
-          message={finalAuthMessage}
-          loginWithRedirect={loginWithRedirect}
+          message={roleMessage}
         />
       </>
     );
   }
 
-  // Handle case where content should be completely hidden (block mode)
-  if (requiredRoles.length > 0 && !isAuthenticated) {
-    // Only show login modal if user is not authenticated at all
+  // For block mode with static modal, return a permanently visible auth modal
+  if (mode === 'block' && !isAuthenticated) {
     return (
       <AuthModal 
         open={true}
-        static={true}
-        message={finalAuthMessage}
-        loginWithRedirect={loginWithRedirect}
+        onClose={() => {}} // Empty function as we don't want to close
+        message={authMessage}
       />
     );
   }
 
-  // If user is authenticated but lacks roles, or in block mode without required roles
+  // For other block mode cases (e.g., logged in but wrong role)
   return null;
 };
 
