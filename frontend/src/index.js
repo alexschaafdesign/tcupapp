@@ -90,7 +90,9 @@ root.render(
   </Auth0Provider>
 );
 
-serviceWorkerRegistration.register();
+serviceWorkerRegistration.register({
+  swSrc: 'custom-service-worker.js'
+});
 localStorage.removeItem('new_pwa_notice_shown');
 
 
