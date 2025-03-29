@@ -62,6 +62,7 @@ import VenueReportCardPage from "./pages/VRC/VenueReportCardPage.js";
 import JoinTCUP from "./pages/TCUP/JoinTCUP.js";
 import Newsletter from "./pages/TCUP/Newsletter.js";
 import { MessageProvider } from "./pages/DirectMessages.js/MessageBadge.js";
+import PullToRefresh from "./components/PullToRefresh.js";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
@@ -111,6 +112,13 @@ function App() {
     }
   }, [isAuthenticated]);
 
+  const handleGlobalRefresh = async () => {
+    // Simple implementation - reload the current page
+    window.location.reload();
+    
+    // You could implement more sophisticated selective data refreshing later
+  };
+
   // Show loading state while Auth0 is initializing
   if (isLoading) {
     return <div>Loading...</div>; // You might want to use a proper loading component here
@@ -120,6 +128,8 @@ function App() {
     <ThemeProvider theme={theme}>
       <MessageProvider>
       <ProfileSync />
+      <PullToRefresh onRefresh={handleGlobalRefresh}>
+
       <Routes>
         {/* Public routes that don't require authentication */}
         <Route path="/welcome" element={
@@ -233,6 +243,8 @@ function App() {
           />
         </Route>
       </Routes>
+      </PullToRefresh>
+
       </MessageProvider>
     </ThemeProvider>
   );
