@@ -237,7 +237,7 @@ const AuthButtons = ({ isAuthenticated, loginWithRedirect, logout, closeDrawer }
 >
       <ListItemIcon sx={{ 
         ...iconStyle,
-        color: palette.error.main,
+        color: isAuthenticated ? palette.error.main : palette.success.main, // Red for logout, green for login
       }}>
         {isAuthenticated ? <ExitToAppIcon fontSize="small" /> : <LoginIcon fontSize="small" />}
       </ListItemIcon>

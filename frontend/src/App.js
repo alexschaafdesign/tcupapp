@@ -62,6 +62,7 @@ import VenueReportCardPage from "./pages/VRC/VenueReportCardPage.js";
 import JoinTCUP from "./pages/TCUP/JoinTCUP.js";
 import Newsletter from "./pages/TCUP/Newsletter.js";
 import { MessageProvider } from "./pages/DirectMessages.js/MessageBadge.js";
+import PublicRoute from "./PublicRoute.js";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
@@ -158,6 +159,8 @@ function App() {
 
           {/* Add other routes you want to be public */}
         </Route>
+
+        
 
       {/* Protected routes that require authentication */}
         <Route element={<Layout publicAccess={false} />}>
