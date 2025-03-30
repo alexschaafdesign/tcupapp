@@ -173,15 +173,20 @@ const ForumContainer = () => {
               </Button>
             )}
     
-            <AuthWrapper 
+          <AuthWrapper 
             mode="modal"
             authMessage="Please log in to create a new thread"
-              >
+          >
             {isMobile ? (
               <IconButton
                 size="small"
                 color="primary"
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  if (isAuthenticated) {
+                    setIsModalOpen(true);
+                  }
+                  // If not authenticated, the AuthWrapper will handle showing the login modal
+                }}
                 sx={{ bgcolor: 'primary.main', color: 'white', '&:hover': { bgcolor: 'primary.dark' } }}
               >
                 <AddIcon />
@@ -191,12 +196,17 @@ const ForumContainer = () => {
                 variant="contained" 
                 size="small"
                 startIcon={<AddIcon />} 
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  if (isAuthenticated) {
+                    setIsModalOpen(true);
+                  }
+                  // If not authenticated, the AuthWrapper will handle showing the login modal
+                }}
               >
                 Start a new thread
               </Button>
             )}
-            </AuthWrapper>
+          </AuthWrapper>
           </Stack>
         
       </Box>

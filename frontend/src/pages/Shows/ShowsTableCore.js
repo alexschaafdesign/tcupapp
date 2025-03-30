@@ -19,7 +19,9 @@ import { useAuth } from '../../hooks/useAuth';
 
 const ShowsTableCore = ({ data }) => {
   const navigate = useNavigate();
-  const { user, userRoles, isAdmin, isModerator } = useAuth();
+  const { user = null, userRoles = [], isAdmin = false, isModerator = false } = useAuth() || {};
+  const isAuthorized = user && (userRoles.includes('admin') || userRoles.includes('moderator'));
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -61,38 +63,65 @@ const ShowsTableCore = ({ data }) => {
   };
 
   // This function renders the edit button with proper auth wrapping
-  const renderEditButton = (showId, size = "medium", sx = {}) => (
-    <AuthWrapper
-      requiredRoles={['admin', 'moderator']}
-      renderContent={({ showAuth, openAuthModal }) => (
-        <Tooltip title="Edit Show">
-          <IconButton 
-            onClick={(e) => {
-              e.stopPropagation();
-              if (showAuth) {
-                handleEdit(e, showId);
-              } else {
-                openAuthModal();
-              }
-            }}
-            sx={{
-              color: 'action.active',
-              bgcolor: 'background.paper',
-              boxShadow: 1,
-              '&:hover': {
-                color: 'primary.main',
-                bgcolor: 'background.paper'
-              },
-              ...sx
-            }}
-            size={size}
-          >
-            <EditIcon fontSize={size === "small" ? "small" : "medium"} />
-          </IconButton>
-        </Tooltip>
-      )}
-    />
-  );
+ const renderEditButton = (showId, size = "medium", sx = {}) => {
+  if (isAuthorized) {
+    return (
+      <Tooltip title="Edit Show">
+        <IconButton 
+          onClick={(e) => {
+            e.stopPropagation();
+            handleEdit(e, showId);
+          }}
+          sx={{
+            color: 'action.active',
+            bgcolor: 'background.paper',
+            boxShadow: 1,
+            '&:hover': {
+              color: 'primary.main',
+              bgcolor: 'background.paper'
+            },
+            ...sx
+          }}
+          size={size}
+        >
+          <EditIcon fontSize={size === "small" ? "small" : "medium"} />
+        </IconButton>
+      </Tooltip>
+    );
+  } else {
+    // If not authorized, render the button within an AuthWrapper.
+    // Notice we don’t call useAuth here; we're using the top-level values.
+    return (
+      <AuthWrapper
+        requiredRoles={['admin', 'moderator']}
+        mode="modal" // change mode here
+        renderContent={({ openAuthModal, showAuth }) => (
+          <Tooltip title="Edit Show">
+            <IconButton 
+              onClick={(e) => {
+                e.stopPropagation();
+                if (openAuthModal) {
+                  openAuthModal();
+                } else {
+                  alert("Authentication required");
+                }
+              }}
+              sx={{
+                color: 'action.disabled',
+                bgcolor: 'background.paper',
+                boxShadow: 1,
+                ...sx
+              }}
+              size={size}
+            >
+              <EditIcon fontSize={size === "small" ? "small" : "medium"} />
+            </IconButton>
+          </Tooltip>
+        )}
+      />
+    );
+  }
+};
 
   return (
     <TableContainer 
