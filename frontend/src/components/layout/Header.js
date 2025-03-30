@@ -237,7 +237,7 @@ const AuthButtons = ({ isAuthenticated, loginWithRedirect, logout, closeDrawer }
 >
       <ListItemIcon sx={{ 
         ...iconStyle,
-        color: palette.error.main,
+        color: isAuthenticated ? palette.error.main : palette.success.main, // Red for logout, green for login
       }}>
         {isAuthenticated ? <ExitToAppIcon fontSize="small" /> : <LoginIcon fontSize="small" />}
       </ListItemIcon>
@@ -336,7 +336,8 @@ const InboxButton = ({ unreadCount = 0, navigate, onClick }) => {
 };
 
 // Main Header component
-const Header = () => {
+const Header = ({ isPublic = false }) => {
+
   // Initialize hooks
   const navigate = useNavigate();
   const { isAuthenticated, loginWithRedirect, logout, getAccessTokenSilently } = useAuth0();
@@ -511,9 +512,12 @@ const Header = () => {
           </Box>
           
           {mainLinks.map((link, index) => (
-            <NavLink 
+              <NavLink 
               key={index} 
-              link={link} 
+              link={{
+                ...link,
+                disabled: !isAuthenticated && link.requiresAuth
+              }} 
               closeDrawer={closeDrawer}
             />
           ))}
@@ -652,9 +656,12 @@ const Header = () => {
           
           
           {mainLinks.map((link, index) => (
-            <NavLink 
+              <NavLink 
               key={index} 
-              link={link} 
+              link={{
+                ...link,
+                disabled: !isAuthenticated && link.requiresAuth
+              }} 
               closeDrawer={closeDrawer}
             />
           ))}

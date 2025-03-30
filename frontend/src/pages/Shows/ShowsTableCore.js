@@ -19,7 +19,9 @@ import { useAuth } from '../../hooks/useAuth';
 
 const ShowsTableCore = ({ data }) => {
   const navigate = useNavigate();
-  const { user, userRoles, isAdmin, isModerator } = useAuth(); // Import useAuth
+  const { user = null, userRoles = [], isAdmin = false, isModerator = false } = useAuth() || {};
+  const isAuthorized = user && (userRoles.includes('admin') || userRoles.includes('moderator'));
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -59,6 +61,67 @@ const ShowsTableCore = ({ data }) => {
   const handleRowClick = (showId) => {
     navigate(`/shows/${showId}`);
   };
+
+  // This function renders the edit button with proper auth wrapping
+ const renderEditButton = (showId, size = "medium", sx = {}) => {
+  if (isAuthorized) {
+    return (
+      <Tooltip title="Edit Show">
+        <IconButton 
+          onClick={(e) => {
+            e.stopPropagation();
+            handleEdit(e, showId);
+          }}
+          sx={{
+            color: 'action.active',
+            bgcolor: 'background.paper',
+            boxShadow: 1,
+            '&:hover': {
+              color: 'primary.main',
+              bgcolor: 'background.paper'
+            },
+            ...sx
+          }}
+          size={size}
+        >
+          <EditIcon fontSize={size === "small" ? "small" : "medium"} />
+        </IconButton>
+      </Tooltip>
+    );
+  } else {
+    // If not authorized, render the button within an AuthWrapper.
+    // Notice we don’t call useAuth here; we're using the top-level values.
+    return (
+      <AuthWrapper
+        requiredRoles={['admin', 'moderator']}
+        mode="modal" // change mode here
+        renderContent={({ openAuthModal, showAuth }) => (
+          <Tooltip title="Edit Show">
+            <IconButton 
+              onClick={(e) => {
+                e.stopPropagation();
+                if (openAuthModal) {
+                  openAuthModal();
+                } else {
+                  alert("Authentication required");
+                }
+              }}
+              sx={{
+                color: 'action.disabled',
+                bgcolor: 'background.paper',
+                boxShadow: 1,
+                ...sx
+              }}
+              size={size}
+            >
+              <EditIcon fontSize={size === "small" ? "small" : "medium"} />
+            </IconButton>
+          </Tooltip>
+        )}
+      />
+    );
+  }
+};
 
   return (
     <TableContainer 
@@ -185,35 +248,7 @@ const ShowsTableCore = ({ data }) => {
                               display: { xs: 'block', sm: 'none' }
                             }}
                           >
-                            <AuthWrapper
-                              requiredRoles={['admin', 'moderator']}
-                              renderContent={({ showAuth, openAuthModal }) => (
-                                <Tooltip title="Edit Show">
-                                  <IconButton 
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      if (showAuth) {
-                                        handleEdit(e, item.show_id);
-                                      } else {
-                                        openAuthModal();
-                                      }
-                                    }}
-                                    sx={{
-                                      color: 'action.active',
-                                      bgcolor: 'background.paper',
-                                      boxShadow: 1,
-                                      '&:hover': {
-                                        color: 'primary.main',
-                                        bgcolor: 'background.paper'
-                                      }
-                                    }}
-                                    size="small"
-                                  >
-                                    <EditIcon fontSize="small" />
-                                  </IconButton>
-                                </Tooltip>
-                              )}
-                            />
+                            {renderEditButton(item.show_id, "small")}
                           </Box>
                         </Box>
                       </TableCell>
@@ -296,26 +331,7 @@ const ShowsTableCore = ({ data }) => {
                           display: { xs: 'none', sm: 'table-cell' }
                         }}
                       >
-                        <AuthWrapper
-                          requiredRoles={['admin', 'moderator']}
-                          renderContent={({ showAuth, openAuthModal }) => (
-                            <Tooltip title="Edit Show">
-                              <IconButton 
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (showAuth) {
-                                    handleEdit(e, item.show_id);
-                                  } else {
-                                    openAuthModal();
-                                  }
-                                }}
-                                // styling unchanged
-                              >
-                                <EditIcon />
-                              </IconButton>
-                            </Tooltip>
-                          )}
-                        />
+                        {renderEditButton(item.show_id)}
                       </TableCell>
                     </TableRow>
                   ))}
