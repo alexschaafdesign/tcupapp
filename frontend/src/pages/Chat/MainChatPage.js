@@ -24,7 +24,7 @@ import {
 import { useAuth0 } from '@auth0/auth0-react';
 import CreatePost from './Components/CreatePost';
 import ListOfAllThreads from './Components/ListOfAllThreads';
-import AuthContentOverlay from '../../components/auth/AuthOverlay';
+import AuthWrapper from '../../components/auth/AuthWrapper';
 import palette from '../../styles/colors/palette';
 
 const ForumContainer = () => {
@@ -80,20 +80,23 @@ const ForumContainer = () => {
         
         url = `${url}?${queryParams.toString()}`;
         
-        console.log('Fetching posts from:', url);
+        console.log('Fetching posts from URL:', url);
         const response = await fetch(url); 
+        console.log('Response status:', response.status);
+        
         const data = await response.json();
+        console.log('Raw API response:', data);
         
-        console.log('Posts data from API:', data);
-        
-        // Handle the new response format that includes posts and pagination
+        // Handle the response format correctly
         if (data && data.posts) {
+          console.log("Setting posts from data.posts:", data.posts.length);
           setPosts(data.posts);
           setPagination(data.pagination || pagination);
         } else if (Array.isArray(data)) {
-          // Fallback for backward compatibility
+          console.log("Setting posts from array data:", data.length);
           setPosts(data);
         } else {
+          console.log("No posts found in data, setting empty array");
           setPosts([]);
         }
       } catch (error) {
@@ -103,6 +106,7 @@ const ForumContainer = () => {
         setLoading(false);
       }
     };
+    
     fetchPosts();
   }, [apiUrl, selectedTags, pagination.page, pagination.limit]);
 
@@ -148,7 +152,6 @@ const ForumContainer = () => {
         </Typography>
   
         {/* Right-aligned buttons - only visible when authenticated */}
-        {isAuthenticated && (
           <Stack direction="row" spacing={2}>
             {isMobile ? (
               <IconButton
@@ -170,11 +173,20 @@ const ForumContainer = () => {
               </Button>
             )}
     
+          <AuthWrapper 
+            mode="modal"
+            authMessage="Please log in to create a new thread"
+          >
             {isMobile ? (
               <IconButton
                 size="small"
                 color="primary"
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  if (isAuthenticated) {
+                    setIsModalOpen(true);
+                  }
+                  // If not authenticated, the AuthWrapper will handle showing the login modal
+                }}
                 sx={{ bgcolor: 'primary.main', color: 'white', '&:hover': { bgcolor: 'primary.dark' } }}
               >
                 <AddIcon />
@@ -184,13 +196,19 @@ const ForumContainer = () => {
                 variant="contained" 
                 size="small"
                 startIcon={<AddIcon />} 
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  if (isAuthenticated) {
+                    setIsModalOpen(true);
+                  }
+                  // If not authenticated, the AuthWrapper will handle showing the login modal
+                }}
               >
                 Start a new thread
               </Button>
             )}
+          </AuthWrapper>
           </Stack>
-        )}
+        
       </Box>
   
       {/* Create Post Modal */}
@@ -227,7 +245,6 @@ const ForumContainer = () => {
       </Dialog>
   
       {/* Tag filters - only visible when authenticated and showFilters is true */}
-      {isAuthenticated && (
         <Collapse in={showFilters}>
           <Paper 
             elevation={1} 
@@ -269,7 +286,7 @@ const ForumContainer = () => {
             </Stack>
           </Paper>
         </Collapse>
-      )}
+    
   
       {/* Post List with Auth Content Overlay */}
       {loading ? (
@@ -278,13 +295,11 @@ const ForumContainer = () => {
         </Box>
       ) : posts.length > 0 ? (
         <Box sx={{ mb: 4, bgcolor: 'background.paper', borderRadius: '8px' }}>
-          <AuthContentOverlay>
             <ListOfAllThreads 
               posts={posts} 
               pagination={pagination}
               onPageChange={handlePageChange}
             />
-          </AuthContentOverlay>
         </Box>
       ) : (
         <Box sx={{ mb: 4, textAlign: 'center', p: 4 }}>
