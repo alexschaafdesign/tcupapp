@@ -114,8 +114,7 @@ def run_first_avenue_scraper():
         }
 
     urls = [
-        'https://first-avenue.com/shows/?post_type=event&start_date=20250201',  # February
-        'https://first-avenue.com/shows/?post_type=event&start_date=20250301',  # March
+
         'https://first-avenue.com/shows/?post_type=event&start_date=20250401',  # April
         'https://first-avenue.com/shows/?post_type=event&start_date=20250501',  # May
         'https://first-avenue.com/shows/?post_type=event&start_date=20250601',  # June
