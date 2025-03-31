@@ -60,8 +60,9 @@ const SessionMusiciansTable = () => {
   return (
       <Box sx={{ 
         width: '100%',
-        mt: 4
+        mt: 1  // Reduced top margin from 4 to 1
       }}>
+        {/* Add Musician button temporarily hidden
         <Box sx={{ mb: 3 }}>
           <Button 
             variant="contained" 
@@ -74,9 +75,10 @@ const SessionMusiciansTable = () => {
             Add Musician
           </Button>
         </Box>
+        */}
 
         <Typography sx={{ mb: 2 }}>
-          Many thanks to <b>Minnehaha Recording Company</b> for putting together this list!
+          Many thanks to <a href="https://www.minnehaharecording.com/session-musician-database" target="_blank" rel="noopener noreferrer" style={{ color: '#9B4F96', fontWeight: 'bold', textDecoration: 'none' }}>Minnehaha Recording Company</a> for putting together this list!
         </Typography>
 
         <TextField
