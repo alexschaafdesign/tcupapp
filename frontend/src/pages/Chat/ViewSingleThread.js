@@ -315,6 +315,16 @@ const exportOptions = {
       };
     }
   },
+  // Fix for line break issue - use <br> for soft breaks instead of double line breaks
+  blockStyleFn: (block) => {
+    const type = block.getType();
+    if (type === 'unstyled') {
+      return {
+        element: 'div',
+        wrapper: null
+      };
+    }
+  }
 };
 
 const linkifyOptions = {
