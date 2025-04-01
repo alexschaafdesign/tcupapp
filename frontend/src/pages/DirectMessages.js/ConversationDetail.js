@@ -295,57 +295,90 @@ useEffect(() => {
       if (!contentObj || !contentObj.blocks) {
         return <Typography variant="body1">{typeof content === 'string' ? content : JSON.stringify(content)}</Typography>;
       }
+
+      // Custom renderer for Draft.js content that directly controls spacing
+      return (
+        <div>
+          {contentObj.blocks.map((block, i) => {
+            // Get any inline styling for this block
+            const inlineStyles = {};
+            const text = block.text;
+            
+            if (!text) return null; // Skip empty blocks
   
-      // Convert Draft.js raw to HTML with proper link handling
-      const contentState = convertFromRaw(contentObj);
-      
-      // Create custom HTML directly handling line breaks explicitly
-      const customOptions = {
-        inlineStyles: {
-          BOLD: { element: 'strong' },
-          ITALIC: { element: 'em' },
-        },
-        entityStyleFn: (entity) => {
-          const entityType = entity.get('type').toLowerCase();
-          if (entityType === 'link') {
-            const data = entity.getData();
-            return {
-              element: 'a',
-              attributes: {
-                href: data.url,
-                target: '_blank',
-                rel: 'noopener noreferrer'
-              }
-            };
-          }
-        },
-        // Use spans for blocks with no wrapper to prevent double spacing
-        blockStyleFn: (block) => {
-          return {
-            element: 'span',
-            wrapper: null
-          };
-        }
-      };
-      
-      let html = stateToHTML(contentState, customOptions);
-  
-      // You can still linkify regular text URLs if needed
-      html = linkifyHtml(html, linkifyOptions);
-  
-      // Parse final HTML into React elements
-      return parse(html, {
-        replace: (domNode) => {
-          if (domNode.name === 'a' && domNode.attribs && !domNode.attribs.target) {
-            domNode.attribs.target = '_blank';
-            domNode.attribs.rel = 'noopener noreferrer';
-          }
-        }
-      });
+            // This is the key - we're controlling the element creation directly
+            // For single line breaks, we simply return a div with appropriate styling
+            return (
+              <div key={i} style={{ marginBottom: '0.5em' }}>
+                {/* Handle links and other entities */}
+                {block.entityRanges.length > 0 ? (
+                  // Handle text with entities (links)
+                  renderTextWithEntities(text, block.entityRanges, contentObj.entityMap)
+                ) : (
+                  // Plain text - apply any inline styles
+                  text
+                )}
+              </div>
+            );
+          })}
+        </div>
+      );
     } catch (error) {
       console.error("Error rendering message content:", error);
       return <Typography variant="body1">{typeof content === 'string' ? content : 'Unreadable content'}</Typography>;
     }
+  };
+  
+  // Helper function to render text with entities (like links)
+  const renderTextWithEntities = (text, entityRanges, entityMap) => {
+    // If no entities, just return the text
+    if (entityRanges.length === 0) return text;
+    
+    // Sort entity ranges by offset to ensure proper order
+    const sortedRanges = [...entityRanges].sort((a, b) => a.offset - b.offset);
+    
+    // Build an array of text segments and links
+    const result = [];
+    let lastIndex = 0;
+    
+    sortedRanges.forEach((range, i) => {
+      const { offset, length, key } = range;
+      const entity = entityMap[key];
+      
+      // Add text before this entity if there is any
+      if (offset > lastIndex) {
+        result.push(text.slice(lastIndex, offset));
+      }
+      
+      // Get the entity text
+      const entityText = text.slice(offset, offset + length);
+      
+      // Handle different entity types
+      if (entity.type.toLowerCase() === 'link') {
+        result.push(
+          <a 
+            key={i} 
+            href={entity.data.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {entityText}
+          </a>
+        );
+      } else {
+        // For other entity types, just add the text
+        result.push(entityText);
+      }
+      
+      lastIndex = offset + length;
+    });
+    
+    // Add any remaining text
+    if (lastIndex < text.length) {
+      result.push(text.slice(lastIndex));
+    }
+    
+    return result;
   };
 
   // Effects
@@ -531,15 +564,20 @@ useEffect(() => {
                   {/* Message content */}
                   <Box sx={{ pl: 7 }}>
                     <Box 
+                      className="message-content"
                       sx={{ 
                         typography: 'body1', 
                         lineHeight: 1.6, 
                         mb: 2,
-                        '& p': { 
-                          margin: 0,
-                          marginBottom: 0
+                        // Use direct CSS injection for more control
+                        '&::before': {
+                          content: '""',
+                          display: 'block',
+                          marginBottom: '0px'
                         },
-                        '& br': { display: 'block', content: '""', marginTop: '0.3em' }
+                        // The combination of these styles will ensure single spacing
+                        '& span': { display: 'inline' },
+                        '& span + span': { marginTop: '0 !important', paddingTop: '0 !important' }
                       }}
                     >
                       {renderMessageContent(message.content)}
