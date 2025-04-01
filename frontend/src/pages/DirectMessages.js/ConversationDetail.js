@@ -298,7 +298,9 @@ useEffect(() => {
   
       // Convert Draft.js raw to HTML with proper link handling
       const contentState = convertFromRaw(contentObj);
-      let html = stateToHTML(contentState, {
+      
+      // Create custom HTML directly handling line breaks explicitly
+      const customOptions = {
         inlineStyles: {
           BOLD: { element: 'strong' },
           ITALIC: { element: 'em' },
@@ -317,17 +319,16 @@ useEffect(() => {
             };
           }
         },
-        // Fix for line break issue - use <br> for soft breaks instead of double line breaks
+        // Use spans for blocks with no wrapper to prevent double spacing
         blockStyleFn: (block) => {
-          const type = block.getType();
-          if (type === 'unstyled') {
-            return {
-              element: 'div',
-              wrapper: null
-            };
-          }
+          return {
+            element: 'span',
+            wrapper: null
+          };
         }
-      });
+      };
+      
+      let html = stateToHTML(contentState, customOptions);
   
       // You can still linkify regular text URLs if needed
       html = linkifyHtml(html, linkifyOptions);
@@ -529,7 +530,18 @@ useEffect(() => {
                   
                   {/* Message content */}
                   <Box sx={{ pl: 7 }}>
-                    <Box sx={{ typography: 'body1', lineHeight: 1.6, mb: 2 }}>
+                    <Box 
+                      sx={{ 
+                        typography: 'body1', 
+                        lineHeight: 1.6, 
+                        mb: 2,
+                        '& p': { 
+                          margin: 0,
+                          marginBottom: 0
+                        },
+                        '& br': { display: 'block', content: '""', marginTop: '0.3em' }
+                      }}
+                    >
                       {renderMessageContent(message.content)}
                     </Box>
                     
