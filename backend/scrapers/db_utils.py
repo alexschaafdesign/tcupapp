@@ -4,7 +4,9 @@ from dotenv import load_dotenv
 import os
 from pathlib import Path
 
-load_dotenv()  # This loads .env file from current directory
+# Load the correct environment file
+env_path = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) / '.env.development'
+load_dotenv(dotenv_path=env_path)
 
 def connect_to_db():
     """Establish a connection to the database."""

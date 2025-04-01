@@ -1,5 +1,7 @@
 import re
 import time
+import sys
+import json
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -13,48 +15,100 @@ from db_utils import connect_to_db, get_venue_id, insert_show
 venue_url = "https://icehouse.turntabletickets.com/"
 DEFAULT_IMAGE_URL = "https://icehouse.turntabletickets.com/default_image.jpg"
 
-# Set up Selenium WebDriver in headless mode
-chrome_options = Options()
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--disable-gpu")
-driver = webdriver.Chrome(options=chrome_options)
+# Define function to run the scraper
+def run_icehouse_scraper():
+    # Logs and counters
+    errors = []
+    added_count = 0
+    duplicate_count = 0
+    skipped_count = 0
+    added_shows = []
+    
+    # Set up Selenium WebDriver in headless mode
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    
+    try:
+        driver = webdriver.Chrome(options=chrome_options)
+        sys.stderr.write("Chrome initialized successfully\n")
+    except Exception as e:
+        error_msg = f"Error initializing Chrome: {e}"
+        sys.stderr.write(error_msg + "\n")
+        return {
+            'scraper_name': 'icehouse',
+            'added_count': 0,
+            'duplicate_count': 0,
+            'skipped_count': 1,
+            'added_shows': [],
+            'errors': [error_msg],
+        }
 
-driver.get(venue_url)
+    driver.get(venue_url)
+    sys.stderr.write(f"Navigating to {venue_url}\n")
 
-# Wait for the event elements to load. Adjust the selector if needed.
-try:
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.details"))
-    )
-except Exception as e:
-    print(f"Error waiting for events to load: {e}")
+    # Wait for the event elements to load. Adjust the selector if needed.
+    try:
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.details"))
+        )
+    except Exception as e:
+        error_msg = f"Error waiting for events to load: {e}"
+        sys.stderr.write(error_msg + "\n")
+        driver.quit()
+        return {
+            'scraper_name': 'icehouse',
+            'added_count': 0,
+            'duplicate_count': 0,
+            'skipped_count': 1,
+            'added_shows': [],
+            'errors': [error_msg],
+        }
+
+    # Give a little extra time if necessary (tweak sleep duration as needed)
+    time.sleep(2)
+
+    # Get the fully rendered page source and close the driver
+    html_content = driver.page_source
     driver.quit()
-    exit()
 
-# Give a little extra time if necessary (tweak sleep duration as needed)
-time.sleep(2)
+    soup = BeautifulSoup(html_content, 'html.parser')
+    sys.stderr.write("Page parsed with BeautifulSoup\n")
 
-# Get the fully rendered page source and close the driver
-html_content = driver.page_source
-driver.quit()
+    # Connect to the PostgreSQL database
+    try:
+        conn = connect_to_db()
+        cursor = conn.cursor()
+    except Exception as e:
+        error_msg = f"DB connection error: {e}"
+        sys.stderr.write(error_msg + "\n")
+        return {
+            'scraper_name': 'icehouse',
+            'added_count': 0,
+            'duplicate_count': 0,
+            'skipped_count': 1,
+            'added_shows': [],
+            'errors': [error_msg],
+        }
 
-soup = BeautifulSoup(html_content, 'html.parser')
-
-# Connect to the PostgreSQL database
-conn = connect_to_db()
-cursor = conn.cursor()
-
-# Counters for tracking results
-show_count = 0
-inserted_shows = 0
-skipped_shows = 0
-band_count = 0
-inserted_bands = 0
-linked_bands = 0
-
-try:
-    # Get the venue ID for "Icehouse"
-    venue_id = get_venue_id(cursor, "Icehouse")
+    try:
+        # Get the venue ID for "Icehouse"
+        venue_id = get_venue_id(cursor, "Icehouse")
+    except Exception as e:
+        error_msg = f"Error getting venue ID for Icehouse: {e}"
+        sys.stderr.write(error_msg + "\n")
+        conn.close()
+        return {
+            'scraper_name': 'icehouse',
+            'added_count': 0,
+            'duplicate_count': 0,
+            'skipped_count': 1,
+            'added_shows': [],
+            'errors': [error_msg],
+        }
 
     def split_band_names(band_string):
         # Remove "Brunch with" and split by common delimiters
@@ -66,11 +120,11 @@ try:
     events = soup.find_all('div', class_="details flex flex-col gap-2 md:flex-row border-b last:border-b-0 border-linear-g-primary py-12 px-4 md:px-0 md:py-16 md:gap-10")
     
     if not events:
-        print("No events found. The page structure may have changed.")
+        error_msg = "No events found. The page structure may have changed."
+        sys.stderr.write(error_msg + "\n")
+        errors.append(error_msg)
 
     for event in events:
-        show_count += 1  # Increment the total show count
-
         try:
             # Extract the flyer image URL
             flyer_image_tag = event.find('picture', class_="show-image")
@@ -84,7 +138,7 @@ try:
             # Extract the date (assumed format like "Fri, May 2")
             date_tag = performance_div.find('h4', class_="day-of-week") if performance_div else None
             show_date_text = date_tag.text.strip() if date_tag else None
-            print(f"Show Date Text: {show_date_text}")
+            sys.stderr.write(f"Show Date Text: {show_date_text}\n")
 
             # Extract the time from a <span> within the performance div
             if performance_div:
@@ -95,7 +149,6 @@ try:
                     time_match = re.search(r'(\d{1,2}(:\d{2})?\s?(am|pm|AM|PM))', time_text)
                     if time_match:
                         doors_time = time_match.group(1).lower()
-                        print(f"First Time Found: {doors_time}")
                     else:
                         doors_time = ""
                     
@@ -106,7 +159,10 @@ try:
                             # Expecting format "%a, %b %d" (e.g., "Fri, May 2")
                             dt_temp = datetime.strptime(event_date, "%a, %b %d")
                         except ValueError as e:
-                            print(f"Error parsing event date '{event_date}': {e}")
+                            error_msg = f"Error parsing event date '{event_date}': {e}"
+                            sys.stderr.write(error_msg + "\n")
+                            errors.append(error_msg)
+                            skipped_count += 1
                             continue
                         month = dt_temp.month
                         year = 2024 if month == 12 else 2025
@@ -118,64 +174,78 @@ try:
                                 show_start_time = datetime.strptime(full_date, "%Y %a, %b %d %I:%M%p")
                             else:
                                 show_start_time = datetime.strptime(full_date, "%Y %a, %b %d %I%p")
-                            print(f"Parsed Start Time: {show_start_time}")
                         except ValueError as e:
-                            print(f"Error parsing combined date and time: {e}")
-                            show_start_time = None
+                            error_msg = f"Error parsing combined date and time: {e}"
+                            sys.stderr.write(error_msg + "\n")
+                            errors.append(error_msg)
+                            skipped_count += 1
+                            continue
                     else:
-                        print("No date text found.")
-                        show_start_time = None
+                        error_msg = "No date text found."
+                        sys.stderr.write(error_msg + "\n")
+                        errors.append(error_msg)
+                        skipped_count += 1
+                        continue
                 else:
-                    print("No time span found in performance div.")
-                    show_start_time = None
+                    error_msg = "No time span found in performance div."
+                    sys.stderr.write(error_msg + "\n")
+                    errors.append(error_msg)
+                    skipped_count += 1
+                    continue
             else:
-                print("No performance div found.")
-                show_start_time = None
-
-            print(f"Final Start Time: {show_start_time}")
+                error_msg = "No performance div found."
+                sys.stderr.write(error_msg + "\n")
+                errors.append(error_msg)
+                skipped_count += 1
+                continue
 
             # Extract event link
             event_link_tag = performance_div.find('a', href=True) if performance_div else None
             event_link = event_link_tag['href'] if event_link_tag else None
             if event_link and event_link.startswith('/'):
                 event_link = f"https://icehouse.turntabletickets.com{event_link}"
-            print(f"Event Link: {event_link}")
 
             # Insert or update the show in the database
-            print(f"Inserting/Updating show with parameters:\n"
-                  f"  Venue ID: {venue_id}\n"
-                  f"  Bands: {bands}\n"
-                  f"  Start: {show_start_time}\n"
-                  f"  Event Link: {event_link}\n"
-                  f"  Flyer Image: {flyer_image}")
             try:
                 show_id, was_inserted = insert_show(conn, cursor, venue_id, ", ".join(bands), show_start_time, event_link, flyer_image)
                 if was_inserted:
-                    inserted_shows += 1
+                    added_count += 1
+                    added_shows.append(show_id)
+                    sys.stderr.write(f"Inserted event: {', '.join(bands)} at {show_start_time}\n")
                 else:
-                    skipped_shows += 1
+                    duplicate_count += 1
+                    sys.stderr.write(f"Duplicate event skipped: {', '.join(bands)} at {show_start_time}\n")
             except Exception as e:
-                print(f"Error inserting or updating show: {e}")
-                skipped_shows += 1
+                error_msg = f"Error inserting or updating show ({', '.join(bands)}): {e}"
+                sys.stderr.write(error_msg + "\n")
+                errors.append(error_msg)
+                skipped_count += 1
                 continue
 
         except Exception as e:
-            print(f"Error parsing event: {e}")
-            skipped_shows += 1
+            error_msg = f"Error parsing event: {e}"
+            sys.stderr.write(error_msg + "\n")
+            errors.append(error_msg)
+            skipped_count += 1
 
-    # Log the results
-    print("\nScraping Results:")
-    print(f"Total shows found: {show_count}")
-    print(f"Inserted shows: {inserted_shows}")
-    print(f"Skipped shows (duplicates or errors): {skipped_shows}")
-    print(f"Total bands found: {band_count}")
-    print(f"Inserted bands: {inserted_bands}")
-    print(f"Bands linked to shows: {linked_bands}")
-
-except Exception as e:
-    print(f"Error: {e}")
-    conn.rollback()
-
-finally:
+    # Commit changes to the database
+    conn.commit()
+    
+    # Close database connection
     cursor.close()
     conn.close()
+    
+    # Return the results
+    return {
+        'scraper_name': 'icehouse',
+        'added_count': added_count,
+        'duplicate_count': duplicate_count,
+        'skipped_count': skipped_count,
+        'added_shows': added_shows,
+        'errors': errors,
+    }
+
+# Run the scraper if called directly
+if __name__ == "__main__":
+    log = run_icehouse_scraper()
+    print(json.dumps(log))

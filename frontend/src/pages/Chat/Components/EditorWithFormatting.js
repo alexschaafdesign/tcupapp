@@ -50,15 +50,12 @@ const exportOptions = {
       };
     }
   },
-  // Fix for line break issue - use <br> for soft breaks instead of double line breaks
+  // Use spans for all blocks with no wrapper to eliminate extra spacing
   blockStyleFn: (block) => {
-    const type = block.getType();
-    if (type === 'unstyled') {
-      return {
-        element: 'div',
-        wrapper: null
-      };
-    }
+    return {
+      element: 'span',
+      wrapper: null
+    };
   }
 };
 

@@ -58,6 +58,7 @@ import ForumImportTool from "./pages/Chat/ForumImportTool.js";
 import OriginalAdminImportPost from "./pages/Chat/Components/OriginalAdminImportPost.js";
 import HistoricalReplyForm from "./pages/Chat/Components/HistoricalReplyForm.js";
 import AdminDashboard from "./pages/Admin/AdminDashboard.js";
+import ScraperAdminPanel from "./pages/Admin/ScraperAdminPanel.js";
 import VenueReportCardPage from "./pages/VRC/VenueReportCardPage.js";
 import JoinTCUP from "./pages/TCUP/JoinTCUP.js";
 import Newsletter from "./pages/TCUP/Newsletter.js";
@@ -167,6 +168,7 @@ function App() {
           {/* Admin*/}
           <Route path="admin" element={<AdminDashboard />} />          
           <Route path="/admin/updates" element={<NewUpdate />} />
+          <Route path="/admin/scrapers" element={<ScraperAdminPanel />} />
           <Route path="/admin/import" element={<OriginalAdminImportPost />} />
           <Route path="updates/edit/:id" element={<UpdateEditForm />} />   
           {/* Resources */}

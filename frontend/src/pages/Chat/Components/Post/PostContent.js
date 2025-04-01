@@ -6,16 +6,13 @@ const PostContent = ({ post, renderContent }) => {
   const hasImages = post.images && Array.isArray(post.images) && post.images.length > 0;
   
   return (
-    <Box sx={{ 
-      width: '100%', 
-      wordBreak: 'break-word', 
-      overflowWrap: 'anywhere',
-      '& p': { 
-        margin: 0,
-        marginBottom: 0
-      },
-      '& br': { display: 'block', content: '""', marginTop: '0.3em' }
-    }}>
+    <Box 
+      className="message-content"
+      sx={{ 
+        width: '100%', 
+        wordBreak: 'break-word', 
+        overflowWrap: 'anywhere'
+      }}>
       {renderContent && renderContent(post.content)}
       {hasImages && <ImageAttachmentsGrid images={post.images} />}
     </Box>
