@@ -38,10 +38,11 @@ def run_berlin_mpls_scraper():
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
     try:
-        service = Service('/usr/local/bin/chromedriver')
-        driver = webdriver.Chrome(service=service, options=chrome_options)
+        # For Mac with Chrome installed in the default location
+        driver = webdriver.Chrome(options=chrome_options)
         sys.stderr.write("Chrome initialized successfully\n")
     except Exception as e:
         err_msg = f"Error initializing Chrome: {e}"

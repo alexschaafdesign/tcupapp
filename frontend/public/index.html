@@ -31,6 +31,20 @@
 
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>the CUPBOARD</title>
+    
+    <!-- Fix for editor line spacing -->
+    <style>
+      /* Fix for double line breaks in Draft.js content */
+      .message-content span + span {
+        display: inline-block;
+        margin-top: 0 !important;
+      }
+      
+      /* Set consistent paragraph spacing in rich text content */
+      .message-content span {
+        margin-bottom: 0.4em;
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

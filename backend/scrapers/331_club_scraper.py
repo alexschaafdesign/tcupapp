@@ -16,11 +16,13 @@ def run_331_club_scraper():
       - scraper_name: Name identifier of the scraper.
       - added_count: Number of events inserted.
       - duplicate_count: Number of duplicate events skipped.
+      - skipped_count: Number of events skipped due to errors.
       - added_shows: List of inserted show IDs.
       - errors: List of error messages encountered.
     """
     added_count = 0
     duplicate_count = 0
+    skipped_count = 0
     added_shows = []
     errors = []
 
@@ -30,18 +32,22 @@ def run_331_club_scraper():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
     try:
+        # For MacOS, we need to specify the Chrome binary location
         driver = webdriver.Chrome(options=chrome_options)
         sys.stderr.write("Chrome initialized successfully\n")
     except Exception as e:
         error_msg = f"Error initializing Chrome: {e}"
         sys.stderr.write(error_msg + "\n")
         errors.append(error_msg)
+        skipped_count += 1
         return {
             'scraper_name': '331_club',
             'added_count': added_count,
             'duplicate_count': duplicate_count,
+            'skipped_count': skipped_count,
             'added_shows': added_shows,
             'errors': errors,
         }
@@ -54,29 +60,47 @@ def run_331_club_scraper():
         error_msg = f"Error navigating to {url}: {e}"
         sys.stderr.write(error_msg + "\n")
         errors.append(error_msg)
+        skipped_count += 1
         driver.quit()
         return {
             'scraper_name': '331_club',
             'added_count': added_count,
             'duplicate_count': duplicate_count,
+            'skipped_count': skipped_count,
             'added_shows': added_shows,
             'errors': errors,
         }
 
-    sys.stderr.write("Page loaded, waiting for 'See all upcoming events' button...\n")
+    sys.stderr.write("Page loaded, looking for 'See all upcoming events' button...\n")
     try:
+        # Wait for the page to load
         WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, '.more_events a'))
-        ).click()
+            EC.presence_of_element_located((By.ID, "calendar"))
+        )
+        
+        # Try to find and click the "See all upcoming events" button if it exists
+        try:
+            more_events_btn = WebDriverWait(driver, 5).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, '.more_events a'))
+            )
+            sys.stderr.write("Found 'See all upcoming events' button, clicking it...\n")
+            more_events_btn.click()
+        except Exception as e:
+            # If the button is not found, it's possible the site layout changed or all events are already visible
+            sys.stderr.write(f"'See all upcoming events' button not found or not clickable: {e}\n")
+            sys.stderr.write("Continuing with currently visible events...\n")
+            # We'll continue anyway as some events may still be visible
     except Exception as e:
-        error_msg = f"Error clicking 'See all upcoming events' button: {e}"
+        error_msg = f"Error waiting for calendar to load: {e}"
         sys.stderr.write(error_msg + "\n")
         errors.append(error_msg)
+        skipped_count += 1
         driver.quit()
         return {
             'scraper_name': '331_club',
             'added_count': added_count,
             'duplicate_count': duplicate_count,
+            'skipped_count': skipped_count,
             'added_shows': added_shows,
             'errors': errors,
         }
@@ -89,11 +113,13 @@ def run_331_club_scraper():
         error_msg = f"Error waiting for event cards: {e}"
         sys.stderr.write(error_msg + "\n")
         errors.append(error_msg)
+        skipped_count += 1
         driver.quit()
         return {
             'scraper_name': '331_club',
             'added_count': added_count,
             'duplicate_count': duplicate_count,
+            'skipped_count': skipped_count,
             'added_shows': added_shows,
             'errors': errors,
         }
@@ -111,10 +137,12 @@ def run_331_club_scraper():
         error_msg = f"DB connection error: {e}"
         sys.stderr.write(error_msg + "\n")
         errors.append(error_msg)
+        skipped_count += 1
         return {
             'scraper_name': '331_club',
             'added_count': added_count,
             'duplicate_count': duplicate_count,
+            'skipped_count': skipped_count,
             'added_shows': added_shows,
             'errors': errors,
         }
@@ -125,11 +153,13 @@ def run_331_club_scraper():
         error_msg = f"Error getting venue ID for 331 Club: {e}"
         sys.stderr.write(error_msg + "\n")
         errors.append(error_msg)
+        skipped_count += 1
         conn.close()
         return {
             'scraper_name': '331_club',
             'added_count': added_count,
             'duplicate_count': duplicate_count,
+            'skipped_count': skipped_count,
             'added_shows': added_shows,
             'errors': errors,
         }
@@ -219,6 +249,7 @@ def run_331_club_scraper():
                 error_msg = f"Skipping event ({bands_str}) due to date/time issue: {e}"
                 sys.stderr.write(error_msg + "\n")
                 errors.append(error_msg)
+                skipped_count += 1
                 continue
 
             event_link = None
@@ -242,6 +273,7 @@ def run_331_club_scraper():
                 error_msg = f"Error processing event ({bands_str}): {e}"
                 sys.stderr.write(error_msg + "\n")
                 errors.append(error_msg)
+                skipped_count += 1
                 conn.rollback()
                 continue
 
@@ -253,6 +285,7 @@ def run_331_club_scraper():
         'scraper_name': '331_club',
         'added_count': added_count,
         'duplicate_count': duplicate_count,
+        'skipped_count': skipped_count,
         'added_shows': added_shows,
         'errors': errors,
     }
