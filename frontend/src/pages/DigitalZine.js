@@ -206,33 +206,39 @@ const DigitalZine = () => {
     <Container 
       maxWidth={false} 
       disableGutters 
+      className="digital-zine-container"
       sx={{
         height: '100vh',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        bgcolor: '#1a1a1a', // Darker background for better contrast
+        bgcolor: 'transparent', // Match the site's natural background
         overflow: 'hidden',
         position: 'relative',
         userSelect: 'none',
         cursor: controlsVisible ? 'default' : 'none',
+        pl: -12, // Remove left padding
+        pr: 0, // Remove right padding
+        mt: -16, // Remove top margin
+        mb: 0, // Remove bottom margin
       }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Book container - maximized to take up more screen space */}
+      {/* Book container - sized appropriately to prevent pixelation */}
       <Box
         sx={{
-          width: '100%', // Full width
-          height: '100vh', // Full height
+          width: '100%',
+          height: '100vh',
           position: 'relative',
           perspective: '2000px',
-          bgcolor: 'transparent',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          padding: 0,
+          margin: 0,
         }}
       >
         {/* Loading indicator */}
@@ -275,10 +281,12 @@ const DigitalZine = () => {
             src={pages[currentPage]}
             alt={`Digital zine page ${currentPage + 1}`}
             sx={{
-              maxWidth: '95%',
-              maxHeight: '95vh',
+              maxWidth: '850px', // Fixed width to prevent pixelation
+              maxHeight: '85vh', // Keep it proportional but not too large
               objectFit: 'contain',
-              backgroundColor: 'transparent', // Remove the white background
+              backgroundColor: 'transparent',
+              boxShadow: 'none',
+              borderRadius: 0,
               backfaceVisibility: isFlipping ? 'hidden' : 'visible',
               opacity: imagesLoaded[currentPage] ? 1 : 0,
               transition: 'opacity 0.3s ease',
@@ -287,16 +295,18 @@ const DigitalZine = () => {
 
           {/* Next page (for flip animation) */}
           {isFlipping && nextPage !== null && (
-            <Box
+                          <Box
               component="img"
               src={pages[nextPage]}
               alt={`Digital zine page ${nextPage + 1}`}
               sx={{
-                position: 'absolute',
-                maxWidth: '95%',
-                maxHeight: '95vh',
+                maxWidth: '850px',
+                maxHeight: '85vh',
                 objectFit: 'contain',
                 backgroundColor: 'transparent',
+                boxShadow: 'none',
+                borderRadius: 0,
+                position: 'absolute',
                 backfaceVisibility: 'hidden',
                 transform: 'rotateY(180deg)',
                 opacity: imagesLoaded[nextPage] ? 1 : 0,
@@ -345,7 +355,7 @@ const DigitalZine = () => {
           </IconButton>
         </Box>
 
-        {/* Navigation buttons - move to side edges of screen */}
+        {/* Navigation buttons - more discrete and edge-aligned */}
         <Box
           sx={{
             position: 'absolute',
@@ -355,7 +365,7 @@ const DigitalZine = () => {
             transform: 'translateY(-50%)',
             display: 'flex',
             justifyContent: 'space-between',
-            padding: '0 8px',
+            padding: '0 2px', // Reduced side padding
           }}
         >
           <IconButton 
@@ -441,6 +451,11 @@ const DigitalZine = () => {
         @keyframes flipBackward {
           0% { transform: rotateY(0deg); }
           100% { transform: rotateY(180deg); }
+        }
+        
+        /* Hide scrollbars for cleaner view */
+        body:has(.digital-zine-container) {
+          overflow: hidden;
         }
       `}</style>
     </Container>
