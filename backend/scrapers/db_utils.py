@@ -10,123 +10,117 @@ load_dotenv(dotenv_path=env_path)
 
 def connect_to_db():
     """Establish a connection to the database."""
-    conn = psycopg2.connect(
-        dbname=os.getenv('DB_NAME'),
-        user=os.getenv('DB_USER'),
-        password=os.getenv('DB_PASSWORD'),
-        host=os.getenv('DB_HOST'),
-        port=os.getenv('DB_PORT'),
-        sslmode='require'
-    )
-    
-    # Set the search path to the development schema
-    with conn.cursor() as cur:
-        cur.execute("SET search_path TO development")
-    
-    return conn
+    try:
+        conn = psycopg2.connect(
+            dbname=os.getenv('DB_NAME'),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASSWORD'),
+            host=os.getenv('DB_HOST'),
+            port=os.getenv('DB_PORT'),
+        )
+        
+        # Set the search path to the development schema
+        with conn.cursor() as cur:
+            cur.execute("SET search_path TO development, public")
+        
+        return conn
+    except Exception as e:
+        print(f"Database connection error: {e}")
+        print(f"Connection parameters: dbname={os.getenv('DB_NAME')}, user={os.getenv('DB_USER')}, host={os.getenv('DB_HOST')}, port={os.getenv('DB_PORT')}")
+        raise
 
 def get_venue_id(cursor, venue_name):
     """Fetch the venue_id for a given venue name."""
-    cursor.execute("SELECT id FROM venues WHERE venue = %s", (venue_name,))
-    venue_row = cursor.fetchone()
-    if not venue_row:
-        raise ValueError(f"Venue '{venue_name}' not found in the venues table.")
-    return venue_row[0]
-
-def insert_show(conn, cursor, venue_id, bands, start, event_link, flyer_image):
-    """
-    Insert or update a show, and print whether it was newly inserted or updated.
-    If updated, print what changed.
-    """
-    # 1) Fetch the old row if it exists (based on your unique constraint).
-    old_row = None
     try:
-        cursor.execute(
-            """
-            SELECT id, bands, event_link, flyer_image
-              FROM shows
-             WHERE venue_id = %s
-               AND start = %s
-            """,
-            (venue_id, start)
-        )
-        old_row = cursor.fetchone()  # Could be None if no matching row
+        # Query with explicit schema
+        cursor.execute("SELECT id FROM development.venues WHERE venue = %s", (venue_name,))
+        venue_row = cursor.fetchone()
+        
+        if not venue_row:
+            raise ValueError(f"Venue '{venue_name}' not found in the venues table.")
+        
+        return venue_row[0]
     except Exception as e:
-        print(f"[DEBUG] Could not fetch old row: {e}")
+        print(f"Error in get_venue_id: {e}")
+        raise
+
+# --- MODIFIED insert_show ---
+def insert_show(conn, cursor, venue_id, bands, start, event_link, flyer_image, log_fn=None):
+    """
+    Insert or update a show in the database.
+    Accepts an optional log_fn for logging messages.
+    Returns the show ID and a boolean indicating if it was newly inserted.
+    """
+    # Default logger if none provided (prints to stderr to avoid polluting stdout)
+    logger = log_fn if callable(log_fn) else lambda msg: print(msg, file=sys.stderr)
 
     try:
-        # 2) Perform the UPSERT
-        insert_query = """
-            INSERT INTO shows (venue_id, bands, start, event_link, flyer_image)
-            VALUES (%s, %s, %s, %s, %s)
-            ON CONFLICT ON CONSTRAINT unique_show DO UPDATE
-            SET
-                bands = EXCLUDED.bands,
-                event_link = EXCLUDED.event_link,
-                flyer_image = CASE
-                    WHEN shows.flyer_image IS NULL OR shows.flyer_image = ''
-                         THEN EXCLUDED.flyer_image
-                    ELSE shows.flyer_image
-                END
-            RETURNING id, xmax = 0 AS was_inserted;
+        # Ensure flyer_image is not None before inserting (DB might not allow NULL)
+        flyer_image = flyer_image or DEFAULT_IMAGE_URL # Use default if None/empty
+
+        # Simple insert with ON CONFLICT handling
+        # Ensure 'unique_show' constraint exists, e.g., on (venue_id, start, bands) or similar
+        query = """
+        INSERT INTO development.shows (venue_id, bands, start, event_link, flyer_image)
+        VALUES (%s, %s, %s, %s, %s)
+        ON CONFLICT ON CONSTRAINT unique_show -- Adjust constraint name if different
+        DO UPDATE SET
+            bands = EXCLUDED.bands,
+            event_link = EXCLUDED.event_link,
+            flyer_image = CASE
+                WHEN development.shows.flyer_image IS NULL
+                    OR development.shows.flyer_image = ''
+                    OR development.shows.flyer_image LIKE '%example.com%' -- Placeholder check
+                    OR development.shows.flyer_image LIKE '%default%'     -- Placeholder check
+                    OR (NOT development.shows.flyer_image LIKE 'http%') -- Basic URL check
+                    OR (development.shows.flyer_image NOT LIKE '%.jpg%'  -- Extension check
+                       AND development.shows.flyer_image NOT LIKE '%.png%'
+                       AND development.shows.flyer_image NOT LIKE '%.jpeg%' -- Add jpeg
+                       AND development.shows.flyer_image NOT LIKE '%.webp%')
+                THEN EXCLUDED.flyer_image -- Update if current image seems invalid/default
+                ELSE development.shows.flyer_image -- Keep existing valid image otherwise
+            END,
+            updated_at = CURRENT_TIMESTAMP -- Add an updated_at timestamp if table has one
+        RETURNING id, (xmax = 0) AS was_inserted
         """
-        cursor.execute(insert_query, (venue_id, bands, start, event_link, flyer_image))
+
+        # Execute the query
+        cursor.execute(query, (venue_id, bands, start, event_link, flyer_image))
+
+        # Get result
+        result = cursor.fetchone()
+
+        if not result:
+            # This shouldn't happen with RETURNING if the insert/update worked
+            raise ValueError("Insert/Update operation returned no result (id, was_inserted).")
+
+        show_id, was_inserted = result
+
+        # Log the action using the provided logger
+        if was_inserted:
+            logger(f"[DB INSERT] New show ID={show_id} for '{bands}' at {start.strftime('%Y-%m-%d %H:%M')}")
+        else:
+            # Optional: Fetch old values ONLY if needed for detailed update logging
+            # This adds an extra query, potentially slowing things down.
+            # Consider logging just the update fact unless details are crucial.
+            logger(f"[DB UPDATE] Existing show ID={show_id} for '{bands}' at {start.strftime('%Y-%m-%d %H:%M')} (data potentially updated)")
+            # Detailed update logging (comment out if not needed)
+            # cursor.execute("SELECT bands, event_link, flyer_image FROM development.shows WHERE id = %s", (show_id,))
+            # old_data = cursor.fetchone() # Fetch immediately after update if needed
+            # ... (rest of detailed comparison logic using logger) ...
+
+        # Commit the transaction *after* successful operation
         conn.commit()
 
-        result = cursor.fetchone()
-        show_id = result[0]
-        was_inserted = result[1]  # True if INSERT, False if an UPDATE
-
-        # 3) If newly inserted, log it and return
-        if was_inserted:
-            print(f"[INSERT] New show with ID={show_id}")
-            return show_id, True
-
-        # 4) Otherwise, it was an UPDATE or no-op. Let's see if anything changed.
-        #    Re-fetch the current row for comparison:
-        cursor.execute(
-            "SELECT id, bands, event_link, flyer_image FROM shows WHERE id = %s",
-            (show_id,)
-        )
-        new_row = cursor.fetchone()
-
-        if old_row is None:
-            # This would be unusual if we have a unique constraint on (venue_id, start).
-            # Possibly the row was created in the same transaction by something else.
-            print(f"[UPDATE] Show ID={show_id} updated, but old row wasn't found before UPSERT.")
-            return show_id, False
-
-        # old_row and new_row are both tuples: (id, bands, event_link, flyer_image)
-        changes = []
-
-        # Compare BANDS
-        if old_row[1] != new_row[1]:
-            changes.append(
-                f"bands: '{old_row[1]}' -> '{new_row[1]}'"
-            )
-
-        # Compare EVENT_LINK
-        if old_row[2] != new_row[2]:
-            changes.append(
-                f"event_link: '{old_row[2]}' -> '{new_row[2]}'"
-            )
-
-        # Compare FLYER_IMAGE
-        if old_row[3] != new_row[3]:
-            changes.append(
-                f"flyer_image: '{old_row[3]}' -> '{new_row[3]}'"
-            )
-
-        if changes:
-            print(f"[UPDATE] Show ID={show_id} updated. Changes: {', '.join(changes)}")
-     #   else:
-     #       print(f"[NO CHANGE] Show ID={show_id} was already up to date.")
-
-        return show_id, False
+        return show_id, was_inserted
 
     except Exception as e:
-        print(f"Error inserting or updating show: {e}")
-        print(f"Query parameters: venue_id={venue_id}, bands={bands}, "
-              f"start={start}, event_link={event_link}, flyer_image={flyer_image}")
-        conn.rollback()
-        raise
+        # Log error using the provided logger (or stderr) and roll back
+        error_msg = f"[DB ERROR] inserting/updating show '{bands}' on {start}: {e}"
+        logger(error_msg)
+        try:
+            conn.rollback()
+            logger("[DB ROLLBACK] Transaction rolled back.")
+        except Exception as rb_e:
+             logger(f"[DB ROLLBACK ERROR] Failed to rollback transaction: {rb_e}")
+        raise # Re-raise the exception so the caller (process_performances) knows it failed

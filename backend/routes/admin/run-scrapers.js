@@ -114,22 +114,28 @@ async function runScraper(scraperName) {
     // Try to parse the output as JSON
     let result;
     try {
-      // Extract only the JSON part from the stdout (last line)
-      let jsonOutput = stdout;
-      // Get the last line that starts with a { which should be our JSON
-      const lines = stdout.split('\n');
-      for (let i = lines.length - 1; i >= 0; i--) {
-        if (lines[i].trim().startsWith('{')) {
-          jsonOutput = lines[i];
-          break;
-        }
+      // Trim potential leading/trailing whitespace from the captured output
+      const trimmedOutput = stdoutData.trim();
+
+      if (!trimmedOutput) {
+           // Handle cases where the python script produced no output to stdout
+           console.error(`Received empty stdout from ${scraperName}.`);
+           // You might want to check stderrData here for errors from Python
+           throw new Error(`Received empty stdout from ${scraperName}. Stderr: ${stderrData || 'empty'}`);
       }
-      result = JSON.parse(jsonOutput);
+
+      result = JSON.parse(trimmedOutput); // <--- Parse the WHOLE trimmed string
+
+      // Optional: Add a success log after successful parsing
+      console.log(`Successfully parsed JSON output for ${scraperName}.`);
+
     } catch (parseError) {
       console.error(`Failed to parse JSON output from ${scraperName}:`, parseError);
-      console.log('Raw output:', stdout);
-      
+      // Log the actual data that caused the parsing failure
+      console.error(`Data that failed parsing for ${scraperName}: >>>\n${stdoutData}\n<<<`); // Log the full stdout
+
       // If we can't parse the JSON, create a basic result object
+      // Include the raw stdout and stderr for debugging purposes
       result = {
         scraper_name: scraperName,
         added_count: 0,
@@ -137,8 +143,14 @@ async function runScraper(scraperName) {
         skipped_count: 0,
         added_shows: [],
         errors: [`Failed to parse output: ${parseError.message}`],
-        raw_output: stdout
+        // Add raw captures to the result object itself if desired
+        raw_stdout_capture: stdoutData,
+        raw_stderr_capture: stderrData
       };
+      // Add stderr content to the errors array for better context
+      if (stderrData && !result.errors.some(e => e.includes('Stderr:'))) {
+          result.errors.push(`Stderr: ${stderrData.trim()}`);
+      }
     }
     
     // Store the log in the database with explicit schema reference

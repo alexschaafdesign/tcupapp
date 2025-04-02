@@ -34,7 +34,7 @@ function DynamicFilterComponent({ filters, navigate }) {
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
   
-  const canAddShow = isAuthenticated && (isAdmin || isModerator);
+  const canAddShow = isAuthenticated;
 
   // Handler for the Add a show button
   const handleAddShowClick = () => {
