@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <language>en-US</language>
+    <title>Housing!</title>
+    <description>Get help with housing / roommates / etc!</description>
+    <pubDate>Thu, 03 Apr 2025 17:49:58 +0000</pubDate>
+    <lastBuildDate>Thu, 03 Apr 2025 17:49:58 +0000</lastBuildDate>
+    <generator>Twin Cities United Performers (TCUP)</generator>
+    <link>https://tcupmutualaid.community.forum/index.php?forums/housing.48/</link>
+    <atom:link rel="self" type="application/rss+xml" href="https://tcupmutualaid.community.forum/index.php?forums/housing.48/index.rss"/>
+  </channel>
+</rss>
