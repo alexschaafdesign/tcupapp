@@ -50,6 +50,13 @@ const exportOptions = {
       };
     }
   },
+  // Use spans for all blocks with no wrapper to eliminate extra spacing
+  blockStyleFn: (block) => {
+    return {
+      element: 'span',
+      wrapper: null
+    };
+  }
 };
 
 // We have two options for fixing the issue:

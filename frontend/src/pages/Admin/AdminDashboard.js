@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -6,7 +6,6 @@ import {
   Paper,
   Typography,
   Grid,
-  Button,
   IconButton,
   Tooltip,
 } from '@mui/material';
@@ -14,14 +13,10 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import PeopleIcon from '@mui/icons-material/People';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import { useAuth } from '../../hooks/useAuth';
-import AuthWrapper from '../../components/auth/AuthWrapper';
-import ScraperAdminPanel from './ScraperAdminPanel';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
-  // Always call your hooks
-  const [showScraperPanel, setShowScraperPanel] = useState(false);
 
   // Now conditionally render based on isAdmin
   if (!isAdmin) {
@@ -41,6 +36,10 @@ const AdminDashboard = () => {
 
   const handleViewUsers = () => {
     navigate('/admin/users');
+  };
+  
+  const handleGoToScrapers = () => {
+    navigate('/admin/scrapers');
   };
 
   return (
@@ -163,16 +162,16 @@ const AdminDashboard = () => {
             >
               <Box sx={{ mb: 2 }}>
                 <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
-                  Run Show Scrapers
+                  Venue Scraper Admin
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  Fetch and update shows from external sources.
+                  Run scrapers, view logs, and manage scraping settings.
                 </Typography>
               </Box>
               <Box sx={{ textAlign: 'right' }}>
-                <Tooltip title="Toggle Scraper Panel" placement="top">
+                <Tooltip title="Go to Scraper Admin Page" placement="top">
                   <IconButton
-                    onClick={() => setShowScraperPanel((prev) => !prev)}
+                    onClick={handleGoToScrapers}
                     sx={{
                       bgcolor: 'action.hover',
                       transition: 'all 0.3s',
@@ -234,12 +233,6 @@ const AdminDashboard = () => {
           </Grid>
         </Grid>
 
-        {/* Render the ScraperAdminPanel when toggled */}
-        {showScraperPanel && (
-          <Box sx={{ mt: 4 }}>
-            <ScraperAdminPanel />
-          </Box>
-        )}
       </Paper>
     </Container>
   );

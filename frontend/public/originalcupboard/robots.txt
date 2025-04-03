@@ -1,0 +1,23 @@
+User-agent: PetalBot
+User-agent: AspiegelBot
+User-agent: AhrefsBot
+User-agent: SemrushBot 
+User-agent: DotBot
+User-agent: MauiBot
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: *
+Disallow: /account/
+Disallow: /attachments/
+Disallow: /goto/
+Disallow: /misc/language
+Disallow: /misc/style
+Disallow: /posts/
+Disallow: /login/
+Disallow: /search/
+Disallow: /whats-new/
+Disallow: /admin.php
+Allow: /
+
+Sitemap: https://tcupmutualaid.community.forum/sitemap.xml
