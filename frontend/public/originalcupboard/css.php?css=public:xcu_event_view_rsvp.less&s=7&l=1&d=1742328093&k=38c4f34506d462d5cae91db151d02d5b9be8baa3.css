@@ -1,0 +1,4 @@
+@charset "UTF-8";
+
+/********* public:xcu_event_view_rsvp.less ********/
+.rsvp-flex-container{display:flex;justify-content:space-between;margin:10px}.rsvp-section{width:33%;margin-bottom:10px}@media (max-width:768px){.rsvp-flex-container{flex-direction:column}.rsvp-section{width:100%}}.rsvp-flex-section{display:flex;flex-wrap:wrap}.rsvp-count-circle{width:48px;height:48px;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600}.rsvp-count-circle.attendee{background-color:#3df543}.rsvp-count-circle.space{background-color:#37cfff}.rsvp-flex-item{flex:1;margin-top:10px;margin-left:10px}.rsvp-rounded{border-radius:50%;width:48px;min-width:48px;height:48px;object-fit:cover}

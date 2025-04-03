@@ -1,0 +1,4 @@
+@charset "UTF-8";
+
+/********* public:help_bb_codes.less ********/
+.bbCodeDemoBlock{padding:.25em 0}.bbCodeDemoBlock:before,.bbCodeDemoBlock:after{content:" ";display:table}.bbCodeDemoBlock:after{clear:both}.bbCodeDemoBlock-item{width:50%;margin:0;padding:0;padding-left:8px;float:left}.bbCodeDemoBlock-item:first-child{padding-left:0}.bbCodeDemoBlock-item>dt{font-size:13px;color:#9199ad}.bbCodeDemoBlock-item>dd{margin:0;background:#f6f7fb;border:1px solid #edf0f5;padding:12px;zoom:1}

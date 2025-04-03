@@ -1,0 +1,4 @@
+@charset "UTF-8";
+
+/********* public:xcu_event_view_location_purpose_grid.less ********/
+.flex-container{display:flex;justify-content:space-between;margin:10px}.section{width:48%;margin-bottom:10px}@media (max-width:768px){.flex-container{flex-direction:column}.section{width:100%}}.flex-section{display:flex;flex-wrap:wrap}.rounded-map{border-radius:50%;display:block;width:96px;min-width:96px;height:96px;margin-right:16px;overflow:hidden;position:relative}.map-image{border-radius:50%;display:block;height:96px;width:96px}.map-button{top:50%;left:50%;min-width:10px;position:absolute;transform:translate(-50%, -50%)}.flex-item{flex:1;margin-left:10px}

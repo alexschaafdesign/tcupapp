@@ -1,0 +1,4 @@
+@charset "UTF-8";
+
+/********* public:prefix_menu.less ********/
+.menuTrigger.menuTrigger--prefix{text-decoration:none}.menuPrefix,.menuPrefix.label--hidden{display:block;font-size:13px;cursor:default;padding:6px}.menuPrefix.label--hidden,.menuPrefix.label--hidden.label--hidden{border:1px solid #e5e5e5}.menuPrefix.menuPrefix--none,.menuPrefix.label--hidden.menuPrefix--none{color:#8a8a8a;text-decoration:none}
