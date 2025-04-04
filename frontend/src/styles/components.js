@@ -33,13 +33,13 @@ export const components = {
       MuiTab: {
         styleOverrides: {
           root: ({ theme }) => ({
-            color: theme.palette.neutral.white, // Default text color
+            color: palette.text.primary, // Default text color
             fontSize: "1.25rem",
             textTransform: "uppercase",
             margin: "0 16px",
             fontWeight: "400",
             "&.Mui-selected": {
-              color: theme.palette.neutral.white, // Highlighted text color when selected
+              color: palette.primary.main, // Highlighted text color when selected
             },
             "&:hover": {
               color: "#FFFFFF", // Hover effect color
