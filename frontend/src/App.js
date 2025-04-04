@@ -58,10 +58,13 @@ import ForumImportTool from "./pages/Chat/ForumImportTool.js";
 import OriginalAdminImportPost from "./pages/Chat/Components/OriginalAdminImportPost.js";
 import HistoricalReplyForm from "./pages/Chat/Components/HistoricalReplyForm.js";
 import AdminDashboard from "./pages/Admin/AdminDashboard.js";
+import ScraperAdminPanel from "./pages/Admin/ScraperAdminPanel.js";
 import VenueReportCardPage from "./pages/VRC/VenueReportCardPage.js";
 import JoinTCUP from "./pages/TCUP/JoinTCUP.js";
 import Newsletter from "./pages/TCUP/Newsletter.js";
 import { MessageProvider } from "./pages/DirectMessages.js/MessageBadge.js";
+import PublicRoute from "./PublicRoute.js";
+import DigitalZine from "./pages/DigitalZine.js";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
@@ -121,88 +124,85 @@ function App() {
       <MessageProvider>
       <ProfileSync />
       <Routes>
-        {/* Public routes that don't require authentication */}
-        <Route path="/welcome" element={
+         {/* Public routes outside of any layout */}
+         <Route path="/welcome" element={
           isAuthenticated ? <Navigate to="/" /> : <WelcomePage />
         } />
         <Route path="/pwa-update" element={<PwaUpdatePage />} />
         <Route path="/callback" element={<Callback />} />
         <Route path="/privacy" element={<Privacy />} />
 
-        {/* Check authentication for the main app */}
-        <Route path="/" element={
-          isAuthenticated ? <Layout /> : <Navigate to="/welcome" />
-        }>
-          {/* index => "/" */}
-          <Route index element={<MainChatPage />} />
-  
-          {/* Additional routes => "/landing", "/powerpledge", etc. */}
+        {/* Public routes with layout */}
+        <Route element={<Layout publicAccess={true} />}>
+          <Route path="/" element={<MainChatPage />} />
+          <Route path="/shows" element={<ShowsTable />} />
+          <Route path="/shows/:id" element={<ShowProfile />} />
+          <Route path="/bands" element={<FullBandList />} />
+          <Route path="/bands/:bandSlug" element={<BandProfile />} />
+          <Route path="/venues" element={<VenuesTable />} />
+          <Route path="/venues/:id" element={<VenueProfile />} />
+          <Route path="/about" element={<AboutTCUP />} />
+          <Route path="/chat" element={<MainChatPage />} />
           <Route path="landing" element={<LandingPage />} />
-          <Route path="about" element={<AboutTCUP />} />
           <Route path="contact" element={<ContactForm />} />
           <Route path="/venuereportcard" element={<VenueReportCardPage />} />
           <Route path="/join" element={<JoinTCUP />} />
+          <Route path="/updates/:id" element={<SingleUpdatePost />} />
+          <Route path="updates" element={<UpdatesPage />} />
+          <Route path="powerpledge" element={<PowerPledgeForm />} />
+          <Route path="advance" element={<TCUPAdvance />} />
+          <Route path="resources" element={<Resources />} />
+          <Route path="vrc" element={<VRCForm />} />
+          <Route path="newsletter" element={<Newsletter />} />
+          <Route path="calendar" element={<CalendarEvents />} />
+          <Route path="flyering" element={<FlyeringTable />} />
+          <Route path="sessionmusicians" element={<SessionMusiciansTable />} />
+          <Route path="sessionmusicians/:id" element={<SessionMusicianProfile />} />
+          <Route path="zine" element={<DigitalZine />} />
 
 
+          {/* Add other routes you want to be public */}
+        </Route>
+
+        
+
+      {/* Protected routes that require authentication */}
+        <Route element={<Layout publicAccess={false} />}>
           {/* Admin*/}
           <Route path="admin" element={<AdminDashboard />} />          
           <Route path="/admin/updates" element={<NewUpdate />} />
+          <Route path="/admin/scrapers" element={<ScraperAdminPanel />} />
           <Route path="/admin/import" element={<OriginalAdminImportPost />} />
-
-          <Route path="/updates/:id" element={<SingleUpdatePost />} />
-          <Route path="updates" element={<UpdatesPage />} />
-          <Route path="updates/edit/:id" element={<UpdateEditForm />} />
-
+          <Route path="updates/edit/:id" element={<UpdateEditForm />} />   
           {/* Resources */}
-          <Route path="resources" element={<Resources />} />
 
-          <Route path="powerpledge" element={<PowerPledgeForm />} />
-          <Route path="advance" element={<TCUPAdvance />} />
           <Route path="pledgesuccess" element={<PledgeSuccess />} />
-          <Route path="pledgetracker" element={<PledgeTracker />} />
-          <Route path="home" element={<ShowsTable />} />
-  
-          {/* Example with an ErrorBoundary */}
-          <Route
-            path="shows"
-            element={
-              <ErrorBoundary>
-                <ShowsTable />
-              </ErrorBoundary>
-            }
-          />
+          <Route path="pledgetracker" element={<PledgeTracker />} />          
           <Route path="shows/add" element={<ShowForm />} />
           <Route path="shows/:id/edit" element={<EditShowPage />} />
-          <Route path="shows/:id" element={<ShowProfile />} />
-
 
   
           {/* Forum/Thread */}
-          <Route path="chat" element={<MainChatPage />} />
           <Route path="chat/:threadId" element={<ViewSingleThread />} />
           <Route path="import" element={<AdminImportPost />} />
           <Route path="test-auth" element={<AuthTest />} />
-          <Route path="vrc" element={<VRCForm />} />
-          <Route path="newsletter" element={<Newsletter />} />
+
           <Route path="pledgephotos" element={<PledgePhotos />} />
-          <Route path="calendar" element={<CalendarEvents />} />
   
           {/* Flyering */}
-          <Route path="flyering" element={<FlyeringTable />} />
           <Route path="flyering/add" element={<FlyeringForm />} />
           <Route path="flyering/edit/:id" element={<EditFlyeringForm />} />
   
           {/* Bands */}
-          <Route path="bands" element={<FullBandList />} />
           <Route path="bands/add" element={<BandForm isEdit={false} />} />
+
           <Route path="bands/form/:draftId" element={<BandForm isDraft={true} />} />
           <Route path="bands/:bandSlug" element={<BandProfile />} />
+
           <Route path="bands/:bandid/edit" element={<BandForm isEdit />} />
   
           {/* Venues */}
-          <Route path="venues" element={<VenuesTable />} />
           <Route path="venues/add" element={<VenueForm />} />
-          <Route path="venues/:id" element={<VenueProfile />} />
           <Route path="venues/edit/:id" element={<VenueForm />} />
   
           {/* Other routes */}
@@ -219,10 +219,9 @@ function App() {
           <Route path="/messages" element={<ConversationList />} />
           <Route path="/messages/:conversationId" element={<ConversationDetail />} />
   
-          {/* Session Musicians */}
-          <Route path="sessionmusicians" element={<SessionMusiciansTable />} />
-          <Route path="sessionmusicians/:id" element={<SessionMusicianProfile />} />
+        </Route>
   
+    
           {/* Catch-all for unmatched paths */}
           <Route
             path="*"
@@ -232,7 +231,6 @@ function App() {
               </div>
             }
           />
-        </Route>
       </Routes>
       </MessageProvider>
     </ThemeProvider>

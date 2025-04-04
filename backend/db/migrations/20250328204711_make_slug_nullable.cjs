@@ -11,3 +11,4 @@ exports.up = function(knex) {
         ALTER TABLE ${knex.client.config.migrations.schemaName}.bands_new ALTER COLUMN slug SET NOT NULL;
       `);
   };
+

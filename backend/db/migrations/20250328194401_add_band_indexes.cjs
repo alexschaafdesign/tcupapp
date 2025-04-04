@@ -19,3 +19,4 @@ exports.up = function(knex) {
         DROP INDEX IF EXISTS ${knex.client.config.migrations.schemaName}.idx_band_releases_band_id;
       `);
   };
+

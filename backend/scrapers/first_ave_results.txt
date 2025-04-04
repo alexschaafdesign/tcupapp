@@ -1,0 +1,672 @@
+Starting first-avenue scraper...
+Sending request to https://first-avenue.com/shows/?post_type=event&start_date=20250401...
+Request successful. Parsing shows...
+Extracted date: 2025-04-01
+Fetching event details from: https://first-avenue.com/event/2025-04-sarah-and-the-sundays/
+Combined start datetime: 2025-04-01 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-sarah-and-the-sundays/
+Band found: Sarah and the Sundays
+Band found: The Slaps
+Processed show ID: 5260 (New: False)
+Extracted date: 2025-04-02
+Fetching event details from: https://first-avenue.com/event/2025-04-the-birthday-massacre/
+Combined start datetime: 2025-04-02 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-the-birthday-massacre/
+Band found: The Birthday Massacre
+Band found: Essenger
+Band found: Magic Wands
+Processed show ID: 364 (New: False)
+Extracted date: 2025-04-02
+Fetching event details from: https://first-avenue.com/event/2025-04-sir-woman/
+Combined start datetime: 2025-04-02 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-sir-woman/
+Band found: Sir Woman
+Band found: Dylan Meek
+Band found: Uncle Roy & Spice
+Processed show ID: 363 (New: False)
+Extracted date: 2025-04-02
+Fetching event details from: https://first-avenue.com/event/2024-04-arts-fishing-club/
+Combined start datetime: 2025-04-02 20:00:00
+Fetching band names from: https://first-avenue.com/event/2024-04-arts-fishing-club/
+Band found: Arts Fishing Club
+Band found: Brother Elsey
+Processed show ID: 362 (New: False)
+Extracted date: 2025-04-02
+Fetching event details from: https://first-avenue.com/event/2025-04-zack-fox/
+Combined start datetime: 2025-04-02 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-zack-fox/
+Band found: Zack Fox
+Processed show ID: 7113 (New: False)
+Extracted date: 2025-04-03
+Fetching event details from: https://first-avenue.com/event/2025-04-the-army-the-navy/
+Combined start datetime: 2025-04-03 19:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-the-army-the-navy/
+Band found: The Army, The Navy
+Band found: Aggie Miller
+Processed show ID: 365 (New: False)
+Extracted date: 2025-04-03
+Fetching event details from: https://first-avenue.com/event/2025-04-caravan-palace/
+Combined start datetime: 2025-04-03 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-caravan-palace/
+Band found: Caravan Palace
+Band found: ZAYKA
+Processed show ID: 366 (New: False)
+Extracted date: 2025-04-03
+Fetching event details from: https://first-avenue.com/event/2025-04-lil-skies/
+Combined start datetime: 2025-04-03 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-lil-skies/
+Band found: Lil Skies
+Band found: Lil Gnar
+Band found: Fergie Baby
+Band found: $AM
+Band found: sounds byDJ Rello
+Processed show ID: 6130 (New: False)
+Extracted date: 2025-04-03
+Fetching event details from: https://first-avenue.com/event/2025-04-samoht/
+Combined start datetime: 2025-04-03 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-samoht/
+Band found: SAMOHT
+Processed show ID: 7117 (New: False)
+Extracted date: 2025-04-04
+Fetching event details from: https://first-avenue.com/event/2025-04-bright-eyes/
+Combined start datetime: 2025-04-04 19:45:00
+Fetching band names from: https://first-avenue.com/event/2025-04-bright-eyes/
+Band found: Bright Eyes
+Band found: Cursive
+Processed show ID: 6132 (New: False)
+Extracted date: 2025-04-04
+Fetching event details from: https://first-avenue.com/event/2025-04-tamino/
+Combined start datetime: 2025-04-04 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-tamino/
+Band found: Tamino
+Band found: plus +.+
+Processed show ID: 369 (New: False)
+Extracted date: 2025-04-04
+Fetching event details from: https://first-avenue.com/event/2025-04-la-lom/
+Combined start datetime: 2025-04-04 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-la-lom/
+Band found: LA LOM
+Band found: El Marchante
+Processed show ID: 368 (New: False)
+Extracted date: 2025-04-04
+Fetching event details from: https://first-avenue.com/event/2025-04-marlon-funaki/
+Combined start datetime: 2025-04-04 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-marlon-funaki/
+Band found: Marlon Funaki
+Band found: The Back Alley
+Processed show ID: 6133 (New: False)
+Extracted date: 2025-04-04
+Fetching event details from: https://first-avenue.com/event/2025-04-impaler/
+Combined start datetime: 2025-04-04 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-impaler/
+Band found: Impaler
+Band found: Dumpster Juice
+Band found: Extermination Day (Members of Suffering Hour and ex-Satan Satyrs)
+Processed show ID: 6135 (New: False)
+Extracted date: 2025-04-04
+Fetching event details from: https://first-avenue.com/event/2025-04-the-suburbs/
+Combined start datetime: 2025-04-04 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-the-suburbs/
+Band found: The Suburbs
+Band found: Black Widows
+Processed show ID: 6137 (New: False)
+Extracted date: 2025-04-05
+Fetching event details from: https://first-avenue.com/event/2025-04-anxious/
+Combined start datetime: 2025-04-05 19:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-anxious/
+Band found: Anxious
+Band found: Ultra Q
+Band found: Stateside
+Band found: Everybody Takes One
+Processed show ID: 8889 (New: False)
+Extracted date: 2025-04-05
+Fetching event details from: https://first-avenue.com/event/2025-04-the-hard-quartet/
+Combined start datetime: 2025-04-05 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-the-hard-quartet/
+Band found: The Hard Quartet
+Band found: Sharp Pins
+Band found: Ryan Davis
+Processed show ID: 370 (New: False)
+Extracted date: 2025-04-05
+Fetching event details from: https://first-avenue.com/event/2025-04-tank-and-the-bangas/
+Combined start datetime: 2025-04-05 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-tank-and-the-bangas/
+Band found: Tank and The Bangas
+Band found: DJ Zeus
+Processed show ID: 5271 (New: False)
+Extracted date: 2025-04-05
+Fetching event details from: https://first-avenue.com/event/2025-04-grieves/
+Combined start datetime: 2025-04-05 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-grieves/
+Band found: Grieves
+Band found: Curci
+Band found: Nobi & Khingz
+Processed show ID: 5269 (New: False)
+Extracted date: 2025-04-05
+Fetching event details from: https://first-avenue.com/event/2025-04-rebecca-black/
+Combined start datetime: 2025-04-05 20:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-rebecca-black/
+Band found: Rebecca Black
+Band found: Blue Hawaii
+Processed show ID: 372 (New: False)
+Extracted date: 2025-04-07
+Fetching event details from: https://first-avenue.com/event/event-2025-04-jack-white-mon/
+Combined start datetime: 2025-04-07 19:30:00
+Fetching band names from: https://first-avenue.com/event/event-2025-04-jack-white-mon/
+Band found: JACK WHITE
+Processed show ID: 373 (New: False)
+Extracted date: 2025-04-08
+Fetching event details from: https://first-avenue.com/event/2025-04-ani-difranco/
+Combined start datetime: 2025-04-08 19:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-ani-difranco/
+Band found: Ani DiFranco
+Band found: Wryn
+Processed show ID: 374 (New: False)
+Extracted date: 2025-04-08
+Fetching event details from: https://first-avenue.com/event/event-2025-04-jack-white-tue/
+Combined start datetime: 2025-04-08 19:30:00
+Fetching band names from: https://first-avenue.com/event/event-2025-04-jack-white-tue/
+Band found: JACK WHITE
+Processed show ID: 375 (New: False)
+Extracted date: 2025-04-08
+Fetching event details from: https://first-avenue.com/event/2025-04-sawyer-hill/
+Combined start datetime: 2025-04-08 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-sawyer-hill/
+Band found: Sawyer Hill
+Band found: SWEET SPINE
+Processed show ID: 5278 (New: False)
+Extracted date: 2025-04-08
+Fetching event details from: https://first-avenue.com/event/2025-04-jackie-greene/
+Combined start datetime: 2025-04-08 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-jackie-greene/
+Band found: Jackie Greene
+Band found: Molly Maher
+Processed show ID: 5277 (New: False)
+Extracted date: 2025-04-08
+Fetching event details from: https://first-avenue.com/event/2025-04-evening-elephants/
+Combined start datetime: 2025-04-08 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-evening-elephants/
+Band found: Evening Elephants
+Band found: Samy Sharif
+Band found: Of The Orchard
+Processed show ID: 6147 (New: False)
+Extracted date: 2025-04-09
+Fetching event details from: https://first-avenue.com/event/2025-04-jazz-is-dead-feat-ebo-taylor-pat-thomas/
+Combined start datetime: 2025-04-09 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-jazz-is-dead-feat-ebo-taylor-pat-thomas/
+Band found: Ebo Taylor
+Band found: Pat Thomas
+Band found: DJ Goldyrocks (of Black Market Brass)
+Processed show ID: 377 (New: False)
+Extracted date: 2025-04-09
+Fetching event details from: https://first-avenue.com/event/2025-04-sam-blasucci-and-julia-zivic/
+Combined start datetime: 2025-04-09 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-sam-blasucci-and-julia-zivic/
+Band found: Sam Blasucci
+Band found: Julia Zivic
+Processed show ID: 376 (New: False)
+Extracted date: 2025-04-09
+Fetching event details from: https://first-avenue.com/event/2025-04-the-lil-smokies/
+Combined start datetime: 2025-04-09 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-the-lil-smokies/
+Band found: The Lil Smokies
+Band found: Danno Simpson
+Processed show ID: 6150 (New: False)
+Extracted date: 2025-04-10
+Fetching event details from: https://first-avenue.com/event/2025-04-alan-sparhawk-mount-eerie/
+Combined start datetime: 2025-04-10 19:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-alan-sparhawk-mount-eerie/
+Band found: Alan Sparhawk
+Band found: Mount Eerie
+Processed show ID: 378 (New: False)
+Extracted date: 2025-04-10
+Fetching event details from: https://first-avenue.com/event/2025-04-matt-hansen/
+Combined start datetime: 2025-04-10 19:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-matt-hansen/
+Band found: Matt Hansen
+Band found: Steinza
+Processed show ID: 6153 (New: False)
+Extracted date: 2025-04-10
+Fetching event details from: https://first-avenue.com/event/2025-04-the-newest-olympian/
+Combined start datetime: 2025-04-10 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-the-newest-olympian/
+Band found: The Newest Olympian
+Processed show ID: 379 (New: False)
+Extracted date: 2025-04-10
+Fetching event details from: https://first-avenue.com/event/2025-04-fust-and-merce-lemon/
+Combined start datetime: 2025-04-10 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-fust-and-merce-lemon/
+Band found: Fust
+Band found: Merce Lemon
+Band found: Nona Invie
+Processed show ID: 5282 (New: False)
+Extracted date: 2025-04-11
+Fetching event details from: https://first-avenue.com/event/2025-04-osamason/
+Combined start datetime: 2025-04-11 19:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-osamason/
+Band found: OsamaSon
+Processed show ID: 6156 (New: False)
+Extracted date: 2025-04-11
+Fetching event details from: https://first-avenue.com/event/2025-04-hey-nothing/
+Combined start datetime: 2025-04-11 19:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-hey-nothing/
+Band found: hey, nothing
+Band found: Worry Club
+Processed show ID: 6157 (New: False)
+Extracted date: 2025-04-11
+Fetching event details from: https://first-avenue.com/event/2025-04-maddie-zahm/
+Combined start datetime: 2025-04-11 19:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-maddie-zahm/
+Band found: Maddie Zahm
+Band found: Mercer Henderson
+Processed show ID: 6158 (New: False)
+Extracted date: 2025-04-11
+Fetching event details from: https://first-avenue.com/event/2025-04-canaan-cox/
+Combined start datetime: 2025-04-11 20:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-canaan-cox/
+Band found: Canaan Cox
+Band found: Jake Simon
+Processed show ID: 380 (New: False)
+Extracted date: 2025-04-11
+Fetching event details from: https://first-avenue.com/event/2025-04-the-weather-station/
+Combined start datetime: 2025-04-11 20:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-the-weather-station/
+Band found: The Weather Station
+Band found: Sister Ray
+Processed show ID: 381 (New: False)
+Extracted date: 2025-04-12
+Fetching event details from: https://first-avenue.com/event/2025-04-the-linda-lindas/
+Combined start datetime: 2025-04-12 19:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-the-linda-lindas/
+Band found: The Linda Lindas
+Band found: Pinkshift
+Processed show ID: 382 (New: False)
+Extracted date: 2025-04-12
+Fetching event details from: https://first-avenue.com/event/2025-04-ninja-sex-party/
+Combined start datetime: 2025-04-12 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-ninja-sex-party/
+Band found: Ninja Sex Party
+Band found: TWRP
+Processed show ID: 384 (New: False)
+Extracted date: 2025-04-12
+Fetching event details from: https://first-avenue.com/event/2025-04-visions-of-atlantis/
+Combined start datetime: 2025-04-12 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-visions-of-atlantis/
+Band found: Visions of Atlantis
+Band found: Seraina Telli
+Processed show ID: 383 (New: False)
+Extracted date: 2025-04-12
+Fetching event details from: https://first-avenue.com/event/2025-04-kevin-atwater/
+Combined start datetime: 2025-04-12 20:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-kevin-atwater/
+Band found: Kevin Atwater
+Band found: Aubory Bugg
+Processed show ID: 6164 (New: False)
+Extracted date: 2025-04-13
+Fetching event details from: https://first-avenue.com/event/2025-04-wheatus/
+Combined start datetime: 2025-04-13 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-wheatus/
+Band found: Wheatus
+Band found: Rematch
+Band found: Scorched Waves
+Processed show ID: 385 (New: False)
+Extracted date: 2025-04-13
+Fetching event details from: https://first-avenue.com/event/2025-04-shordie-shordie/
+Combined start datetime: 2025-04-13 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-shordie-shordie/
+Band found: Shordie Shordie
+Processed show ID: 386 (New: False)
+Extracted date: 2025-04-13
+Fetching event details from: https://first-avenue.com/event/2025-04-sarah-kinsley/
+Combined start datetime: 2025-04-13 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-sarah-kinsley/
+Band found: Sarah Kinsley
+Band found: Charlotte Rose Benjamin
+Processed show ID: 6167 (New: False)
+Extracted date: 2025-04-13
+Fetching event details from: https://first-avenue.com/event/2025-04-griffin-william-sherry/
+Combined start datetime: 2025-04-13 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-griffin-william-sherry/
+Band found: Griffin William Sherry
+Band found: The Holy North
+Processed show ID: 6168 (New: False)
+Extracted date: 2025-04-15
+Fetching event details from: https://first-avenue.com/event/2025-04-james-mcmurtry/
+Combined start datetime: 2025-04-15 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-james-mcmurtry/
+Band found: James McMurtry
+Band found: BettySoo
+Processed show ID: 6171 (New: False)
+Extracted date: 2025-04-15
+Fetching event details from: https://first-avenue.com/event/2025-04-the-criticals/
+Combined start datetime: 2025-04-15 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-the-criticals/
+Band found: The Criticals
+Processed show ID: 6170 (New: False)
+Extracted date: 2025-04-15
+Fetching event details from: https://first-avenue.com/event/2025-04-improvement-movement/
+Combined start datetime: 2025-04-15 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-improvement-movement/
+Band found: Improvement Movement
+Band found: Ryan Gebhardt
+Processed show ID: 6169 (New: False)
+Extracted date: 2025-04-16
+Fetching event details from: https://first-avenue.com/event/2025-04-sofia-isella/
+Combined start datetime: 2025-04-16 19:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-sofia-isella/
+Band found: SOFIA ISELLA
+Band found: Brendan Abernathy
+Processed show ID: 8923 (New: False)
+Extracted date: 2025-04-16
+Fetching event details from: https://first-avenue.com/event/2025-04-big-richard/
+Combined start datetime: 2025-04-16 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-big-richard/
+Band found: Big Richard
+Band found: Caleb Caudle
+Processed show ID: 5291 (New: False)
+Extracted date: 2025-04-16
+Fetching event details from: https://first-avenue.com/event/2025-04-vincent-mason/
+Combined start datetime: 2025-04-16 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-vincent-mason/
+Band found: Vincent Mason
+Band found: Cole Goodwin
+Processed show ID: 6173 (New: False)
+Extracted date: 2025-04-17
+Fetching event details from: https://first-avenue.com/event/2025-04-beneath-green/
+Combined start datetime: 2025-04-17 19:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-beneath-green/
+Band found: Beneath Green
+Band found: Matcha Fever
+Band found: Tarias and the Sound
+Band found: Self Titled
+Processed show ID: 7860 (New: False)
+Extracted date: 2025-04-17
+Fetching event details from: https://first-avenue.com/event/2025-04-elderbrook/
+Combined start datetime: 2025-04-17 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-elderbrook/
+Band found: Elderbrook
+Band found: Jerro
+Band found: Tonez
+Processed show ID: 387 (New: False)
+Extracted date: 2025-04-17
+Fetching event details from: https://first-avenue.com/event/2024-04-the-lagoons/
+Combined start datetime: 2025-04-17 20:00:00
+Fetching band names from: https://first-avenue.com/event/2024-04-the-lagoons/
+Band found: The Lagoons
+Processed show ID: 388 (New: False)
+Extracted date: 2025-04-17
+Fetching event details from: https://first-avenue.com/event/2025-04-goldie-live/
+Combined start datetime: 2025-04-17 21:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-goldie-live/
+Band found: Goldie
+Band found: Submotive
+Processed show ID: 389 (New: False)
+Extracted date: 2025-04-18
+Fetching event details from: https://first-avenue.com/event/2025-04-dawes/
+Combined start datetime: 2025-04-18 19:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-dawes/
+Band found: Dawes
+Band found: Michigander (duo)
+Processed show ID: 390 (New: False)
+Extracted date: 2025-04-18
+Fetching event details from: https://first-avenue.com/event/2025-04-tropidelic-and-ballyhoo/
+Combined start datetime: 2025-04-18 19:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-tropidelic-and-ballyhoo/
+Band found: Tropidelic
+Band found: Ballyhoo!
+Band found: Joey Harkum
+Processed show ID: 391 (New: False)
+Extracted date: 2025-04-18
+Fetching event details from: https://first-avenue.com/event/2025-04-sam-macpherson/
+Combined start datetime: 2025-04-18 19:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-sam-macpherson/
+Band found: Sam MacPherson
+Band found: Abby Powledge
+Processed show ID: 6180 (New: False)
+Extracted date: 2025-04-18
+Fetching event details from: https://first-avenue.com/event/2025-04-mssv/
+Combined start datetime: 2025-04-18 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-mssv/
+Band found: mssv
+Band found: Charlie Parr Trio (ft. Greg Norton and Billy Dankert)
+Processed show ID: 392 (New: False)
+Extracted date: 2025-04-19
+Fetching event details from: https://first-avenue.com/event/2025-04-brenn/
+Combined start datetime: 2025-04-19 19:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-brenn/
+Band found: BRENN!
+Band found: asiris
+Processed show ID: 393 (New: False)
+Extracted date: 2025-04-19
+Fetching event details from: https://first-avenue.com/event/2025-04-bob-mould-band/
+Combined start datetime: 2025-04-19 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-bob-mould-band/
+Band found: Bob Mould Band
+Band found: Poster Children
+Processed show ID: 5300 (New: False)
+Extracted date: 2025-04-19
+Fetching event details from: https://first-avenue.com/event/2025-04-corb-lund-hayes-carll/
+Combined start datetime: 2025-04-19 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-corb-lund-hayes-carll/
+Band found: Corb Lund
+Band found: Hayes Carll
+Processed show ID: 5299 (New: False)
+Extracted date: 2025-04-19
+Fetching event details from: https://first-avenue.com/event/2025-04-your-neighbors/
+Combined start datetime: 2025-04-19 20:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-your-neighbors/
+Band found: Your Neighbors
+Band found: dreamfone
+Processed show ID: 5301 (New: False)
+Extracted date: 2025-04-19
+Fetching event details from: https://first-avenue.com/event/2025-04-ben-nichols-rick-steff/
+Combined start datetime: 2025-04-19 20:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-ben-nichols-rick-steff/
+Band found: Ben Nichols & Rick Steff
+Band found: Colin Campbell (of The Shackletons)
+Processed show ID: 6185 (New: False)
+Extracted date: 2025-04-20
+Fetching event details from: https://first-avenue.com/event/2025-04-knox/
+Combined start datetime: 2025-04-20 19:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-knox/
+Band found: Knox
+Band found: The Wldlfe
+Processed show ID: 6187 (New: False)
+Extracted date: 2025-04-21
+Fetching event details from: https://first-avenue.com/event/2025-04-james-bay/
+Combined start datetime: 2025-04-21 19:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-james-bay/
+Band found: James Bay
+Band found: Hunter Metts
+Processed show ID: 394 (New: False)
+Extracted date: 2025-04-22
+Fetching event details from: https://first-avenue.com/event/2025-04-boywithuke/
+Combined start datetime: 2025-04-22 19:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-boywithuke/
+Band found: BoyWithUke
+Band found: Ethan Bortnick
+Processed show ID: 395 (New: False)
+Extracted date: 2025-04-22
+Fetching event details from: https://first-avenue.com/event/2025-04-john-splithoff/
+Combined start datetime: 2025-04-22 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-john-splithoff/
+Band found: John Splithoff
+Band found: Evann McIntosh
+Processed show ID: 396 (New: False)
+Extracted date: 2025-04-22
+Fetching event details from: https://first-avenue.com/event/2025-04-smoking-popes-and-off-with-their-heads/
+Combined start datetime: 2025-04-22 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-smoking-popes-and-off-with-their-heads/
+Band found: Smoking Popes
+Band found: Off With Their Heads
+Band found: Mary Jam
+Processed show ID: 6192 (New: False)
+Extracted date: 2025-04-22
+Fetching event details from: https://first-avenue.com/event/2025-04-pattie-gonia-presents-save-her/
+Combined start datetime: 2025-04-22 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-pattie-gonia-presents-save-her/
+Band found: Pattie Gonia
+Processed show ID: 6193 (New: False)
+Extracted date: 2025-04-22
+Fetching event details from: https://first-avenue.com/event/2025-04-vlad-holiday/
+Combined start datetime: 2025-04-22 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-vlad-holiday/
+Band found: Vlad Holiday
+Band found: New Translations
+Processed show ID: 6190 (New: False)
+Extracted date: 2025-04-23
+Fetching event details from: https://first-avenue.com/event/2025-04-jane-remover/
+Combined start datetime: 2025-04-23 19:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-jane-remover/
+Band found: Jane Remover
+Band found: Dazegxd
+Band found: d0llywood1
+Processed show ID: 397 (New: False)
+Extracted date: 2025-04-23
+Fetching event details from: https://first-avenue.com/event/2025-04-miya-folick/
+Combined start datetime: 2025-04-23 19:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-miya-folick/
+Band found: Miya Folick
+Band found: Olivia Kaplan
+Processed show ID: 6195 (New: False)
+Extracted date: 2025-04-23
+Fetching event details from: https://first-avenue.com/event/2025-04-dean-lewis/
+Combined start datetime: 2025-04-23 19:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-dean-lewis/
+Band found: Dean Lewis
+Band found: Henry Moodie
+Processed show ID: 398 (New: False)
+Extracted date: 2025-04-23
+Fetching event details from: https://first-avenue.com/event/2025-04-vincent-neil-emerson/
+Combined start datetime: 2025-04-23 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-vincent-neil-emerson/
+Band found: Vincent Neil Emerson
+Band found: Leon Majcen
+Processed show ID: 6197 (New: False)
+Extracted date: 2025-04-24
+Fetching event details from: https://first-avenue.com/event/2025-04-varietopia-with-paul-f-tompkins/
+Combined start datetime: 2025-04-24 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-varietopia-with-paul-f-tompkins/
+Band found: Varietopia
+Band found: Paul F. Tompkins
+Processed show ID: 399 (New: False)
+Extracted date: 2025-04-24
+Fetching event details from: https://first-avenue.com/event/2025-04-cryogeyser/
+Combined start datetime: 2025-04-24 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-cryogeyser/
+Band found: Cryogeyser
+Band found: Flooding
+Processed show ID: 400 (New: False)
+Extracted date: 2025-04-24
+Fetching event details from: https://first-avenue.com/event/2025-04-deep-sea-diver/
+Combined start datetime: 2025-04-24 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-deep-sea-diver/
+Band found: Deep Sea Diver
+Band found: Byland
+Processed show ID: 5309 (New: False)
+Extracted date: 2025-04-25
+Fetching event details from: https://first-avenue.com/event/2024-04-ty-segall-solo/
+Combined start datetime: 2025-04-25 20:00:00
+Fetching band names from: https://first-avenue.com/event/2024-04-ty-segall-solo/
+Band found: Ty Segall
+Band found: Mikal Cronin (Solo)
+Processed show ID: 401 (New: False)
+Extracted date: 2025-04-25
+Fetching event details from: https://first-avenue.com/event/2025-04-yukimi-of-little-dragon/
+Combined start datetime: 2025-04-25 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-yukimi-of-little-dragon/
+Band found: Yukimi (of Little Dragon)
+Processed show ID: 6201 (New: False)
+Extracted date: 2025-04-25
+Fetching event details from: https://first-avenue.com/event/2025-04-murs/
+Combined start datetime: 2025-04-25 20:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-murs/
+Band found: Murs
+Band found: Platinum Max
+Band found: Noa James
+Band found: 3rd Wrld
+Processed show ID: 5311 (New: False)
+Extracted date: 2025-04-25
+Fetching event details from: https://first-avenue.com/event/2025-04-them-coulee-boys/
+Combined start datetime: 2025-04-25 20:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-them-coulee-boys/
+Band found: Them Coulee Boys
+Band found: Janakey
+Processed show ID: 7890 (New: False)
+Extracted date: 2025-04-25
+Fetching event details from: https://first-avenue.com/event/2025-04-flip-phone-the-powerpop-girls/
+Combined start datetime: 2025-04-25 21:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-flip-phone-the-powerpop-girls/
+Band found: Flip Phone
+Band found: Sasha Cassadine
+Band found: Aranya
+Band found: Ken Doll
+Band found: Priscilla Es Yuicy
+Band found: Frozaen Pissás
+Band found: Iconica
+Band found: DJ Aquaria (RuPaul’s Drag Race)
+Band found: dj izzie p
+Band found: OMGigi
+Processed show ID: 6204 (New: False)
+Extracted date: 2025-04-26
+Fetching event details from: https://first-avenue.com/event/2025-04-djo/
+Combined start datetime: 2025-04-26 19:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-djo/
+Band found: Djo
+Band found: Post Animal
+Processed show ID: 6205 (New: False)
+Extracted date: 2025-04-26
+Fetching event details from: https://first-avenue.com/event/2025-04-don-quixote-sat/
+Combined start datetime: 2025-04-26 19:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-don-quixote-sat/
+Band found: Metropolitan Ballet presentsDon Quixote
+Processed show ID: 402 (New: False)
+Extracted date: 2025-04-26
+Fetching event details from: https://first-avenue.com/event/2025-04-chloe-moriondo/
+Combined start datetime: 2025-04-26 19:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-chloe-moriondo/
+Band found: Chloe Moriondo
+Band found: Sex Week
+Processed show ID: 5313 (New: False)
+Extracted date: 2025-04-26
+Fetching event details from: https://first-avenue.com/event/2025-04-the-bright-light-social-hour/
+Combined start datetime: 2025-04-26 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-the-bright-light-social-hour/
+Band found: The Bright Light Social Hour
+Band found: TABAH
+Processed show ID: 403 (New: False)
+Extracted date: 2025-04-26
+Fetching event details from: https://first-avenue.com/event/2025-04-jeremy-messersmith/
+Combined start datetime: 2025-04-26 20:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-jeremy-messersmith/
+Band found: jeremy messersmith
+Band found: The Nunnery
+Processed show ID: 6208 (New: False)
+Extracted date: 2025-04-26
+Fetching event details from: https://first-avenue.com/event/2025-04-maribou-state/
+Combined start datetime: 2025-04-26 20:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-maribou-state/
+Band found: Maribou State
+Processed show ID: 405 (New: False)
+Extracted date: 2025-04-26
+Fetching event details from: https://first-avenue.com/event/2025-04-keller-williams/
+Combined start datetime: 2025-04-26 20:30:00
+Fetching band names from: https://first-avenue.com/event/2025-04-keller-williams/
+Band found: Keller Williams
+Processed show ID: 404 (New: False)
+Extracted date: 2025-04-27
+Fetching event details from: https://first-avenue.com/event/2025-04-don-quixote-sun/
+Combined start datetime: 2025-04-27 14:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-don-quixote-sun/
+Band found: Metropolitan Ballet presentsDon Quixote
+Processed show ID: 406 (New: False)
+Extracted date: 2025-04-27
+Fetching event details from: https://first-avenue.com/event/2025-04-pardyalone/
+Combined start datetime: 2025-04-27 19:00:00
+Fetching band names from: https://first-avenue.com/event/2025-04-pardyalone/
+Band found: Pardyalone
+Band found: Austin George
+Band found: Jon Wiilde
+Processed show ID: 7199 (New: False)
+Extracted date: 2025-04-27
+Fetching event details from: https://first-avenue.com/event/2025-04-killed-by-kiwis-admiral-fox-doll-chaser-and-lee-chenvert/

@@ -12,7 +12,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MailIcon from "@mui/icons-material/Mail"; // Import the inbox/mail icon
 import MessageBadge from '../../pages/DirectMessages.js/MessageBadge';
 
-const TopBar = () => {
+const TopBar = ({ isPublic = false }) => {
   // Existing state and hooks
   const { user, logout, isAuthenticated, loginWithRedirect } = useAuth0();
   const { avatarUrl, setAvatarUrl } = useUserProfile();

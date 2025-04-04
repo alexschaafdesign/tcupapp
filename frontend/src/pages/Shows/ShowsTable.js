@@ -49,7 +49,15 @@ function ShowsTable() {
   useEffect(() => {
     const fetchShows = async () => {
       try {
-        const response = await fetch(`${apiUrl}/shows`);
+        console.log('About to fetch shows');
+        // Use a plain fetch without any auth headers
+        const response = await fetch(`${apiUrl}/shows`, {
+          headers: {
+            'Accept': 'application/json'
+            // Don't include any Auth headers here
+          }
+        });
+        console.log('Shows API response:', response.status);
         if (!response.ok) throw new Error('Failed to fetch shows');
         const result = await response.json();
         setShowsData(result);

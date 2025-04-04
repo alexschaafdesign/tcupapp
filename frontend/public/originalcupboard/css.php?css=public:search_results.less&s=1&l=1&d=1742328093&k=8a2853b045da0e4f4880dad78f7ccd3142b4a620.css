@@ -1,0 +1,4 @@
+@charset "UTF-8";
+
+/********* public:search_results.less ********/
+.searchResult{display:table;table-layout:fixed;width:100%}.searchResult-icon{display:table-cell;vertical-align:top;width:54px;white-space:nowrap;word-wrap:normal}.searchResult-icon img,.searchResult-icon .avatar{max-width:100%}.searchResult-main{display:table-cell;vertical-align:middle;padding-left:10px}.searchResult-main:before{content:'';display:block;margin-top:-.25em}.searchResult-title{font-size:17px}

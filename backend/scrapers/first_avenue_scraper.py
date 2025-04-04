@@ -94,8 +94,10 @@ def run_first_avenue_scraper():
     Runs the first-avenue scraper and returns a log dict.
     """
     added_count = 0
+    duplicate_count = 0
     skipped_count = 0
     errors = []
+    added_shows = []
 
     sys.stderr.write("Starting first-avenue scraper...\n")
     # Connect to the database
@@ -109,13 +111,14 @@ def run_first_avenue_scraper():
         return {
             'scraper_name': 'first_avenue',
             'added_count': added_count,
+            'duplicate_count': duplicate_count,
             'skipped_count': skipped_count,
+            'added_shows': added_shows,
             'errors': errors,
         }
 
     urls = [
-        'https://first-avenue.com/shows/?post_type=event&start_date=20250201',  # February
-        'https://first-avenue.com/shows/?post_type=event&start_date=20250301',  # March
+
         'https://first-avenue.com/shows/?post_type=event&start_date=20250401',  # April
         'https://first-avenue.com/shows/?post_type=event&start_date=20250501',  # May
         'https://first-avenue.com/shows/?post_type=event&start_date=20250601',  # June
@@ -191,12 +194,14 @@ def run_first_avenue_scraper():
                     show_id, was_inserted = insert_show(conn, cursor, venue_id, bands, start_datetime, event_link, flyer_image)
                     if was_inserted:
                         added_count += 1
+                        added_shows.append(show_id)
                     else:
-                        skipped_count += 1
+                        duplicate_count += 1
                     sys.stderr.write(f"Processed show ID: {show_id} (New: {was_inserted})\n")
                 except Exception as e:
                     sys.stderr.write(f"Error processing show at {event_url}: {e}\n")
                     errors.append(f"Error processing show at {event_url}: {e}")
+                    skipped_count += 1
             try:
                 conn.commit()
             except Exception as e:
@@ -212,7 +217,9 @@ def run_first_avenue_scraper():
     log = {
         'scraper_name': 'first_avenue',
         'added_count': added_count,
+        'duplicate_count': duplicate_count,
         'skipped_count': skipped_count,
+        'added_shows': added_shows,
         'errors': errors,
     }
     return log
