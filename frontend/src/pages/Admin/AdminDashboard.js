@@ -31,7 +31,7 @@ const AdminDashboard = () => {
 
   // Example action handlers for other tiles
   const handleCreateUpdate = () => {
-    navigate('/admin/updates/create');
+    navigate('/admin/updates');
   };
 
   const handleViewUsers = () => {
@@ -40,6 +40,10 @@ const AdminDashboard = () => {
   
   const handleGoToScrapers = () => {
     navigate('/admin/scrapers');
+  };
+
+  const handleGoToOriginalCupboard = () => {
+    window.open('https://www.tcupboard.org/originalcupboard', '_blank');
   };
 
   return (
@@ -101,6 +105,7 @@ const AdminDashboard = () => {
           <Grid item xs={12} sm={6} md={4}>
             <Paper
               elevation={2}
+              onClick={handleCreateUpdate}
               sx={{
                 p: 3,
                 borderRadius: 2,
@@ -108,6 +113,7 @@ const AdminDashboard = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
+                cursor: 'pointer',
                 transition: 'all 0.3s',
                 '&:hover': {
                   boxShadow: 4,
@@ -123,29 +129,14 @@ const AdminDashboard = () => {
                   Post a new front-page update or announcement.
                 </Typography>
               </Box>
-              <Box sx={{ textAlign: 'right' }}>
-                <Tooltip title="Create a new update" placement="top">
-                  <IconButton
-                    onClick={handleCreateUpdate}
-                    sx={{
-                      bgcolor: 'action.hover',
-                      transition: 'all 0.3s',
-                      '&:hover': {
-                        bgcolor: 'action.selected',
-                      },
-                    }}
-                  >
-                    <AddCircleOutlineIcon />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            </Paper>
+                          </Paper>
           </Grid>
 
           {/* RUN SHOW SCRAPERS */}
           <Grid item xs={12} sm={6} md={4}>
             <Paper
               elevation={2}
+              onClick={handleGoToScrapers}
               sx={{
                 p: 3,
                 borderRadius: 2,
@@ -153,6 +144,7 @@ const AdminDashboard = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
+                cursor: 'pointer',
                 transition: 'all 0.3s',
                 '&:hover': {
                   boxShadow: 4,
@@ -168,26 +160,11 @@ const AdminDashboard = () => {
                   Run scrapers, view logs, and manage scraping settings.
                 </Typography>
               </Box>
-              <Box sx={{ textAlign: 'right' }}>
-                <Tooltip title="Go to Scraper Admin Page" placement="top">
-                  <IconButton
-                    onClick={handleGoToScrapers}
-                    sx={{
-                      bgcolor: 'action.hover',
-                      transition: 'all 0.3s',
-                      '&:hover': {
-                        bgcolor: 'action.selected',
-                      },
-                    }}
-                  >
-                    <PlayCircleOutlineIcon />
-                  </IconButton>
-                </Tooltip>
-              </Box>
+             
             </Paper>
           </Grid>
 
-          {/* VIEW USERS */}
+          {/* VIEW USERS 
           <Grid item xs={12} sm={6} md={4}>
             <Paper
               elevation={2}
@@ -230,7 +207,40 @@ const AdminDashboard = () => {
                 </Tooltip>
               </Box>
             </Paper>
+          </Grid>*/}
+
+          {/* LINK TO ORIGINAL CUPBOARD */}
+          <Grid item xs={12} sm={6} md={4}>
+            <Paper
+              elevation={2}
+              onClick={handleGoToOriginalCupboard}
+              sx={{
+                p: 3,
+                borderRadius: 2,
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                '&:hover': {
+                  boxShadow: 4,
+                  transform: 'translateY(-2px)',
+                },
+              }}
+            >
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+                  Original Cupboard Forum
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  A static, read-only archive of the old Cupboard forum. Useful for searching or browsing past posts.
+                </Typography>
+              </Box>
+              
+            </Paper>
           </Grid>
+
         </Grid>
 
       </Paper>
