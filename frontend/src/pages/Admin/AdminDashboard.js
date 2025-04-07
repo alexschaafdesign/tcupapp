@@ -31,7 +31,7 @@ const AdminDashboard = () => {
 
   // Example action handlers for other tiles
   const handleCreateUpdate = () => {
-    navigate('/admin/updates/create');
+    navigate('/admin/updates');
   };
 
   const handleViewUsers = () => {
@@ -40,6 +40,10 @@ const AdminDashboard = () => {
   
   const handleGoToScrapers = () => {
     navigate('/admin/scrapers');
+  };
+
+  const handleGoToOriginalCupboard = () => {
+    window.open('https://www.tcupboard.org/originalcupboard', '_blank');
   };
 
   return (
@@ -101,7 +105,7 @@ const AdminDashboard = () => {
           <Grid item xs={12} sm={6} md={4}>
             <Paper
               elevation={2}
-              onClick={() => window.open('https://tcupboard.org/admin/updates', '_blank')}
+              onClick={handleCreateUpdate}
               sx={{
                 p: 3,
                 borderRadius: 2,
@@ -132,7 +136,7 @@ const AdminDashboard = () => {
           <Grid item xs={12} sm={6} md={4}>
             <Paper
               elevation={2}
-              onClick={() => window.open('https://tcupboard.org/admin/scrapers', '_blank')}
+              onClick={handleGoToScrapers}
               sx={{
                 p: 3,
                 borderRadius: 2,
@@ -209,7 +213,7 @@ const AdminDashboard = () => {
           <Grid item xs={12} sm={6} md={4}>
             <Paper
               elevation={2}
-              onClick={() => window.open('https://tcupboard.org/originalcupboard', '_blank')}
+              onClick={handleGoToOriginalCupboard}
               sx={{
                 p: 3,
                 borderRadius: 2,
