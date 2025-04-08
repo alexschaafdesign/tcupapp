@@ -145,6 +145,7 @@ const ScraperAdminPanel = () => {
         const scraperLogs = historyData.logs.filter(log => log.scraper_name === scraper.id);
         const lastRun = scraperLogs.length > 0 ? scraperLogs[0] : null;
         const totalAdded = scraperLogs.reduce((sum, log) => sum + (log.added_count || 0), 0);
+        const totalUpdated = scraperLogs.reduce((sum, log) => sum + (log.updated_count || 0), 0); // Add this line
         let hasError = false;
         let lastError = '';
         if (lastRun && lastRun.errors) {
@@ -166,6 +167,7 @@ const ScraperAdminPanel = () => {
           lastRun: lastRun ? lastRun.run_at : null,
           status,
           lastAdded: lastRun ? lastRun.added_count : 0,
+          lastUpdated: lastRun ? (lastRun.updated_count || 0) : 0, // Add this line
           totalAdded,
           daysSinceLastRun,
           hasError,
@@ -383,6 +385,7 @@ const ScraperAdminPanel = () => {
                         </Typography>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                           <Typography variant="body2">Added: <strong>{log.added_count}</strong></Typography>
+                          <Typography variant="body2">Updated: <strong>{log.updated_count || 0}</strong></Typography>
                           <Typography variant="body2">Duplicates: <strong>{log.duplicate_count}</strong></Typography>
                           <Typography variant="body2">Skipped: <strong>{log.skipped_count || 0}</strong></Typography>
                         </Box>
@@ -396,6 +399,16 @@ const ScraperAdminPanel = () => {
                             </Box>
                           </Box>
                         )}
+                        {log.updated_shows && log.updated_shows.length > 0 && (
+                        <Box sx={{ mt: 2 }}>
+                          <Typography variant="body2">Updated Show IDs:</Typography>
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 1 }}>
+                            {log.updated_shows.map(id => (
+                              <Chip key={id} label={id} size="small" variant="outlined" color="info" />
+                            ))}
+                          </Box>
+                        </Box>
+                      )}
                         {log.log_id && (
                           <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
                             <Button size="small" variant="text" onClick={() => viewLogDetails(log.log_id)} startIcon={<InfoIcon />}>
@@ -482,6 +495,7 @@ const ScraperAdminPanel = () => {
                       <TableCell>Status</TableCell>
                       <TableCell>Last Run</TableCell>
                       <TableCell align="center">Last Added</TableCell>
+                      <TableCell align="center">Last Updated</TableCell> {/* New column */}
                       <TableCell align="center">Total Added</TableCell>
                       <TableCell align="center">Actions</TableCell>
                     </TableRow>
@@ -523,6 +537,13 @@ const ScraperAdminPanel = () => {
                             <TableCell align="center">
                               {scraper.lastRun ? (
                                 <Chip label={scraper.lastAdded} size="small" color={scraper.lastAdded > 0 ? 'success' : 'default'} variant={scraper.lastAdded > 0 ? 'filled' : 'outlined'} />
+                              ) : (
+                                '-'
+                              )}
+                            </TableCell>
+                            <TableCell align="center">
+                              {scraper.lastRun ? (
+                                <Chip label={scraper.lastUpdated} size="small" color={scraper.lastUpdated > 0 ? 'info' : 'default'} variant={scraper.lastUpdated > 0 ? 'filled' : 'outlined'} />
                               ) : (
                                 '-'
                               )}
@@ -594,6 +615,7 @@ const ScraperAdminPanel = () => {
                   <TableCell>Scraper</TableCell>
                   <TableCell>Run At</TableCell>
                   <TableCell align="center">Added</TableCell>
+                  <TableCell align="center">Updated</TableCell> {/* New column */}
                   <TableCell align="center">Duplicates</TableCell>
                   <TableCell align="center">Skipped</TableCell>
                   <TableCell align="center">Status</TableCell>
@@ -621,6 +643,9 @@ const ScraperAdminPanel = () => {
                         <TableCell align="center">
                           <Chip label={log.added_count} size="small" color={log.added_count > 0 ? 'success' : 'default'} variant={log.added_count > 0 ? 'filled' : 'outlined'} />
                         </TableCell>
+                        <TableCell align="center">
+                        <Chip label={log.updated_count || 0} size="small" color={log.updated_count > 0 ? 'info' : 'default'} variant={log.updated_count > 0 ? 'filled' : 'outlined'} />
+                      </TableCell>
                         <TableCell align="center">{log.duplicate_count}</TableCell>
                         <TableCell align="center">{log.skipped_count}</TableCell>
                         <TableCell align="center">
@@ -664,15 +689,19 @@ const ScraperAdminPanel = () => {
                       <Typography variant="subtitle2">Run At:</Typography>
                       <Typography variant="body1">{formatDate(logDetails.log?.run_at || '')}</Typography>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
                       <Typography variant="subtitle2">Added:</Typography>
                       <Typography variant="body1" color="success.main">{logDetails.log?.added_count || 0}</Typography>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
+                      <Typography variant="subtitle2">Updated:</Typography>
+                      <Typography variant="body1" color="info.main">{logDetails.log?.updated_count || 0}</Typography>
+                    </Grid>
+                    <Grid item xs={3}>
                       <Typography variant="subtitle2">Duplicates:</Typography>
                       <Typography variant="body1">{logDetails.log?.duplicate_count || 0}</Typography>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
                       <Typography variant="subtitle2">Skipped:</Typography>
                       <Typography variant="body1">{logDetails.log?.skipped_count || 0}</Typography>
                     </Grid>

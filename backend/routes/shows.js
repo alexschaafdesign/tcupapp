@@ -182,6 +182,7 @@ router.get('/:id', async (req, res) => {
         shows.event_link,
         shows.venue_id,
         shows.bands AS band_list,
+        shows.manual_override,
         venues.venue AS venue_name,
         venues.location,
         bands.name as band_name,
@@ -228,6 +229,7 @@ router.get('/:id', async (req, res) => {
       venue_id: rows[0].venue_id,
       venue_name: rows[0].venue_name,
       location: rows[0].location,
+      manual_override: rows[0].manual_override,  // include it here!
       bands: []
     };
 
@@ -321,29 +323,32 @@ router.post("/add", async (req, res) => {
 
 // Edit an existing show
 
-router.put("/:id", authMiddleware, checkRole(['admin']),async (req, res) => {
+router.put("/:id", authMiddleware, checkRole(['admin']), async (req, res) => {
   console.log("EDIT ROUTE HIT - REQUIRING ADMIN ROLE");
   try {
-    const { flyer_image, event_link, start, venue_id, bands } = req.body;
+    const { flyer_image, event_link, start, venue_id, bands, manual_override } = req.body;
     const { id } = req.params;
 
     const bandsFormatted = Array.isArray(bands)
       ? bands.map((band) => band.name).join(", ")
       : bands;
 
-      const query = `
+    // The query now updates manual_override as well.
+    // If manual_override is provided in the body, it overwrites the previous value; if not, it stays the same.
+    const query = `
       UPDATE shows 
       SET 
         flyer_image = COALESCE($1, flyer_image),
         event_link = COALESCE($2, event_link),
         start = COALESCE($3, start),
         venue_id = COALESCE($4, venue_id),
-        bands = COALESCE($5, bands)
-      WHERE id = $6
+        bands = COALESCE($5, bands),
+        manual_override = COALESCE($6, manual_override)
+      WHERE id = $7
       RETURNING *;
     `;
 
-    const values = [flyer_image, event_link, start, venue_id, bandsFormatted, id];
+    const values = [flyer_image, event_link, start, venue_id, bandsFormatted, manual_override, id];
     const result = await pool.query(query, values);
 
     if (result.rows.length === 0) {
