@@ -17,6 +17,8 @@ import {
   Dashboard as DashboardIcon,
   Assessment as AssessmentIcon
 } from '@mui/icons-material';
+import { SyncAlt as SyncIcon } from '@mui/icons-material';
+import { Snackbar } from '@mui/material';
 import { format, parseISO } from 'date-fns';
 import palette from '../../styles/colors/palette';
 import colors from '../../styles/colors/colors';
@@ -79,10 +81,77 @@ const ScraperAdminPanel = () => {
   const [currentScraper, setCurrentScraper] = useState(null);
   const [scraperStats, setScraperStats] = useState([]);
   const [statusFilter, setStatusFilter] = useState('all');
+  const [showCounts, setShowCounts] = useState({ development: 0, production: 0, difference: 0 });
+  const [syncLoading, setSyncLoading] = useState(false);
+  const [syncResult, setSyncResult] = useState(null);
+  const [syncSnackbarOpen, setSyncSnackbarOpen] = useState(false);
+  const [countLoading, setCountLoading] = useState(false);
 
   const { isAdmin } = useAuth();
   const { getAccessTokenSilently } = useAuth0();
   const apiUrl = process.env.REACT_APP_API_URL;
+
+// 3. Add these functions to your component
+// Function to fetch show counts
+const fetchShowCounts = async () => {
+  setCountLoading(true);
+  setError('');
+  
+  try {
+    const token = await getAccessTokenSilently();
+    const response = await fetch(`${apiUrl}/adminshows/shows/counts`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch show counts');
+    }
+    
+    const data = await response.json();
+    setShowCounts(data);
+  } catch (err) {
+    console.error('Error fetching counts:', err);
+    setError('Failed to load show counts. Please try again.');
+  } finally {
+    setCountLoading(false);
+  }
+};
+
+// Function to sync shows from dev to prod
+const syncShowsToProd = async () => {
+  setSyncLoading(true);
+  setError('');
+  setSyncResult(null);
+  
+  try {
+    const token = await getAccessTokenSilently();
+    const response = await fetch(`${apiUrl}/adminshows/shows/sync`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to sync shows');
+    }
+    
+    const result = await response.json();
+    setSyncResult(result);
+    setSyncSnackbarOpen(true);
+    
+    // Refresh counts after sync
+    fetchShowCounts();
+  } catch (err) {
+    console.error('Error syncing shows:', err);
+    setError('Failed to sync shows. Please try again.');
+  } finally {
+    setSyncLoading(false);
+  }
+};
 
   // Helper to format dates
   const formatDate = (dateString) => {
@@ -273,6 +342,7 @@ const ScraperAdminPanel = () => {
   useEffect(() => {
     if (tabValue === 1) updateScraperStats();
     else if (tabValue === 2) fetchScraperHistory(historyPage, historyLimit);
+    else if (tabValue === 3) fetchShowCounts(); // Add this line for DB sync tab
   }, [tabValue, historyPage, historyLimit]);
 
   const handleTabChange = (event, newValue) => {
@@ -301,6 +371,7 @@ const ScraperAdminPanel = () => {
             <Tab icon={<RunIcon />} label="Run Scrapers" id="scraper-tab-0" />
             <Tab icon={<DashboardIcon />} label="Scraper Status" id="scraper-tab-1" />
             <Tab icon={<HistoryIcon />} label="Complete History" id="scraper-tab-2" />
+            <Tab icon={<SyncIcon />} label="Database Sync" id="scraper-tab-3" /> {/* Add this line */}
           </Tabs>
         </Box>
         {error && (
