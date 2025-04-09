@@ -72,6 +72,8 @@ async function runScraper(scraperName) {
   
   // Get the script path from the map or use default pattern with absolute path
   const scriptPath = scriptPathMap[scraperName] || path.join(scrapeDir, `${scraperName}.py`);
+  console.log(`Actual script path being executed: ${scriptPath}`);
+
   
   try {
     // Add the correct Python path
@@ -116,20 +118,17 @@ async function runScraper(scraperName) {
     try {
       // Trim potential leading/trailing whitespace from the captured output
       const trimmedOutput = stdoutData.trim();
-
-      if (!trimmedOutput) {
-           // Handle cases where the python script produced no output to stdout
-           console.error(`Received empty stdout from ${scraperName}.`);
-           // You might want to check stderrData here for errors from Python
-           throw new Error(`Received empty stdout from ${scraperName}. Stderr: ${stderrData || 'empty'}`);
+  
+      // Try to find a valid JSON object in the output
+      // Look for the opening { and parse from there
+      const jsonStart = trimmedOutput.indexOf('{');
+      if (jsonStart >= 0) {
+          const jsonString = trimmedOutput.substring(jsonStart);
+          result = JSON.parse(jsonString);
+      } else {
+          throw new Error("No JSON object found in output");
       }
-
-      result = JSON.parse(trimmedOutput); // <--- Parse the WHOLE trimmed string
-
-      // Optional: Add a success log after successful parsing
-      console.log(`Successfully parsed JSON output for ${scraperName}.`);
-
-    } catch (parseError) {
+  } catch (parseError) {
       console.error(`Failed to parse JSON output from ${scraperName}:`, parseError);
       // Log the actual data that caused the parsing failure
       console.error(`Data that failed parsing for ${scraperName}: >>>\n${stdoutData}\n<<<`); // Log the full stdout
@@ -158,9 +157,11 @@ async function runScraper(scraperName) {
       scraper_name: scraperName,
       run_at: new Date(),
       added_count: result.added_count || 0,
+      updated_count: result.updated_count || 0,  // Add this line
       duplicate_count: result.duplicate_count || 0,
       skipped_count: result.skipped_count || 0,
       added_shows: JSON.stringify(result.added_shows || []),
+      updated_shows: JSON.stringify(result.updated_shows || []),  // Add this line
       errors: JSON.stringify(result.errors || []),
       raw_output: JSON.stringify(result)
     }).returning('id');

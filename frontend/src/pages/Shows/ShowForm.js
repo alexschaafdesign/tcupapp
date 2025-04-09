@@ -9,6 +9,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import EditableBandList from "../../components/shows/EditableBandList";
@@ -19,14 +21,16 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-    const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
   
+  // We'll always redirect to the specific show page after submission.
   const [formData, setFormData] = useState({
     flyer_image: "",
     event_link: "",
     start: "",
     venue_id: "",
     bands: [],
+    manual_override: false,
   });
 
   const [venues, setVenues] = useState([]);
@@ -36,20 +40,13 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
-  // Store the return URL with filters when component mounts
-  const [returnUrl, setReturnUrl] = useState('/shows');
-  useEffect(() => {
-    // Capture the return URL with filters when component mounts
-    const searchParams = new URLSearchParams(location.search);
-    const filters = searchParams.get('returnFilters');
-    if (filters) {
-      setReturnUrl(`/shows?${filters}`);
-    }
-  }, [location]);
-
+  // When initialData arrives, explicitly convert manual_override to a Boolean
   useEffect(() => {
     if (initialData) {
-      setFormData(initialData);
+      setFormData({
+        ...initialData,
+        manual_override: !!initialData.manual_override,
+      });
     }
   }, [initialData]);
 
@@ -80,6 +77,10 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleManualOverrideChange = (e) => {
+    setFormData((prev) => ({ ...prev, manual_override: e.target.checked }));
+  };
+
   const handleAddBand = () => {
     if (bandInput.trim()) {
       setFormData((prev) => ({
@@ -99,16 +100,14 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
 
     try {
       const token = await getAccessTokenSilently();
-
       const response = await fetch(`${apiUrl}/shows/${id}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`
         }
       });
-
-      // Only navigate after successful deletion
-      navigate(returnUrl);
+      // Navigate after successful deletion
+      navigate("/shows");
     } catch (err) {
       console.error(err);
       setErrorMessage("An error occurred while deleting the show.");
@@ -116,8 +115,6 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
   };
 
   const handleSubmit = async (e) => {
-    console.log("Starting form submission...");
-    console.log("Current formData:", formData);
     e.preventDefault();
       
     if (!isReadyToSubmit) {
@@ -126,24 +123,19 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
     }
   
     const bandsFormatted = formData.bands
-    .map((band, index) => `${index + 1}:${band.name}`)
-    .join(", ");
+      .map((band, index) => `${index + 1}:${band.name}`)
+      .join(", ");
           
     const dataToSubmit = {
       ...formData,
       bands: bandsFormatted,
     };
   
-    console.log("Submitting data:", dataToSubmit);
-  
     const endpoint = isEdit
       ? `${apiUrl}/shows/${id}`
       : `${apiUrl}/shows/add`;
   
     try {
-      console.log("Making fetch request to:", endpoint);
-      console.log("With data:", dataToSubmit);
-      
       const token = await getAccessTokenSilently();
       
       const response = await fetch(endpoint, {
@@ -155,19 +147,16 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
         body: JSON.stringify(dataToSubmit),
       });
   
-      console.log("Response received:", response);
-      
       if (!response.ok) {
-        console.log("Response not OK, status:", response.status);
         const errorData = await response.json();
-        console.log("Error data:", errorData);
         throw new Error(errorData.details || "Failed to submit show data");
       }
   
-      navigate(returnUrl);
+      // Parse the response to obtain the show ID and navigate to that specific show page.
+      const result = await response.json();
+      navigate(`/shows/${result.id}`);
     } catch (err) {
       console.error("Form submission error:", err);
-      console.error("Full error object:", err);
       setErrorMessage(`Error: ${err.message}. Please check the console for more details.`);
     }
   };
@@ -249,6 +238,20 @@ const ShowForm = ({ isEdit = false, initialData = null }) => {
         <EditableBandList 
           bands={formData.bands} 
           onChange={(newBands) => setFormData(prev => ({ ...prev, bands: newBands }))}
+        />
+
+        {/* Manual Override Checkbox */}
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={formData.manual_override}
+              onChange={handleManualOverrideChange}
+              name="manual_override"
+              color="primary"
+            />
+          }
+          label="Manually Overridden (lock this show)"
+          sx={{ mb: 2 }}
         />
 
         <Button
