@@ -10,7 +10,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 from db_utils import connect_to_db, insert_show, get_venue_id
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
 def split_band_names(band_string):
@@ -22,13 +21,17 @@ def run_berlin_mpls_scraper():
     Runs the BerlinMPLS scraper and returns a log dict containing:
       - scraper_name: Identifier for the scraper.
       - added_count: Number of events inserted.
+      - updated_count: Number of events updated.
       - duplicate_count: Number of duplicate events skipped.
       - added_shows: List of inserted show IDs.
+      - updated_shows: List of updated show IDs.
       - errors: List of error messages encountered.
     """
     added_count = 0
+    updated_count = 0
     duplicate_count = 0
     added_shows = []
+    updated_shows = []
     errors = []
 
     sys.stderr.write("Starting BerlinMPLS scraper...\n")
@@ -41,7 +44,6 @@ def run_berlin_mpls_scraper():
     chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
     try:
-        # For Mac with Chrome installed in the default location
         driver = webdriver.Chrome(options=chrome_options)
         sys.stderr.write("Chrome initialized successfully\n")
     except Exception as e:
@@ -51,6 +53,7 @@ def run_berlin_mpls_scraper():
         return {
             'scraper_name': 'berlin_mpls',
             'added_count': added_count,
+            'updated_count': updated_count,
             'duplicate_count': duplicate_count,
             'added_shows': added_shows,
             'errors': errors,
@@ -68,6 +71,7 @@ def run_berlin_mpls_scraper():
         return {
             'scraper_name': 'berlin_mpls',
             'added_count': added_count,
+            'updated_count': updated_count,
             'duplicate_count': duplicate_count,
             'added_shows': added_shows,
             'errors': errors,
@@ -87,6 +91,7 @@ def run_berlin_mpls_scraper():
         return {
             'scraper_name': 'berlin_mpls',
             'added_count': added_count,
+            'updated_count': updated_count,
             'duplicate_count': duplicate_count,
             'added_shows': added_shows,
             'errors': errors,
@@ -108,6 +113,7 @@ def run_berlin_mpls_scraper():
         return {
             'scraper_name': 'berlin_mpls',
             'added_count': added_count,
+            'updated_count': updated_count,
             'duplicate_count': duplicate_count,
             'added_shows': added_shows,
             'errors': errors,
@@ -124,6 +130,7 @@ def run_berlin_mpls_scraper():
         return {
             'scraper_name': 'berlin_mpls',
             'added_count': added_count,
+            'updated_count': updated_count,
             'duplicate_count': duplicate_count,
             'added_shows': added_shows,
             'errors': errors,
@@ -187,7 +194,7 @@ def run_berlin_mpls_scraper():
                 errors.append(err_msg)
                 continue
 
-        # Extract bands: use event name and also additional support info if available
+        # Extract bands: use event name and additional support info if available
         if event_name:
             bands.append(event_name)
         support_tag = card.find(class_="vp-support")
@@ -201,12 +208,16 @@ def run_berlin_mpls_scraper():
 
         try:
             # Insert the event into the database
-            show_id, was_inserted = insert_show(conn, cursor, venue_id, bands_str, start, event_link, flyer_image)
-            if was_inserted:
+            show_id, status = insert_show(conn, cursor, venue_id, bands_str, start, event_link, flyer_image)
+            if status == "added":
                 added_count += 1
                 added_shows.append(show_id)
                 sys.stderr.write(f"Inserted event: {event_name} on {start}\n")
-            else:
+            elif status == "updated":
+                updated_count += 1
+                updated_shows.append(show_id)
+                sys.stderr.write(f"Updated event: {event_name} on {start}\n")
+            elif status == "duplicate":
                 duplicate_count += 1
                 sys.stderr.write(f"Duplicate event skipped: {event_name} on {start}\n")
         except Exception as e:
@@ -229,8 +240,10 @@ def run_berlin_mpls_scraper():
     log = {
         'scraper_name': 'berlin_mpls',
         'added_count': added_count,
+        'updated_count': updated_count,
         'duplicate_count': duplicate_count,
         'added_shows': added_shows,
+        'updated_shows': updated_shows,
         'errors': errors,
     }
     return log

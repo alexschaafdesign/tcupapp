@@ -1,4 +1,5 @@
 import sys
+sys.stderr.write(f"DEBUG: Script starting, sys module imported as: {sys}\n")
 import re
 import json
 from datetime import datetime
@@ -11,20 +12,13 @@ from bs4 import BeautifulSoup
 from db_utils import connect_to_db, insert_show, get_venue_id
 
 def run_331_club_scraper():
-    """
-    Runs the scraper for 331 Club events and returns a log dict containing:
-      - scraper_name: Name identifier of the scraper.
-      - added_count: Number of events inserted.
-      - duplicate_count: Number of duplicate events skipped.
-      - skipped_count: Number of events skipped due to errors.
-      - added_shows: List of inserted show IDs.
-      - errors: List of error messages encountered.
-    """
     added_count = 0
+    updated_count = 0  # New counter for updated shows
     duplicate_count = 0
     skipped_count = 0
     added_shows = []
-    errors = []
+    updated_shows = []  # New list for updated show IDs
+    errors = []  # This is where you collect error messages
 
     sys.stderr.write("Initializing headless Chrome...\n")
     chrome_options = Options()
@@ -260,37 +254,37 @@ def run_331_club_scraper():
             flyer_image = "https://www.mnvibe.com/sites/default/files/styles/max_650x650/public/2022-09/5013409958_17377ca2c1_c.jpg?itok=42M5mkxp"
 
             try:
-                show_id, was_inserted = insert_show(
+                show_id, status = insert_show(
                     conn, cursor, venue_id, bands_str, start, event_link, flyer_image
                 )
-                if was_inserted:
+                if status == "added":
                     added_count += 1
                     added_shows.append(show_id)
-                    sys.stderr.write(f"Inserted event: {bands_str} at {start}\n")
-                else:
+                elif status == "updated":
+                    updated_count += 1
+                    updated_shows.append(show_id)
+                elif status == "duplicate":
                     duplicate_count += 1
             except Exception as e:
-                error_msg = f"Error processing event ({bands_str}): {e}"
-                sys.stderr.write(error_msg + "\n")
-                errors.append(error_msg)
                 skipped_count += 1
-                conn.rollback()
-                continue
+                errors.append(f"Error inserting show: {e}")
 
-    conn.commit()
-    cursor.close()
-    conn.close()
-
+    # Return updated log with all categories after processing all events/columns
     log = {
         'scraper_name': '331_club',
         'added_count': added_count,
+        'updated_count': updated_count,
         'duplicate_count': duplicate_count,
         'skipped_count': skipped_count,
         'added_shows': added_shows,
+        'updated_shows': updated_shows,
         'errors': errors,
     }
     return log
 
 if __name__ == "__main__":
     log = run_331_club_scraper()
+    
+
+    
     print(json.dumps(log))

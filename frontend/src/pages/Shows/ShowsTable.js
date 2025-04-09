@@ -9,6 +9,8 @@ import ShowsTableCore from './ShowsTableCore';
 import DynamicFilterComponent from './Components/DynamicFilterComponent';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import DateRangeFilter from './Components/DateRangeFilter';
+import { ToggleButtonGroup, ToggleButton } from '@mui/material';
+
 
 
 function ShowsTable() {
@@ -28,6 +30,8 @@ function ShowsTable() {
     searchParams.get('startDate') ? new Date(searchParams.get('startDate')) : null,
     searchParams.get('endDate') ? new Date(searchParams.get('endDate')) : null
   ]);
+  const [timeFilter, setTimeFilter] = useState(searchParams.get('timeFilter') || 'upcoming');
+
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -41,9 +45,12 @@ function ShowsTable() {
     if (rowsPerPage !== 20) params.set('rowsPerPage', rowsPerPage.toString());
     if (dateRange[0]) params.set('startDate', dateRange[0].toISOString());
     if (dateRange[1]) params.set('endDate', dateRange[1].toISOString());
+    if (timeFilter !== 'upcoming') params.set('timeFilter', timeFilter);
+
+    
     
     setSearchParams(params);
-  }, [searchTerm, selectedVenue, showTCUPBandsOnly, page, rowsPerPage, dateRange]);
+  }, [searchTerm, selectedVenue, showTCUPBandsOnly, page, rowsPerPage, dateRange, timeFilter]);
 
   // Fetch shows data
   useEffect(() => {
@@ -90,7 +97,7 @@ function ShowsTable() {
       const eventDate = dayjs(item.start);
       const start = dateRange[0] ? dayjs(dateRange[0]).startOf('day') : null;
       const end = dateRange[1] ? dayjs(dateRange[1]).endOf('day') : null;
-
+  
       const matchesSearch = searchTerm
         ? item.venue_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.bands?.some(band => band.name.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -103,13 +110,21 @@ function ShowsTable() {
       const matchesTCUP = showTCUPBandsOnly
         ? item.bands?.some(band => band.id)
         : true;
-
+  
       const matchesDateRange = (!start || eventDate.isAfter(start) || eventDate.isSame(start, 'day')) && 
                              (!end || eventDate.isBefore(end) || eventDate.isSame(end, 'day'));
   
-      const isUpcomingEvent = eventDate.isAfter(today) || eventDate.isSame(today, 'day');
+      // Time filter condition is now determined by the time filter setting
+      let isTimeFilterMatch;
+      if (timeFilter === 'upcoming') {
+        isTimeFilterMatch = eventDate.isAfter(today) || eventDate.isSame(today, 'day');
+      } else if (timeFilter === 'past') {
+        isTimeFilterMatch = eventDate.isBefore(today);
+      } else { // 'all'
+        isTimeFilterMatch = true;
+      }
   
-      return matchesSearch && matchesVenue && matchesTCUP && isUpcomingEvent && matchesDateRange;
+      return matchesSearch && matchesVenue && matchesTCUP && isTimeFilterMatch && matchesDateRange;
     });
   };
 
@@ -164,7 +179,37 @@ function ShowsTable() {
   return (
     <Box sx={{ paddingBottom: '150px', overflowY: 'auto' }}>
       
-
+      <Box sx={{ mb: 3 }}>
+  <Typography variant="subtitle1" sx={{ mb: 1 }}>Show Time Period</Typography>
+  <ToggleButtonGroup
+    value={timeFilter}
+    exclusive
+    onChange={(e, newValue) => {
+      if (newValue !== null) {
+        setTimeFilter(newValue);
+        // Also update URL params
+        const newParams = new URLSearchParams(searchParams);
+        newParams.set('timeFilter', newValue);
+        setSearchParams(newParams);
+        // Reset to page 0 when changing filters
+        setPage(0);
+      }
+    }}
+    aria-label="time filter"
+    size="small"
+    sx={{ mb: 2 }}
+  >
+    <ToggleButton value="upcoming" aria-label="upcoming shows">
+      Upcoming Shows
+    </ToggleButton>
+    <ToggleButton value="past" aria-label="past shows">
+      Past Shows
+    </ToggleButton>
+    <ToggleButton value="all" aria-label="all shows">
+      All Shows
+    </ToggleButton>
+  </ToggleButtonGroup>
+</Box>
       <DynamicFilterComponent 
         filters={filters}
         navigate={navigate} />

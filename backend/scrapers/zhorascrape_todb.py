@@ -8,10 +8,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 from db_utils import connect_to_db, insert_show, get_venue_id
+import json
 
 chrome_driver_path = "/opt/homebrew/bin/chromedriver"  # Update if different
 
-# Configure Chrome options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
@@ -51,11 +51,20 @@ def split_band_names(band_string):
     bands = re.split(r'\s*(?:,|w/|&)\s*', band_string)
     return [b.strip() for b in bands if b.strip()]
 
+# Initialize counters and logs for updated tracking
+added_count = 0
+updated_count = 0
+duplicate_count = 0
+skipped_count = 0
+added_shows = []
+updated_shows = []
+errors = []
+
 for event in events:
     event_details = {}
     event_details['venue_id'] = venue_id
 
-    # Extract flyer image URL - find img tag that follows an a tag
+    # Extract flyer image URL – find img tag that follows an a tag
     for link in event.find_all('a'):
         img_tag = link.find_next('img')
         if img_tag:
@@ -95,7 +104,8 @@ for event in events:
         event_details['bands'] = "N/A"
 
     try:
-        insert_show(
+        # Call insert_show and capture returned show_id and status.
+        show_id, status = insert_show(
             conn, 
             cursor, 
             event_details['venue_id'],
@@ -104,11 +114,34 @@ for event in events:
             event_details['event_link'],
             event_details['show_flyer']
         )
+        if status == "added":
+            added_count += 1
+            added_shows.append(show_id)
+        elif status == "updated":
+            updated_count += 1
+            updated_shows.append(show_id)
+        elif status == "duplicate":
+            duplicate_count += 1
     except Exception as e:
         print(f"Error processing event with bands {event_details['bands']}: {e}")
         conn.rollback()
+        skipped_count += 1
+        errors.append(f"Error processing event with bands {event_details['bands']}: {e}")
 
 conn.commit()
 cursor.close()
 conn.close()
 driver.quit()
+
+log = {
+    'scraper_name': 'zhoradarling_scraper',
+    'added_count': added_count,
+    'updated_count': updated_count,
+    'duplicate_count': duplicate_count,
+    'skipped_count': skipped_count,
+    'added_shows': added_shows,
+    'updated_shows': updated_shows,
+    'errors': errors,
+}
+
+print(json.dumps(log))

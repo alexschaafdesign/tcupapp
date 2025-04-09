@@ -8,12 +8,20 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 const DigitalZine = () => {
   // Your image URLs
   const pages = [
-    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1743628063/Letter_-_3_v1qvvx.png",
-    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1743628108/Letter_-_4_n2j6lq.png",
-    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1743628065/Letter_-_5_x1xqmf.png",
-    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1743628082/Letter_-_6_zj2y1r.png",
-    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1743628065/Letter_-_7_uejy8i.png",
-    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1743628065/Letter_-_8_l1wr3g.png",
+    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1744220832/COVER_ifyfyo.jpg",
+    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1744220831/PAGE_1_k73im1.jpg",
+    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1744220831/PAGE_2_fl8vqa.jpg",
+    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1744220832/PAGE_3_vhwhen.jpg",
+    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1744220832/PAGE_4_qzbnno.jpg",
+    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1744220831/PAGE_5_read45.jpg",
+    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1744220830/PAGE_6_nuftrf.jpg",
+    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1744220830/PAGE_7_pfcrfk.jpg",
+    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1744220831/PAGE_8_x8ksme.jpg",
+    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1744220832/PAGE_9_awdyzx.jpg",
+    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1744220831/PAGE_10_xbs7ue.jpg",
+    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1744220831/PAGE_11_dbptgz.jpg",
+    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1744220831/PAGE_12_er7uka.jpg",
+    "https://res.cloudinary.com/dsll3ms2c/image/upload/v1744220832/BACK_COVER_xvhwkp.jpg",
   ];
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -203,35 +211,63 @@ const DigitalZine = () => {
   };
 
   return (
-    <Container 
-      maxWidth={false} 
-      disableGutters 
-      className="digital-zine-container"
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+      {/* Newsletter signup link - positioned OUTSIDE the zine container */}
+      <Box
+        component="a"
+        href="https://secure.everyaction.com/xGrCCCak6EWC-liPxFFvEg2"
+        target="_blank"
+        rel="noopener noreferrer"
+        sx={{
+          bgcolor: 'rgba(102, 51, 153, 0.8)', // Purple background
+          color: 'white',
+          px: 2,
+          py: 1,
+          borderRadius: 1,
+          textDecoration: 'none',
+          fontSize: '0.85rem',
+          fontWeight: 'medium',
+          mb: 2, // Margin bottom to separate from zine
+          display: 'inline-block',
+          transition: 'background-color 0.3s',
+          '&:hover': {
+            bgcolor: 'rgba(102, 51, 153, 1)', // Darker on hover
+            textDecoration: 'none'
+          }
+        }}
+      >
+        Sign up to receive TCUP's newsletter by email
+      </Box>
+      
+      <Container 
+        maxWidth={false} 
+        disableGutters 
+        className="digital-zine-container"
       sx={{
-        height: '100vh',
+        height: '85vh', // Increased to give more vertical space
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        bgcolor: 'transparent', // Match the site's natural background
+        bgcolor: 'transparent',
         overflow: 'hidden',
         position: 'relative',
         userSelect: 'none',
         cursor: controlsVisible ? 'default' : 'none',
-        pl: -12, // Remove left padding
-        pr: 0, // Remove right padding
-        mt: -16, // Remove top margin
-        mb: 0, // Remove bottom margin
+        p: 0, // Remove all padding
+        m: 0, // Remove all margins
+        mt: 1, // Minimal top margin
       }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Book container - sized appropriately to prevent pixelation */}
+      {/* Book container - Expanded to minimize whitespace */}
       <Box
         sx={{
-          width: '100%',
-          height: '100vh',
+          width: '100%', // Take up full width of container
+          maxWidth: '1000px', // Increased maximum width
+          height: '100%',
           position: 'relative',
           perspective: '2000px',
           display: 'flex',
@@ -258,7 +294,7 @@ const DigitalZine = () => {
           </Box>
         )}
 
-        {/* Page with optimized dimensions */}
+        {/* Page with expanded dimensions to fill the container */}
         <Box
           className={isFlipping ? `page-flip ${flipDirection}` : ''}
           sx={{
@@ -266,26 +302,28 @@ const DigitalZine = () => {
             height: '100%',
             position: 'relative',
             transformStyle: 'preserve-3d',
-            boxShadow: '0 0 25px rgba(0,0,0,0.3)',
+            // Removed outer box shadow to avoid double shadow effect
             // Apply page flip styles depending on animation state
             transform: 'rotateY(0deg)',
             transformOrigin: flipDirection === 'forward' ? 'left center' : 'right center',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            // Remove any potential padding that creates whitespace
+            p: 0,
           }}
         >
-          {/* Current page - contained within the full space */}
+          {/* Current page - expanded to fill the available space */}
           <Box
             component="img"
             src={pages[currentPage]}
             alt={`Digital zine page ${currentPage + 1}`}
             sx={{
-              maxWidth: '850px', // Fixed width to prevent pixelation
-              maxHeight: '85vh', // Keep it proportional but not too large
+              width: '100%', // Fill the entire width
+              height: '100%', // Fill the entire height
               objectFit: 'contain',
               backgroundColor: 'transparent',
-              boxShadow: 'none',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.2)', // Add shadow to make it look like a page
               borderRadius: 0,
               backfaceVisibility: isFlipping ? 'hidden' : 'visible',
               opacity: imagesLoaded[currentPage] ? 1 : 0,
@@ -295,16 +333,16 @@ const DigitalZine = () => {
 
           {/* Next page (for flip animation) */}
           {isFlipping && nextPage !== null && (
-                          <Box
+            <Box
               component="img"
               src={pages[nextPage]}
               alt={`Digital zine page ${nextPage + 1}`}
               sx={{
-                maxWidth: '850px',
-                maxHeight: '85vh',
+                width: '100%',
+                height: '100%',
                 objectFit: 'contain',
                 backgroundColor: 'transparent',
-                boxShadow: 'none',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
                 borderRadius: 0,
                 position: 'absolute',
                 backfaceVisibility: 'hidden',
@@ -333,11 +371,12 @@ const DigitalZine = () => {
           transition: 'opacity 0.3s ease',
         }}
       >
-        {/* Top bar - simplify to just fullscreen button */}
+        {/* Top bar with just fullscreen button */}
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'flex-end',
+            width: '100%',
             padding: 1,
           }}
         >
@@ -355,7 +394,7 @@ const DigitalZine = () => {
           </IconButton>
         </Box>
 
-        {/* Navigation buttons - more discrete and edge-aligned */}
+        {/* Navigation buttons - positioned at the edges of the content */}
         <Box
           sx={{
             position: 'absolute',
@@ -365,7 +404,7 @@ const DigitalZine = () => {
             transform: 'translateY(-50%)',
             display: 'flex',
             justifyContent: 'space-between',
-            padding: '0 2px', // Reduced side padding
+            px: 1, // Minimal padding to keep buttons slightly off the edge
           }}
         >
           <IconButton 
@@ -401,12 +440,13 @@ const DigitalZine = () => {
           </IconButton>
         </Box>
 
-        {/* Page counter - made smaller and more subtle */}
+        {/* Page counter - moved up slightly to avoid potential cutoff */}
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'center',
             padding: 1,
+            mb: 1, // Added margin to lift it up slightly
           }}
         >
           <Box
@@ -453,12 +493,21 @@ const DigitalZine = () => {
           100% { transform: rotateY(180deg); }
         }
         
-        /* Hide scrollbars for cleaner view */
-        body:has(.digital-zine-container) {
+        /* Hide scrollbars and ensure full viewport usage */
+        body {
           overflow: hidden;
+          margin: 0;
+          padding: 0;
+        }
+        
+        /* Make sure the container maximizes available space */
+        .digital-zine-container {
+          box-sizing: border-box;
+          max-width: 100%;
         }
       `}</style>
     </Container>
+    </Box>
   );
 };
 

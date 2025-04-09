@@ -33,6 +33,8 @@ import uploadRouter from './routes/upload.js';
 import readStatusRouter from './routes/chat/read-status.js'
 import directMessagesRouter from './routes/direct-messages.js'
 import scrapersRouter from './routes/admin/run-scrapers.js'
+import sseRouter from './routes/sseRoutes.js';
+import adminShowsRouter from './routes/admin/shows-admin.js'
 
 import compression from 'compression';
 
@@ -139,6 +141,10 @@ app.use('/api/upload', uploadRouter)
 app.use('/api/read-status', readStatusRouter);
 app.use('/api/direct-messages', directMessagesRouter)
 app.use('/api/scrapers', scrapersRouter)
+app.use('/api/sseroutes', sseRouter)
+app.use('/api/adminshows', adminShowsRouter)
+
+
 
 app.get('/api/bands/simple-test', (req, res) => {
   res.json({ message: 'Simple test route works' });
