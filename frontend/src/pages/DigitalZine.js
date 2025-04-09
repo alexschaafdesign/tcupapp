@@ -211,10 +211,38 @@ const DigitalZine = () => {
   };
 
   return (
-    <Container 
-      maxWidth={false} 
-      disableGutters 
-      className="digital-zine-container"
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+      {/* Newsletter signup link - positioned OUTSIDE the zine container */}
+      <Box
+        component="a"
+        href="https://secure.everyaction.com/xGrCCCak6EWC-liPxFFvEg2"
+        target="_blank"
+        rel="noopener noreferrer"
+        sx={{
+          bgcolor: 'rgba(102, 51, 153, 0.8)', // Purple background
+          color: 'white',
+          px: 2,
+          py: 1,
+          borderRadius: 1,
+          textDecoration: 'none',
+          fontSize: '0.85rem',
+          fontWeight: 'medium',
+          mb: 2, // Margin bottom to separate from zine
+          display: 'inline-block',
+          transition: 'background-color 0.3s',
+          '&:hover': {
+            bgcolor: 'rgba(102, 51, 153, 1)', // Darker on hover
+            textDecoration: 'none'
+          }
+        }}
+      >
+        Sign up to receive TCUP's newsletter by email
+      </Box>
+      
+      <Container 
+        maxWidth={false} 
+        disableGutters 
+        className="digital-zine-container"
       sx={{
         height: '85vh', // Increased to give more vertical space
         display: 'flex',
@@ -343,11 +371,12 @@ const DigitalZine = () => {
           transition: 'opacity 0.3s ease',
         }}
       >
-        {/* Top bar - simplify to just fullscreen button */}
+        {/* Top bar with just fullscreen button */}
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'flex-end',
+            width: '100%',
             padding: 1,
           }}
         >
@@ -478,6 +507,7 @@ const DigitalZine = () => {
         }
       `}</style>
     </Container>
+    </Box>
   );
 };
 

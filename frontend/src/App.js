@@ -153,7 +153,7 @@ function App() {
           <Route path="advance" element={<TCUPAdvance />} />
           <Route path="resources" element={<Resources />} />
           <Route path="vrc" element={<VRCForm />} />
-          <Route path="newsletter" element={<Newsletter />} />
+          <Route path="newsletter" element={<DigitalZine />} />
           <Route path="calendar" element={<CalendarEvents />} />
           <Route path="flyering" element={<FlyeringTable />} />
           <Route path="sessionmusicians" element={<SessionMusiciansTable />} />
