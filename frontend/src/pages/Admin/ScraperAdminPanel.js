@@ -741,6 +741,104 @@ const syncShowsToProd = async () => {
             </Table>
           </TableContainer>
         </TabPanel>
+
+        <TabPanel value={tabValue} index={3}>
+  <Box sx={{ mb: 4 }}>
+    <Typography variant="h5" sx={{ mb: 2 }}>Shows Database Sync</Typography>
+    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+      This tool syncs shows from the Development database to the Production database.
+      Shows that were manually edited in Production won't be overwritten.
+    </Typography>
+    
+    <Paper 
+      elevation={3} 
+      sx={{ 
+        p: 3, 
+        mb: 3, 
+        borderRadius: 2,
+        backgroundColor: '#fafafa'
+      }}
+    >
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          mb: 3,
+          backgroundColor: '#f0f0f0',
+          p: 2,
+          borderRadius: 1
+        }}
+      >
+        <Box>
+          <Typography variant="body1" component="div">
+            Development: {countLoading ? <CircularProgress size={16} /> : 
+              <Chip 
+                label={showCounts.development} 
+                color="primary" 
+                size="small" 
+                sx={{ ml: 1, fontWeight: 'bold' }} 
+              />
+            }
+          </Typography>
+          
+          <Typography variant="body1" component="div">
+            Production: {countLoading ? <CircularProgress size={16} /> : 
+              <Chip 
+                label={showCounts.production} 
+                color="secondary" 
+                size="small" 
+                sx={{ ml: 1, fontWeight: 'bold' }} 
+              />
+            }
+          </Typography>
+        </Box>
+        
+        <Box>
+          <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
+            Difference: {countLoading ? <CircularProgress size={20} /> : 
+              <Chip 
+                label={showCounts.difference} 
+                color={showCounts.difference > 0 ? "success" : "default"} 
+                sx={{ ml: 1, fontWeight: 'bold' }} 
+              />
+            }
+          </Typography>
+          
+          <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mt: 0.5 }}>
+            {showCounts.difference > 0 
+              ? "Shows to sync from Dev to Prod" 
+              : showCounts.difference < 0 
+                ? "More shows in Prod than Dev" 
+                : "All synced"}
+          </Typography>
+        </Box>
+      </Box>
+
+      <Box sx={{ display: 'flex', gap: 2 }}>
+        <Button 
+          variant="outlined" 
+          onClick={fetchShowCounts} 
+          disabled={countLoading}
+          startIcon={countLoading ? <CircularProgress size={16} /> : <RefreshIcon />}
+        >
+          Refresh Counts
+        </Button>
+        
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={syncShowsToProd} 
+          disabled={syncLoading || Math.abs(showCounts.difference) === 0}
+          startIcon={syncLoading ? <CircularProgress size={16} color="inherit" /> : <SyncIcon />}
+        >
+          Sync Shows to Production
+        </Button>
+      </Box>
+    </Paper>
+  </Box>
+</TabPanel>
+
         <Dialog open={logDetailsOpen} onClose={() => setLogDetailsOpen(false)} maxWidth="md" fullWidth>
           <DialogTitle>
             Scraper Log Details {logDetailsLoading && <CircularProgress size={24} sx={{ ml: 2 }} />}
@@ -832,6 +930,12 @@ const syncShowsToProd = async () => {
             <Button onClick={() => setLogDetailsOpen(false)}>Close</Button>
           </DialogActions>
         </Dialog>
+        <Snackbar
+        open={syncSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSyncSnackbarOpen(false)}
+        message={syncResult ? `Sync complete! ${syncResult.inserted} shows added, ${syncResult.updated} shows updated.` : ''}
+      />
       </Paper>
     </Container>
   );

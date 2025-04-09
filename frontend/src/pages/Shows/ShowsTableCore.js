@@ -25,17 +25,6 @@ const ShowsTableCore = ({ data }) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  console.log('Current user:', user);
-  console.log('User roles:', userRoles);
-  console.log('Is admin?', isAdmin);
-  console.log('Is moderator?', isModerator);
-
-  const filteredData = data.filter((item) => {
-    if (!item.start) return false;
-    const eventDate = new Date(item.start).setHours(0, 0, 0, 0);
-    return eventDate >= today.getTime();
-  });
-
   const groupByDate = (events) => {
     const grouped = {};
     events.forEach((item) => {
@@ -50,7 +39,7 @@ const ShowsTableCore = ({ data }) => {
     return grouped;
   };
 
-  const groupedData = groupByDate(filteredData);
+  const groupedData = groupByDate(data);
   const sortedDates = Object.keys(groupedData).sort((a, b) => new Date(a) - new Date(b));
 
   const handleEdit = (e, showId) => {
@@ -63,65 +52,71 @@ const ShowsTableCore = ({ data }) => {
   };
 
   // This function renders the edit button with proper auth wrapping
- const renderEditButton = (showId, size = "medium", sx = {}) => {
-  if (isAuthorized) {
-    return (
-      <Tooltip title="Edit Show">
-        <IconButton 
-          onClick={(e) => {
-            e.stopPropagation();
-            handleEdit(e, showId);
-          }}
-          sx={{
-            color: 'action.active',
-            bgcolor: 'background.paper',
-            boxShadow: 1,
-            '&:hover': {
-              color: 'primary.main',
-              bgcolor: 'background.paper'
-            },
-            ...sx
-          }}
-          size={size}
-        >
-          <EditIcon fontSize={size === "small" ? "small" : "medium"} />
-        </IconButton>
-      </Tooltip>
-    );
-  } else {
-    // If not authorized, render the button within an AuthWrapper.
-    // Notice we don’t call useAuth here; we're using the top-level values.
-    return (
-      <AuthWrapper
-        requiredRoles={['admin', 'moderator']}
-        mode="modal" // change mode here
-        renderContent={({ openAuthModal, showAuth }) => (
-          <Tooltip title="Edit Show">
-            <IconButton 
-              onClick={(e) => {
-                e.stopPropagation();
-                if (openAuthModal) {
-                  openAuthModal();
-                } else {
-                  alert("Authentication required");
-                }
-              }}
-              sx={{
-                color: 'action.disabled',
-                bgcolor: 'background.paper',
-                boxShadow: 1,
-                ...sx
-              }}
-              size={size}
-            >
-              <EditIcon fontSize={size === "small" ? "small" : "medium"} />
-            </IconButton>
-          </Tooltip>
-        )}
-      />
-    );
-  }
-};
+  const renderEditButton = (showId, size = "medium", sx = {}) => {
+    if (isAuthorized) {
+      return (
+        <Tooltip title="Edit Show">
+          <IconButton 
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEdit(e, showId);
+            }}
+            sx={{
+              color: 'action.active',
+              bgcolor: 'background.paper',
+              boxShadow: 1,
+              '&:hover': {
+                color: 'primary.main',
+                bgcolor: 'background.paper'
+              },
+              ...sx
+            }}
+            size={size}
+          >
+            <EditIcon fontSize={size === "small" ? "small" : "medium"} />
+          </IconButton>
+        </Tooltip>
+      );
+    } else {
+      // If not authorized, render the button within an AuthWrapper.
+      // Notice we don't call useAuth here; we're using the top-level values.
+      return (
+        <AuthWrapper
+          requiredRoles={['admin', 'moderator']}
+          mode="modal" // change mode here
+          renderContent={({ openAuthModal, showAuth }) => (
+            <Tooltip title="Edit Show">
+              <IconButton 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (openAuthModal) {
+                    openAuthModal();
+                  } else {
+                    alert("Authentication required");
+                  }
+                }}
+                sx={{
+                  color: 'action.disabled',
+                  bgcolor: 'background.paper',
+                  boxShadow: 1,
+                  ...sx
+                }}
+                size={size}
+              >
+                <EditIcon fontSize={size === "small" ? "small" : "medium"} />
+              </IconButton>
+            </Tooltip>
+          )}
+        />
+      );
+    }
+  };
+
+  // Helper function to check if a date is in the past
+  const isDateInPast = (dateString) => {
+    const date = new Date(dateString);
+    return date < today;
+  };
 
   return (
     <TableContainer 
@@ -144,7 +139,7 @@ const ShowsTableCore = ({ data }) => {
                   color: 'text.secondary'
                 }}
               >
-                No upcoming events found.
+                No events found matching your criteria.
               </TableCell>
             </TableRow>
           ) : (
@@ -156,9 +151,10 @@ const ShowsTableCore = ({ data }) => {
                     sx={{
                       py: 2,
                       px: 3,
-                      backgroundColor: 'grey.100',
+                      backgroundColor: isDateInPast(date) ? 'grey.100' : 'primary.light',
                       borderBottom: '2px solid',
-                      borderColor: 'grey.300'
+                      borderColor: isDateInPast(date) ? 'grey.300' : 'primary.main',
+                      opacity: isDateInPast(date) ? 0.85 : 1,
                     }}
                   >
                     <Box sx={{ 
@@ -170,7 +166,7 @@ const ShowsTableCore = ({ data }) => {
                         variant="h6" 
                         sx={{ 
                           fontWeight: 900,
-                          color: 'text.primary'
+                          color: isDateInPast(date) ? 'text.secondary' : 'primary.dark'
                         }}
                       >
                         {new Date(date).toLocaleDateString('en-US', {
@@ -183,7 +179,7 @@ const ShowsTableCore = ({ data }) => {
                       <Typography 
                         variant="subtitle2"
                         sx={{ 
-                          color: 'text.secondary',
+                          color: isDateInPast(date) ? 'text.secondary' : 'primary.dark',
                           fontWeight: 500
                         }}
                       >
@@ -206,7 +202,8 @@ const ShowsTableCore = ({ data }) => {
                           backgroundColor: 'action.hover',
                           transform: 'translateY(-1px)',
                           boxShadow: 1
-                        }
+                        },
+                        opacity: isDateInPast(item.start) ? 0.8 : 1
                       }}
                     >
                       <TableCell sx={{ width: '120px', p: 2 }}>
@@ -221,7 +218,8 @@ const ShowsTableCore = ({ data }) => {
                                 height: '100px',
                                 objectFit: 'cover',
                                 borderRadius: 1,
-                                boxShadow: 1
+                                boxShadow: 1,
+                                filter: isDateInPast(item.start) ? 'grayscale(30%)' : 'none'
                               }}
                             />
                           ) : (
@@ -257,7 +255,7 @@ const ShowsTableCore = ({ data }) => {
                         <Typography 
                           variant="h6" 
                           sx={{ 
-                            color: 'primary.main',
+                            color: isDateInPast(item.start) ? 'text.secondary' : 'primary.main',
                             textTransform: 'uppercase',
                             fontWeight: 700,
                             mb: 0.5
@@ -278,6 +276,19 @@ const ShowsTableCore = ({ data }) => {
                             hour12: true,
                           })}
                         </Typography>
+                        {isDateInPast(item.start) && (
+                          <Chip 
+                            label="PAST SHOW" 
+                            size="small" 
+                            sx={{ 
+                              mt: 0.5, 
+                              bgcolor: 'grey.300', 
+                              color: 'text.secondary',
+                              fontWeight: 600,
+                              fontSize: '0.625rem',
+                            }} 
+                          />
+                        )}
                       </TableCell>
 
                       <TableCell sx={{ py: 2 }}>
@@ -294,7 +305,9 @@ const ShowsTableCore = ({ data }) => {
                               <Typography
                                 sx={{
                                   fontWeight: 600,
-                                  color: band.id ? 'primary.main' : 'text.primary',
+                                  color: band.id 
+                                    ? (isDateInPast(item.start) ? 'text.secondary' : 'primary.main')
+                                    : (isDateInPast(item.start) ? 'text.secondary' : 'text.primary'),
                                   cursor: band.slug ? 'pointer' : 'default',
                                   '&:hover': band.slug ? { textDecoration: 'underline' } : {},
                                 }}
@@ -312,8 +325,8 @@ const ShowsTableCore = ({ data }) => {
                                   label="TCUP BAND"
                                   size="small"
                                   sx={{
-                                    bgcolor: 'primary.main',
-                                    color: 'primary.contrastText',
+                                    bgcolor: isDateInPast(item.start) ? 'grey.400' : 'primary.main',
+                                    color: isDateInPast(item.start) ? 'text.primary' : 'primary.contrastText',
                                     fontWeight: 600,
                                     fontSize: '0.625rem',
                                   }}

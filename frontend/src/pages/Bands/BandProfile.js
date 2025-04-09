@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Box, Typography, Button, Modal, Stack } from "@mui/material";
+import { Box, Typography, Button, Modal, Stack, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useAuth0 } from "@auth0/auth0-react";
+import dayjs from "dayjs";
 import formatBandData from "../../utils/formatBandData";
 import ProfilePhotoCard from "../../components/bands/ProfilePhotoCard";
 import ShowsTableCore from "../Shows/ShowsTableCore";
@@ -19,6 +20,15 @@ const TCUPBandProfile = ({ allShows = [] }) => {
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
+  
+  // State for all shows and filtered shows
+  const [allBandShows, setAllBandShows] = useState([]);
+  const [filteredShows, setFilteredShows] = useState([]);
+  const [showsLoading, setShowsLoading] = useState(true);
+  const [showsError, setShowsError] = useState(null);
+  
+  // Add time filter state
+  const [timeFilter, setTimeFilter] = useState('upcoming');
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -57,18 +67,21 @@ const TCUPBandProfile = ({ allShows = [] }) => {
   }, [bandSlug, apiUrl, isAuthenticated]);
 
   // Fetch shows for this band
-  const [bandShows, setBandShows] = useState([]);
-
   useEffect(() => {
     const fetchBandShows = async () => {
+      setShowsLoading(true);
       try {
         const response = await fetch(`${apiUrl}/bands/${bandSlug}/shows`);
         if (!response.ok) throw new Error("Failed to fetch shows");
         const data = await response.json();
-        setBandShows(data);
+        setAllBandShows(data);
+        setShowsError(null);
       } catch (err) {
         console.error("Error fetching shows:", err);
-        setError(err.message);
+        setShowsError(err.message);
+        setAllBandShows([]);
+      } finally {
+        setShowsLoading(false);
       }
     };
 
@@ -76,6 +89,40 @@ const TCUPBandProfile = ({ allShows = [] }) => {
       fetchBandShows();
     }
   }, [bandSlug, apiUrl]);
+
+  // Filter shows based on time filter
+  useEffect(() => {
+    if (allBandShows.length > 0) {
+      const today = dayjs().startOf('day');
+      
+      let filtered;
+      if (timeFilter === 'upcoming') {
+        filtered = allBandShows.filter(show => {
+          const eventDate = dayjs(show.start);
+          return eventDate.isAfter(today) || eventDate.isSame(today, 'day');
+        });
+      } else if (timeFilter === 'past') {
+        filtered = allBandShows.filter(show => {
+          const eventDate = dayjs(show.start);
+          return eventDate.isBefore(today);
+        });
+      } else {
+        // 'all' option
+        filtered = [...allBandShows];
+      }
+      
+      setFilteredShows(filtered);
+    } else {
+      setFilteredShows([]);
+    }
+  }, [allBandShows, timeFilter]);
+
+  // Handle time filter change
+  const handleTimeFilterChange = (event, newValue) => {
+    if (newValue !== null) {
+      setTimeFilter(newValue);
+    }
+  };
 
   // Handle claim status change
   const handleClaimStatusChange = (newOwnerStatus) => {
@@ -318,14 +365,53 @@ const TCUPBandProfile = ({ allShows = [] }) => {
           )}
         </Grid>
 
-        {/* Bottom show section */}
-        <Box sx={{ marginTop: 4, width: '100%' }}>
-          {bandShows.length > 0 ? (
-            <ShowsTableCore data={bandShows} onShowClick={(id) => console.log("Show clicked:", id)} />
+        {/* Shows section with time filter */}
+        <Grid item xs={12} sx={{ mt: 4 }}>
+          <Box sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            mb: 2 
+          }}>
+            <Typography variant="h5" gutterBottom>
+              Shows with {band.name}
+            </Typography>
+            
+            {/* Time filter toggle */}
+            <ToggleButtonGroup
+              value={timeFilter}
+              exclusive
+              onChange={handleTimeFilterChange}
+              aria-label="time filter"
+              size="small"
+            >
+              <ToggleButton value="upcoming" aria-label="upcoming shows">
+                Upcoming Shows
+              </ToggleButton>
+              <ToggleButton value="past" aria-label="past shows">
+                Past Shows
+              </ToggleButton>
+              <ToggleButton value="all" aria-label="all shows">
+                All Shows
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+          
+          {showsLoading ? (
+            <Typography>Loading shows...</Typography>
+          ) : showsError ? (
+            <Typography color="error">Error loading shows: {showsError}</Typography>
+          ) : filteredShows.length > 0 ? (
+            <ShowsTableCore 
+              data={filteredShows} 
+              onShowClick={(id) => navigate(`/shows/${id}`)} 
+            />
           ) : (
-            <Typography>No upcoming shows for this band.</Typography>
+            <Typography sx={{ py: 3, textAlign: 'center', color: 'text.secondary' }}>
+              No {timeFilter === 'upcoming' ? 'upcoming' : timeFilter === 'past' ? 'past' : ''} shows found for this band.
+            </Typography>
           )}
-        </Box>
+        </Grid>
       </Grid>
 
       {/* Image Modal */}
