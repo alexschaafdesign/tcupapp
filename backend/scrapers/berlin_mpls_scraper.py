@@ -159,7 +159,15 @@ def run_berlin_mpls_scraper():
         if event_link:
             try:
                 driver.get(event_link)
-                time.sleep(2)  # Allow time for the event page to load
+                try:
+                    WebDriverWait(driver, 5).until(
+                        EC.presence_of_element_located((By.CLASS_NAME, "event-time-localized-start"))
+                    )
+                except:
+                    # Fallback to look for the regular time element
+                    WebDriverWait(driver, 5).until(
+                        EC.presence_of_element_located((By.CLASS_NAME, "event-time-localized"))
+                    )
                 event_soup = BeautifulSoup(driver.page_source, 'html.parser')
 
                 # Extract flyer image
