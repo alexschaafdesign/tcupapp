@@ -2,6 +2,7 @@ import sys
 import re
 import json
 import time
+import os
 from datetime import datetime
 from dateutil import parser
 from selenium import webdriver
@@ -41,8 +42,9 @@ def run_berlin_mpls_scraper():
     chrome_options.add_argument('--headless')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
-    chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-
+    chrome_binary = os.getenv('CHROME_BINARY_PATH')
+    if chrome_binary:
+        chrome_options.binary_location = chrome_binary
     try:
         driver = webdriver.Chrome(options=chrome_options)
         sys.stderr.write("Chrome initialized successfully\n")
