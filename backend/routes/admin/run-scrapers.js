@@ -77,7 +77,7 @@ async function runScraper(scraperName) {
   
   try {
     // Add the correct Python path
-    const pythonPath = '/Users/musicdaddy/Desktop/venues/myenv/bin/python';
+    const pythonPath = process.env.PYTHON_PATH || 'python3';
     console.log(`Running: ${pythonPath} ${scriptPath}`);
     
     // Use spawn instead of exec to get real-time output
