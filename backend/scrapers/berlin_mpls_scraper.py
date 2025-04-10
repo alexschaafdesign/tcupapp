@@ -138,7 +138,7 @@ def run_berlin_mpls_scraper():
             'errors': errors,
         }
 
-    for card in event_cards[:10]:
+    for card in event_cards:
         event_name = None
         event_link = None
         flyer_image = None
