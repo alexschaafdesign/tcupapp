@@ -5,9 +5,14 @@ import os
 import sys
 from pathlib import Path
 
-# Load the correct environment file
-env_path = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) / '.env.development'
+# Determine which environment we're in and load the appropriate .env file
+node_env = os.getenv('NODE_ENV', 'development')
+env_file = f'.env.{node_env}'
+env_path = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) / env_file
 load_dotenv(dotenv_path=env_path)
+
+# Get schema from environment or default to 'development'
+DB_SCHEMA = os.getenv('DB_SCHEMA', 'development')
 
 # Default image URL to use when none is provided
 DEFAULT_IMAGE_URL = "https://www.example.com/default-show-image.jpg"
@@ -23,21 +28,21 @@ def connect_to_db():
             port=os.getenv('DB_PORT'),
         )
         
-        # Set the search path to the development schema
+        # Set the search path to the appropriate schema
         with conn.cursor() as cur:
-            cur.execute("SET search_path TO development, public")
+            cur.execute(f"SET search_path TO {DB_SCHEMA}, public")
         
         return conn
     except Exception as e:
         print(f"Database connection error: {e}")
-        print(f"Connection parameters: dbname={os.getenv('DB_NAME')}, user={os.getenv('DB_USER')}, host={os.getenv('DB_HOST')}, port={os.getenv('DB_PORT')}")
+        print(f"Connection parameters: dbname={os.getenv('DB_NAME')}, user={os.getenv('DB_USER')}, host={os.getenv('DB_HOST')}, port={os.getenv('DB_PORT')}, schema={DB_SCHEMA}")
         raise e
 
 def get_venue_id(cursor, venue_name):
     """Fetch the venue_id for a given venue name."""
     try:
-        # Query with explicit schema
-        cursor.execute("SELECT id FROM development.venues WHERE venue = %s", (venue_name,))
+        # Query with dynamic schema
+        cursor.execute(f"SELECT id FROM {DB_SCHEMA}.venues WHERE venue = %s", (venue_name,))
         venue_row = cursor.fetchone()
         
         if not venue_row:
@@ -68,9 +73,9 @@ def insert_show(conn, cursor, venue_id, bands, start, event_link, flyer_image, l
         logger(f"[DEBUG] Processing show with venue_id={venue_id}, bands='{bands}', start={start}")
         
         # First check if the show exists, along with its manual_override status
-        check_query = """
+        check_query = f"""
         SELECT id, bands, event_link, flyer_image, manual_override 
-        FROM development.shows 
+        FROM {DB_SCHEMA}.shows 
         WHERE venue_id = %s AND start = %s
         """
         cursor.execute(check_query, (venue_id, start))
@@ -101,8 +106,8 @@ def insert_show(conn, cursor, venue_id, bands, start, event_link, flyer_image, l
             
             if needs_update:
                 # Update the existing show while setting manual_override to false
-                update_query = """
-                UPDATE development.shows
+                update_query = f"""
+                UPDATE {DB_SCHEMA}.shows
                 SET bands = %s,
                     event_link = %s,
                     flyer_image = %s,
@@ -123,8 +128,8 @@ def insert_show(conn, cursor, venue_id, bands, start, event_link, flyer_image, l
                 
         else:
             # No existing record: insert new show with manual_override set to false
-            insert_query = """
-            INSERT INTO development.shows (venue_id, bands, start, event_link, flyer_image, manual_override)
+            insert_query = f"""
+            INSERT INTO {DB_SCHEMA}.shows (venue_id, bands, start, event_link, flyer_image, manual_override)
             VALUES (%s, %s, %s, %s, %s, false)
             RETURNING id
             """
