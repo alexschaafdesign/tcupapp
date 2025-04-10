@@ -9,6 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
+import os
 from db_utils import connect_to_db, insert_show, get_venue_id
 
 def run_331_club_scraper():
@@ -26,8 +27,9 @@ def run_331_club_scraper():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-
+    chrome_binary = os.getenv('CHROME_BINARY_PATH')
+    if chrome_binary:
+        chrome_options.binary_location = chrome_binary
     try:
         # For MacOS, we need to specify the Chrome binary location
         driver = webdriver.Chrome(options=chrome_options)
