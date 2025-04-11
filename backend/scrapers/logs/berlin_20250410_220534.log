@@ -1,0 +1,31 @@
+2025-04-10 22:05:34,623 - BerlinScraper - INFO - Setting up scraper for Berlin
+2025-04-10 22:05:36,103 - BerlinScraper - INFO - Chrome initialized successfully
+2025-04-10 22:05:36,106 - BerlinScraper - INFO - Connecting to database
+2025-04-10 22:05:36,126 - BerlinScraper - INFO - Getting venue ID for Berlin
+2025-04-10 22:05:36,141 - BerlinScraper - INFO - Venue ID for Berlin: 12
+2025-04-10 22:05:36,141 - BerlinScraper - INFO - Setup complete for Berlin
+2025-04-10 22:05:36,141 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar
+2025-04-10 22:05:43,095 - BerlinScraper - INFO - Found 55 event cards
+2025-04-10 22:05:43,096 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-joel-shapira-april-10
+2025-04-10 22:05:45,535 - BerlinScraper - ERROR - Error saving event: column "start_time" does not exist
+LINE 1: SELECT id FROM shows WHERE venue_id = 12 AND start_time = '2...
+                                                     ^
+
+2025-04-10 22:05:45,535 - BerlinScraper - INFO - Transaction rolled back
+2025-04-10 22:05:45,535 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/prints-carranza-power-thoreen-april-2025
+2025-04-10 22:05:47,752 - BerlinScraper - ERROR - Error saving event: column "start_time" does not exist
+LINE 1: SELECT id FROM shows WHERE venue_id = 12 AND start_time = '2...
+                                                     ^
+
+2025-04-10 22:05:47,752 - BerlinScraper - INFO - Transaction rolled back
+2025-04-10 22:05:47,753 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-bryan-nichols-bryan-murray
+2025-04-10 22:05:50,755 - BerlinScraper - ERROR - Error saving event: column "start_time" does not exist
+LINE 1: SELECT id FROM shows WHERE venue_id = 12 AND start_time = '2...
+                                                     ^
+
+2025-04-10 22:05:50,756 - BerlinScraper - INFO - Transaction rolled back
+2025-04-10 22:05:50,756 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/reverso-ryan-keberle
+2025-04-10 22:05:50,781 - BerlinScraper - INFO - Cleaning up resources
+2025-04-10 22:05:50,897 - BerlinScraper - INFO - WebDriver closed
+2025-04-10 22:05:50,897 - BerlinScraper - INFO - Database cursor closed
+2025-04-10 22:05:50,897 - BerlinScraper - INFO - Database connection closed
