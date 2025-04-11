@@ -1,0 +1,22 @@
+2025-04-11 14:35:21,971 - 331 ClubScraper - INFO - Setting up scraper for 331 Club
+2025-04-11 14:35:22,410 - 331 ClubScraper - INFO - Chrome initialized successfully
+2025-04-11 14:35:22,411 - 331 ClubScraper - INFO - Connecting to database
+2025-04-11 14:35:22,477 - 331 ClubScraper - INFO - Getting venue ID for 331 Club
+2025-04-11 14:35:22,478 - 331 ClubScraper - INFO - Venue ID for 331 Club: 9
+2025-04-11 14:35:22,478 - 331 ClubScraper - INFO - Setup complete for 331 Club
+2025-04-11 14:35:22,478 - 331 ClubScraper - INFO - Navigating to https://331club.com/#calendar
+2025-04-11 14:35:25,127 - 331 ClubScraper - INFO - Looking for 'See all upcoming events' button...
+2025-04-11 14:35:25,127 - 331 ClubScraper - WARNING - 'See all upcoming events' button not found or not clickable: BaseScraper.wait_for_element() got an unexpected keyword argument 'clickable'
+2025-04-11 14:35:25,127 - 331 ClubScraper - INFO - Continuing with currently visible events...
+2025-04-11 14:35:25,174 - 331 ClubScraper - INFO - Found 98 events on the page
+2025-04-11 14:35:25,208 - 331 ClubScraper - INFO - Updated event: ART-A-WHIRL WEEKEND 2025 on 2025-05-16 22:00:00
+2025-04-11 14:35:25,209 - 331 ClubScraper - INFO - Updated event: ART-A-WHIRL WEEKEND AT, 331CLUB, 2025, FRIDAY, outdoors, MCN6, music channel presents Bands On Vans, Big Salt, indoors, Uspop on 2025-05-16 22:00:00
+2025-04-11 14:35:25,240 - 331 ClubScraper - INFO - Updated event: Worker’s Playtime, TBA on 2025-07-22 20:00:00
+2025-04-11 14:35:25,240 - 331 ClubScraper - INFO - Updated event: Roe Family Singers on 2025-07-22 20:00:00
+2025-04-11 14:35:25,244 - 331 ClubScraper - INFO - Database changes committed
+2025-04-11 14:35:25,244 - 331 ClubScraper - INFO - Cleaning up resources
+2025-04-11 14:35:25,321 - 331 ClubScraper - INFO - WebDriver closed
+2025-04-11 14:35:25,321 - 331 ClubScraper - INFO - Database cursor closed
+2025-04-11 14:35:25,321 - 331 ClubScraper - INFO - Database connection closed
+2025-04-11 14:35:25,321 - 331 ClubScraper - INFO - Scraper finished: 331 Club | Success: True | Added: 0 | Updated: 4 | Duplicates: 170 | Errors: 0 | Duration: 3.35s
+2025-04-11 14:35:25,321 - 331 ClubScraper - INFO - Results saved to /Users/musicdaddy/Desktop/venues/backend/scrapers/logs/331 club_20250411_143521_results.json
