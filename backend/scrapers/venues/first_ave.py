@@ -283,7 +283,15 @@ class FirstAvenueScraper(BaseScraper):
             return
         
         # Save the event to the database with the age restriction
-        self.save_event(bands, start_datetime, event_url, flyer_image, age_restriction)
+        # Update the default age restriction for this specific event
+        temp_default = self.default_age_restriction
+        self.default_age_restriction = age_restriction
+        
+        # Call save_event with the correct number of parameters
+        self.save_event(bands, start_datetime, event_url, flyer_image)
+        
+        # Restore the original default for the next event
+        self.default_age_restriction = temp_default
 
 
 if __name__ == "__main__":
