@@ -58,6 +58,11 @@ SCRAPERS = {
         'name': '331',
         'enabled': True,
     },
+    'firstave': {
+        'class': 'venues.firstave.FirstAvenueScraper',
+        'name': 'firstave',
+        'enabled': True,
+    },
     # Add more scrapers here as they are implemented
 }
 
