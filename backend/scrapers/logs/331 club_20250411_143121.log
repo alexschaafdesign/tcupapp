@@ -1,0 +1,189 @@
+2025-04-11 14:31:21,023 - 331 ClubScraper - INFO - Setting up scraper for 331 Club
+2025-04-11 14:31:21,681 - 331 ClubScraper - INFO - Chrome initialized successfully
+2025-04-11 14:31:21,683 - 331 ClubScraper - INFO - Connecting to database
+2025-04-11 14:31:21,723 - 331 ClubScraper - INFO - Getting venue ID for 331 Club
+2025-04-11 14:31:21,726 - 331 ClubScraper - INFO - Venue ID for 331 Club: 9
+2025-04-11 14:31:21,726 - 331 ClubScraper - INFO - Setup complete for 331 Club
+2025-04-11 14:31:21,726 - 331 ClubScraper - INFO - Navigating to https://331club.com/#calendar
+2025-04-11 14:31:24,521 - 331 ClubScraper - INFO - Looking for 'See all upcoming events' button...
+2025-04-11 14:31:24,521 - 331 ClubScraper - WARNING - 'See all upcoming events' button not found or not clickable: BaseScraper.wait_for_element() got an unexpected keyword argument 'clickable'
+2025-04-11 14:31:24,521 - 331 ClubScraper - INFO - Continuing with currently visible events...
+2025-04-11 14:31:24,567 - 331 ClubScraper - INFO - Found 98 events on the page
+2025-04-11 14:31:24,587 - 331 ClubScraper - INFO - Added event: 120 Minutes Band on 2025-04-11 22:00:00
+2025-04-11 14:31:24,588 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-04-11 19:00:00
+2025-04-11 14:31:24,589 - 331 ClubScraper - INFO - Added event: Paper Beast, (album release), M.A.Y., Warcake on 2025-04-12 22:00:00
+2025-04-11 14:31:24,590 - 331 ClubScraper - INFO - Added event: Drinkin’ Spelling Bee on 2025-04-12 19:00:00
+2025-04-11 14:31:24,591 - 331 ClubScraper - INFO - Added event: Voltage Controller on 2025-04-12 15:00:00
+2025-04-11 14:31:24,592 - 331 ClubScraper - INFO - Added event: Emmy Woodss, Taylor James Donskey on 2025-04-13 19:00:00
+2025-04-11 14:31:24,593 - 331 ClubScraper - INFO - Added event: Dr. Sketchy’s Anti-Art School on 2025-04-13 16:00:00
+2025-04-11 14:31:24,594 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-04-14 20:00:00
+2025-04-11 14:31:24,595 - 331 ClubScraper - INFO - Added event: shugE on 2025-04-14 18:00:00
+2025-04-11 14:31:24,598 - 331 ClubScraper - INFO - Added event: April Conspiracy Series featuring, Eldest Daughter, Anything You Want, wolfbabycup on 2025-04-15 21:30:00
+2025-04-11 14:31:24,598 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, Rebecca Lake Fritz on 2025-04-15 20:00:00
+2025-04-11 14:31:24,599 - 331 ClubScraper - INFO - Added event: St. Anthony Mann, Jackson Atkins on 2025-04-16 21:30:00
+2025-04-11 14:31:24,600 - 331 ClubScraper - INFO - Added event: Harold’s House Party on KFAI, Triple Fiddle, Taylor James Donskey on 2025-04-16 19:00:00
+2025-04-11 14:31:24,606 - 331 ClubScraper - INFO - Added event: Cross Pollination, Knife Emoji, Greater Goods on 2025-04-17 21:30:00
+2025-04-11 14:31:24,608 - 331 ClubScraper - INFO - Added event: Red Lovely, Time Room, The Dregs on 2025-04-18 22:00:00
+2025-04-11 14:31:24,609 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-04-18 19:00:00
+2025-04-11 14:31:24,611 - 331 ClubScraper - INFO - Added event: SON/BOY, Pyrrhic Victories, League Two on 2025-04-19 22:00:00
+2025-04-11 14:31:24,612 - 331 ClubScraper - INFO - Added event: Drinkin’ Spelling Bee on 2025-04-19 19:00:00
+2025-04-11 14:31:24,613 - 331 ClubScraper - INFO - Added event: eleven degenerates on 2025-04-20 22:30:00
+2025-04-11 14:31:24,614 - 331 ClubScraper - INFO - Added event: Switchyard on 2025-04-20 19:00:00
+2025-04-11 14:31:24,615 - 331 ClubScraper - INFO - Added event: Robert Wilkinson on 2025-04-20 17:00:00
+2025-04-11 14:31:24,617 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-04-21 20:00:00
+2025-04-11 14:31:24,619 - 331 ClubScraper - INFO - Added event: “Womenfolk Presents”, Rachel Bearinger on 2025-04-21 18:00:00
+2025-04-11 14:31:24,620 - 331 ClubScraper - INFO - Added event: April Conspiracy Series featuring, Eldest Daughter, DC Leonhardt, T, ennessee Stiffs on 2025-04-22 21:30:00
+2025-04-11 14:31:24,620 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, Adam Kiesling on 2025-04-22 20:00:00
+2025-04-11 14:31:24,621 - 331 ClubScraper - INFO - Added event: Fuzzy Math Jazz on 2025-04-23 21:30:00
+2025-04-11 14:31:24,622 - 331 ClubScraper - INFO - Added event: Harold’s House Party on KFAI, Twin Town Strings on 2025-04-23 19:00:00
+2025-04-11 14:31:24,622 - 331 ClubScraper - INFO - Added event: The Daily Norm, Joe Kelly, Ambient Toad on 2025-04-24 21:30:00
+2025-04-11 14:31:24,623 - 331 ClubScraper - INFO - Added event: Drinking Liberally hosts Michelle Witte, Executive director of the League of Women Voters Minnesota she will address what we all can still do together to support democracy. on 2025-04-24 22:00:00
+2025-04-11 14:31:24,624 - 331 ClubScraper - INFO - Added event: Courtney Yasmineh, Ira Haze trio, Stony River trio on 2025-04-25 22:00:00
+2025-04-11 14:31:24,625 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-04-25 19:00:00
+2025-04-11 14:31:24,626 - 331 ClubScraper - INFO - Added event: Matthew Thomas & Wounded Wing, Wailing Loons on 2025-04-26 22:00:00
+2025-04-11 14:31:24,627 - 331 ClubScraper - INFO - Added event: The Real Chuck NORAD on 2025-04-27 19:00:00
+2025-04-11 14:31:24,628 - 331 ClubScraper - INFO - Added event: Corpse Reviver, season finale on 2025-04-27 17:00:00
+2025-04-11 14:31:24,629 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-04-28 20:00:00
+2025-04-11 14:31:24,629 - 331 ClubScraper - INFO - Added event: HonkyTonk Ranch on 2025-04-28 18:00:00
+2025-04-11 14:31:24,629 - 331 ClubScraper - INFO - Added event: April Conspiracy Series featuring, Eldest Daughter, ditchpigeon, Emerson Island on 2025-04-29 21:30:00
+2025-04-11 14:31:24,630 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, Becky Kapell on 2025-04-29 20:00:00
+2025-04-11 14:31:24,631 - 331 ClubScraper - INFO - Added event: Lenz Frenz, (Certain members of Pert Near Sandstone, Farmhouse Band, San Souci Quartet, Row of Ducks) on 2025-04-30 21:30:00
+2025-04-11 14:31:24,633 - 331 ClubScraper - INFO - Added event: Harold’s House Party on KFAI, Katey Bellville Those S.O.Bs on 2025-04-30 19:00:00
+2025-04-11 14:31:24,633 - 331 ClubScraper - INFO - Added event: NORTHEAST INVITATIONAL on 2025-05-01 21:30:00
+2025-04-11 14:31:24,634 - 331 ClubScraper - INFO - Added event: Coax From Chuckanut, Slaphazard, Indicat on 2025-05-02 22:00:00
+2025-04-11 14:31:24,635 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-05-02 19:00:00
+2025-04-11 14:31:24,636 - 331 ClubScraper - INFO - Added event: Gently, Gently on 2025-05-03 22:00:00
+2025-04-11 14:31:24,637 - 331 ClubScraper - INFO - Added event: Drinkin’ Spelling Bee on 2025-05-03 19:00:00
+2025-04-11 14:31:24,637 - 331 ClubScraper - INFO - Added event: Brass Messengers on 2025-05-04 19:00:00
+2025-04-11 14:31:24,638 - 331 ClubScraper - INFO - Added event: Corpse Reviver on 2025-05-04 17:00:00
+2025-04-11 14:31:24,639 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-05-05 20:00:00
+2025-04-11 14:31:24,640 - 331 ClubScraper - INFO - Added event: Soul Trouvère on 2025-05-05 18:00:00
+2025-04-11 14:31:24,641 - 331 ClubScraper - INFO - Added event: May Conspiracy Series featuring, Lena Elizabeth on 2025-05-06 21:30:00
+2025-04-11 14:31:24,642 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, TBA on 2025-05-06 20:00:00
+2025-04-11 14:31:24,643 - 331 ClubScraper - INFO - Added event: Bosso Poetry Company on 2025-05-07 21:30:00
+2025-04-11 14:31:24,643 - 331 ClubScraper - INFO - Added event: Harold’s House Party on KFAI, Teague Alexi on 2025-05-07 19:00:00
+2025-04-11 14:31:24,644 - 331 ClubScraper - INFO - Added event: Nathan Walker on 2025-05-08 21:30:00
+2025-04-11 14:31:24,644 - 331 ClubScraper - INFO - Added event: sugarcoat, Mishi Mega on 2025-05-09 22:00:00
+2025-04-11 14:31:24,645 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-05-09 19:00:00
+2025-04-11 14:31:24,646 - 331 ClubScraper - INFO - Added event: Nato Coles & the Blue Diamond Band on 2025-05-10 22:00:00
+2025-04-11 14:31:24,646 - 331 ClubScraper - INFO - Added event: Drinkin’ Spelling Bee on 2025-05-10 19:00:00
+2025-04-11 14:31:24,647 - 331 ClubScraper - INFO - Added event: Emmy Woods, Mark Joseph on 2025-05-11 19:00:00
+2025-04-11 14:31:24,648 - 331 ClubScraper - INFO - Added event: Dr. Sketchy’s Anti-Art School on 2025-05-11 16:00:00
+2025-04-11 14:31:24,649 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-05-12 20:00:00
+2025-04-11 14:31:24,650 - 331 ClubScraper - INFO - Added event: Erik Brandt The Urban Hillbilly Quartet on 2025-05-12 18:00:00
+2025-04-11 14:31:24,651 - 331 ClubScraper - INFO - Added event: May Conspiracy Series featuring, Lena Elizabeth on 2025-05-13 21:30:00
+2025-04-11 14:31:24,652 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, TBA on 2025-05-13 20:00:00
+2025-04-11 14:31:24,652 - 331 ClubScraper - INFO - Added event: Ian Alexy on 2025-05-14 21:30:00
+2025-04-11 14:31:24,653 - 331 ClubScraper - INFO - Added event: Harold’s House Party on KFAI, Doug Collins the Receptionists on 2025-05-14 19:00:00
+2025-04-11 14:31:24,654 - 331 ClubScraper - INFO - Added event: Cross Pollination, Knife Emoji, Anything You Want on 2025-05-15 21:30:00
+2025-04-11 14:31:24,655 - 331 ClubScraper - INFO - Added event: ART-A-WHIRL WEEKEND 2025 on 2025-05-16 22:00:00
+2025-04-11 14:31:24,656 - 331 ClubScraper - ERROR - Error saving event: duplicate key value violates unique constraint "unique_show"
+DETAIL:  Key (venue_id, start)=(9, 2025-05-16 22:00:00) already exists.
+
+2025-04-11 14:31:24,657 - 331 ClubScraper - INFO - Transaction rolled back
+2025-04-11 14:31:24,658 - 331 ClubScraper - INFO - Added event: ART-A-WHIRL WEEKEND AT, 331CLUB, 2025, SATURDAY, outdoors, MCN6, music channel presents Bands On Vans, Mary Jam, Speed Riders on 2025-05-17 18:00:00
+2025-04-11 14:31:24,659 - 331 ClubScraper - INFO - Added event: ART-A-WHIRL WEEKEND AT, 331CLUB, 2025, SUNDAY on 2025-05-18 22:00:00
+2025-04-11 14:31:24,660 - 331 ClubScraper - INFO - Added event: outdoors, indoors, Switchyard, Diane, Jake La Botz on 2025-05-18 17:00:00
+2025-04-11 14:31:24,660 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-05-19 20:00:00
+2025-04-11 14:31:24,661 - 331 ClubScraper - INFO - Added event: “Womenfolk Presents”, TBA on 2025-05-19 18:00:00
+2025-04-11 14:31:24,662 - 331 ClubScraper - INFO - Added event: May Conspiracy Series featuring, Lena Elizabeth on 2025-05-20 21:30:00
+2025-04-11 14:31:24,663 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, TBA on 2025-05-20 20:00:00
+2025-04-11 14:31:24,664 - 331 ClubScraper - INFO - Added event: The What-have-yous on 2025-05-21 21:30:00
+2025-04-11 14:31:24,664 - 331 ClubScraper - INFO - Added event: Harold’s House Party on KFAI, Dubliner Trio Friends on 2025-05-21 19:00:00
+2025-04-11 14:31:24,665 - 331 ClubScraper - INFO - Added event: Funky Mystik, If Eye May on 2025-05-22 21:30:00
+2025-04-11 14:31:24,666 - 331 ClubScraper - INFO - Added event: Hiahli on 2025-05-23 22:00:00
+2025-04-11 14:31:24,666 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-05-23 19:00:00
+2025-04-11 14:31:24,667 - 331 ClubScraper - INFO - Added event: CATERWAUL, outside, Young Widows, Kowloon Walled City, Fotocrime, The Cell Phones, Bridesmaid, Upright Forms, Vincas, Fashion Week, Moon Pussy, Pillcutter, TICKETS on 2025-05-24 14:00:00
+2025-04-11 14:31:24,668 - 331 ClubScraper - INFO - Added event: inside (no cover), 11:00, The Havana Sleave on 2025-05-24 22:00:00
+2025-04-11 14:31:24,669 - 331 ClubScraper - INFO - Added event: CATERWAUL, outside, Pissed Jeans, Buildings, Big’n, Suckling, Conan Neutron & the Secret Friends, Lung, Tonguecutter, Unstable Shapes on 2025-05-25 14:45:00
+2025-04-11 14:31:24,669 - 331 ClubScraper - INFO - Added event: TICKETS on 2025-05-25 22:00:00
+2025-04-11 14:31:24,670 - 331 ClubScraper - INFO - Added event: CATERWAUL, outside, Uniform, Deaf Club, Elephant Rifle, Mr Phylzzz, Vile Bees, Gaythiest, powertakeOff, Mr. Clit the Pink Cigarettes, Miricle Blood, Spit Takes on 2025-05-26 14:15:00
+2025-04-11 14:31:24,671 - 331 ClubScraper - INFO - Added event: TICKETS on 2025-05-26 22:00:00
+2025-04-11 14:31:24,672 - 331 ClubScraper - INFO - Added event: May Conspiracy Series featuring, Lena Elizabeth on 2025-05-27 21:30:00
+2025-04-11 14:31:24,672 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, TBA on 2025-05-27 20:00:00
+2025-04-11 14:31:24,673 - 331 ClubScraper - INFO - Added event: Lenz Frenz, (Certain members of Pert Near Sandstone, Farmhouse Band, San Souci Quartet, Row of Ducks) on 2025-05-28 21:30:00
+2025-04-11 14:31:24,674 - 331 ClubScraper - INFO - Added event: Harold’s House Party on KFAI, TBA on 2025-05-28 19:00:00
+2025-04-11 14:31:24,674 - 331 ClubScraper - INFO - Added event: Alexander Natalie on 2025-05-29 21:30:00
+2025-04-11 14:31:24,675 - 331 ClubScraper - INFO - Added event: Superfloor, Rank Strangers, Stephanie Was on 2025-05-30 22:00:00
+2025-04-11 14:31:24,676 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-05-30 19:00:00
+2025-04-11 14:31:24,676 - 331 ClubScraper - INFO - Added event: Collapsing Stars on 2025-05-31 22:00:00
+2025-04-11 14:31:24,677 - 331 ClubScraper - INFO - Added event: Drinkin’ Spelling Bee on 2025-05-31 19:00:00
+2025-04-11 14:31:24,677 - 331 ClubScraper - INFO - Added event: Brass Messengers on 2025-06-01 19:00:00
+2025-04-11 14:31:24,678 - 331 ClubScraper - INFO - Added event: Corpse Reviver on 2025-06-01 17:00:00
+2025-04-11 14:31:24,678 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-06-02 20:00:00
+2025-04-11 14:31:24,679 - 331 ClubScraper - INFO - Added event: June Conspiracy Series featuring, John Magnuson Trio+ on 2025-06-03 21:30:00
+2025-04-11 14:31:24,680 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, TBA on 2025-06-03 20:00:00
+2025-04-11 14:31:24,680 - 331 ClubScraper - INFO - Added event: Poetry Company on 2025-06-04 21:30:00
+2025-04-11 14:31:24,681 - 331 ClubScraper - INFO - Added event: Harold’s House Party on KFAI, Kinda Fonda Wanda on 2025-06-04 19:00:00
+2025-04-11 14:31:24,681 - 331 ClubScraper - INFO - Added event: NORTHEAST INVITATIONAL on 2025-06-05 21:30:00
+2025-04-11 14:31:24,682 - 331 ClubScraper - INFO - Added event: Ruben on 2025-06-06 22:00:00
+2025-04-11 14:31:24,682 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-06-06 19:00:00
+2025-04-11 14:31:24,683 - 331 ClubScraper - INFO - Added event: Emmy Woodss, Adam Bohanan on 2025-06-08 19:00:00
+2025-04-11 14:31:24,683 - 331 ClubScraper - INFO - Added event: Dr. Sketchy’s Anti-Art School on 2025-06-08 16:00:00
+2025-04-11 14:31:24,684 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-06-09 20:00:00
+2025-04-11 14:31:24,685 - 331 ClubScraper - INFO - Added event: Mudfoot Barker & Dick Williams Folk on 2025-06-09 18:00:00
+2025-04-11 14:31:24,686 - 331 ClubScraper - INFO - Added event: June Conspiracy Series featuring, John Magnuson Trio+ on 2025-06-10 21:30:00
+2025-04-11 14:31:24,686 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, TBA on 2025-06-10 20:00:00
+2025-04-11 14:31:24,687 - 331 ClubScraper - INFO - Added event: Teague Alexy on 2025-06-11 21:30:00
+2025-04-11 14:31:24,688 - 331 ClubScraper - INFO - Added event: Harold’s House Party on KFAI, Said in Stone on 2025-06-11 19:00:00
+2025-04-11 14:31:24,688 - 331 ClubScraper - INFO - Added event: Uncle Kenny on 2025-06-12 21:30:00
+2025-04-11 14:31:24,689 - 331 ClubScraper - INFO - Added event: Pretty Pretty Please on 2025-06-13 22:00:00
+2025-04-11 14:31:24,689 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-06-13 19:00:00
+2025-04-11 14:31:24,690 - 331 ClubScraper - INFO - Added event: Switchyard on 2025-06-15 19:00:00
+2025-04-11 14:31:24,691 - 331 ClubScraper - INFO - Added event: TBA on 2025-06-15 17:00:00
+2025-04-11 14:31:24,691 - 331 ClubScraper - INFO - Added event: eleven degenerates on 2025-06-15 22:30:00
+2025-04-11 14:31:24,692 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-06-16 20:00:00
+2025-04-11 14:31:24,693 - 331 ClubScraper - INFO - Added event: “Womenfolk Presents”, The Flyin’ A’s on 2025-06-16 18:00:00
+2025-04-11 14:31:24,693 - 331 ClubScraper - INFO - Added event: June Conspiracy Series featuring, John Magnuson Trio+ on 2025-06-17 21:30:00
+2025-04-11 14:31:24,694 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, TBA on 2025-06-17 20:00:00
+2025-04-11 14:31:24,694 - 331 ClubScraper - INFO - Added event: Gigi Amal on 2025-06-18 21:30:00
+2025-04-11 14:31:24,695 - 331 ClubScraper - INFO - Added event: Harold’s House Party on KFAI, B-4 Blues Band on 2025-06-18 19:00:00
+2025-04-11 14:31:24,696 - 331 ClubScraper - INFO - Added event: Cross Pollination, Knife Emoji, Joan of Profile on 2025-06-19 21:30:00
+2025-04-11 14:31:24,697 - 331 ClubScraper - INFO - Added event: Night Audit, Toilet Rats, E, nemy in the Sky on 2025-06-20 22:00:00
+2025-04-11 14:31:24,697 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-06-20 19:00:00
+2025-04-11 14:31:24,698 - 331 ClubScraper - INFO - Added event: The Real Chuck NORAD on 2025-06-22 19:00:00
+2025-04-11 14:31:24,699 - 331 ClubScraper - INFO - Added event: TBA on 2025-06-22 17:00:00
+2025-04-11 14:31:24,700 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-06-23 20:00:00
+2025-04-11 14:31:24,700 - 331 ClubScraper - INFO - Added event: HonkyTonk Ranch on 2025-06-23 18:00:00
+2025-04-11 14:31:24,701 - 331 ClubScraper - INFO - Added event: June Conspiracy Series featuring, John Magnuson Trio+ on 2025-06-24 21:30:00
+2025-04-11 14:31:24,702 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, TBA on 2025-06-24 20:00:00
+2025-04-11 14:31:24,702 - 331 ClubScraper - INFO - Added event: Lenz Frenz, (Certain members of Pert Near Sandstone, Farmhouse Band, San Souci Quartet, Row of Ducks) on 2025-06-25 21:30:00
+2025-04-11 14:31:24,703 - 331 ClubScraper - INFO - Added event: Harold’s House Party on KFAI, mike munson trio on 2025-06-25 19:00:00
+2025-04-11 14:31:24,704 - 331 ClubScraper - INFO - Added event: Wild Lyre on 2025-06-26 21:30:00
+2025-04-11 14:31:24,704 - 331 ClubScraper - INFO - Added event: Venus Yevu on 2025-06-27 22:00:00
+2025-04-11 14:31:24,705 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-06-27 19:00:00
+2025-04-11 14:31:24,706 - 331 ClubScraper - INFO - Added event: Becky Kapell The Fat 6 on 2025-06-29 19:00:00
+2025-04-11 14:31:24,706 - 331 ClubScraper - INFO - Added event: TBA on 2025-06-29 17:00:00
+2025-04-11 14:31:24,707 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-06-30 20:00:00
+2025-04-11 14:31:24,707 - 331 ClubScraper - INFO - Added event: July Conspiracy Series featuring, The Beavers on 2025-07-01 21:30:00
+2025-04-11 14:31:24,708 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, TBA on 2025-07-01 20:00:00
+2025-04-11 14:31:24,709 - 331 ClubScraper - INFO - Added event: Bosso Poetry Company on 2025-07-02 21:30:00
+2025-04-11 14:31:24,710 - 331 ClubScraper - INFO - Added event: Harold’s House Party on KFAI, TBA on 2025-07-02 19:00:00
+2025-04-11 14:31:24,711 - 331 ClubScraper - INFO - Added event: NORTHEAST INVITATIONAL on 2025-07-03 21:30:00
+2025-04-11 14:31:24,712 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-07-07 20:00:00
+2025-04-11 14:31:24,712 - 331 ClubScraper - INFO - Added event: TBA on 2025-07-07 18:00:00
+2025-04-11 14:31:24,713 - 331 ClubScraper - INFO - Added event: July Conspiracy Series featuring, The Beavers on 2025-07-08 21:30:00
+2025-04-11 14:31:24,714 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, TBA on 2025-07-08 20:00:00
+2025-04-11 14:31:24,714 - 331 ClubScraper - INFO - Added event: Mary Cutrufello Band on 2025-07-09 21:30:00
+2025-04-11 14:31:24,715 - 331 ClubScraper - INFO - Added event: Harold’s House Party on KFAI, TBA on 2025-07-09 19:00:00
+2025-04-11 14:31:24,716 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-07-14 20:00:00
+2025-04-11 14:31:24,716 - 331 ClubScraper - INFO - Added event: July Conspiracy Series featuring, The Beavers on 2025-07-15 21:30:00
+2025-04-11 14:31:24,717 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, TBA on 2025-07-15 20:00:00
+2025-04-11 14:31:24,718 - 331 ClubScraper - INFO - Added event: TBA on 2025-07-16 21:30:00
+2025-04-11 14:31:24,718 - 331 ClubScraper - INFO - Added event: Harold’s House Party on KFAI, TBA on 2025-07-16 19:00:00
+2025-04-11 14:31:24,719 - 331 ClubScraper - INFO - Added event: Cross Pollination, Knife Emoji, Eldest Daughte r on 2025-07-17 21:30:00
+2025-04-11 14:31:24,720 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-07-21 20:00:00
+2025-04-11 14:31:24,721 - 331 ClubScraper - INFO - Added event: “Womenfolk Presents”, Kelley Smith, Megan Bee Mother Banjo on 2025-07-21 18:00:00
+2025-04-11 14:31:24,721 - 331 ClubScraper - INFO - Added event: July Conspiracy Series featuring, The Beavers on 2025-07-22 21:30:00
+2025-04-11 14:31:24,722 - 331 ClubScraper - INFO - Added event: Worker’s Playtime, TBA on 2025-07-22 20:00:00
+2025-04-11 14:31:24,722 - 331 ClubScraper - ERROR - Error saving event: duplicate key value violates unique constraint "unique_show"
+DETAIL:  Key (venue_id, start)=(9, 2025-07-22 20:00:00) already exists.
+
+2025-04-11 14:31:24,722 - 331 ClubScraper - INFO - Transaction rolled back
+2025-04-11 14:31:24,727 - 331 ClubScraper - INFO - Database changes committed
+2025-04-11 14:31:24,727 - 331 ClubScraper - INFO - Cleaning up resources
+2025-04-11 14:31:24,806 - 331 ClubScraper - INFO - WebDriver closed
+2025-04-11 14:31:24,806 - 331 ClubScraper - INFO - Database cursor closed
+2025-04-11 14:31:24,806 - 331 ClubScraper - INFO - Database connection closed
+2025-04-11 14:31:24,806 - 331 ClubScraper - INFO - Scraper finished: 331 Club | Success: True | Added: 163 | Updated: 0 | Duplicates: 9 | Errors: 2 | Duration: 3.78s
+2025-04-11 14:31:24,807 - 331 ClubScraper - INFO - Results saved to /Users/musicdaddy/Desktop/venues/backend/scrapers/logs/331 club_20250411_143121_results.json

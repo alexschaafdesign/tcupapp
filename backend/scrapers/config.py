@@ -53,6 +53,11 @@ SCRAPERS = {
         'name': 'Berlin',
         'enabled': True,
     },
+    '331': {
+        'class': 'venues.331.Club331Scraper',
+        'name': '331',
+        'enabled': True,
+    },
     # Add more scrapers here as they are implemented
 }
 
