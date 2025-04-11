@@ -1,0 +1,22 @@
+2025-04-11 14:48:00,375 - First AvenueScraper - INFO - Setting up scraper for First Avenue
+2025-04-11 14:48:01,066 - First AvenueScraper - INFO - Chrome initialized successfully
+2025-04-11 14:48:01,070 - First AvenueScraper - INFO - Connecting to database
+2025-04-11 14:48:01,153 - First AvenueScraper - INFO - Getting venue ID for First Avenue
+2025-04-11 14:48:01,156 - First AvenueScraper - INFO - Venue ID for First Avenue: 8
+2025-04-11 14:48:01,156 - First AvenueScraper - INFO - Setup complete for First Avenue
+2025-04-11 14:48:01,156 - First AvenueScraper - INFO - Processing URL: https://first-avenue.com/shows/?post_type=event&start_date=20250401
+2025-04-11 14:48:04,628 - First AvenueScraper - INFO - Request successful. Parsing shows...
+2025-04-11 14:48:04,728 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-sarah-and-the-sundays/
+2025-04-11 14:48:04,921 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-sarah-and-the-sundays/
+2025-04-11 14:48:05,108 - First AvenueScraper - ERROR - Error processing show: BaseScraper.save_event() takes from 3 to 5 positional arguments but 6 were given
+2025-04-11 14:48:05,109 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-the-birthday-massacre/
+2025-04-11 14:48:05,309 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-the-birthday-massacre/
+2025-04-11 14:48:05,510 - First AvenueScraper - ERROR - Error processing show: BaseScraper.save_event() takes from 3 to 5 positional arguments but 6 were given
+2025-04-11 14:48:05,510 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-sir-woman/
+2025-04-11 14:48:06,939 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-sir-woman/
+2025-04-11 14:48:07,157 - First AvenueScraper - ERROR - Error processing show: BaseScraper.save_event() takes from 3 to 5 positional arguments but 6 were given
+2025-04-11 14:48:07,157 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2024-04-arts-fishing-club/
+2025-04-11 14:48:08,288 - First AvenueScraper - INFO - Cleaning up resources
+2025-04-11 14:48:08,318 - First AvenueScraper - INFO - WebDriver closed
+2025-04-11 14:48:08,319 - First AvenueScraper - INFO - Database cursor closed
+2025-04-11 14:48:08,319 - First AvenueScraper - INFO - Database connection closed
