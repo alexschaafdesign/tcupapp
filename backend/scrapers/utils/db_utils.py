@@ -120,16 +120,17 @@ def insert_show(conn, cursor, venue_id: int, bands: str, start_time: datetime,
     """
     logger.info(f"Attempting to insert/update show: {bands} at venue {venue_id} on {start_time}")
     
-    # Check if show already exists (same venue, date, and bands)
+    # Check if show already exists at this venue and time (regardless of bands)
     cursor.execute(
-        "SELECT id FROM shows WHERE venue_id = %s AND start = %s AND bands ILIKE %s",
-        (venue_id, start_time, bands)
+        "SELECT id, bands FROM shows WHERE venue_id = %s AND start = %s AND is_deleted = FALSE",
+        (venue_id, start_time)
     )
     existing_show = cursor.fetchone()
     
     if existing_show:
         # Show exists, check if we need to update it
         show_id = existing_show[0]
+        current_bands = existing_show[1]
         logger.info(f"Show already exists with ID {show_id}, checking for updates")
         
         # Get current values to compare
@@ -141,10 +142,15 @@ def insert_show(conn, cursor, venue_id: int, bands: str, start_time: datetime,
         current_link = current_values[0] if current_values[0] is not None else ""
         current_image = current_values[1] if current_values[1] is not None else ""
         
-        # Only update URL or flyer if they're provided AND different from current values
+        # Check if anything needs to be updated
         update_fields = []
         update_values = []
         
+        # Always check if bands have changed
+        if bands != current_bands:
+            update_fields.append("bands = %s")
+            update_values.append(bands)
+            
         if event_url and event_url != current_link:
             update_fields.append("event_link = %s")
             update_values.append(event_url)
