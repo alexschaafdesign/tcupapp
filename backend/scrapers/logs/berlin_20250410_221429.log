@@ -1,0 +1,19 @@
+2025-04-10 22:14:29,263 - BerlinScraper - INFO - Setting up scraper for Berlin
+2025-04-10 22:14:30,092 - BerlinScraper - INFO - Chrome initialized successfully
+2025-04-10 22:14:30,094 - BerlinScraper - INFO - Connecting to database
+2025-04-10 22:14:30,109 - BerlinScraper - INFO - Getting venue ID for Berlin
+2025-04-10 22:14:30,111 - BerlinScraper - INFO - Venue ID for Berlin: 12
+2025-04-10 22:14:30,111 - BerlinScraper - INFO - Setup complete for Berlin
+2025-04-10 22:14:30,111 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar
+2025-04-10 22:14:36,307 - BerlinScraper - INFO - Found 55 event cards
+2025-04-10 22:14:36,308 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-joel-shapira-april-10
+2025-04-10 22:14:38,651 - BerlinScraper - ERROR - Error processing event card: BaseScraper.save_event() takes from 3 to 5 positional arguments but 6 were given
+2025-04-10 22:14:38,651 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/prints-carranza-power-thoreen-april-2025
+2025-04-10 22:14:40,917 - BerlinScraper - ERROR - Error processing event card: BaseScraper.save_event() takes from 3 to 5 positional arguments but 6 were given
+2025-04-10 22:14:40,917 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-bryan-nichols-bryan-murray
+2025-04-10 22:14:44,465 - BerlinScraper - ERROR - Error processing event card: BaseScraper.save_event() takes from 3 to 5 positional arguments but 6 were given
+2025-04-10 22:14:44,465 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/reverso-ryan-keberle
+2025-04-10 22:14:45,293 - BerlinScraper - INFO - Cleaning up resources
+2025-04-10 22:14:45,325 - BerlinScraper - INFO - WebDriver closed
+2025-04-10 22:14:45,325 - BerlinScraper - INFO - Database cursor closed
+2025-04-10 22:14:45,326 - BerlinScraper - INFO - Database connection closed

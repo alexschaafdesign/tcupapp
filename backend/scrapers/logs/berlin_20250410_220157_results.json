@@ -1,0 +1,19 @@
+{
+  "scraper_name": "berlin",
+  "success": false,
+  "start_time": "2025-04-10T22:01:57.989898",
+  "end_time": "2025-04-10T22:02:07.273821",
+  "duration_seconds": 9.283923,
+  "added_count": 0,
+  "updated_count": 0,
+  "duplicate_count": 0,
+  "error_count": 3,
+  "added_shows": [],
+  "updated_shows": [],
+  "errors": [
+    "Error setting up database: column \"name\" does not exist\nLINE 1: SELECT id FROM venues WHERE name ILIKE 'Berlin'\n                                    ^\n",
+    "Error during setup: column \"name\" does not exist\nLINE 1: SELECT id FROM venues WHERE name ILIKE 'Berlin'\n                                    ^\n",
+    "Error during scraping: Error during setup: column \"name\" does not exist\nLINE 1: SELECT id FROM venues WHERE name ILIKE 'Berlin'\n                                    ^\n"
+  ],
+  "log_file": "/Users/musicdaddy/Desktop/venues/backend/scrapers/logs/berlin_20250410_220157.log"
+}

@@ -1,0 +1,28 @@
+2025-04-10 22:18:18,457 - BerlinScraper - INFO - Setting up scraper for Berlin
+2025-04-10 22:18:20,033 - BerlinScraper - INFO - Chrome initialized successfully
+2025-04-10 22:18:20,034 - BerlinScraper - INFO - Connecting to database
+2025-04-10 22:18:20,123 - BerlinScraper - INFO - Getting venue ID for Berlin
+2025-04-10 22:18:20,127 - BerlinScraper - INFO - Venue ID for Berlin: 12
+2025-04-10 22:18:20,127 - BerlinScraper - INFO - Setup complete for Berlin
+2025-04-10 22:18:20,127 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar
+2025-04-10 22:18:25,819 - BerlinScraper - INFO - Found 55 event cards
+2025-04-10 22:18:25,820 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-joel-shapira-april-10
+2025-04-10 22:18:28,487 - BerlinScraper - INFO - Added event: Early Evening Jazz: Joel Shapira on 2025-04-10 16:30:00
+2025-04-10 22:18:28,487 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/prints-carranza-power-thoreen-april-2025
+2025-04-10 22:18:30,777 - BerlinScraper - INFO - Added event: PRINTS on 2025-04-10 19:30:00
+2025-04-10 22:18:30,777 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-bryan-nichols-bryan-murray
+2025-04-10 22:18:33,977 - BerlinScraper - INFO - Added event: Early Evening Jazz: Bryan Nichols & Bryan Murray on 2025-04-11 16:30:00
+2025-04-10 22:18:33,977 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/reverso-ryan-keberle
+2025-04-10 22:18:36,515 - BerlinScraper - INFO - Added event: Reverso on 2025-04-11 19:30:00
+2025-04-10 22:18:36,516 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/late-night-lounge-alexis-rose-april-2025
+2025-04-10 22:18:48,972 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-04-10 22:18:49,006 - BerlinScraper - INFO - Added event: Late Night Lounge: Alexis Rose on 2025-04-11 22:30:00
+2025-04-10 22:18:49,006 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/cody-steinmann-trio-april-2025
+2025-04-10 22:18:51,659 - BerlinScraper - INFO - Added event: Early Evening Jazz: Cody Steinmann Trio on 2025-04-12 16:30:00
+2025-04-10 22:18:51,659 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/bz3-organ-trio-april-2025
+2025-04-10 22:18:53,996 - BerlinScraper - INFO - Added event: BZ3 Organ Trio on 2025-04-12 19:30:00
+2025-04-10 22:18:53,996 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/radio-pocho-april-2025
+2025-04-10 22:18:55,823 - BerlinScraper - INFO - Cleaning up resources
+2025-04-10 22:18:55,857 - BerlinScraper - INFO - WebDriver closed
+2025-04-10 22:18:55,857 - BerlinScraper - INFO - Database cursor closed
+2025-04-10 22:18:55,857 - BerlinScraper - INFO - Database connection closed

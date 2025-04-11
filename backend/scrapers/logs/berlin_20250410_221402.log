@@ -1,0 +1,21 @@
+2025-04-10 22:14:02,238 - BerlinScraper - INFO - Setting up scraper for Berlin
+2025-04-10 22:14:03,705 - BerlinScraper - INFO - Chrome initialized successfully
+2025-04-10 22:14:03,706 - BerlinScraper - INFO - Connecting to database
+2025-04-10 22:14:03,724 - BerlinScraper - INFO - Getting venue ID for Berlin
+2025-04-10 22:14:03,726 - BerlinScraper - INFO - Venue ID for Berlin: 12
+2025-04-10 22:14:03,726 - BerlinScraper - INFO - Setup complete for Berlin
+2025-04-10 22:14:03,726 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar
+2025-04-10 22:14:09,359 - BerlinScraper - INFO - Found 55 event cards
+2025-04-10 22:14:09,359 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-joel-shapira-april-10
+2025-04-10 22:14:11,648 - BerlinScraper - ERROR - Error processing event card: BaseScraper.save_event() takes from 3 to 5 positional arguments but 6 were given
+2025-04-10 22:14:11,649 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/prints-carranza-power-thoreen-april-2025
+2025-04-10 22:14:13,880 - BerlinScraper - ERROR - Error processing event card: BaseScraper.save_event() takes from 3 to 5 positional arguments but 6 were given
+2025-04-10 22:14:13,880 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-bryan-nichols-bryan-murray
+2025-04-10 22:14:16,108 - BerlinScraper - ERROR - Error processing event card: BaseScraper.save_event() takes from 3 to 5 positional arguments but 6 were given
+2025-04-10 22:14:16,108 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/reverso-ryan-keberle
+2025-04-10 22:14:18,409 - BerlinScraper - ERROR - Error processing event card: BaseScraper.save_event() takes from 3 to 5 positional arguments but 6 were given
+2025-04-10 22:14:18,409 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/late-night-lounge-alexis-rose-april-2025
+2025-04-10 22:14:19,459 - BerlinScraper - INFO - Cleaning up resources
+2025-04-10 22:14:19,484 - BerlinScraper - INFO - WebDriver closed
+2025-04-10 22:14:19,484 - BerlinScraper - INFO - Database cursor closed
+2025-04-10 22:14:19,484 - BerlinScraper - INFO - Database connection closed
