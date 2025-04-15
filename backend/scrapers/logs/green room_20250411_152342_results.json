@@ -1,0 +1,19 @@
+{
+  "scraper_name": "green_room",
+  "success": false,
+  "start_time": "2025-04-11T15:23:42.689323",
+  "end_time": "2025-04-11T15:23:43.476817",
+  "duration_seconds": 0.787494,
+  "added_count": 0,
+  "updated_count": 0,
+  "duplicate_count": 0,
+  "error_count": 3,
+  "added_shows": [],
+  "updated_shows": [],
+  "errors": [
+    "Error setting up database: relation \"venues\" does not exist\nLINE 1: SELECT id FROM venues WHERE venue ILIKE 'Green Room'\n                       ^\n",
+    "Error during setup: relation \"venues\" does not exist\nLINE 1: SELECT id FROM venues WHERE venue ILIKE 'Green Room'\n                       ^\n",
+    "Error during scraping: Error during setup: relation \"venues\" does not exist\nLINE 1: SELECT id FROM venues WHERE venue ILIKE 'Green Room'\n                       ^\n"
+  ],
+  "log_file": "/Users/musicdaddy/Desktop/venues/backend/scrapers/logs/green room_20250411_152342.log"
+}
