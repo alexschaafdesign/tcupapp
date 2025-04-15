@@ -35,7 +35,7 @@ const ShowProfile = () => {
   const [authAction, setAuthAction] = useState(''); // 'edit' or 'delete'
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
-  const { isAdmin, isModerator, isAuthenticated } = useAuth();
+  const { isAdmin, isModerator, isAuthenticated, getAccessTokenSilently } = useAuth();
   const canEdit = isAdmin || isModerator;
 
 
@@ -88,16 +88,32 @@ const ShowProfile = () => {
 
   const handleDeleteConfirm = async () => {
     try {
-      const response = await fetch(`${apiUrl}/shows/${id}`, { method: 'DELETE' });
-      if (!response.ok) throw new Error('Failed to delete show');
+      // Use getAccessTokenSilently that was received from useAuth at the component level
+      const token = await getAccessTokenSilently();
+      
+      const response = await fetch(`${apiUrl}/shows/${id}`, { 
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to delete show');
+      }
+      
       setDeleteDialogOpen(false);
       navigate('/shows', { 
         state: { message: 'Show deleted successfully', severity: 'success' }
       });
     } catch (error) {
+      console.error('Delete error:', error);
       setDeleteError(error.message);
     }
   };
+
 
   const handleBandClick = (bandId) => {
     if (bandId) navigate(`/bands/${bandId}`);

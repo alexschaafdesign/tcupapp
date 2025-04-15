@@ -1,0 +1,23 @@
+2025-04-11 15:23:42,689 - Green RoomScraper - INFO - Setting up scraper for Green Room
+2025-04-11 15:23:43,319 - Green RoomScraper - INFO - Chrome initialized successfully
+2025-04-11 15:23:43,321 - Green RoomScraper - INFO - Connecting to database
+2025-04-11 15:23:43,400 - Green RoomScraper - INFO - Getting venue ID for Green Room
+2025-04-11 15:23:43,404 - Green RoomScraper - ERROR - Error setting up database: relation "venues" does not exist
+LINE 1: SELECT id FROM venues WHERE venue ILIKE 'Green Room'
+                       ^
+
+2025-04-11 15:23:43,404 - Green RoomScraper - ERROR - Error during setup: relation "venues" does not exist
+LINE 1: SELECT id FROM venues WHERE venue ILIKE 'Green Room'
+                       ^
+
+2025-04-11 15:23:43,404 - Green RoomScraper - INFO - Cleaning up resources
+2025-04-11 15:23:43,476 - Green RoomScraper - INFO - WebDriver closed
+2025-04-11 15:23:43,476 - Green RoomScraper - INFO - Database cursor closed
+2025-04-11 15:23:43,476 - Green RoomScraper - INFO - Database connection closed
+2025-04-11 15:23:43,476 - Green RoomScraper - ERROR - Error during scraping: Error during setup: relation "venues" does not exist
+LINE 1: SELECT id FROM venues WHERE venue ILIKE 'Green Room'
+                       ^
+
+2025-04-11 15:23:43,476 - Green RoomScraper - INFO - Cleaning up resources
+2025-04-11 15:23:43,476 - Green RoomScraper - INFO - Scraper finished: Green Room | Success: False | Added: 0 | Updated: 0 | Duplicates: 0 | Errors: 3 | Duration: 0.79s
+2025-04-11 15:23:43,477 - Green RoomScraper - INFO - Results saved to /Users/musicdaddy/Desktop/venues/backend/scrapers/logs/green room_20250411_152342_results.json

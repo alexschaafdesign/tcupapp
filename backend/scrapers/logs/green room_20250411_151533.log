@@ -1,0 +1,40 @@
+2025-04-11 15:15:33,235 - Green RoomScraper - INFO - Setting up scraper for Green Room
+2025-04-11 15:15:33,952 - Green RoomScraper - INFO - Chrome initialized successfully
+2025-04-11 15:15:33,953 - Green RoomScraper - INFO - Connecting to database
+2025-04-11 15:15:34,055 - Green RoomScraper - INFO - Getting venue ID for Green Room
+2025-04-11 15:15:34,058 - Green RoomScraper - INFO - Venue ID for Green Room: 22
+2025-04-11 15:15:34,058 - Green RoomScraper - INFO - Setup complete for Green Room
+2025-04-11 15:15:34,058 - Green RoomScraper - INFO - Navigating to https://www.greenroommn.com/events#/events
+2025-04-11 15:15:39,044 - Green RoomScraper - INFO - Found 26 event cards
+2025-04-11 15:15:39,065 - Green RoomScraper - INFO - Added event: PROMISCUOUS, A 2000's CLUB BANGERS THROWBACKS PARTY on 2025-04-11 21:00:00
+2025-04-11 15:15:39,066 - Green RoomScraper - INFO - Added event: Anothernight 'I Am Nowhere Now' Album Release, Careful Gaze, Whispered The Rabbit on 2025-04-12 19:00:00
+2025-04-11 15:15:39,070 - Green RoomScraper - INFO - Added event: REVENTÓN: Reggaeton Party, Enjoy the best in Latin Music & more, MN’s Biggest Reggaeton Party: Reventón on 2025-04-12 23:00:00
+2025-04-11 15:15:39,071 - Green RoomScraper - INFO - Added event: Em Beihold on 2025-04-13 18:00:00
+2025-04-11 15:15:39,071 - Green RoomScraper - INFO - Added event: Taylor Robert "Brighter Day" CD Release Show, w/ support from Jared McCloud, Roz Prickel, Wain McFarlane on 2025-04-15 18:30:00
+2025-04-11 15:15:39,072 - Green RoomScraper - INFO - Added event: Jonah Marais & Friends on 2025-04-18 19:00:00
+2025-04-11 15:15:39,073 - Green RoomScraper - INFO - Added event: Rolling Stoners Perform "Tattoo You" at Green Room, special guest Heartless on 2025-04-19 19:00:00
+2025-04-11 15:15:39,073 - Green RoomScraper - INFO - Added event: New Band Night #05, w/ Ergot, Pretty Pretty Please, The Grieving Pines, & Too Snoozed on 2025-04-22 18:30:00
+2025-04-11 15:15:39,074 - Green RoomScraper - INFO - Added event: THE BROWNING - Electronicore 2025 w/ SWARM & The Defect in Minneapolis on 2025-04-23 18:00:00
+2025-04-11 15:15:39,075 - Green RoomScraper - INFO - Added event: Anna Devine EP Release Show, Kiernan, Ava Levy, Lily Blue on 2025-04-25 18:00:00
+2025-04-11 15:15:39,075 - Green RoomScraper - INFO - Added event: BRAT NIGHT on 2025-04-25 22:00:00
+2025-04-11 15:15:39,087 - Green RoomScraper - INFO - Added event: DragMixx on 2025-04-26 13:00:00
+2025-04-11 15:15:39,088 - Green RoomScraper - INFO - Added event: The Modern Era, The Skinny Lovers, Clayton Ryan, J Bell & The Lazy Susan Band on 2025-04-26 18:30:00
+2025-04-11 15:15:39,089 - Green RoomScraper - INFO - Added event: SALUTE on 2025-04-27 14:00:00
+2025-04-11 15:15:39,090 - Green RoomScraper - INFO - Added event: Eli Brunelle Album Release, w/ DJ Lemony, Lasalle, HINDSIGHT, & 0308 on 2025-04-30 18:30:00
+2025-04-11 15:15:39,092 - Green RoomScraper - INFO - Added event: Yung Bae on 2025-05-03 17:00:00
+2025-04-11 15:15:39,093 - Green RoomScraper - INFO - Added event: SOL Single Release on 2025-05-04 18:00:00
+2025-04-11 15:15:39,094 - Green RoomScraper - INFO - Added event: New Band Night #06, w/ Megasound, Trashdate, Greentop, & Keston Wright on 2025-05-06 18:30:00
+2025-04-11 15:15:39,094 - Green RoomScraper - INFO - Added event: this.is.emo presents - EMO NIGHT on 2025-05-09 20:00:00
+2025-04-11 15:15:39,095 - Green RoomScraper - INFO - Added event: The Soap Girls on 2025-05-14 19:00:00
+2025-04-11 15:15:39,096 - Green RoomScraper - INFO - Added event: Not GreenDay on 2025-06-01 19:00:00
+2025-04-11 15:15:39,097 - Green RoomScraper - INFO - Added event: Martin Kember The Unit - "Purple Musicology" on 2025-06-04 21:00:00
+2025-04-11 15:15:39,098 - Green RoomScraper - INFO - Added event: MERKULES “THE SURVIVOR’S GUILT TOUR” in Minneapolis, Ryan Oaks on 2025-06-15 18:00:00
+2025-04-11 15:15:39,098 - Green RoomScraper - INFO - Added event: DragMixx on 2025-06-21 13:00:00
+2025-04-11 15:15:39,099 - Green RoomScraper - INFO - Added event: BED BY 10PM - 30+Daytime Clubbing on 2025-07-19 15:00:00
+2025-04-11 15:15:39,102 - Green RoomScraper - INFO - Database changes committed
+2025-04-11 15:15:39,102 - Green RoomScraper - INFO - Cleaning up resources
+2025-04-11 15:15:39,187 - Green RoomScraper - INFO - WebDriver closed
+2025-04-11 15:15:39,187 - Green RoomScraper - INFO - Database cursor closed
+2025-04-11 15:15:39,187 - Green RoomScraper - INFO - Database connection closed
+2025-04-11 15:15:39,187 - Green RoomScraper - INFO - Scraper finished: Green Room | Success: True | Added: 25 | Updated: 0 | Duplicates: 1 | Errors: 0 | Duration: 5.95s
+2025-04-11 15:15:39,187 - Green RoomScraper - INFO - Results saved to /Users/musicdaddy/Desktop/venues/backend/scrapers/logs/green room_20250411_151533_results.json
