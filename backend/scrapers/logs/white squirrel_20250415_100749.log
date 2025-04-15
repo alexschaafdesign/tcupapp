@@ -1,0 +1,45 @@
+2025-04-15 10:07:49,196 - White SquirrelScraper - INFO - Setting up scraper for White Squirrel
+2025-04-15 10:07:51,233 - White SquirrelScraper - INFO - Chrome initialized successfully
+2025-04-15 10:07:51,234 - White SquirrelScraper - INFO - Connecting to database
+2025-04-15 10:07:51,915 - White SquirrelScraper - INFO - Getting venue ID for White Squirrel
+2025-04-15 10:07:51,985 - White SquirrelScraper - INFO - Venue ID for White Squirrel: 48
+2025-04-15 10:07:51,986 - White SquirrelScraper - INFO - Setup complete for White Squirrel
+2025-04-15 10:07:51,986 - White SquirrelScraper - INFO - Fetching ICS from https://whitesquirrelbar.com/calendar/?ical=1
+2025-04-15 10:07:52,567 - White SquirrelScraper - INFO - Found 30 events in the calendar
+2025-04-15 10:07:52,829 - White SquirrelScraper - INFO - Added event: Francis Avenue, A Sunken Ship Irony, J-Mo & The J-Lighters on 2025-04-21 21:00:00
+2025-04-15 10:07:52,878 - White SquirrelScraper - INFO - Added event: The Dans on 2025-04-28 18:00:00
+2025-04-15 10:07:52,958 - White SquirrelScraper - INFO - Added event: Tea Doggy, Ghosting Merit & Yellow Ostrich on 2025-04-16 21:00:00
+2025-04-15 10:07:53,197 - White SquirrelScraper - INFO - Added event: The Mary Cutrufello Band on 2025-04-25 18:00:00
+2025-04-15 10:07:53,245 - White SquirrelScraper - INFO - Added event: Ali Grey's Country Jamboree on 2025-04-22 18:00:00
+2025-04-15 10:07:53,305 - White SquirrelScraper - INFO - Added event: Christopher Vondracek, Tony Cuchetti on 2025-04-21 18:00:00
+2025-04-15 10:07:53,351 - White SquirrelScraper - INFO - Added event: Root River Jam on 2025-04-24 18:00:00
+2025-04-15 10:07:53,417 - White SquirrelScraper - INFO - Added event: Waterdog, Deer Skin, Valors on 2025-04-18 21:00:00
+2025-04-15 10:07:53,467 - White SquirrelScraper - INFO - Added event: Karaoke With Ally on 2025-04-20 21:00:00
+2025-04-15 10:07:53,527 - White SquirrelScraper - INFO - Added event: Emmy Woods, Courtney Yasmineh on 2025-04-26 13:00:00
+2025-04-15 10:07:53,595 - White SquirrelScraper - INFO - Added event: Sounds Of Schmidt Presents: Alexander Natalie, Halfway Down, Labrador Wild on 2025-04-26 21:00:00
+2025-04-15 10:07:53,647 - White SquirrelScraper - INFO - Added event: Sounds Of Schmidt Presents: Glass-Eyed Brother, The Montys, D. Santos on 2025-04-25 21:00:00
+2025-04-15 10:07:53,712 - White SquirrelScraper - INFO - Added event: The New Havoline Supremes on 2025-04-15 18:00:00
+2025-04-15 10:07:53,927 - White SquirrelScraper - INFO - Added event: Bingo With Pete! on 2025-04-20 18:00:00
+2025-04-15 10:07:53,994 - White SquirrelScraper - INFO - Added event: Devaney & Friends on 2025-04-17 18:00:00
+2025-04-15 10:07:54,206 - White SquirrelScraper - INFO - Added event: Thor Leseman, Ida Metsberg on 2025-04-18 18:00:00
+2025-04-15 10:07:54,259 - White SquirrelScraper - INFO - Added event: Bury Em Deep, Aaron James, Shoveler on 2025-04-20 13:00:00
+2025-04-15 10:07:54,327 - White SquirrelScraper - INFO - Added event: Sounds Of Schmidt Presents: Emma Jane, Joe Kelly, Sandie Magerster, Fairy Boat Music, Devotion, JOWL on 2025-04-27 17:00:00
+2025-04-15 10:07:54,391 - White SquirrelScraper - INFO - Added event: Unattractive Giant Monster Residency, Dado Set, Big Into on 2025-04-22 21:00:00
+2025-04-15 10:07:54,458 - White SquirrelScraper - INFO - Added event: Three Guys Who Used To Work Together on 2025-04-19 18:00:00
+2025-04-15 10:07:54,680 - White SquirrelScraper - INFO - Added event: Mammoth Moth on 2025-04-19 13:00:00
+2025-04-15 10:07:54,738 - White SquirrelScraper - INFO - Added event: Phantom Fields on 2025-04-24 21:00:00
+2025-04-15 10:07:54,786 - White SquirrelScraper - INFO - Added event: Unattractive Giant Monster Residency, Chris Cashin Band, Sparrowhawk on 2025-04-15 21:00:00
+2025-04-15 10:07:55,021 - White SquirrelScraper - INFO - Added event: Sarah Morris and the Sometimes Guys on 2025-04-23 18:00:00
+2025-04-15 10:07:55,090 - White SquirrelScraper - INFO - Added event: Nikki Minerva, Sylvia Dieken, Willem Dafoe Fan Club on 2025-04-17 21:00:00
+2025-04-15 10:07:55,169 - White SquirrelScraper - INFO - Added event: Big Trouble on 2025-04-26 18:00:00
+2025-04-15 10:07:55,247 - White SquirrelScraper - INFO - Added event: Nights with Tim on 2025-04-23 21:00:00
+2025-04-15 10:07:55,294 - White SquirrelScraper - INFO - Added event: Randy's Gathering on 2025-04-27 13:00:00
+2025-04-15 10:07:55,359 - White SquirrelScraper - INFO - Added event: Hot Jupiters, Skeleton Crew, Third Date, Greater Goods on 2025-04-19 21:00:00
+2025-04-15 10:07:55,424 - White SquirrelScraper - INFO - Added event: St Paul Mudsteppers on 2025-04-16 18:00:00
+2025-04-15 10:07:55,447 - White SquirrelScraper - INFO - Database changes committed
+2025-04-15 10:07:55,447 - White SquirrelScraper - INFO - Cleaning up resources
+2025-04-15 10:07:55,539 - White SquirrelScraper - INFO - WebDriver closed
+2025-04-15 10:07:55,539 - White SquirrelScraper - INFO - Database cursor closed
+2025-04-15 10:07:55,539 - White SquirrelScraper - INFO - Database connection closed
+2025-04-15 10:07:55,539 - White SquirrelScraper - INFO - Scraper finished: White Squirrel | Success: True | Added: 30 | Updated: 0 | Duplicates: 0 | Errors: 0 | Duration: 6.34s
+2025-04-15 10:07:55,539 - White SquirrelScraper - INFO - Results saved to /Users/musicdaddy/Desktop/venues/backend/scrapers/logs/white squirrel_20250415_100749_results.json

@@ -68,6 +68,11 @@ SCRAPERS = {
         'name': 'Green Room',
         'enabled': True,
     },
+    'whitesquirrel': {
+        'class': 'venues.whitesquirrel.WhiteSquirrelScraper',
+        'name': 'White Squirrel',
+        'enabled': True,
+    },
     # Add more scrapers here as they are implemented
 }
 

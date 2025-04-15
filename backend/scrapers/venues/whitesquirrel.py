@@ -1,50 +1,70 @@
-from ics import Calendar
-import requests
+"""
+White Squirrel Scraper
+
+Scraper for the White Squirrel venue in Minneapolis.
+"""
+
 import re
+import requests
+from ics import Calendar
+from bs4 import BeautifulSoup
 from datetime import datetime
-from db_utils import connect_to_db, get_venue_id, insert_show
 
-# URL of the .ics file
-ics_url = "https://whitesquirrelbar.com/calendar/?ical=1"
+import sys
+import os
+# Add parent directory to path to allow imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-DEFAULT_IMAGE_URL = "https://whitesquirrelbar.com/wp-content/uploads/klipschimage-scaled.jpg"
+from base_scraper import BaseScraper
 
-# Fetch and parse the .ics content
-response = requests.get(ics_url)
-response.raise_for_status()  # Check if the download was successful
-ics_content = response.text
-calendar = Calendar(ics_content)
-
-# Connect to the PostgreSQL database
-conn = connect_to_db()
-cursor = conn.cursor()
-
-# Counters for tracking results
-show_count = 0
-inserted_shows = 0
-skipped_shows = 0
-band_count = 0
-inserted_bands = 0
-linked_bands = 0
-
-try:
-    # Get the venue ID for "White Squirrel"
-    venue_id = get_venue_id(cursor, "White Squirrel")
-
-    # Function to split band names based on custom rules
-    def split_band_names(band_string):
+class WhiteSquirrelScraper(BaseScraper):
+    """Scraper for the White Squirrel venue in Minneapolis."""
+    
+    def __init__(self, headless=True, max_events=None):
+        """
+        Initialize the White Squirrel scraper.
+        
+        Args:
+            headless: Whether to run Chrome in headless mode (not used for this scraper)
+            max_events: Maximum number of events to process (None for all)
+        """
+        super().__init__(
+            venue_name="White Squirrel",
+            url="https://whitesquirrelbar.com/calendar/?ical=1",
+            headless=headless,
+            max_events=max_events
+        )
+        # We don't actually use Selenium in our scrape method, but we'll let it initialize
+        self.default_image_url = "https://whitesquirrelbar.com/wp-content/uploads/klipschimage-scaled.jpg"
+        # Set default age restriction for White Squirrel
+        self.default_age_restriction = "All Ages"
+    
+    def split_band_names(self, band_string):
+        """
+        Split a string of band names into individual names.
+        
+        Args:
+            band_string: String containing multiple band names
+            
+        Returns:
+            List of individual band names
+        """
         bands = re.split(r'\s+w\.?\s+', band_string)
         separated_bands = []
         for band in bands:
             separated_bands.extend(band.split(","))
         return [b.strip() for b in separated_bands if b.strip()]
     
-    from bs4 import BeautifulSoup
-
-    # Function to extract flyer image URL
-    def get_flyer_image(event_uid):
+    def get_flyer_image(self, event_uid, ics_content):
         """
         Extract the flyer image URL from the ICS file.
+        
+        Args:
+            event_uid: UID of the event
+            ics_content: Content of the ICS file
+            
+        Returns:
+            str: URL of the flyer image, or None if not found
         """
         try:
             # Use regex to find the block of the event corresponding to the UID
@@ -60,77 +80,82 @@ try:
 
                 if attach_match:
                     flyer_image = attach_match.group(1).strip()
-                    print(f"Flyer image found for UID {event_uid}: {flyer_image}")
+                    self.log(f"Flyer image found for UID {event_uid}: {flyer_image}", "debug")
                     return flyer_image  # Return the URL if found
 
             # If no ATTACH field is found, return None
-            print(f"No ATTACH field found for UID {event_uid}.")
+            self.log(f"No ATTACH field found for UID {event_uid}", "debug")
             return None
         except Exception as e:
-            print(f"Error extracting flyer image for UID {event_uid}: {e}")
+            self.log(f"Error extracting flyer image for UID {event_uid}: {e}", "error")
             return None
-
-    # Counters for tracking results
-    show_count = 0
-    inserted_shows = 0
-    skipped_shows = 0
-    modified_shows = 0  # New counter for modified events
-    band_count = 0
-    inserted_bands = 0
-    linked_bands = 0
-
-    # Loop through each event in the .ics file
-    for event in calendar.events:
-        show_count += 1  # Increment the total show count
-
+    
+    def scrape(self):
+        """
+        Scrape events from the White Squirrel website by parsing their ICS calendar.
+        
+        Returns:
+            bool: True if scraping was successful, False otherwise
+        """
+        try:
+            # Fetch the ICS file
+            self.log(f"Fetching ICS from {self.url}")
+            response = requests.get(self.url)
+            response.raise_for_status()  # Check if the download was successful
+            ics_content = response.text
+            
+            # Parse the ICS file
+            calendar = Calendar(ics_content)
+            events = list(calendar.events)
+            
+            # Limit events if max_events is set
+            if self.max_events is not None and len(events) > self.max_events:
+                self.log(f"Limiting to {self.max_events} events (out of {len(events)} found)")
+                events = events[:self.max_events]
+            
+            self.log(f"Found {len(events)} events in the calendar")
+            
+            # Loop through each event in the calendar
+            for event in events:
+                try:
+                    self._process_event(event, ics_content)
+                except Exception as e:
+                    self.log(f"Error processing event {event.name}: {e}", "error")
+            
+            return True
+            
+        except Exception as e:
+            self.log(f"Error fetching or parsing ICS: {e}", "error")
+            return False
+    
+    def _process_event(self, event, ics_content):
+        """
+        Process an individual event from the ICS calendar.
+        
+        Args:
+            event: Event object from the ICS calendar
+            ics_content: Raw content of the ICS file for image extraction
+        """
         # Parse event details
-        bands = split_band_names(event.name)
+        bands = self.split_band_names(event.name)
         start = event.begin.datetime.replace(tzinfo=None)
-        event_link = event.url if event.url else None
-
+        event_link = event.url if hasattr(event, 'url') and event.url else None
+        
         # Get the flyer image from the ICS
-        flyer_image = get_flyer_image(event.uid)
-
+        flyer_image = self.get_flyer_image(event.uid, ics_content)
+        
         # Use the default image if none was found
         if flyer_image is None:
-            flyer_image = DEFAULT_IMAGE_URL
-            print(f"Default image assigned for event: {event.name} -> {DEFAULT_IMAGE_URL}")
-
-        print(f"Inserting/Updating show with parameters: "
-            f"Venue ID: {venue_id}, Bands: {bands}, Start: {start}, Event Link: {event_link}, Flyer Image: {flyer_image}")
-
-        # Insert or update the show
-        try:
-            show_id, was_inserted = insert_show(conn, cursor, venue_id, ", ".join(bands), start, event_link, flyer_image)
-            if was_inserted:
-                inserted_shows += 1
-            else:
-                # Verify if the row was actually updated (optional logic)
-                if cursor.rowcount > 0:
-                    modified_shows += 1
-                else:
-                    skipped_shows += 1  # No actual modification made
-        except Exception as e:
-            print(f"Error inserting or updating show: {e}")
-            skipped_shows += 1  # Count as skipped if an error occurs
-            continue
-
-    # Log the results
-    print("\nScraping Results:")
-    print(f"Total shows found: {show_count}")
-    print(f"Inserted shows: {inserted_shows}")
-    print(f"Modified shows: {modified_shows}")  # New log for modified events
-    print(f"Skipped shows (duplicates): {skipped_shows}")
-    print(f"Total bands found: {band_count}")
-    print(f"Inserted bands: {inserted_bands}")
-    print(f"Bands linked to shows: {linked_bands}")
-
-
-except Exception as e:
-    print(f"Error: {e}")
-    conn.rollback()
-
-finally:
-    # Close the database connection
-    cursor.close()
-    conn.close()
+            flyer_image = self.default_image_url
+            self.log(f"Using default image for event: {event.name} -> {self.default_image_url}", "debug")
+        
+        # Skip events without bands
+        if not bands:
+            self.log(f"Skipping event due to missing bands: {event.name}", "warning")
+            return
+            
+        # Format bands as a comma-separated string
+        bands_str = ", ".join(bands)
+        
+        # Save the event to the database
+        self.save_event(bands_str, start, event_link, flyer_image)
