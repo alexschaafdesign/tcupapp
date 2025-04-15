@@ -63,6 +63,16 @@ SCRAPERS = {
         'name': 'First Avenue',
         'enabled': True,
     },
+    'greenroom': {
+        'class': 'venues.green_room.GreenRoomScraper',
+        'name': 'Green Room',
+        'enabled': True,
+    },
+    'whitesquirrel': {
+        'class': 'venues.whitesquirrel.WhiteSquirrelScraper',
+        'name': 'White Squirrel',
+        'enabled': True,
+    },
     # Add more scrapers here as they are implemented
 }
 

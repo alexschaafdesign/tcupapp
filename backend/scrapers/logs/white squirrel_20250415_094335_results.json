@@ -1,0 +1,19 @@
+{
+  "scraper_name": "white_squirrel",
+  "success": false,
+  "start_time": "2025-04-15T09:43:35.188322",
+  "end_time": "2025-04-15T09:43:45.313112",
+  "duration_seconds": 10.12479,
+  "added_count": 0,
+  "updated_count": 0,
+  "duplicate_count": 0,
+  "error_count": 3,
+  "added_shows": [],
+  "updated_shows": [],
+  "errors": [
+    "Error setting up database: connection to server at \"localhost\" (::1), port 5432 failed: FATAL:  role \"postgres\" does not exist\n",
+    "Error during setup: connection to server at \"localhost\" (::1), port 5432 failed: FATAL:  role \"postgres\" does not exist\n",
+    "Error during scraping: Error during setup: connection to server at \"localhost\" (::1), port 5432 failed: FATAL:  role \"postgres\" does not exist\n"
+  ],
+  "log_file": "/Users/musicdaddy/Desktop/venues/backend/scrapers/logs/white squirrel_20250415_094335.log"
+}
