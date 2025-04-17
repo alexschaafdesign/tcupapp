@@ -23,7 +23,7 @@ module.exports = {
         NODE_ENV: 'staging',  // Changed from 'production' to 'staging'
         APP_ENV: 'staging',
         DOTENV_CONFIG_PATH: '/var/www/tcup-staging/backend/.env.staging', // Changed to .env.staging
-        PORT: 3001
+        PORT: 3004
       },
       max_memory_restart: '500M',
       error_file: '/var/log/pm2/tcup-backend-staging-error.log',
