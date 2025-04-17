@@ -8,6 +8,7 @@ import dbConfig from '../../config/db.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
+import fs from 'fs';
 
 // Get the directory name for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -28,9 +29,9 @@ const execPromise = promisify(exec);
 
 // Get all available scrapers
 const AVAILABLE_SCRAPERS = [
+  { id: 'berlin', name: 'Berlin' },
   { id: '331_club', name: '331 Club' },
   { id: 'aster_cafe', name: 'Aster Café' },
-  { id: 'berlin_mpls', name: 'Berlin MPLS' },
   { id: 'first_avenue', name: 'First Avenue' },
   { id: 'icehouse', name: 'Icehouse' },
   { id: 'cedar', name: 'Cedar Cultural Center' },
@@ -47,42 +48,24 @@ const AVAILABLE_SCRAPERS = [
 ];
 
 async function runScraper(scraperName) {
-  // Create absolute paths to the scrapers to avoid path issues
+  // Create absolute paths to the scrapers directory
   const scrapeDir = path.join(__dirname, '../../scrapers');
   
-  // Map scraper IDs to their actual filenames with absolute paths
-  const scriptPathMap = {
-    '331_club': path.join(scrapeDir, '331_club_scraper.py'),
-    'berlin_mpls': path.join(scrapeDir, 'berlin_mpls_scraper.py'),
-    'first_avenue': path.join(scrapeDir, 'first_avenue_scraper.py'),
-    'aster_cafe': path.join(scrapeDir, 'aster.py'),
-    'cedar': path.join(scrapeDir, 'cedar.py'),
-    'pilllar': path.join(scrapeDir, 'pilllarscrape_todb.py'),
-    'zhora': path.join(scrapeDir, 'zhorascrape_todb.py'),
-    'mortimers': path.join(scrapeDir, 'mortimersscrape_todb.py'),
-    'hookladder': path.join(scrapeDir, 'hookladder.py'),
-    'gr': path.join(scrapeDir, 'grscrape_todb.py'),
-    'whitesquirrel': path.join(scrapeDir, 'whitesquirrel.py'),
-    'palmers': path.join(scrapeDir, 'palmers.py'),
-    'eagles': path.join(scrapeDir, 'eagles.py'),
-    'resource': path.join(scrapeDir, 'resource.py'),
-    'klash': path.join(scrapeDir, 'klash.py'),
-    'icehouse': path.join(scrapeDir, 'icehouse.py')
-  };
-  
-  // Get the script path from the map or use default pattern with absolute path
-  const scriptPath = scriptPathMap[scraperName] || path.join(scrapeDir, `${scraperName}.py`);
-  console.log(`Actual script path being executed: ${scriptPath}`);
-
-  
   try {
-    // Add the correct Python path
-    const pythonPath = process.env.PYTHON_PATH || 'python3';
-    console.log(`Running: ${pythonPath} ${scriptPath}`);
+    // Prepare environment variables needed by the Python script
+    const env = { ...process.env };
     
-    // Use spawn instead of exec to get real-time output
+    // Use the new run_scraper.py script
+    const pythonPath = process.env.PYTHON_PATH || 'python3';
+    console.log(`Running: ${pythonPath} ${path.join(scrapeDir, 'run_scraper.py')} --env-file ${path.join(scrapeDir, '.env')} ${scraperName}`);
+    
     const { spawn } = require('child_process');
-    const pythonProcess = spawn(pythonPath, [scriptPath]);
+    const pythonProcess = spawn(pythonPath, [
+      path.join(scrapeDir, 'run_scraper.py'),
+      '--env-file', 
+      path.join(scrapeDir, '.env'),
+      scraperName // This is the venue scraper ID
+    ], { env });
     
     // Collect stdout and stderr
     let stdoutData = '';
@@ -111,44 +94,73 @@ async function runScraper(scraperName) {
     }
     
     console.log(`Scraper ${scraperName} completed with exit code: ${exitCode}`);
-    console.log(`Scraper ${scraperName} stderr:`, stderrData);
     
-    // Try to parse the output as JSON
-    let result;
+    // Find the results file
+    const logsDir = path.join(scrapeDir, 'logs');
+    
+    // Try to find the most recent results JSON file for this scraper
+    let resultFiles = [];
+    
     try {
-      // Trim potential leading/trailing whitespace from the captured output
-      const trimmedOutput = stdoutData.trim();
-  
-      // Try to find a valid JSON object in the output
-      // Look for the opening { and parse from there
-      const jsonStart = trimmedOutput.indexOf('{');
-      if (jsonStart >= 0) {
+      // Check if logs directory exists
+      if (fs.existsSync(logsDir)) {
+        // List all files in the logs directory
+        resultFiles = fs.readdirSync(logsDir)
+          .filter(file => file.includes(scraperName.toLowerCase()) && file.endsWith('_results.json'))
+          .sort((a, b) => {
+            const statA = fs.statSync(path.join(logsDir, a));
+            const statB = fs.statSync(path.join(logsDir, b));
+            return statB.mtime.getTime() - statA.mtime.getTime();
+          });
+      }
+    } catch (fsError) {
+      console.error(`Error reading log directory: ${fsError}`);
+    }
+    
+    let result;
+    
+    // Try to parse the results file first
+    if (resultFiles.length > 0) {
+      // Read the most recent results file
+      try {
+        const resultFilePath = path.join(logsDir, resultFiles[0]);
+        const resultData = fs.readFileSync(resultFilePath, 'utf8');
+        result = JSON.parse(resultData);
+        console.log(`Parsed results from file: ${resultFiles[0]}`);
+      } catch (parseError) {
+        console.error(`Failed to parse results file: ${parseError}`);
+        // Fall back to parsing stdout
+        result = null;
+      }
+    }
+    
+    // If we couldn't get results from file, try to parse stdout
+    if (!result) {
+      try {
+        // Try to find a valid JSON object in the stdout output
+        const trimmedOutput = stdoutData.trim();
+        const jsonStart = trimmedOutput.indexOf('{');
+        if (jsonStart >= 0) {
           const jsonString = trimmedOutput.substring(jsonStart);
           result = JSON.parse(jsonString);
-      } else {
+          console.log(`Parsed results from stdout`);
+        } else {
           throw new Error("No JSON object found in output");
-      }
-  } catch (parseError) {
-      console.error(`Failed to parse JSON output from ${scraperName}:`, parseError);
-      // Log the actual data that caused the parsing failure
-      console.error(`Data that failed parsing for ${scraperName}: >>>\n${stdoutData}\n<<<`); // Log the full stdout
-
-      // If we can't parse the JSON, create a basic result object
-      // Include the raw stdout and stderr for debugging purposes
-      result = {
-        scraper_name: scraperName,
-        added_count: 0,
-        duplicate_count: 0,
-        skipped_count: 0,
-        added_shows: [],
-        errors: [`Failed to parse output: ${parseError.message}`],
-        // Add raw captures to the result object itself if desired
-        raw_stdout_capture: stdoutData,
-        raw_stderr_capture: stderrData
-      };
-      // Add stderr content to the errors array for better context
-      if (stderrData && !result.errors.some(e => e.includes('Stderr:'))) {
-          result.errors.push(`Stderr: ${stderrData.trim()}`);
+        }
+      } catch (parseError) {
+        console.error(`Failed to parse JSON output from ${scraperName}:`, parseError);
+        // If we can't parse anything, create a basic result object
+        result = {
+          scraper_name: scraperName,
+          success: exitCode === 0,
+          added_count: 0,
+          updated_count: 0,
+          duplicate_count: 0,
+          error_count: exitCode === 0 ? 0 : 1,
+          errors: exitCode === 0 ? [] : [`Scraper exited with code ${exitCode}`],
+          raw_stdout: stdoutData,
+          raw_stderr: stderrData
+        };
       }
     }
     
@@ -157,11 +169,11 @@ async function runScraper(scraperName) {
       scraper_name: scraperName,
       run_at: new Date(),
       added_count: result.added_count || 0,
-      updated_count: result.updated_count || 0,  // Add this line
+      updated_count: result.updated_count || 0,
       duplicate_count: result.duplicate_count || 0,
       skipped_count: result.skipped_count || 0,
       added_shows: JSON.stringify(result.added_shows || []),
-      updated_shows: JSON.stringify(result.updated_shows || []),  // Add this line
+      updated_shows: JSON.stringify(result.updated_shows || []),
       errors: JSON.stringify(result.errors || []),
       raw_output: JSON.stringify(result)
     }).returning('id');
@@ -170,23 +182,27 @@ async function runScraper(scraperName) {
     
     // If there are added shows, store them with details
     if (result.added_shows && result.added_shows.length > 0) {
-      // Get details for all the added shows
-      const showDetails = await db('development.shows')
-        .select('shows.id', 'shows.bands as show_name', 'venues.venue as venue_name', 'shows.start as show_date')
-        .join('venues', 'shows.venue_id', 'venues.id')
-        .whereIn('shows.id', result.added_shows);
-      
-      // Insert entries for each added show
-      const showAdditions = showDetails.map(show => ({
-        scraper_log_id: logId,
-        show_id: show.id,
-        show_name: show.show_name,
-        venue_name: show.venue_name,
-        show_date: show.show_date
-      }));
-      
-      if (showAdditions.length > 0) {
-        await db('development.scraper_show_additions').insert(showAdditions);
+      try {
+        // Get details for all the added shows
+        const showDetails = await db('development.shows')
+          .select('shows.id', 'shows.bands as show_name', 'venues.venue as venue_name', 'shows.start as show_date')
+          .join('venues', 'shows.venue_id', 'venues.id')
+          .whereIn('shows.id', result.added_shows);
+        
+        // Insert entries for each added show
+        if (showDetails.length > 0) {
+          const showAdditions = showDetails.map(show => ({
+            scraper_log_id: logId,
+            show_id: show.id,
+            show_name: show.show_name,
+            venue_name: show.venue_name,
+            show_date: show.show_date
+          }));
+          
+          await db('development.scraper_show_additions').insert(showAdditions);
+        }
+      } catch (dbError) {
+        console.error(`Error retrieving or storing show details: ${dbError}`);
       }
     }
     
@@ -199,28 +215,48 @@ async function runScraper(scraperName) {
     console.error(`Error running scraper ${scraperName}:`, error);
     
     // Log the error to the database
-    const insertResult = await db('development.scraper_logs').insert({
-      scraper_name: scraperName,
-      run_at: new Date(),
-      added_count: 0,
-      duplicate_count: 0,
-      skipped_count: 0,
-      added_shows: '[]',
-      errors: JSON.stringify([`Error running ${scraperName}: ${error.message}`]),
-      raw_output: JSON.stringify({ error: error.message })
-    }).returning('id');
-    
-    const logId = insertResult[0].id;
-    
-    return {
-      scraper_name: scraperName,
-      added_count: 0,
-      duplicate_count: 0,
-      skipped_count: 0,
-      added_shows: [],
-      errors: [`Error running ${scraperName}: ${error.message}`],
-      log_id: logId
-    };
+    try {
+      const insertResult = await db('development.scraper_logs').insert({
+        scraper_name: scraperName,
+        run_at: new Date(),
+        added_count: 0,
+        updated_count: 0,
+        duplicate_count: 0,
+        skipped_count: 0,
+        added_shows: '[]',
+        updated_shows: '[]',
+        errors: JSON.stringify([`Error running ${scraperName}: ${error.message}`]),
+        raw_output: JSON.stringify({ error: error.message })
+      }).returning('id');
+      
+      const logId = insertResult[0].id;
+      
+      return {
+        scraper_name: scraperName,
+        success: false,
+        added_count: 0,
+        updated_count: 0,
+        duplicate_count: 0,
+        skipped_count: 0,
+        added_shows: [],
+        updated_shows: [],
+        errors: [`Error running ${scraperName}: ${error.message}`],
+        log_id: logId
+      };
+    } catch (dbError) {
+      console.error(`Error logging scraper failure to database: ${dbError}`);
+      return {
+        scraper_name: scraperName,
+        success: false,
+        added_count: 0,
+        updated_count: 0,
+        duplicate_count: 0,
+        skipped_count: 0,
+        added_shows: [],
+        updated_shows: [],
+        errors: [`Error running ${scraperName}: ${error.message}`, `Error logging to database: ${dbError.message}`],
+      };
+    }
   }
 }
 
@@ -242,15 +278,66 @@ router.post('/run-scrapers', authMiddleware, checkRole(['admin']), async (req, r
       }
     } else {
       // Run a subset of scrapers (for testing use just a few)
-      tasks.push(runScraper('331_club'));
-      tasks.push(runScraper('first_avenue'));
-      tasks.push(runScraper('whitesquirrel'));
+      // If no specific scraper provided, run a few default ones
+      const defaultScrapers = ['berlin', '331_club', 'first_avenue'];
+      
+      for (const scraperToRun of defaultScrapers) {
+        if (validScraperIds.includes(scraperToRun)) {
+          tasks.push(runScraper(scraperToRun));
+        }
+      }
     }
     
     const logs = await Promise.all(tasks);
     res.json({ logs });
   } catch (err) {
     console.error('Error in /run-scrapers:', err);
+    res.status(500).json({ error: err.toString() });
+  }
+});
+
+// Get available scrapers endpoint - optionally make it dynamic
+router.get('/available-scrapers', authMiddleware, checkRole(['admin']), async (req, res) => {
+  try {
+    // Option: Use dynamic scraper list from config.py
+    // Uncomment this to dynamically get the scraper list
+    /*
+    const scrapeDir = path.join(__dirname, '../../scrapers');
+    const pythonPath = process.env.PYTHON_PATH || 'python3';
+    
+    try {
+      const { stdout } = await execPromise(
+        `${pythonPath} ${path.join(scrapeDir, 'run_scraper.py')} --list --env-file ${path.join(scrapeDir, '.env')}`
+      );
+      
+      const scraperLines = stdout.split('\n').filter(line => line.includes('Available scrapers') || line.trim().startsWith('-'));
+      let scrapers = [];
+      
+      if (scraperLines.length > 1) {
+        // Extract scraper info from lines like "- berlin: Berlin (Enabled)"
+        scrapers = scraperLines.slice(1).map(line => {
+          const match = line.match(/^\s*-\s+(\w+):\s+(.+?)\s+\((\w+)\)/);
+          if (match) {
+            return {
+              id: match[1],
+              name: match[2],
+              enabled: match[3] === 'Enabled'
+            };
+          }
+          return null;
+        }).filter(Boolean);
+        
+        return res.json({ scrapers });
+      }
+    } catch (err) {
+      console.error('Error getting dynamic scraper list:', err);
+    }
+    */
+    
+    // Fall back to hardcoded list
+    res.json({ scrapers: AVAILABLE_SCRAPERS });
+  } catch (err) {
+    console.error('Error in /available-scrapers:', err);
     res.status(500).json({ error: err.toString() });
   }
 });
@@ -321,16 +408,6 @@ router.get('/scraper-logs/:id', authMiddleware, checkRole(['admin']), async (req
     });
   } catch (err) {
     console.error('Error in /scraper-logs/:id:', err);
-    res.status(500).json({ error: err.toString() });
-  }
-});
-
-// Get available scrapers endpoint
-router.get('/available-scrapers', authMiddleware, checkRole(['admin']), async (req, res) => {
-  try {
-    res.json({ scrapers: AVAILABLE_SCRAPERS });
-  } catch (err) {
-    console.error('Error in /available-scrapers:', err);
     res.status(500).json({ error: err.toString() });
   }
 });
