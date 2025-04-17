@@ -35,6 +35,9 @@ function ShowsTable() {
 
   const apiUrl = process.env.REACT_APP_API_URL;
 
+  const isShowsListEnabled = process.env.REACT_APP_ENABLE_SHOWS_LIST === 'true';
+
+
   // Update URL when filters change
   useEffect(() => {
     const params = new URLSearchParams();
@@ -259,6 +262,31 @@ function ShowsTable() {
         onRowsPerPageChange={handleChangeRowsPerPage}
         rowsPerPageOptions={[5, 10, 20, 50]}
       />
+
+      {!isShowsListEnabled && (
+              <Box sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                backdropFilter: 'blur(8px)',
+                zIndex: 999,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
+                  Upgraded SHOW LIST coming soon...
+                </Typography>
+                <Typography variant="body1">
+                  We're makin this shit better!
+                </Typography>
+              </Box>
+            )}
+
     </Box>
   );
 }
