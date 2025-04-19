@@ -1,0 +1,14 @@
+2025-04-19 07:54:33,070 - 331 ClubScraper - INFO - Setting up scraper for 331 Club
+2025-04-19 07:54:35,673 - 331 ClubScraper - INFO - Chrome initialized successfully
+2025-04-19 07:54:35,676 - 331 ClubScraper - INFO - Connecting to database
+2025-04-19 07:54:36,000 - 331 ClubScraper - ERROR - Error setting up database: connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "postgres" does not exist
+
+2025-04-19 07:54:36,000 - 331 ClubScraper - ERROR - Error during setup: connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "postgres" does not exist
+
+2025-04-19 07:54:36,000 - 331 ClubScraper - INFO - Cleaning up resources
+2025-04-19 07:54:36,077 - 331 ClubScraper - INFO - WebDriver closed
+2025-04-19 07:54:36,077 - 331 ClubScraper - ERROR - Error during scraping: Error during setup: connection to server at "localhost" (::1), port 5432 failed: FATAL:  role "postgres" does not exist
+
+2025-04-19 07:54:36,077 - 331 ClubScraper - INFO - Cleaning up resources
+2025-04-19 07:54:36,077 - 331 ClubScraper - INFO - Scraper finished: 331 Club | Success: False | Added: 0 | Updated: 0 | Duplicates: 0 | Errors: 3 | Duration: 3.01s
+2025-04-19 07:54:36,078 - 331 ClubScraper - INFO - Results saved to /Users/musicdaddy/Desktop/venues/backend/scrapers/logs/331 club_20250419_075433_results.json
