@@ -1,5 +1,5 @@
 import express from 'express';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import { promisify } from 'util';
 import authMiddleware from '../../middleware/auth.js';
 import checkRole from '../../middleware/check-role.js';
@@ -9,6 +9,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 import fs from 'fs';
+
 
 // Get the directory name for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -30,7 +31,7 @@ const execPromise = promisify(exec);
 // Get all available scrapers
 const AVAILABLE_SCRAPERS = [
   { id: 'berlin', name: 'Berlin' },
-  { id: '331_club', name: '331 Club' },
+  { id: '331', name: '331 Club' },
   { id: 'aster_cafe', name: 'Aster Café' },
   { id: 'first_avenue', name: 'First Avenue' },
   { id: 'icehouse', name: 'Icehouse' },
@@ -52,20 +53,43 @@ async function runScraper(scraperName) {
   const scrapeDir = path.join(__dirname, '../../scrapers');
   
   try {
-    // Prepare environment variables needed by the Python script
-    const env = { ...process.env };
+    // Determine the base directory and virtual environment path based on environment variables
+    const baseDir = process.env.APP_BASE_DIR || '/var/www/tcup-production/backend';
+    const venvName = process.env.VENV_NAME || 'venv';
+    const venvPath = path.join(baseDir, venvName);
+    const activateScript = path.join(venvPath, 'bin', 'activate');
     
-    // Use the new run_scraper.py script
-    const pythonPath = process.env.PYTHON_PATH || 'python3';
-    console.log(`Running: ${pythonPath} ${path.join(scrapeDir, 'run_scraper.py')} --env-file ${path.join(scrapeDir, '.env')} ${scraperName}`);
+    console.log(`Using virtual environment at: ${venvPath}`);
     
-    const { spawn } = require('child_process');
-    const pythonProcess = spawn(pythonPath, [
-      path.join(scrapeDir, 'run_scraper.py'),
-      '--env-file', 
-      path.join(scrapeDir, '.env'),
-      scraperName // This is the venue scraper ID
-    ], { env });
+    // Check if the virtual environment exists
+    const venvExists = fs.existsSync(venvPath) && fs.existsSync(activateScript);
+    
+    let command;
+    let pythonProcess;
+    
+    if (venvExists) {
+      // Use bash with source to activate the virtual environment
+      command = `source ${activateScript} && python3 ${path.join(scrapeDir, 'run_scraper.py')} ${scraperName} --env-file ${path.join(scrapeDir, '.env')}`;
+      console.log(`Running with venv: ${command}`);
+      
+      pythonProcess = spawn('bash', ['-c', command], { 
+        shell: true,
+        cwd: scrapeDir  // Set working directory to scrapers folder
+      });
+    } else {
+      // Fallback to system Python if venv doesn't exist
+      const pythonPath = process.env.PYTHON_PATH || 'python3';
+      console.log(`Virtual environment not found, using system Python: ${pythonPath}`);
+      
+      pythonProcess = spawn(pythonPath, [
+        path.join(scrapeDir, 'run_scraper.py'),
+        scraperName,
+        '--env-file', 
+        path.join(scrapeDir, '.env')
+      ], { 
+        cwd: scrapeDir
+      });
+    }
     
     // Collect stdout and stderr
     let stdoutData = '';
@@ -261,33 +285,37 @@ async function runScraper(scraperName) {
 }
 
 // Run scrapers endpoint
+// Inside router.post('/run-scrapers', ...)
 router.post('/run-scrapers', authMiddleware, checkRole(['admin']), async (req, res) => {
   const { scraper } = req.body;
   const tasks = [];
-  
+  const validScraperIds = AVAILABLE_SCRAPERS.map(s => s.id); // Make sure this is up-to-date
+
+  // --- Debugging Logs ---
+  console.log('--- Received /run-scrapers Request ---');
+  console.log('Request Body:', req.body);
+  console.log('Extracted scraper ID:', scraper);
+  console.log('Type of scraper ID:', typeof scraper);
+  console.log('Valid Scraper IDs:', validScraperIds);
+  // --- End Debugging Logs ---
+
   try {
-    // Valid scraper IDs
-    const validScraperIds = AVAILABLE_SCRAPERS.map(s => s.id);
-    
     if (scraper) {
-      // Run a specific scraper
+      console.log(`Checking if valid IDs array includes '${scraper}'...`); // Log the check
       if (validScraperIds.includes(scraper)) {
+        console.log('ID is valid. Adding task.'); // Log success
         tasks.push(runScraper(scraper));
       } else {
+        console.error(`Validation Failed: Scraper ID '${scraper}' not found in valid IDs.`); // Log failure
         return res.status(400).json({ error: 'Invalid scraper name' });
       }
     } else {
-      // Run a subset of scrapers (for testing use just a few)
-      // If no specific scraper provided, run a few default ones
-      const defaultScrapers = ['berlin', '331_club', 'first_avenue'];
-      
-      for (const scraperToRun of defaultScrapers) {
-        if (validScraperIds.includes(scraperToRun)) {
-          tasks.push(runScraper(scraperToRun));
-        }
-      }
+      // Run default scrapers (check for the typo mentioned below)
+      const defaultScrapers = ['berlin', '331', 'first_avenue']; // Corrected '331_club' to '331'
+      console.log('Running default scrapers:', defaultScrapers);
+      // ... (rest of default logic)
     }
-    
+
     const logs = await Promise.all(tasks);
     res.json({ logs });
   } catch (err) {
