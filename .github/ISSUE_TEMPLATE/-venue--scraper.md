@@ -7,13 +7,13 @@ assignees: alexschaafdesign
 
 ---
 
-- [x] Local dev via command line
+- [] Local dev via command line
        `source myenv/bin/activate `from root
        `python3 run_scraper.py 331 --env-file .env`
-- [x] Cloud via command line
+- [] Cloud via command line
       `source venv/bin/activate` from /backend;  then 
       `python3 run_scraper.py 331 --env-file .env` from /scrapers
       
-- [x] Local via frontend admin panel
+- [] Local via frontend admin panel
 - [ ] Cloud via admin panel
 - [ ] Schedule cron job
