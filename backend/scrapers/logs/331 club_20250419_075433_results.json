@@ -1,0 +1,19 @@
+{
+  "scraper_name": "331_club",
+  "success": false,
+  "start_time": "2025-04-19T07:54:33.070201",
+  "end_time": "2025-04-19T07:54:36.077669",
+  "duration_seconds": 3.007468,
+  "added_count": 0,
+  "updated_count": 0,
+  "duplicate_count": 0,
+  "error_count": 3,
+  "added_shows": [],
+  "updated_shows": [],
+  "errors": [
+    "Error setting up database: connection to server at \"localhost\" (::1), port 5432 failed: FATAL:  role \"postgres\" does not exist\n",
+    "Error during setup: connection to server at \"localhost\" (::1), port 5432 failed: FATAL:  role \"postgres\" does not exist\n",
+    "Error during scraping: Error during setup: connection to server at \"localhost\" (::1), port 5432 failed: FATAL:  role \"postgres\" does not exist\n"
+  ],
+  "log_file": "/Users/musicdaddy/Desktop/venues/backend/scrapers/logs/331 club_20250419_075433.log"
+}
