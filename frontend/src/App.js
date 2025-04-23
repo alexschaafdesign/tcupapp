@@ -66,6 +66,7 @@ import { MessageProvider } from "./pages/DirectMessages.js/MessageBadge.js";
 import PublicRoute from "./PublicRoute.js";
 import DigitalZine from "./pages/DigitalZine.js";
 import RadioResourcesPage from "./pages/Resources/RadioResources.js";
+import PressResourcesPage from "./pages/Resources/PressResources.js";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
@@ -161,6 +162,8 @@ function App() {
           <Route path="sessionmusicians/:id" element={<SessionMusicianProfile />} />
           <Route path="zine" element={<DigitalZine />} />
           <Route path="radio" element={<RadioResourcesPage />} />
+          <Route path="press" element={<PressResourcesPage />} />
+
 
 
 
