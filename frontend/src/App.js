@@ -66,6 +66,7 @@ import { MessageProvider } from "./pages/DirectMessages.js/MessageBadge.js";
 import PullToRefresh from "./components/PullToRefresh.js";
 import PublicRoute from "./PublicRoute.js";
 import DigitalZine from "./pages/DigitalZine.js";
+import RadioResourcesPage from "./pages/Resources/RadioResources.js";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
@@ -169,6 +170,8 @@ function App() {
           <Route path="sessionmusicians" element={<SessionMusiciansTable />} />
           <Route path="sessionmusicians/:id" element={<SessionMusicianProfile />} />
           <Route path="zine" element={<DigitalZine />} />
+          <Route path="radio" element={<RadioResourcesPage />} />
+
 
 
           {/* Add other routes you want to be public */}
