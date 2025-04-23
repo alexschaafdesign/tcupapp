@@ -67,6 +67,7 @@ import PublicRoute from "./PublicRoute.js";
 import DigitalZine from "./pages/DigitalZine.js";
 import RadioResourcesPage from "./pages/Resources/RadioResources.js";
 import PressResourcesPage from "./pages/Resources/PressResources.js";
+import VenuesTableEmbed from "./pages/Venues/VenuesTableEmbed.js";
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
@@ -141,7 +142,7 @@ function App() {
           <Route path="/shows/:id" element={<ShowProfile />} />
           <Route path="/bands" element={<FullBandList />} />
           <Route path="/bands/:bandSlug" element={<BandProfile />} />
-          <Route path="/venues" element={<VenuesTable />} />
+          <Route path="/venues" element={<VenuesTableEmbed />} />
           <Route path="/venues/:id" element={<VenueProfile />} />
           <Route path="/about" element={<AboutTCUP />} />
           <Route path="/chat" element={<MainChatPage />} />
