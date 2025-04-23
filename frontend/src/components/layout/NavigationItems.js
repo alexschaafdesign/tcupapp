@@ -15,6 +15,7 @@ import React from "react";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import NewspaperIcon from '@mui/icons-material/Newspaper';
+import RadioIcon from '@mui/icons-material/Radio';
 
 
 
@@ -27,7 +28,9 @@ const getNavLinks = (isDevMode) => {
     resourceLinks: [
       { text: "venues", path: "/venues", icon: <PlaceIcon fontSize="small" /> },
       { text: "session musicians", path: "/sessionmusicians", icon: <MusicNoteIcon fontSize="small" /> },
-      { text: "flyering", path: "/flyering", icon: <CampaignIcon fontSize="small" /> }
+      { text: "flyering", path: "/flyering", icon: <CampaignIcon fontSize="small" /> },
+      { text: "radio", path: "/radio", icon: <RadioIcon fontSize="small" /> }
+
     ].map(link => ({
       ...link,
       disabled: !isDevMode && link.devOnly,
