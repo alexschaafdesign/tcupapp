@@ -69,6 +69,8 @@ import DigitalZine from "./pages/DigitalZine.js";
 import RadioResourcesPage from "./pages/Resources/RadioResources.js";
 import PressResourcesPage from "./pages/Resources/PressResources.js";
 import VenuesTableEmbed from "./pages/Venues/VenuesTableEmbed.js";
+import DigitalZine3 from "./pages/DigitalZine3.js";
+
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
@@ -166,12 +168,12 @@ function App() {
           <Route path="advance" element={<TCUPAdvance />} />
           <Route path="resources" element={<Resources />} />
           <Route path="vrc" element={<VRCForm />} />
-          <Route path="newsletter" element={<DigitalZine />} />
+          <Route path="newsletter" element={<DigitalZine3 />} />
           <Route path="calendar" element={<CalendarEvents />} />
           <Route path="flyering" element={<FlyeringTable />} />
           <Route path="sessionmusicians" element={<SessionMusiciansTable />} />
           <Route path="sessionmusicians/:id" element={<SessionMusicianProfile />} />
-          <Route path="zine" element={<DigitalZine />} />
+          <Route path="zine" element={<DigitalZine3 />} />
           <Route path="radio" element={<RadioResourcesPage />} />
           <Route path="press" element={<PressResourcesPage />} />
 
