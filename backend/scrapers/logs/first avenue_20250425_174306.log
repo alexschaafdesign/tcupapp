@@ -1,0 +1,1102 @@
+2025-04-25 17:43:06,268 - First AvenueScraper - INFO - Setting up scraper for First Avenue
+2025-04-25 17:43:08,756 - First AvenueScraper - INFO - Chrome initialized successfully
+2025-04-25 17:43:08,757 - First AvenueScraper - INFO - Connecting to database
+2025-04-25 17:43:09,068 - First AvenueScraper - INFO - Getting venue ID for First Avenue
+2025-04-25 17:43:09,117 - First AvenueScraper - INFO - Venue ID for First Avenue: 8
+2025-04-25 17:43:09,119 - First AvenueScraper - INFO - Setup complete for First Avenue
+2025-04-25 17:43:09,119 - First AvenueScraper - INFO - Processing URL: https://first-avenue.com/shows/?post_type=event&start_date=20250401
+2025-04-25 17:43:10,258 - First AvenueScraper - INFO - Request successful. Parsing shows...
+2025-04-25 17:43:10,389 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-sarah-and-the-sundays/
+2025-04-25 17:43:11,615 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-sarah-and-the-sundays/
+2025-04-25 17:43:11,883 - First AvenueScraper - INFO - Added event: Sarah and the Sundays, The Slaps on 2025-04-01 20:00:00
+2025-04-25 17:43:11,883 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-the-birthday-massacre/
+2025-04-25 17:43:13,440 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-the-birthday-massacre/
+2025-04-25 17:43:13,754 - First AvenueScraper - INFO - Updated event: The Birthday Massacre, Essenger, Magic Wands on 2025-04-02 20:00:00
+2025-04-25 17:43:13,754 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-sir-woman/
+2025-04-25 17:43:13,949 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-sir-woman/
+2025-04-25 17:43:14,225 - First AvenueScraper - INFO - Updated event: Sir Woman, Dylan Meek, Uncle Roy & Spice on 2025-04-02 20:00:00
+2025-04-25 17:43:14,226 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2024-04-arts-fishing-club/
+2025-04-25 17:43:14,425 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2024-04-arts-fishing-club/
+2025-04-25 17:43:14,707 - First AvenueScraper - INFO - Updated event: Arts Fishing Club, Brother Elsey on 2025-04-02 20:00:00
+2025-04-25 17:43:14,707 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-zack-fox/
+2025-04-25 17:43:14,906 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-zack-fox/
+2025-04-25 17:43:15,183 - First AvenueScraper - INFO - Updated event: Zack Fox, echo on 2025-04-02 20:00:00
+2025-04-25 17:43:15,183 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-the-army-the-navy/
+2025-04-25 17:43:15,386 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-the-army-the-navy/
+2025-04-25 17:43:15,631 - First AvenueScraper - INFO - Added event: The Army, The Navy, Aggie Miller on 2025-04-03 19:30:00
+2025-04-25 17:43:15,632 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-caravan-palace/
+2025-04-25 17:43:15,835 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-caravan-palace/
+2025-04-25 17:43:16,087 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-lil-skies/
+2025-04-25 17:43:16,297 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-lil-skies/
+2025-04-25 17:43:16,564 - First AvenueScraper - INFO - Updated event: Lil Skies, Fergie Baby, $AM, sounds byDJ Rello on 2025-04-03 20:00:00
+2025-04-25 17:43:16,564 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-samoht/
+2025-04-25 17:43:17,792 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-samoht/
+2025-04-25 17:43:18,066 - First AvenueScraper - INFO - Updated event: SAMOHT on 2025-04-03 20:00:00
+2025-04-25 17:43:18,067 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-bright-eyes/
+2025-04-25 17:43:19,283 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-bright-eyes/
+2025-04-25 17:43:19,534 - First AvenueScraper - INFO - Added event: Bright Eyes, Cursive on 2025-04-04 19:45:00
+2025-04-25 17:43:19,534 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-tamino/
+2025-04-25 17:43:19,732 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-tamino/
+2025-04-25 17:43:20,010 - First AvenueScraper - INFO - Updated event: Tamino, plus +.+ on 2025-04-04 20:00:00
+2025-04-25 17:43:20,011 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-la-lom/
+2025-04-25 17:43:20,234 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-la-lom/
+2025-04-25 17:43:20,492 - First AvenueScraper - INFO - Updated event: LA LOM, El Marchante on 2025-04-04 20:00:00
+2025-04-25 17:43:20,493 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-marlon-funaki/
+2025-04-25 17:43:21,757 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-marlon-funaki/
+2025-04-25 17:43:22,024 - First AvenueScraper - INFO - Updated event: Marlon Funaki, The Back Alley on 2025-04-04 20:00:00
+2025-04-25 17:43:22,024 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-impaler/
+2025-04-25 17:43:23,136 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-impaler/
+2025-04-25 17:43:23,429 - First AvenueScraper - INFO - Updated event: Impaler, Dumpster Juice, Extermination Day (Members of Suffering Hour and ex-Satan Satyrs) on 2025-04-04 20:00:00
+2025-04-25 17:43:23,430 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-the-suburbs/
+2025-04-25 17:43:24,652 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-the-suburbs/
+2025-04-25 17:43:24,925 - First AvenueScraper - INFO - Updated event: The Suburbs, Black Widows on 2025-04-04 20:00:00
+2025-04-25 17:43:24,926 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-anxious/
+2025-04-25 17:43:25,154 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-anxious/
+2025-04-25 17:43:25,421 - First AvenueScraper - INFO - Added event: Anxious, Ultra Q, Stateside, Everybody Takes One on 2025-04-05 19:30:00
+2025-04-25 17:43:25,422 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-the-hard-quartet/
+2025-04-25 17:43:25,635 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-the-hard-quartet/
+2025-04-25 17:43:25,925 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-tank-and-the-bangas/
+2025-04-25 17:43:26,170 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-tank-and-the-bangas/
+2025-04-25 17:43:26,480 - First AvenueScraper - INFO - Updated event: Tank and The Bangas, DJ Zeus on 2025-04-05 20:00:00
+2025-04-25 17:43:26,481 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-grieves/
+2025-04-25 17:43:27,752 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-grieves/
+2025-04-25 17:43:28,041 - First AvenueScraper - INFO - Updated event: Grieves, Curci, Nobi & Khingz on 2025-04-05 20:00:00
+2025-04-25 17:43:28,042 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-rebecca-black/
+2025-04-25 17:43:28,869 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-rebecca-black/
+2025-04-25 17:43:29,124 - First AvenueScraper - INFO - Added event: Rebecca Black, Blue Hawaii on 2025-04-05 20:30:00
+2025-04-25 17:43:29,124 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/event-2025-04-jack-white-mon/
+2025-04-25 17:43:29,325 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/event-2025-04-jack-white-mon/
+2025-04-25 17:43:29,575 - First AvenueScraper - INFO - Added event: JACK WHITE on 2025-04-07 19:30:00
+2025-04-25 17:43:29,576 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-ani-difranco/
+2025-04-25 17:43:29,781 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-ani-difranco/
+2025-04-25 17:43:30,037 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/event-2025-04-jack-white-tue/
+2025-04-25 17:43:31,177 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/event-2025-04-jack-white-tue/
+2025-04-25 17:43:31,465 - First AvenueScraper - INFO - Updated event: JACK WHITE on 2025-04-08 19:30:00
+2025-04-25 17:43:31,466 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-sawyer-hill/
+2025-04-25 17:43:31,678 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-sawyer-hill/
+2025-04-25 17:43:31,930 - First AvenueScraper - INFO - Added event: Sawyer Hill, SWEET SPINE on 2025-04-08 20:00:00
+2025-04-25 17:43:31,931 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-jackie-greene/
+2025-04-25 17:43:32,135 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-jackie-greene/
+2025-04-25 17:43:32,406 - First AvenueScraper - INFO - Updated event: Jackie Greene, Molly Maher on 2025-04-08 20:00:00
+2025-04-25 17:43:32,407 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-evening-elephants/
+2025-04-25 17:43:33,227 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-evening-elephants/
+2025-04-25 17:43:33,486 - First AvenueScraper - INFO - Added event: Samy Sharif, Of The Orchard on 2025-04-08 20:15:00
+2025-04-25 17:43:33,487 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-jazz-is-dead-feat-ebo-taylor-pat-thomas/
+2025-04-25 17:43:33,693 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-jazz-is-dead-feat-ebo-taylor-pat-thomas/
+2025-04-25 17:43:33,949 - First AvenueScraper - INFO - Added event: Ebo Taylor, Pat Thomas, DJ Goldyrocks (of Black Market Brass) on 2025-04-09 20:00:00
+2025-04-25 17:43:33,950 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-sam-blasucci-and-julia-zivic/
+2025-04-25 17:43:34,151 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-sam-blasucci-and-julia-zivic/
+2025-04-25 17:43:34,422 - First AvenueScraper - INFO - Updated event: Sam Blasucci, Julia Zivic on 2025-04-09 20:00:00
+2025-04-25 17:43:34,423 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-the-lil-smokies/
+2025-04-25 17:43:35,470 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-the-lil-smokies/
+2025-04-25 17:43:35,745 - First AvenueScraper - INFO - Updated event: The Lil Smokies, Danno Simpson on 2025-04-09 20:00:00
+2025-04-25 17:43:35,750 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-alan-sparhawk-mount-eerie/
+2025-04-25 17:43:35,975 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-alan-sparhawk-mount-eerie/
+2025-04-25 17:43:36,232 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-matt-hansen/
+2025-04-25 17:43:36,491 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-matt-hansen/
+2025-04-25 17:43:36,748 - First AvenueScraper - INFO - Added event: Matt Hansen, Steinza on 2025-04-10 19:30:00
+2025-04-25 17:43:36,748 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-the-newest-olympian/
+2025-04-25 17:43:37,951 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-the-newest-olympian/
+2025-04-25 17:43:38,198 - First AvenueScraper - INFO - Added event: The Newest Olympian on 2025-04-10 20:00:00
+2025-04-25 17:43:38,198 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-fust-and-merce-lemon/
+2025-04-25 17:43:39,069 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-fust-and-merce-lemon/
+2025-04-25 17:43:39,336 - First AvenueScraper - INFO - Updated event: Merce Lemon, Fust, Nona Invie on 2025-04-10 20:00:00
+2025-04-25 17:43:39,336 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-osamason/
+2025-04-25 17:43:39,534 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-osamason/
+2025-04-25 17:43:39,795 - First AvenueScraper - INFO - Added event: OsamaSon on 2025-04-11 19:00:00
+2025-04-25 17:43:39,795 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-hey-nothing/
+2025-04-25 17:43:40,592 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-hey-nothing/
+2025-04-25 17:43:40,871 - First AvenueScraper - INFO - Updated event: hey, nothing, Worry Club on 2025-04-11 19:00:00
+2025-04-25 17:43:40,872 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-maddie-zahm/
+2025-04-25 17:43:41,079 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-maddie-zahm/
+2025-04-25 17:43:41,339 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-canaan-cox/
+2025-04-25 17:43:42,842 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-canaan-cox/
+2025-04-25 17:43:43,092 - First AvenueScraper - INFO - Added event: Canaan Cox, Jake Simon on 2025-04-11 20:30:00
+2025-04-25 17:43:43,093 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-the-weather-station/
+2025-04-25 17:43:45,001 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-the-weather-station/
+2025-04-25 17:43:45,388 - First AvenueScraper - INFO - Updated event: The Weather Station, Sister Ray on 2025-04-11 20:30:00
+2025-04-25 17:43:45,390 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-the-linda-lindas/
+2025-04-25 17:43:45,663 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-the-linda-lindas/
+2025-04-25 17:43:45,905 - First AvenueScraper - INFO - Added event: The Linda Lindas, Pinkshift on 2025-04-12 19:30:00
+2025-04-25 17:43:45,906 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-ninja-sex-party/
+2025-04-25 17:43:46,117 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-ninja-sex-party/
+2025-04-25 17:43:46,370 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-visions-of-atlantis/
+2025-04-25 17:43:46,571 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-visions-of-atlantis/
+2025-04-25 17:43:46,846 - First AvenueScraper - INFO - Updated event: Visions of Atlantis, Seraina Telli on 2025-04-12 20:00:00
+2025-04-25 17:43:46,846 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-kevin-atwater/
+2025-04-25 17:43:47,053 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-kevin-atwater/
+2025-04-25 17:43:47,302 - First AvenueScraper - INFO - Added event: Kevin Atwater, Aubory Bugg on 2025-04-12 20:30:00
+2025-04-25 17:43:47,303 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-wheatus/
+2025-04-25 17:43:48,272 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-wheatus/
+2025-04-25 17:43:48,531 - First AvenueScraper - INFO - Added event: Wheatus, Rematch, Scorched Waves on 2025-04-13 20:00:00
+2025-04-25 17:43:48,531 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-shordie-shordie/
+2025-04-25 17:43:48,735 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-shordie-shordie/
+2025-04-25 17:43:49,006 - First AvenueScraper - INFO - Updated event: Shordie Shordie, DJ Kam Bennett, DJ Lou on 2025-04-13 20:00:00
+2025-04-25 17:43:49,006 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-sarah-kinsley/
+2025-04-25 17:43:49,206 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-sarah-kinsley/
+2025-04-25 17:43:49,559 - First AvenueScraper - INFO - Updated event: Sarah Kinsley, Charlotte Rose Benjamin on 2025-04-13 20:00:00
+2025-04-25 17:43:49,560 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-griffin-william-sherry/
+2025-04-25 17:43:49,766 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-griffin-william-sherry/
+2025-04-25 17:43:50,048 - First AvenueScraper - INFO - Updated event: Griffin William Sherry, The Holy North on 2025-04-13 20:00:00
+2025-04-25 17:43:50,048 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-james-mcmurtry/
+2025-04-25 17:43:50,265 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-james-mcmurtry/
+2025-04-25 17:43:50,516 - First AvenueScraper - INFO - Added event: James McMurtry, BettySoo on 2025-04-15 20:00:00
+2025-04-25 17:43:50,518 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-the-criticals/
+2025-04-25 17:43:51,570 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-the-criticals/
+2025-04-25 17:43:51,845 - First AvenueScraper - INFO - Updated event: The Criticals on 2025-04-15 20:00:00
+2025-04-25 17:43:51,846 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-improvement-movement/
+2025-04-25 17:43:53,096 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-improvement-movement/
+2025-04-25 17:43:53,373 - First AvenueScraper - INFO - Updated event: Improvement Movement, Ryan Gebhardt on 2025-04-15 20:00:00
+2025-04-25 17:43:53,374 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-sofia-isella/
+2025-04-25 17:43:53,582 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-sofia-isella/
+2025-04-25 17:43:53,834 - First AvenueScraper - INFO - Added event: SOFIA ISELLA, Brendan Abernathy on 2025-04-16 19:00:00
+2025-04-25 17:43:53,834 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-big-richard/
+2025-04-25 17:43:54,087 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-big-richard/
+2025-04-25 17:43:54,346 - First AvenueScraper - INFO - Updated event: Big Richard, Caleb Caudle on 2025-04-16 20:00:00
+2025-04-25 17:43:54,346 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-vincent-mason/
+2025-04-25 17:43:54,555 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-vincent-mason/
+2025-04-25 17:43:54,830 - First AvenueScraper - INFO - Updated event: Vincent Mason, Cole Goodwin on 2025-04-16 20:00:00
+2025-04-25 17:43:54,830 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-beneath-green/
+2025-04-25 17:43:55,032 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-beneath-green/
+2025-04-25 17:43:55,335 - First AvenueScraper - INFO - Added event: Beneath Green, Matcha Fever, Tarias and the Sound, Self Titled on 2025-04-17 19:30:00
+2025-04-25 17:43:55,335 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-elderbrook/
+2025-04-25 17:43:55,535 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-elderbrook/
+2025-04-25 17:43:55,797 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2024-04-the-lagoons/
+2025-04-25 17:43:57,499 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2024-04-the-lagoons/
+2025-04-25 17:43:57,771 - First AvenueScraper - INFO - Updated event: The Lagoons on 2025-04-17 20:00:00
+2025-04-25 17:43:57,772 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-goldie-live/
+2025-04-25 17:43:57,978 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-goldie-live/
+2025-04-25 17:43:58,231 - First AvenueScraper - INFO - Added event: Goldie, Submotive on 2025-04-17 21:00:00
+2025-04-25 17:43:58,232 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-dawes/
+2025-04-25 17:44:01,989 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-dawes/
+2025-04-25 17:44:02,235 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-tropidelic-and-ballyhoo/
+2025-04-25 17:44:02,457 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-tropidelic-and-ballyhoo/
+2025-04-25 17:44:02,709 - First AvenueScraper - INFO - Added event: Tropidelic, Ballyhoo!, Joey Harkum on 2025-04-18 19:30:00
+2025-04-25 17:44:02,709 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-sam-macpherson/
+2025-04-25 17:44:03,953 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-sam-macpherson/
+2025-04-25 17:44:04,299 - First AvenueScraper - INFO - Updated event: Sam MacPherson, Abby Powledge on 2025-04-18 19:30:00
+2025-04-25 17:44:04,310 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-mssv/
+2025-04-25 17:44:04,546 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-mssv/
+2025-04-25 17:44:04,785 - First AvenueScraper - INFO - Added event: mssv, Charlie Parr Trio (ft. Greg Norton and Billy Dankert) on 2025-04-18 20:00:00
+2025-04-25 17:44:04,785 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-brenn/
+2025-04-25 17:44:05,027 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-brenn/
+2025-04-25 17:44:05,279 - First AvenueScraper - INFO - Added event: BRENN!, asiris on 2025-04-19 19:30:00
+2025-04-25 17:44:05,280 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-bob-mould-band/
+2025-04-25 17:44:05,488 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-bob-mould-band/
+2025-04-25 17:44:05,743 - First AvenueScraper - INFO - Added event: Bob Mould Band, Poster Children on 2025-04-19 20:00:00
+2025-04-25 17:44:05,743 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-corb-lund-hayes-carll/
+2025-04-25 17:44:05,952 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-corb-lund-hayes-carll/
+2025-04-25 17:44:06,228 - First AvenueScraper - INFO - Updated event: Corb Lund, Hayes Carll on 2025-04-19 20:00:00
+2025-04-25 17:44:06,229 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-your-neighbors/
+2025-04-25 17:44:07,644 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-your-neighbors/
+2025-04-25 17:44:07,910 - First AvenueScraper - INFO - Added event: Your Neighbors, dreamfone on 2025-04-19 20:30:00
+2025-04-25 17:44:07,910 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-ben-nichols-rick-steff/
+2025-04-25 17:44:08,119 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-ben-nichols-rick-steff/
+2025-04-25 17:44:08,388 - First AvenueScraper - INFO - Updated event: Ben Nichols & Rick Steff, Colin Campbell (of The Shackletons) on 2025-04-19 20:30:00
+2025-04-25 17:44:08,389 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-knox/
+2025-04-25 17:44:10,382 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-knox/
+2025-04-25 17:44:10,644 - First AvenueScraper - INFO - Added event: Knox, The Wldlfe on 2025-04-20 19:30:00
+2025-04-25 17:44:10,644 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-james-bay/
+2025-04-25 17:44:10,853 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-james-bay/
+2025-04-25 17:44:11,109 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-boywithuke/
+2025-04-25 17:44:11,326 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-boywithuke/
+2025-04-25 17:44:11,588 - First AvenueScraper - INFO - Added event: BoyWithUke, Ethan Bortnick on 2025-04-22 19:00:00
+2025-04-25 17:44:11,588 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-john-splithoff/
+2025-04-25 17:44:12,846 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-john-splithoff/
+2025-04-25 17:44:13,106 - First AvenueScraper - INFO - Updated event: John Splithoff, Evann McIntosh on 2025-04-22 20:00:00
+2025-04-25 17:44:13,106 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-smoking-popes-and-off-with-their-heads/
+2025-04-25 17:44:14,376 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-smoking-popes-and-off-with-their-heads/
+2025-04-25 17:44:14,721 - First AvenueScraper - INFO - Updated event: Off With Their Heads, Smoking Popes, Mary Jam on 2025-04-22 20:00:00
+2025-04-25 17:44:14,722 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-pattie-gonia-presents-save-her/
+2025-04-25 17:44:14,914 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-pattie-gonia-presents-save-her/
+2025-04-25 17:44:15,174 - First AvenueScraper - INFO - Updated event: Pattie Gonia on 2025-04-22 20:00:00
+2025-04-25 17:44:15,175 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-vlad-holiday/
+2025-04-25 17:44:16,619 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-vlad-holiday/
+2025-04-25 17:44:16,936 - First AvenueScraper - INFO - Updated event: Vlad Holiday, New Translations on 2025-04-22 20:00:00
+2025-04-25 17:44:16,937 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-jane-remover/
+2025-04-25 17:44:17,145 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-jane-remover/
+2025-04-25 17:44:17,397 - First AvenueScraper - INFO - Added event: Jane Remover, Dazegxd, d0llywood1 on 2025-04-23 19:00:00
+2025-04-25 17:44:17,397 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-miya-folick/
+2025-04-25 17:44:17,600 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-miya-folick/
+2025-04-25 17:44:17,879 - First AvenueScraper - INFO - Updated event: Miya Folick, Olivia Kaplan on 2025-04-23 19:00:00
+2025-04-25 17:44:17,880 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-dean-lewis/
+2025-04-25 17:44:18,079 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-dean-lewis/
+2025-04-25 17:44:18,339 - First AvenueScraper - INFO - Added event: Dean Lewis, Henry Moodie on 2025-04-23 19:30:00
+2025-04-25 17:44:18,339 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-vincent-neil-emerson/
+2025-04-25 17:44:18,551 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-vincent-neil-emerson/
+2025-04-25 17:44:18,805 - First AvenueScraper - INFO - Added event: Vincent Neil Emerson, Leon Majcen on 2025-04-23 20:00:00
+2025-04-25 17:44:18,806 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-varietopia-with-paul-f-tompkins/
+2025-04-25 17:44:19,012 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-varietopia-with-paul-f-tompkins/
+2025-04-25 17:44:19,275 - First AvenueScraper - INFO - Added event: Varietopia, Paul F. Tompkins on 2025-04-24 20:00:00
+2025-04-25 17:44:19,275 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-cryogeyser/
+2025-04-25 17:44:19,474 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-cryogeyser/
+2025-04-25 17:44:19,745 - First AvenueScraper - INFO - Updated event: Cryogeyser, Flooding on 2025-04-24 20:00:00
+2025-04-25 17:44:19,746 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-deep-sea-diver/
+2025-04-25 17:44:19,959 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-deep-sea-diver/
+2025-04-25 17:44:20,239 - First AvenueScraper - INFO - Updated event: Deep Sea Diver, Byland on 2025-04-24 20:00:00
+2025-04-25 17:44:20,240 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2024-04-ty-segall-solo/
+2025-04-25 17:44:20,444 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2024-04-ty-segall-solo/
+2025-04-25 17:44:20,687 - First AvenueScraper - INFO - Added event: Ty Segall, Mikal Cronin (Solo) on 2025-04-25 20:00:00
+2025-04-25 17:44:20,687 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-yukimi-of-little-dragon/
+2025-04-25 17:44:20,885 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-yukimi-of-little-dragon/
+2025-04-25 17:44:21,157 - First AvenueScraper - INFO - Updated event: Yukimi (of Little Dragon), AKKO on 2025-04-25 20:00:00
+2025-04-25 17:44:21,158 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-murs/
+2025-04-25 17:44:21,373 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-murs/
+2025-04-25 17:44:21,628 - First AvenueScraper - INFO - Added event: Murs, Platinum Max, Noa James, 3rd Wrld on 2025-04-25 20:30:00
+2025-04-25 17:44:21,629 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-them-coulee-boys/
+2025-04-25 17:44:21,867 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-them-coulee-boys/
+2025-04-25 17:44:22,208 - First AvenueScraper - INFO - Updated event: Them Coulee Boys, Janakey on 2025-04-25 20:30:00
+2025-04-25 17:44:22,209 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-flip-phone-the-powerpop-girls/
+2025-04-25 17:44:22,435 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-flip-phone-the-powerpop-girls/
+2025-04-25 17:44:22,741 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-djo/
+2025-04-25 17:44:22,941 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-djo/
+2025-04-25 17:44:23,200 - First AvenueScraper - INFO - Added event: Djo, Post Animal on 2025-04-26 19:00:00
+2025-04-25 17:44:23,201 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-don-quixote-sat/
+2025-04-25 17:44:23,401 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-don-quixote-sat/
+2025-04-25 17:44:23,655 - First AvenueScraper - INFO - Added event: Metropolitan Ballet presentsDon Quixote on 2025-04-26 19:30:00
+2025-04-25 17:44:23,655 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-chloe-moriondo/
+2025-04-25 17:44:23,870 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-chloe-moriondo/
+2025-04-25 17:44:24,162 - First AvenueScraper - INFO - Updated event: Chloe Moriondo, Sex Week on 2025-04-26 19:30:00
+2025-04-25 17:44:24,162 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-the-bright-light-social-hour/
+2025-04-25 17:44:24,368 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-the-bright-light-social-hour/
+2025-04-25 17:44:24,624 - First AvenueScraper - INFO - Added event: The Bright Light Social Hour, TABAH on 2025-04-26 20:00:00
+2025-04-25 17:44:24,624 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-jeremy-messersmith/
+2025-04-25 17:44:24,810 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-jeremy-messersmith/
+2025-04-25 17:44:25,147 - First AvenueScraper - INFO - Updated event: jeremy messersmith, The Nunnery on 2025-04-26 20:00:00
+2025-04-25 17:44:25,147 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-maribou-state/
+2025-04-25 17:44:25,353 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-maribou-state/
+2025-04-25 17:44:25,611 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-keller-williams/
+2025-04-25 17:44:25,816 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-keller-williams/
+2025-04-25 17:44:26,096 - First AvenueScraper - INFO - Updated event: Keller Williams on 2025-04-26 20:30:00
+2025-04-25 17:44:26,096 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-don-quixote-sun/
+2025-04-25 17:44:26,294 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-don-quixote-sun/
+2025-04-25 17:44:26,549 - First AvenueScraper - INFO - Added event: Metropolitan Ballet presentsDon Quixote on 2025-04-27 14:00:00
+2025-04-25 17:44:26,549 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-pardyalone/
+2025-04-25 17:44:26,749 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-pardyalone/
+2025-04-25 17:44:27,004 - First AvenueScraper - INFO - Added event: Pardyalone, Austin George, Jon Wiilde on 2025-04-27 19:00:00
+2025-04-25 17:44:27,005 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-killed-by-kiwis-admiral-fox-doll-chaser-and-lee-chenvert/
+2025-04-25 17:44:28,622 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-killed-by-kiwis-admiral-fox-doll-chaser-and-lee-chenvert/
+2025-04-25 17:44:28,877 - First AvenueScraper - INFO - Added event: Killed By Kiwis, Admiral Fox, Doll Chaser, Lee Chenvert on 2025-04-27 19:30:00
+2025-04-25 17:44:28,877 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-penny-and-sparrow/
+2025-04-25 17:44:29,091 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-penny-and-sparrow/
+2025-04-25 17:44:29,346 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-babyjake/
+2025-04-25 17:44:29,543 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-babyjake/
+2025-04-25 17:44:29,827 - First AvenueScraper - INFO - Updated event: BabyJake, tacklebox, The Dalmatian Club on 2025-04-27 20:00:00
+2025-04-25 17:44:29,828 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-ls-dunes/
+2025-04-25 17:44:30,070 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-ls-dunes/
+2025-04-25 17:44:30,320 - First AvenueScraper - INFO - Added event: L.S. Dunes, From Indian Lakes, Plague Vendor on 2025-04-28 19:00:00
+2025-04-25 17:44:30,320 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-awolnation/
+2025-04-25 17:44:30,545 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-awolnation/
+2025-04-25 17:44:30,811 - First AvenueScraper - INFO - Updated event: AWOLNATION, Bryce Fox, MAKUA on 2025-04-28 20:00:00
+2025-04-25 17:44:30,811 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-ben-kweller/
+2025-04-25 17:44:32,103 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-ben-kweller/
+2025-04-25 17:44:32,380 - First AvenueScraper - INFO - Updated event: Ben Kweller, cheese touch on 2025-04-28 20:00:00
+2025-04-25 17:44:32,380 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-savannah-conley/
+2025-04-25 17:44:32,600 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-savannah-conley/
+2025-04-25 17:44:32,872 - First AvenueScraper - INFO - Updated event: Savannah Conley, Lucky Kilmartin, Absolutely Yours on 2025-04-28 20:00:00
+2025-04-25 17:44:32,873 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-circa-waves-and-friday-pilots-club-tour/
+2025-04-25 17:44:34,044 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-circa-waves-and-friday-pilots-club-tour/
+2025-04-25 17:44:34,300 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-matthew-and-the-atlas/
+2025-04-25 17:44:35,234 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-matthew-and-the-atlas/
+2025-04-25 17:44:35,488 - First AvenueScraper - INFO - Added event: Matthew And The Atlas, Foreign Fields on 2025-04-29 20:00:00
+2025-04-25 17:44:35,488 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-la-witch/
+2025-04-25 17:44:35,700 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-la-witch/
+2025-04-25 17:44:35,982 - First AvenueScraper - INFO - Updated event: L.A. Witch, DAIISTAR on 2025-04-29 20:00:00
+2025-04-25 17:44:35,983 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-jesse-cook/
+2025-04-25 17:44:36,194 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-jesse-cook/
+2025-04-25 17:44:36,448 - First AvenueScraper - INFO - Added event: Jesse Cook on 2025-04-29 20:15:00
+2025-04-25 17:44:36,448 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-laura-jane-grace-the-mississippi-medicals/
+2025-04-25 17:44:36,666 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-laura-jane-grace-the-mississippi-medicals/
+2025-04-25 17:44:36,942 - First AvenueScraper - INFO - Updated event: Laura Jane Grace & The Mississippi Medicals, Alex Lahey, Rodeo Boys on 2025-04-30 20:00:00
+2025-04-25 17:44:36,942 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-husbands/
+2025-04-25 17:44:37,145 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-husbands/
+2025-04-25 17:44:37,425 - First AvenueScraper - INFO - Updated event: Husbands, JW Francis on 2025-04-30 20:00:00
+2025-04-25 17:44:37,426 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-04-saint-jhn/
+2025-04-25 17:44:37,630 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-04-saint-jhn/
+2025-04-25 17:44:37,911 - First AvenueScraper - INFO - Updated event: SAINt JHN, Jordan Hawkins on 2025-04-30 20:00:00
+2025-04-25 17:44:37,912 - First AvenueScraper - INFO - Processing URL: https://first-avenue.com/shows/?post_type=event&start_date=20250501
+2025-04-25 17:44:39,130 - First AvenueScraper - INFO - Request successful. Parsing shows...
+2025-04-25 17:44:39,340 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-wrecks/
+2025-04-25 17:44:40,396 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-wrecks/
+2025-04-25 17:44:40,653 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-vs-self/
+2025-04-25 17:44:41,844 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-vs-self/
+2025-04-25 17:44:42,087 - First AvenueScraper - INFO - Added event: Vs Self, Punxsutawney, Eudaemon on 2025-05-01 19:00:00
+2025-04-25 17:44:42,087 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-munson-fest/
+2025-04-25 17:44:42,302 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-munson-fest/
+2025-04-25 17:44:42,568 - First AvenueScraper - INFO - Added event: Chan Poling and Steve Roehm of The New Standards, Aby Wolf, Matt Wilson & his Orchestra, The Dust of Suns, Dylan Hicks, Special Guests TBA on 2025-05-01 19:30:00
+2025-04-25 17:44:42,568 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-lily-rose/
+2025-04-25 17:44:42,783 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-lily-rose/
+2025-04-25 17:44:43,040 - First AvenueScraper - INFO - Added event: Lily Rose, Payton Smith on 2025-05-01 20:00:00
+2025-04-25 17:44:43,041 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-save-ferris/
+2025-04-25 17:44:43,247 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-save-ferris/
+2025-04-25 17:44:43,533 - First AvenueScraper - INFO - Updated event: Save Ferris, Keep Flying on 2025-05-01 20:00:00
+2025-04-25 17:44:43,533 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-hold-steady-thu/
+2025-04-25 17:44:45,105 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-hold-steady-thu/
+2025-04-25 17:44:45,381 - First AvenueScraper - INFO - Updated event: The Hold Steady on 2025-05-01 20:00:00
+2025-04-25 17:44:45,382 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-caleb-gordon/
+2025-04-25 17:44:46,747 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-caleb-gordon/
+2025-04-25 17:44:47,003 - First AvenueScraper - INFO - Added event: Caleb Gordon on 2025-05-02 19:30:00
+2025-04-25 17:44:47,004 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-papooz/
+2025-04-25 17:44:48,573 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-papooz/
+2025-04-25 17:44:48,850 - First AvenueScraper - INFO - Updated event: Papooz, Cornelia Murr on 2025-05-02 20:00:00
+2025-04-25 17:44:48,851 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-zzzahara/
+2025-04-25 17:44:50,035 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-zzzahara/
+2025-04-25 17:44:50,306 - First AvenueScraper - INFO - Updated event: zzzahara, Pleasure Pill on 2025-05-02 20:00:00
+2025-04-25 17:44:50,307 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-hold-steady-fri/
+2025-04-25 17:44:50,506 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-hold-steady-fri/
+2025-04-25 17:44:50,781 - First AvenueScraper - INFO - Updated event: The Hold Steady on 2025-05-02 20:00:00
+2025-04-25 17:44:50,781 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-gabriel-rutledge/
+2025-04-25 17:44:51,881 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-gabriel-rutledge/
+2025-04-25 17:44:52,150 - First AvenueScraper - INFO - Updated event: Gabriel Rutledge, Grant Winkels on 2025-05-02 20:00:00
+2025-04-25 17:44:52,151 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-perfect-person/
+2025-04-25 17:44:52,360 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-perfect-person/
+2025-04-25 17:44:52,641 - First AvenueScraper - INFO - Updated event: Perfect Person on 2025-05-02 20:00:00
+2025-04-25 17:44:52,642 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-clap-your-hands-say-yeah/
+2025-04-25 17:44:52,854 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-clap-your-hands-say-yeah/
+2025-04-25 17:44:53,099 - First AvenueScraper - INFO - Added event: Clap Your Hands Say Yeah, Knifeplay on 2025-05-02 20:30:00
+2025-04-25 17:44:53,099 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-dj-peaceboii/
+2025-04-25 17:44:53,302 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-dj-peaceboii/
+2025-04-25 17:44:53,588 - First AvenueScraper - INFO - Updated event: DJ Peaceboii, 2Tone, Goldilock, Milo, Alexkai, YG SOLO, Big Boat Ski, Randy $avage, RudeBoy Solo, Dollaz Deniro, King Jandro on 2025-05-02 20:30:00
+2025-04-25 17:44:53,589 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-yhwh-nailgun/
+2025-04-25 17:44:53,791 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-yhwh-nailgun/
+2025-04-25 17:44:54,110 - First AvenueScraper - INFO - Added event: YHWH Nailgun, Morgan Garrett on 2025-05-03 19:00:00
+2025-04-25 17:44:54,110 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-ichiko-aoba/
+2025-04-25 17:44:54,309 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-ichiko-aoba/
+2025-04-25 17:44:54,587 - First AvenueScraper - INFO - Updated event: Ichiko Aoba, Owen Pallett on 2025-05-03 20:00:00
+2025-04-25 17:44:54,588 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-fox-stevenson/
+2025-04-25 17:44:54,801 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-fox-stevenson/
+2025-04-25 17:44:55,081 - First AvenueScraper - INFO - Updated event: Fox Stevenson, Yue on 2025-05-03 20:00:00
+2025-04-25 17:44:55,081 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-hold-steady-sat/
+2025-04-25 17:44:55,277 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-hold-steady-sat/
+2025-04-25 17:44:55,546 - First AvenueScraper - INFO - Updated event: The Hold Steady on 2025-05-03 20:00:00
+2025-04-25 17:44:55,546 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-reggie-watts-live/
+2025-04-25 17:44:56,683 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-reggie-watts-live/
+2025-04-25 17:44:56,940 - First AvenueScraper - INFO - Added event: Reggie Watts on 2025-05-03 20:30:00
+2025-04-25 17:44:56,941 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-hold-steady-sun/
+2025-04-25 17:44:58,037 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-hold-steady-sun/
+2025-04-25 17:44:58,293 - First AvenueScraper - INFO - Added event: The Hold Steady on 2025-05-04 17:00:00
+2025-04-25 17:44:58,293 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-nick-swardson/
+2025-04-25 17:44:58,503 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-nick-swardson/
+2025-04-25 17:44:58,750 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-ichiko-aoba-sun/
+2025-04-25 17:45:00,382 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-ichiko-aoba-sun/
+2025-04-25 17:45:00,634 - First AvenueScraper - INFO - Added event: Ichiko Aoba, Owen Pallett on 2025-05-04 20:00:00
+2025-04-25 17:45:00,634 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-fame-on-fire/
+2025-04-25 17:45:02,090 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-fame-on-fire/
+2025-04-25 17:45:02,381 - First AvenueScraper - INFO - Added event: Fame on Fire, Halocene, Archetypes Collide on 2025-05-05 18:30:00
+2025-04-25 17:45:02,382 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-citizen-soldier/
+2025-04-25 17:45:03,846 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-citizen-soldier/
+2025-04-25 17:45:04,096 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-lucy-dacus/
+2025-04-25 17:45:04,297 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-lucy-dacus/
+2025-04-25 17:45:04,556 - First AvenueScraper - INFO - Added event: Lucy Dacus, Katie Gavin, jasmine.4.t on 2025-05-05 19:15:00
+2025-04-25 17:45:04,557 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-shayfer-james/
+2025-04-25 17:45:05,800 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-shayfer-james/
+2025-04-25 17:45:06,056 - First AvenueScraper - INFO - Added event: Shayfer James, Sparkbird on 2025-05-05 19:30:00
+2025-04-25 17:45:06,056 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-magic-sword/
+2025-04-25 17:45:07,635 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-magic-sword/
+2025-04-25 17:45:07,893 - First AvenueScraper - INFO - Added event: Magic Sword, Starbenders, Mega Ran, North Innsbruck (DJ Set) on 2025-05-05 20:00:00
+2025-04-25 17:45:07,893 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-trousdale/
+2025-04-25 17:45:08,099 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-trousdale/
+2025-04-25 17:45:08,360 - First AvenueScraper - INFO - Added event: Trousdale, Beane, Nia Ashleigh, and buffchick (collab set) on 2025-05-06 19:00:00
+2025-04-25 17:45:08,360 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-lucy-dacus-tue/
+2025-04-25 17:45:10,445 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-lucy-dacus-tue/
+2025-04-25 17:45:10,697 - First AvenueScraper - INFO - Added event: Lucy Dacus, Katie Gavin, jasmine.4.t on 2025-05-06 19:15:00
+2025-04-25 17:45:10,698 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-cavemen/
+2025-04-25 17:45:12,265 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-cavemen/
+2025-04-25 17:45:12,518 - First AvenueScraper - INFO - Added event: The Cavemen. on 2025-05-06 20:00:00
+2025-04-25 17:45:12,518 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-toxhards/
+2025-04-25 17:45:12,721 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-toxhards/
+2025-04-25 17:45:12,999 - First AvenueScraper - INFO - Updated event: The Toxhards, Lakeside Effects on 2025-05-06 20:00:00
+2025-04-25 17:45:13,000 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-magnolia-park/
+2025-04-25 17:45:13,213 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-magnolia-park/
+2025-04-25 17:45:13,501 - First AvenueScraper - INFO - Added event: Magnolia Park, Hot Milk, Savage Hands, South Arcade on 2025-05-07 18:30:00
+2025-04-25 17:45:13,501 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-amyl-and-the-sniffers/
+2025-04-25 17:45:13,711 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-amyl-and-the-sniffers/
+2025-04-25 17:45:13,968 - First AvenueScraper - INFO - Added event: Amyl and The Sniffers, Sheer Mag on 2025-05-07 19:00:00
+2025-04-25 17:45:13,969 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-teen-mortgage/
+2025-04-25 17:45:15,323 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-teen-mortgage/
+2025-04-25 17:45:15,601 - First AvenueScraper - INFO - Added event: Teen Mortgage, UPCHUCK on 2025-05-07 20:00:00
+2025-04-25 17:45:15,601 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-guy-branum/
+2025-04-25 17:45:15,810 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-guy-branum/
+2025-04-25 17:45:16,092 - First AvenueScraper - INFO - Updated event: Guy Branum, Brandi Brown on 2025-05-07 20:00:00
+2025-04-25 17:45:16,093 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-sonic-sea-turtles-odd-prospect-lana-leone-and-berzica/
+2025-04-25 17:45:17,366 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-sonic-sea-turtles-odd-prospect-lana-leone-and-berzica/
+2025-04-25 17:45:17,622 - First AvenueScraper - INFO - Added event: Sonic Sea Turtles, Odd Prospect, Lana Leone, berzica on 2025-05-08 19:30:00
+2025-04-25 17:45:17,623 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-raynes/
+2025-04-25 17:45:17,833 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-raynes/
+2025-04-25 17:45:18,078 - First AvenueScraper - INFO - Added event: RAYNES, Eldest Daughter on 2025-05-08 20:00:00
+2025-04-25 17:45:18,079 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-late-night-radio/
+2025-04-25 17:45:18,293 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-late-night-radio/
+2025-04-25 17:45:18,574 - First AvenueScraper - INFO - Updated event: Late Night Radio, DMVU, Rsrch Chmcls on 2025-05-08 20:00:00
+2025-04-25 17:45:18,574 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-allison-russell/
+2025-04-25 17:45:18,785 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-allison-russell/
+2025-04-25 17:45:19,042 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-magnetic-fields-fri/
+2025-04-25 17:45:19,254 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-magnetic-fields-fri/
+2025-04-25 17:45:19,483 - First AvenueScraper - INFO - Added event: The Magnetic Fields on 2025-05-09 20:00:00
+2025-04-25 17:45:19,484 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-lucius/
+2025-04-25 17:45:19,695 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-lucius/
+2025-04-25 17:45:19,984 - First AvenueScraper - INFO - Updated event: Lucius, Victoria Canal on 2025-05-09 20:00:00
+2025-04-25 17:45:19,985 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-alison-moyet/
+2025-04-25 17:45:20,201 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-alison-moyet/
+2025-04-25 17:45:20,451 - First AvenueScraper - INFO - Added event: Alison Moyet on 2025-05-09 20:30:00
+2025-04-25 17:45:20,451 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-squid/
+2025-04-25 17:45:21,573 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-squid/
+2025-04-25 17:45:21,847 - First AvenueScraper - INFO - Updated event: Squid, FearDorian on 2025-05-09 20:30:00
+2025-04-25 17:45:21,847 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-fish-narc-and-gag/
+2025-04-25 17:45:23,304 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-fish-narc-and-gag/
+2025-04-25 17:45:23,571 - First AvenueScraper - INFO - Updated event: fish narc, GAG, Giallo on 2025-05-09 20:30:00
+2025-04-25 17:45:23,572 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-sharon-van-etten/
+2025-04-25 17:45:23,787 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-sharon-van-etten/
+2025-04-25 17:45:24,032 - First AvenueScraper - INFO - Added event: Sharon Van Etten, Love Spells on 2025-05-10 19:30:00
+2025-04-25 17:45:24,032 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-gang-of-four/
+2025-04-25 17:45:24,246 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-gang-of-four/
+2025-04-25 17:45:24,489 - First AvenueScraper - INFO - Added event: Gang of Four on 2025-05-10 20:00:00
+2025-04-25 17:45:24,490 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-magnetic-fields-sat/
+2025-04-25 17:45:24,701 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-magnetic-fields-sat/
+2025-04-25 17:45:24,975 - First AvenueScraper - INFO - Updated event: The Magnetic Fields on 2025-05-10 20:00:00
+2025-04-25 17:45:24,976 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-two-harbors/
+2025-04-25 17:45:25,194 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-two-harbors/
+2025-04-25 17:45:25,474 - First AvenueScraper - INFO - Updated event: Two Harbors, Another Heaven, The Mood Swings on 2025-05-10 20:00:00
+2025-04-25 17:45:25,474 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-youth-lagoon/
+2025-04-25 17:45:25,676 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-youth-lagoon/
+2025-04-25 17:45:25,955 - First AvenueScraper - INFO - Updated event: Youth Lagoon, Kaleah Lee on 2025-05-10 20:30:00
+2025-04-25 17:45:25,956 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-lambrini-girls/
+2025-04-25 17:45:26,172 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-lambrini-girls/
+2025-04-25 17:45:26,442 - First AvenueScraper - INFO - Updated event: Lambrini Girls, Party Dozen on 2025-05-10 20:30:00
+2025-04-25 17:45:26,442 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-iann-dior/
+2025-04-25 17:45:27,785 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-iann-dior/
+2025-04-25 17:45:28,046 - First AvenueScraper - INFO - Added event: iann dior, Bankrol Hayden, Jake Giller on 2025-05-11 19:30:00
+2025-04-25 17:45:28,047 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-tommyinnit/
+2025-04-25 17:45:29,239 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-tommyinnit/
+2025-04-25 17:45:29,491 - First AvenueScraper - INFO - Updated event: TommyInnit on 2025-05-11 20:00:00
+2025-04-25 17:45:29,491 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-julien-baker-torres/
+2025-04-25 17:45:29,688 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-julien-baker-torres/
+2025-04-25 17:45:30,024 - First AvenueScraper - INFO - Updated event: Julien Baker & TORRES, Ali Macofsky on 2025-05-11 20:00:00
+2025-04-25 17:45:30,024 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-sorry-mom/
+2025-04-25 17:45:30,230 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-sorry-mom/
+2025-04-25 17:45:30,495 - First AvenueScraper - INFO - Updated event: Sorry Mom on 2025-05-11 20:00:00
+2025-04-25 17:45:30,495 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-genevieve-heyward-and-bloodline/
+2025-04-25 17:45:30,711 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-genevieve-heyward-and-bloodline/
+2025-04-25 17:45:30,967 - First AvenueScraper - INFO - Added event: Genevieve Heyward, BLOODLINE, Ava Levy, Bryn Battani on 2025-05-13 19:30:00
+2025-04-25 17:45:30,967 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-saint-motel/
+2025-04-25 17:45:31,179 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-saint-motel/
+2025-04-25 17:45:31,475 - First AvenueScraper - INFO - Updated event: Saint Motel, Brigitte Calls Me Baby on 2025-05-13 20:00:00
+2025-04-25 17:45:31,475 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-boa/
+2025-04-25 17:45:33,542 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-boa/
+2025-04-25 17:45:33,822 - First AvenueScraper - INFO - Updated event: bôa, Dream, Ivory on 2025-05-13 20:00:00
+2025-04-25 17:45:33,823 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-sasami/
+2025-04-25 17:45:34,026 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-sasami/
+2025-04-25 17:45:34,309 - First AvenueScraper - INFO - Updated event: SASAMI, Mood Killer on 2025-05-13 20:00:00
+2025-04-25 17:45:34,309 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-spellling/
+2025-04-25 17:45:35,827 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-spellling/
+2025-04-25 17:45:36,071 - First AvenueScraper - INFO - Added event: SPELLLING, oeurth on 2025-05-14 20:00:00
+2025-04-25 17:45:36,071 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-kyle-gordon/
+2025-04-25 17:45:36,284 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-kyle-gordon/
+2025-04-25 17:45:36,563 - First AvenueScraper - INFO - Updated event: Kyle Gordon, JamesG on 2025-05-14 20:00:00
+2025-04-25 17:45:36,564 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-band-feel/
+2025-04-25 17:45:37,640 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-band-feel/
+2025-04-25 17:45:37,919 - First AvenueScraper - INFO - Updated event: The Band Feel, Lighter Co. on 2025-05-14 20:00:00
+2025-04-25 17:45:37,919 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-mayday-parade/
+2025-04-25 17:45:38,129 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-mayday-parade/
+2025-04-25 17:45:38,374 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-dark-star-orchestra/
+2025-04-25 17:45:39,145 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-dark-star-orchestra/
+2025-04-25 17:45:39,391 - First AvenueScraper - INFO - Added event: Dark Star Orchestra on 2025-05-15 19:30:00
+2025-04-25 17:45:39,391 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-cheekface/
+2025-04-25 17:45:39,604 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-cheekface/
+2025-04-25 17:45:39,859 - First AvenueScraper - INFO - Added event: Cheekface, Pacing on 2025-05-15 20:00:00
+2025-04-25 17:45:39,859 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-wild-horses/
+2025-04-25 17:45:41,023 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-wild-horses/
+2025-04-25 17:45:41,291 - First AvenueScraper - INFO - Updated event: Wild Horses, Thomas Sticha on 2025-05-15 20:00:00
+2025-04-25 17:45:41,292 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-matthew-logan-vasquez/
+2025-04-25 17:45:42,127 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-matthew-logan-vasquez/
+2025-04-25 17:45:42,387 - First AvenueScraper - INFO - Added event: Matthew Logan Vasquez, Jacob Alan Jaeger on 2025-05-15 20:30:00
+2025-04-25 17:45:42,388 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-kate-berlant-live/
+2025-04-25 17:45:42,599 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-kate-berlant-live/
+2025-04-25 17:45:42,845 - First AvenueScraper - INFO - Added event: Kate Berlant on 2025-05-16 19:00:00
+2025-04-25 17:45:42,845 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-larkin-poe/
+2025-04-25 17:45:44,227 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-larkin-poe/
+2025-04-25 17:45:44,473 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-peter-bjorn-and-john/
+2025-04-25 17:45:45,697 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-peter-bjorn-and-john/
+2025-04-25 17:45:45,970 - First AvenueScraper - INFO - Updated event: Peter Bjorn and John, Beemer on 2025-05-16 20:00:00
+2025-04-25 17:45:45,970 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-anna-b-savage/
+2025-04-25 17:45:47,268 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-anna-b-savage/
+2025-04-25 17:45:47,520 - First AvenueScraper - INFO - Added event: Anna B Savage on 2025-05-16 20:30:00
+2025-04-25 17:45:47,520 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-shredders/
+2025-04-25 17:45:48,656 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-shredders/
+2025-04-25 17:45:48,902 - First AvenueScraper - INFO - Added event: Shredders on 2025-05-16 21:00:00
+2025-04-25 17:45:48,903 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-speed/
+2025-04-25 17:45:50,086 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-speed/
+2025-04-25 17:45:50,382 - First AvenueScraper - INFO - Added event: SPEED, Whispers, Out4Blood, Lack on 2025-05-17 19:00:00
+2025-04-25 17:45:50,383 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-mallrat/
+2025-04-25 17:45:50,577 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-mallrat/
+2025-04-25 17:45:50,834 - First AvenueScraper - INFO - Added event: Mallrat, Anna Shoemaker on 2025-05-17 19:30:00
+2025-04-25 17:45:50,834 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-flipp/
+2025-04-25 17:45:51,052 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-flipp/
+2025-04-25 17:45:51,302 - First AvenueScraper - INFO - Added event: Flipp, Cretin Avenue Hop(Ramones Tribute) on 2025-05-17 20:00:00
+2025-04-25 17:45:51,302 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-devil-makes-three/
+2025-04-25 17:45:51,510 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-devil-makes-three/
+2025-04-25 17:45:51,766 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-rock-and-roll-playhouse/
+2025-04-25 17:45:52,748 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-rock-and-roll-playhouse/
+2025-04-25 17:45:53,003 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-deathbyromy/
+2025-04-25 17:45:54,149 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-deathbyromy/
+2025-04-25 17:45:54,393 - First AvenueScraper - INFO - Added event: DeathbyRomy, heffy on 2025-05-18 20:00:00
+2025-04-25 17:45:54,393 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-bob-slim-dunlap-tribute-and-memorial/
+2025-04-25 17:45:54,595 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-bob-slim-dunlap-tribute-and-memorial/
+2025-04-25 17:45:54,791 - First AvenueScraper - WARNING - Skipping show without band information: https://first-avenue.com/event/2025-05-bob-slim-dunlap-tribute-and-memorial/
+2025-04-25 17:45:54,792 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-momma/
+2025-04-25 17:45:55,004 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-momma/
+2025-04-25 17:45:55,246 - First AvenueScraper - INFO - Added event: Momma, Wishy on 2025-05-19 20:00:00
+2025-04-25 17:45:55,246 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-ministry/
+2025-04-25 17:45:55,452 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-ministry/
+2025-04-25 17:45:55,694 - First AvenueScraper - INFO - Added event: Ministry, My Life With The Thrill Kill Kult, Die Krupps on 2025-05-20 19:30:00
+2025-04-25 17:45:55,694 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-bartees-strange/
+2025-04-25 17:45:56,946 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-bartees-strange/
+2025-04-25 17:45:57,199 - First AvenueScraper - INFO - Added event: Bartees Strange, Sloppy Jane on 2025-05-20 20:00:00
+2025-04-25 17:45:57,199 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-rachel-chinouriri/
+2025-04-25 17:45:57,397 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-rachel-chinouriri/
+2025-04-25 17:45:57,653 - First AvenueScraper - INFO - Added event: Rachel Chinouriri, Alemeda, BIZZY on 2025-05-21 19:00:00
+2025-04-25 17:45:57,653 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-north-innsbruck-magenta-vice-night-audit-and-prodrome/
+2025-04-25 17:45:59,081 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-north-innsbruck-magenta-vice-night-audit-and-prodrome/
+2025-04-25 17:45:59,325 - First AvenueScraper - INFO - Added event: North Innsbruck, Magenta Vice, Night Audit, PRODROME on 2025-05-21 19:30:00
+2025-04-25 17:45:59,326 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-tennis/
+2025-04-25 17:45:59,524 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-tennis/
+2025-04-25 17:45:59,787 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-napalm-death-and-melvins/
+2025-04-25 17:46:00,025 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-napalm-death-and-melvins/
+2025-04-25 17:46:00,278 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-citric-dummies/
+2025-04-25 17:46:00,489 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-citric-dummies/
+2025-04-25 17:46:00,739 - First AvenueScraper - INFO - Added event: Citric Dummies, Yambag, Surrogates, BUIO OMEGA on 2025-05-22 19:30:00
+2025-04-25 17:46:00,740 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-mike/
+2025-04-25 17:46:01,908 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-mike/
+2025-04-25 17:46:02,172 - First AvenueScraper - INFO - Added event: MIKE, Navy Blue, semiratruth on 2025-05-22 20:00:00
+2025-04-25 17:46:02,173 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-electric-six/
+2025-04-25 17:46:02,385 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-electric-six/
+2025-04-25 17:46:02,646 - First AvenueScraper - INFO - Updated event: Electric Six, Messer Chups on 2025-05-22 20:00:00
+2025-04-25 17:46:02,647 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-friko/
+2025-04-25 17:46:03,960 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-friko/
+2025-04-25 17:46:04,201 - First AvenueScraper - INFO - Added event: Friko, youbet on 2025-05-22 20:30:00
+2025-04-25 17:46:04,201 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-matt-berninger/
+2025-04-25 17:46:05,410 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-matt-berninger/
+2025-04-25 17:46:05,678 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-erin-kinsey/
+2025-04-25 17:46:05,947 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-erin-kinsey/
+2025-04-25 17:46:06,218 - First AvenueScraper - INFO - Updated event: Erin Kinsey, Kaleb Sanders on 2025-05-23 20:00:00
+2025-04-25 17:46:06,218 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-anni-xo-and-kiernan/
+2025-04-25 17:46:06,428 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-anni-xo-and-kiernan/
+2025-04-25 17:46:06,718 - First AvenueScraper - INFO - Updated event: anni xo, Kiernan, Yellow Ostrich, creeping charlie on 2025-05-23 20:00:00
+2025-04-25 17:46:06,718 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-baroness/
+2025-04-25 17:46:06,931 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-baroness/
+2025-04-25 17:46:07,187 - First AvenueScraper - INFO - Added event: Baroness on 2025-05-23 20:30:00
+2025-04-25 17:46:07,188 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-kiffness/
+2025-04-25 17:46:07,393 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-kiffness/
+2025-04-25 17:46:07,649 - First AvenueScraper - INFO - Added event: The Kiffness on 2025-05-24 19:30:00
+2025-04-25 17:46:07,650 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-yola/
+2025-04-25 17:46:07,845 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-yola/
+2025-04-25 17:46:08,115 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-bob-dylan-birthday-bash/
+2025-04-25 17:46:08,322 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-bob-dylan-birthday-bash/
+2025-04-25 17:46:08,593 - First AvenueScraper - INFO - Updated event: Curtiss A, Erik Koskinen, Dan Israel, LAAMAR, Gini Dodds, Becky Kapell, Paul Bergen, Terry Walsh, Cecelia Erholtz(of TABAH), Mind Out of Time (Bob Dylan Tribute), DR. FINK on 2025-05-24 20:00:00
+2025-04-25 17:46:08,594 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-stone-ark/
+2025-04-25 17:46:09,560 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-stone-ark/
+2025-04-25 17:46:09,834 - First AvenueScraper - INFO - Updated event: Stone Ark, Mayfly Moon, Scorched Waves, Self Titled on 2025-05-24 20:00:00
+2025-04-25 17:46:09,834 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-southern-culture-on-the-skids/
+2025-04-25 17:46:10,048 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-southern-culture-on-the-skids/
+2025-04-25 17:46:10,326 - First AvenueScraper - INFO - Updated event: Southern Culture on the Skids, Kinda Fonda Wanda on 2025-05-25 20:00:00
+2025-04-25 17:46:10,326 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-wiz-khalifa/
+2025-04-25 17:46:10,542 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-wiz-khalifa/
+2025-04-25 17:46:10,825 - First AvenueScraper - INFO - Updated event: Wiz Khalifa, Chevy Woods, Fedd the God, DJ Bonics on 2025-05-25 20:00:00
+2025-04-25 17:46:10,825 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-cold/
+2025-04-25 17:46:11,035 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-cold/
+2025-04-25 17:46:11,281 - First AvenueScraper - INFO - Added event: COLD, September Mourning, University Drive on 2025-05-27 19:00:00
+2025-04-25 17:46:11,282 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-john-mark-mcmillan-citizens/
+2025-04-25 17:46:11,489 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-john-mark-mcmillan-citizens/
+2025-04-25 17:46:11,785 - First AvenueScraper - INFO - Updated event: John Mark McMillan, Citizens on 2025-05-27 19:00:00
+2025-04-25 17:46:11,786 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-dreamer-isioma/
+2025-04-25 17:46:13,068 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-dreamer-isioma/
+2025-04-25 17:46:13,327 - First AvenueScraper - INFO - Added event: Dreamer Isioma, ivri on 2025-05-27 19:30:00
+2025-04-25 17:46:13,327 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-sara-kays/
+2025-04-25 17:46:13,532 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-sara-kays/
+2025-04-25 17:46:13,781 - First AvenueScraper - INFO - Added event: Sara Kays, Landon Conrath, Eli Wilson on 2025-05-28 19:00:00
+2025-04-25 17:46:13,782 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-sesame-street-live/
+2025-04-25 17:46:14,911 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-sesame-street-live/
+2025-04-25 17:46:15,165 - First AvenueScraper - INFO - Added event: Sesame Street Live — Say Hello on 2025-05-29 18:00:00
+2025-04-25 17:46:15,166 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-joshua-ray-walker/
+2025-04-25 17:46:15,372 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-joshua-ray-walker/
+2025-04-25 17:46:15,609 - First AvenueScraper - INFO - Added event: Joshua Ray Walker, Boy Golden (solo) on 2025-05-29 20:00:00
+2025-04-25 17:46:15,609 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-cake/
+2025-04-25 17:46:15,812 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-cake/
+2025-04-25 17:46:16,076 - First AvenueScraper - INFO - Updated event: CAKE on 2025-05-29 20:00:00
+2025-04-25 17:46:16,076 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-ziggy-alberts/
+2025-04-25 17:46:16,952 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-ziggy-alberts/
+2025-04-25 17:46:17,215 - First AvenueScraper - INFO - Updated event: Ziggy Alberts, Steph Strings on 2025-05-29 20:00:00
+2025-04-25 17:46:17,215 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-solid-pink-disco/
+2025-04-25 17:46:17,424 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-solid-pink-disco/
+2025-04-25 17:46:17,672 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-afters/
+2025-04-25 17:46:19,591 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-afters/
+2025-04-25 17:46:19,880 - First AvenueScraper - INFO - Added event: afters, Vinny Franco, Anna Devine, Quietchild on 2025-05-30 20:00:00
+2025-04-25 17:46:19,880 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-genital-panic/
+2025-04-25 17:46:20,087 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-genital-panic/
+2025-04-25 17:46:20,360 - First AvenueScraper - INFO - Updated event: Genital Panic, Cindy Lawson, Quatro (Tina Schlieske, Molly Maher, Mary Bue, Becky Kapell, Barb Brynstad, Jenny Case, Noah Levy) on 2025-05-30 20:00:00
+2025-04-25 17:46:20,361 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-emo-nite/
+2025-04-25 17:46:20,558 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-emo-nite/
+2025-04-25 17:46:20,813 - First AvenueScraper - INFO - Added event: Emo Nite on 2025-05-30 21:00:00
+2025-04-25 17:46:20,813 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-hippo-campus/
+2025-04-25 17:46:21,012 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-hippo-campus/
+2025-04-25 17:46:21,264 - First AvenueScraper - INFO - Added event: Hippo Campus, Hotline TNT on 2025-05-31 19:00:00
+2025-04-25 17:46:21,264 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-mcelroys-adventure-zone/
+2025-04-25 17:46:22,706 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-mcelroys-adventure-zone/
+2025-04-25 17:46:22,977 - First AvenueScraper - INFO - Updated event: The McElroys: The Adventure Zone on 2025-05-31 19:00:00
+2025-04-25 17:46:22,978 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-malcolm-todd/
+2025-04-25 17:46:23,184 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-malcolm-todd/
+2025-04-25 17:46:23,428 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-the-wedding-present/
+2025-04-25 17:46:23,624 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-the-wedding-present/
+2025-04-25 17:46:23,866 - First AvenueScraper - INFO - Added event: The Wedding Present, The Tubs on 2025-05-31 20:00:00
+2025-04-25 17:46:23,867 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-jackie-venson/
+2025-04-25 17:46:24,076 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-jackie-venson/
+2025-04-25 17:46:24,327 - First AvenueScraper - INFO - Added event: Jackie Venson, Mary Cutrufello on 2025-05-31 20:30:00
+2025-04-25 17:46:24,328 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-05-avi-kaplan/
+2025-04-25 17:46:25,456 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-05-avi-kaplan/
+2025-04-25 17:46:25,727 - First AvenueScraper - INFO - Updated event: Avi Kaplan, Guthrie Brown on 2025-05-31 20:30:00
+2025-04-25 17:46:25,727 - First AvenueScraper - INFO - Processing URL: https://first-avenue.com/shows/?post_type=event&start_date=20250601
+2025-04-25 17:46:27,893 - First AvenueScraper - INFO - Request successful. Parsing shows...
+2025-04-25 17:46:28,009 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-the-mcelroys-my-brother-my-brother-and-me/
+2025-04-25 17:46:29,714 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-the-mcelroys-my-brother-my-brother-and-me/
+2025-04-25 17:46:29,966 - First AvenueScraper - INFO - Added event: The McElroys: My Brother, My Brother, and Me on 2025-06-01 19:00:00
+2025-04-25 17:46:29,967 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-sessanta-v2-0/
+2025-04-25 17:46:30,176 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-sessanta-v2-0/
+2025-04-25 17:46:30,445 - First AvenueScraper - INFO - Added event: SESSANTA, Primus, Puscifer, A Perfect Circle on 2025-06-01 19:30:00
+2025-04-25 17:46:30,446 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-lyn-lapid/
+2025-04-25 17:46:31,761 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-lyn-lapid/
+2025-04-25 17:46:32,030 - First AvenueScraper - INFO - Updated event: Lyn Lapid, RC AVENUE on 2025-06-01 19:30:00
+2025-04-25 17:46:32,031 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-preoccupations/
+2025-04-25 17:46:32,234 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-preoccupations/
+2025-04-25 17:46:32,470 - First AvenueScraper - INFO - Added event: Preoccupations, Still Depths on 2025-06-01 20:00:00
+2025-04-25 17:46:32,471 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-kitty-craft/
+2025-04-25 17:46:32,676 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-kitty-craft/
+2025-04-25 17:46:32,923 - First AvenueScraper - INFO - Added event: Kitty Craft on 2025-06-02 20:00:00
+2025-04-25 17:46:32,924 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-bailey-spinn/
+2025-04-25 17:46:33,135 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-bailey-spinn/
+2025-04-25 17:46:33,383 - First AvenueScraper - INFO - Added event: Bailey Spinn, Autumn Kings, The Requiem on 2025-06-03 19:00:00
+2025-04-25 17:46:33,383 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-peelander-z/
+2025-04-25 17:46:34,555 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-peelander-z/
+2025-04-25 17:46:34,811 - First AvenueScraper - INFO - Added event: Peelander–Z on 2025-06-03 20:00:00
+2025-04-25 17:46:34,812 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-west-22nd/
+2025-04-25 17:46:35,792 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-west-22nd/
+2025-04-25 17:46:36,109 - First AvenueScraper - INFO - Added event: West 22nd, Pretty Jane, Daphne Jane on 2025-06-04 19:30:00
+2025-04-25 17:46:36,110 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-robyn-hitchcock/
+2025-04-25 17:46:36,317 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-robyn-hitchcock/
+2025-04-25 17:46:36,580 - First AvenueScraper - INFO - Added event: Robyn Hitchcock on 2025-06-04 20:00:00
+2025-04-25 17:46:36,580 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-thee-sacred-souls/
+2025-04-25 17:46:36,771 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-thee-sacred-souls/
+2025-04-25 17:46:37,021 - First AvenueScraper - INFO - Added event: Thee Sacred Souls on 2025-06-05 19:00:00
+2025-04-25 17:46:37,021 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-geordie-kieffer/
+2025-04-25 17:46:37,223 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-geordie-kieffer/
+2025-04-25 17:46:37,467 - First AvenueScraper - INFO - Added event: Geordie Kieffer on 2025-06-05 20:30:00
+2025-04-25 17:46:37,468 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-honey-revenge/
+2025-04-25 17:46:38,673 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-honey-revenge/
+2025-04-25 17:46:38,928 - First AvenueScraper - INFO - Added event: Honey Revenge, Daisy Grenade, Vana, Nightlife on 2025-06-06 19:00:00
+2025-04-25 17:46:38,929 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-hell-yeah-3/
+2025-04-25 17:46:40,870 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-hell-yeah-3/
+2025-04-25 17:46:41,141 - First AvenueScraper - INFO - Updated event: Mary Lucia, DJ Lori Barbero, Whiskey Rock ‘n’ Roll Club MPLS on 2025-06-06 19:00:00
+2025-04-25 17:46:41,142 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-samia/
+2025-04-25 17:46:41,347 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-samia/
+2025-04-25 17:46:41,599 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-ally-venable/
+2025-04-25 17:46:42,949 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-ally-venable/
+2025-04-25 17:46:43,228 - First AvenueScraper - INFO - Added event: Ally Venable on 2025-06-06 20:30:00
+2025-04-25 17:46:43,228 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-gallant/
+2025-04-25 17:46:44,846 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-gallant/
+2025-04-25 17:46:45,124 - First AvenueScraper - INFO - Updated event: Gallant on 2025-06-06 20:30:00
+2025-04-25 17:46:45,125 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-naethan-apollo/
+2025-04-25 17:46:46,347 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-naethan-apollo/
+2025-04-25 17:46:46,638 - First AvenueScraper - INFO - Added event: Naethan Apollo on 2025-06-07 19:00:00
+2025-04-25 17:46:46,639 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-panchiko/
+2025-04-25 17:46:47,754 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-panchiko/
+2025-04-25 17:46:48,007 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-jeremy-piven-live/
+2025-04-25 17:46:48,219 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-jeremy-piven-live/
+2025-04-25 17:46:48,497 - First AvenueScraper - INFO - Updated event: Jeremy Piven on 2025-06-07 19:30:00
+2025-04-25 17:46:48,498 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-petty-treason/
+2025-04-25 17:46:48,713 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-petty-treason/
+2025-04-25 17:46:48,959 - First AvenueScraper - INFO - Added event: Petty Treason on 2025-06-07 20:00:00
+2025-04-25 17:46:48,959 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-annie-dirusso/
+2025-04-25 17:46:50,290 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-annie-dirusso/
+2025-04-25 17:46:50,538 - First AvenueScraper - INFO - Added event: Annie DiRusso, Daffo on 2025-06-07 20:30:00
+2025-04-25 17:46:50,538 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-caamp/
+2025-04-25 17:46:50,743 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-caamp/
+2025-04-25 17:46:51,002 - First AvenueScraper - INFO - Added event: CAAMP, Blind Pilot on 2025-06-08 17:00:00
+2025-04-25 17:46:51,003 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-the-go-for-broke-tour/
+2025-04-25 17:46:52,215 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-the-go-for-broke-tour/
+2025-04-25 17:46:52,472 - First AvenueScraper - INFO - Added event: NOBRO, Bad Waitress, Gen and the Degenerates, Big Salt on 2025-06-08 20:00:00
+2025-04-25 17:46:52,472 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-mei-semones/
+2025-04-25 17:46:53,735 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-mei-semones/
+2025-04-25 17:46:53,982 - First AvenueScraper - INFO - Added event: Mei Semones, John Roseboro on 2025-06-09 20:00:00
+2025-04-25 17:46:53,983 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-sweet-spine/
+2025-04-25 17:46:55,259 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-sweet-spine/
+2025-04-25 17:46:55,502 - First AvenueScraper - INFO - Added event: SWEET SPINE on 2025-06-10 20:00:00
+2025-04-25 17:46:55,502 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-emmy-woods-lake-davi-tomboyy-and-pine-fire/
+2025-04-25 17:46:55,709 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-emmy-woods-lake-davi-tomboyy-and-pine-fire/
+2025-04-25 17:46:55,979 - First AvenueScraper - INFO - Updated event: Emmy Woods, Lake Davi, Tomboyy, Pine & Fire on 2025-06-11 19:30:00
+2025-04-25 17:46:55,980 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-ben-harper/
+2025-04-25 17:46:56,179 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-ben-harper/
+2025-04-25 17:46:56,462 - First AvenueScraper - INFO - Updated event: Ben Harper on 2025-06-11 19:30:00
+2025-04-25 17:46:56,462 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-ashe/
+2025-04-25 17:46:57,504 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-ashe/
+2025-04-25 17:46:57,766 - First AvenueScraper - INFO - Updated event: Ashe, Bo Staloch on 2025-06-11 19:30:00
+2025-04-25 17:46:57,766 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-blondshell/
+2025-04-25 17:46:57,982 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-blondshell/
+2025-04-25 17:46:58,232 - First AvenueScraper - INFO - Added event: Blondshell, meg elsier on 2025-06-11 20:00:00
+2025-04-25 17:46:58,233 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-molly-brandt-and-mojohand/
+2025-04-25 17:46:59,548 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-molly-brandt-and-mojohand/
+2025-04-25 17:46:59,791 - First AvenueScraper - INFO - Added event: Molly Brandt, Mojohand, Luke Callen on 2025-06-12 20:00:00
+2025-04-25 17:46:59,792 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-dead-larry/
+2025-04-25 17:47:00,897 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-dead-larry/
+2025-04-25 17:47:01,156 - First AvenueScraper - INFO - Updated event: Dead Larry, Socktopus, Sam Licari and the Sweet Tease, Lost Island Society on 2025-06-12 20:00:00
+2025-04-25 17:47:01,157 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-diane-rage-against-the-regime/
+2025-04-25 17:47:01,349 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-diane-rage-against-the-regime/
+2025-04-25 17:47:01,597 - First AvenueScraper - INFO - Added event: Diane on 2025-06-13 20:30:00
+2025-04-25 17:47:01,598 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-florry/
+2025-04-25 17:47:01,802 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-florry/
+2025-04-25 17:47:02,069 - First AvenueScraper - INFO - Updated event: Florry, Lily Seabird on 2025-06-13 20:30:00
+2025-04-25 17:47:02,070 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-broadway-rave/
+2025-04-25 17:47:03,133 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-broadway-rave/
+2025-04-25 17:47:03,380 - First AvenueScraper - INFO - Added event: Broadway Rave on 2025-06-13 21:00:00
+2025-04-25 17:47:03,380 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-club-xcx/
+2025-04-25 17:47:05,094 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-club-xcx/
+2025-04-25 17:47:05,300 - First AvenueScraper - WARNING - Skipping show without band information: https://first-avenue.com/event/2025-06-club-xcx/
+2025-04-25 17:47:05,301 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-julia-wolf/
+2025-04-25 17:47:05,508 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-julia-wolf/
+2025-04-25 17:47:05,766 - First AvenueScraper - INFO - Added event: Julia Wolf, Worry Club, Ellis on 2025-06-14 20:00:00
+2025-04-25 17:47:05,767 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-watchhouse/
+2025-04-25 17:47:05,963 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-watchhouse/
+2025-04-25 17:47:06,246 - First AvenueScraper - INFO - Updated event: Watchhouse, Two Runner on 2025-06-14 20:00:00
+2025-04-25 17:47:06,247 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-im-with-her/
+2025-04-25 17:47:06,441 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-im-with-her/
+2025-04-25 17:47:06,719 - First AvenueScraper - INFO - Updated event: I’m With Her, Mason Via on 2025-06-14 20:00:00
+2025-04-25 17:47:06,719 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-sleigh-bells/
+2025-04-25 17:47:06,927 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-sleigh-bells/
+2025-04-25 17:47:07,189 - First AvenueScraper - INFO - Added event: Sleigh Bells, Sophie Hunter on 2025-06-14 20:30:00
+2025-04-25 17:47:07,190 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-hot-in-herre/
+2025-04-25 17:47:07,396 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-hot-in-herre/
+2025-04-25 17:47:07,648 - First AvenueScraper - INFO - Added event: Hot in Herre ⏤ 2000s Dance Party on 2025-06-14 21:00:00
+2025-04-25 17:47:07,648 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-creeping-death-and-kruelty/
+2025-04-25 17:47:07,863 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-creeping-death-and-kruelty/
+2025-04-25 17:47:08,146 - First AvenueScraper - INFO - Added event: Creeping Death, Kruelty on 2025-06-15 19:00:00
+2025-04-25 17:47:08,146 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-samantha-crain/
+2025-04-25 17:47:09,377 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-samantha-crain/
+2025-04-25 17:47:09,646 - First AvenueScraper - INFO - Updated event: Samantha Crain, Quinn Christopherson on 2025-06-15 20:00:00
+2025-04-25 17:47:09,647 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-jet/
+2025-04-25 17:47:10,842 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-jet/
+2025-04-25 17:47:11,120 - First AvenueScraper - INFO - Updated event: JET, Band of Skulls on 2025-06-15 20:00:00
+2025-04-25 17:47:11,120 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-will-wood/
+2025-04-25 17:47:11,317 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-will-wood/
+2025-04-25 17:47:11,569 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-gary-clark-jr/
+2025-04-25 17:47:11,772 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-gary-clark-jr/
+2025-04-25 17:47:12,027 - First AvenueScraper - INFO - Added event: Gary Clark Jr., Lamont Landers on 2025-06-17 19:30:00
+2025-04-25 17:47:12,027 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-sunflower-bean/
+2025-04-25 17:47:13,103 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-sunflower-bean/
+2025-04-25 17:47:13,418 - First AvenueScraper - INFO - Added event: Sunflower Bean, GIFT on 2025-06-17 20:00:00
+2025-04-25 17:47:13,418 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-millyz/
+2025-04-25 17:47:14,469 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-millyz/
+2025-04-25 17:47:14,726 - First AvenueScraper - INFO - Added event: Millyz on 2025-06-18 19:00:00
+2025-04-25 17:47:14,727 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-the-family-crest/
+2025-04-25 17:47:15,758 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-the-family-crest/
+2025-04-25 17:47:16,040 - First AvenueScraper - INFO - Updated event: The Family Crest, Babes in Canyon on 2025-06-18 20:00:00
+2025-04-25 17:47:16,041 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-perfume-genius/
+2025-04-25 17:47:17,161 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-perfume-genius/
+2025-04-25 17:47:17,442 - First AvenueScraper - INFO - Updated event: Perfume Genius, urika's bedroom on 2025-06-18 20:00:00
+2025-04-25 17:47:17,442 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-old-gods-of-appalachia/
+2025-04-25 17:47:17,658 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-old-gods-of-appalachia/
+2025-04-25 17:47:17,933 - First AvenueScraper - INFO - Updated event: Old Gods of Appalachia on 2025-06-18 20:00:00
+2025-04-25 17:47:17,933 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-planning-for-burial/
+2025-04-25 17:47:19,086 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-planning-for-burial/
+2025-04-25 17:47:19,400 - First AvenueScraper - INFO - Updated event: Planning for Burial, Birth Order, IOSIS on 2025-06-18 20:00:00
+2025-04-25 17:47:19,401 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-devo/
+2025-04-25 17:47:19,607 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-devo/
+2025-04-25 17:47:19,879 - First AvenueScraper - INFO - Updated event: DEVO on 2025-06-18 20:00:00
+2025-04-25 17:47:19,879 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-the-head-and-the-heart/
+2025-04-25 17:47:20,093 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-the-head-and-the-heart/
+2025-04-25 17:47:20,341 - First AvenueScraper - INFO - Added event: The Head And The Heart, Futurebirds, Anna Graves on 2025-06-19 19:15:00
+2025-04-25 17:47:20,341 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-greer/
+2025-04-25 17:47:21,394 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-greer/
+2025-04-25 17:47:21,641 - First AvenueScraper - INFO - Added event: Greer on 2025-06-19 19:30:00
+2025-04-25 17:47:21,642 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-civic/
+2025-04-25 17:47:22,754 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-civic/
+2025-04-25 17:47:23,000 - First AvenueScraper - INFO - Added event: CIVIC on 2025-06-19 20:00:00
+2025-04-25 17:47:23,000 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-jay-and-silent-bob/
+2025-04-25 17:47:23,198 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-jay-and-silent-bob/
+2025-04-25 17:47:23,475 - First AvenueScraper - INFO - Updated event: Jay and Silent Bob's Aural Sects Tour on 2025-06-19 20:00:00
+2025-04-25 17:47:23,475 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-dean-wareham/
+2025-04-25 17:47:23,678 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-dean-wareham/
+2025-04-25 17:47:23,956 - First AvenueScraper - INFO - Updated event: Dean Wareham on 2025-06-19 20:00:00
+2025-04-25 17:47:23,956 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-ben-rector/
+2025-04-25 17:47:25,033 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-ben-rector/
+2025-04-25 17:47:25,287 - First AvenueScraper - INFO - Added event: Ben Rector, The National Parks on 2025-06-20 19:00:00
+2025-04-25 17:47:25,288 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-artemas/
+2025-04-25 17:47:25,496 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-artemas/
+2025-04-25 17:47:25,742 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-greg-koch/
+2025-04-25 17:47:26,732 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-greg-koch/
+2025-04-25 17:47:26,987 - First AvenueScraper - INFO - Added event: Greg Koch, Koch Marshall Trio on 2025-06-20 20:30:00
+2025-04-25 17:47:26,987 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-azymuth/
+2025-04-25 17:47:28,757 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-azymuth/
+2025-04-25 17:47:29,011 - First AvenueScraper - INFO - Added event: Azymuth on 2025-06-20 21:00:00
+2025-04-25 17:47:29,011 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-kyle-hall/
+2025-04-25 17:47:30,520 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-kyle-hall/
+2025-04-25 17:47:30,802 - First AvenueScraper - INFO - Updated event: KYLE HALL, DPC, Mike Pifer, QJ on 2025-06-20 21:00:00
+2025-04-25 17:47:30,802 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-arooj-aftab/
+2025-04-25 17:47:32,031 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-arooj-aftab/
+2025-04-25 17:47:32,282 - First AvenueScraper - INFO - Added event: Arooj Aftab on 2025-06-21 20:00:00
+2025-04-25 17:47:32,283 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-jacks-mannequin/
+2025-04-25 17:47:32,499 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-jacks-mannequin/
+2025-04-25 17:47:32,810 - First AvenueScraper - INFO - Updated event: Jack’s Mannequin on 2025-06-21 20:00:00
+2025-04-25 17:47:32,810 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-zepparella/
+2025-04-25 17:47:33,025 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-zepparella/
+2025-04-25 17:47:33,275 - First AvenueScraper - INFO - Added event: Zepparella on 2025-06-21 20:30:00
+2025-04-25 17:47:33,276 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-ethan-tasch/
+2025-04-25 17:47:33,555 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-ethan-tasch/
+2025-04-25 17:47:33,823 - First AvenueScraper - INFO - Updated event: Ethan Tasch, Wyatt Moran, Mikey Lasusa on 2025-06-21 20:30:00
+2025-04-25 17:47:33,824 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-dispatch-w-john-butler-with-band/
+2025-04-25 17:47:34,036 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-dispatch-w-john-butler-with-band/
+2025-04-25 17:47:34,291 - First AvenueScraper - INFO - Added event: DISPATCH, JOHN BUTLER, Donavon Frankenreiter, Illiterate Light on 2025-06-22 16:30:00
+2025-04-25 17:47:34,292 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-wrestlepalooza/
+2025-04-25 17:47:35,531 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-wrestlepalooza/
+2025-04-25 17:47:35,777 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-sofie-royer/
+2025-04-25 17:47:36,892 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-sofie-royer/
+2025-04-25 17:47:37,152 - First AvenueScraper - INFO - Added event: Sofie Royer, Rebounder on 2025-06-22 20:00:00
+2025-04-25 17:47:37,152 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-the-cat-empire/
+2025-04-25 17:47:37,378 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-the-cat-empire/
+2025-04-25 17:47:37,639 - First AvenueScraper - INFO - Added event: The Cat Empire, LowDown Brass Band on 2025-06-24 20:00:00
+2025-04-25 17:47:37,640 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-red-leather/
+2025-04-25 17:47:37,842 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-red-leather/
+2025-04-25 17:47:38,099 - First AvenueScraper - INFO - Added event: Red Leather on 2025-06-25 19:30:00
+2025-04-25 17:47:38,099 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-the-blue-stones/
+2025-04-25 17:47:38,312 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-the-blue-stones/
+2025-04-25 17:47:38,556 - First AvenueScraper - INFO - Added event: The Blue Stones on 2025-06-26 20:00:00
+2025-04-25 17:47:38,556 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-amble/
+2025-04-25 17:47:38,786 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-amble/
+2025-04-25 17:47:39,055 - First AvenueScraper - INFO - Updated event: Amble, Dom Louis on 2025-06-26 20:00:00
+2025-04-25 17:47:39,055 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-omd/
+2025-04-25 17:47:39,266 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-omd/
+2025-04-25 17:47:39,516 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-birdtalker/
+2025-04-25 17:47:40,327 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-birdtalker/
+2025-04-25 17:47:40,580 - First AvenueScraper - INFO - Added event: Birdtalker on 2025-06-27 20:30:00
+2025-04-25 17:47:40,581 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-sapphic-factory-queer-joy-party/
+2025-04-25 17:47:41,828 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-sapphic-factory-queer-joy-party/
+2025-04-25 17:47:42,085 - First AvenueScraper - INFO - Added event: sapphic factory: queer joy party on 2025-06-27 21:00:00
+2025-04-25 17:47:42,085 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-alex-edelman/
+2025-04-25 17:47:43,174 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-alex-edelman/
+2025-04-25 17:47:43,440 - First AvenueScraper - INFO - Added event: Alex Edelman on 2025-06-28 19:00:00
+2025-04-25 17:47:43,440 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-tripping-daisy/
+2025-04-25 17:47:44,701 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-tripping-daisy/
+2025-04-25 17:47:44,954 - First AvenueScraper - INFO - Added event: Tripping Daisy on 2025-06-28 20:30:00
+2025-04-25 17:47:44,955 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-porch-light/
+2025-04-25 17:47:45,162 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-porch-light/
+2025-04-25 17:47:45,443 - First AvenueScraper - INFO - Updated event: Porch Light on 2025-06-28 20:30:00
+2025-04-25 17:47:45,444 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-flip-phone/
+2025-04-25 17:47:45,666 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-flip-phone/
+2025-04-25 17:47:45,924 - First AvenueScraper - INFO - Added event: Flip Phone, Sam Star (RuPaul’s Drag Race), Sasha Cassadine, Mercedes Iman Diamond, Tenderoni, Onya, Kat Wilderness, Jade Jolie (RuPaul's Drag Race), Julia Starr, Lady Cummeal Cassadine, Ken Doll, Aranya, Domita Sanchez on 2025-06-28 21:00:00
+2025-04-25 17:47:45,925 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-pepper/
+2025-04-25 17:47:46,896 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-pepper/
+2025-04-25 17:47:47,156 - First AvenueScraper - INFO - Added event: Pepper, Cydeways on 2025-06-29 20:00:00
+2025-04-25 17:47:47,156 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-06-jenny-dont-and-the-spurs/
+2025-04-25 17:47:47,365 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-06-jenny-dont-and-the-spurs/
+2025-04-25 17:47:47,627 - First AvenueScraper - INFO - Added event: Jenny Don't And The Spurs on 2025-06-30 20:00:00
+2025-04-25 17:47:47,627 - First AvenueScraper - INFO - Processing URL: https://first-avenue.com/shows/?post_type=event&start_date=20250701
+2025-04-25 17:47:49,298 - First AvenueScraper - INFO - Request successful. Parsing shows...
+2025-04-25 17:47:49,377 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-wavves/
+2025-04-25 17:47:51,036 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-wavves/
+2025-04-25 17:47:51,286 - First AvenueScraper - INFO - Added event: Wavves, Beach Goons, Death Lens on 2025-07-02 20:00:00
+2025-04-25 17:47:51,287 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-40-watt-sun/
+2025-04-25 17:47:52,414 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-40-watt-sun/
+2025-04-25 17:47:52,659 - First AvenueScraper - INFO - Added event: 40 Watt Sun, Serpentent on 2025-07-03 20:00:00
+2025-04-25 17:47:52,659 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-trampled-by-turtles/
+2025-04-25 17:47:52,872 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-trampled-by-turtles/
+2025-04-25 17:47:53,122 - First AvenueScraper - INFO - Added event: Trampled by Turtles, S.G. Goodman on 2025-07-05 18:00:00
+2025-04-25 17:47:53,122 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-teddy-swims/
+2025-04-25 17:47:53,339 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-teddy-swims/
+2025-04-25 17:47:53,597 - First AvenueScraper - INFO - Added event: Teddy Swims, SIENNA SPIRO on 2025-07-06 20:00:00
+2025-04-25 17:47:53,597 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-mekons/
+2025-04-25 17:47:53,808 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-mekons/
+2025-04-25 17:47:54,063 - First AvenueScraper - INFO - Added event: mekons, Jake La Botz on 2025-07-09 20:00:00
+2025-04-25 17:47:54,063 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-ezra-furman/
+2025-04-25 17:47:55,164 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-ezra-furman/
+2025-04-25 17:47:55,445 - First AvenueScraper - INFO - Updated event: Ezra Furman on 2025-07-09 20:00:00
+2025-04-25 17:47:55,445 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-los-bitchos/
+2025-04-25 17:47:56,393 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-los-bitchos/
+2025-04-25 17:47:56,671 - First AvenueScraper - INFO - Updated event: Los Bitchos on 2025-07-10 20:00:00
+2025-04-25 17:47:56,671 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-music-of-prince/
+2025-04-25 17:47:56,881 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-music-of-prince/
+2025-04-25 17:47:57,160 - First AvenueScraper - INFO - Updated event: The Music of Prince featuring former members of the New Power Generation, Brown Mark from The Revolution on 2025-07-10 20:00:00
+2025-04-25 17:47:57,161 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-trombone-shorty-orleans-avenue/
+2025-04-25 17:47:57,367 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-trombone-shorty-orleans-avenue/
+2025-04-25 17:47:57,610 - First AvenueScraper - INFO - Added event: Trombone Shorty & Orleans Avenue, JJ Grey & Mofro on 2025-07-11 19:00:00
+2025-04-25 17:47:57,610 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-heart-attack-man/
+2025-04-25 17:47:57,826 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-heart-attack-man/
+2025-04-25 17:47:58,101 - First AvenueScraper - INFO - Updated event: Heart Attack Man, Carpool, Dear Seattle on 2025-07-11 19:00:00
+2025-04-25 17:47:58,101 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-friendship/
+2025-04-25 17:47:59,452 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-friendship/
+2025-04-25 17:47:59,713 - First AvenueScraper - INFO - Added event: Friendship, 2nd Grade, Pat Keen’s Bug Band on 2025-07-11 21:00:00
+2025-04-25 17:47:59,714 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-the-crane-wives/
+2025-04-25 17:47:59,921 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-the-crane-wives/
+2025-04-25 17:48:00,172 - First AvenueScraper - INFO - Added event: The Crane Wives on 2025-07-12 19:00:00
+2025-04-25 17:48:00,173 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-roger-clyne-the-peacemakers/
+2025-04-25 17:48:00,375 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-roger-clyne-the-peacemakers/
+2025-04-25 17:48:00,632 - First AvenueScraper - INFO - Added event: Roger Clyne & The Peacemakers on 2025-07-12 20:00:00
+2025-04-25 17:48:00,632 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-aries-spears/
+2025-04-25 17:48:00,844 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-aries-spears/
+2025-04-25 17:48:01,109 - First AvenueScraper - INFO - Updated event: Aries Spears on 2025-07-12 20:00:00
+2025-04-25 17:48:01,110 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-bones-owens/
+2025-04-25 17:48:01,314 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-bones-owens/
+2025-04-25 17:48:01,580 - First AvenueScraper - INFO - Added event: Bones Owens on 2025-07-13 19:00:00
+2025-04-25 17:48:01,580 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-ekkstacy/
+2025-04-25 17:48:02,760 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-ekkstacy/
+2025-04-25 17:48:03,067 - First AvenueScraper - INFO - Added event: EKKSTACY, Max Fry on 2025-07-14 20:00:00
+2025-04-25 17:48:03,068 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-built-to-spill-and-yo-la-tengo/
+2025-04-25 17:48:03,287 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-built-to-spill-and-yo-la-tengo/
+2025-04-25 17:48:03,549 - First AvenueScraper - INFO - Added event: Built to Spill, Yo La Tengo on 2025-07-15 19:00:00
+2025-04-25 17:48:03,549 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-lake-street-dive/
+2025-04-25 17:48:03,760 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-lake-street-dive/
+2025-04-25 17:48:04,038 - First AvenueScraper - INFO - Updated event: Lake Street Dive, Your Smith on 2025-07-15 19:00:00
+2025-04-25 17:48:04,039 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-the-swell-season/
+2025-04-25 17:48:04,255 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-the-swell-season/
+2025-04-25 17:48:04,490 - First AvenueScraper - INFO - Added event: The Swell Season on 2025-07-16 19:30:00
+2025-04-25 17:48:04,490 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-emery/
+2025-04-25 17:48:05,711 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-emery/
+2025-04-25 17:48:06,012 - First AvenueScraper - INFO - Added event: Emery, Have Mercy, Good Terms on 2025-07-17 19:00:00
+2025-04-25 17:48:06,012 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-nitty-gritty-dirt-band/
+2025-04-25 17:48:06,223 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-nitty-gritty-dirt-band/
+2025-04-25 17:48:06,482 - First AvenueScraper - INFO - Added event: Nitty Gritty Dirt Band, Brit Taylor on 2025-07-17 20:00:00
+2025-04-25 17:48:06,483 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-3ballmty/
+2025-04-25 17:48:07,826 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-3ballmty/
+2025-04-25 17:48:08,070 - First AvenueScraper - INFO - Added event: 3BallMTY, DJ Cristian Baca on 2025-07-17 21:00:00
+2025-04-25 17:48:08,070 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-murder-by-death/
+2025-04-25 17:48:09,160 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-murder-by-death/
+2025-04-25 17:48:09,416 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-ace-monroe/
+2025-04-25 17:48:10,572 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-ace-monroe/
+2025-04-25 17:48:10,849 - First AvenueScraper - INFO - Updated event: Ace Monroe on 2025-07-20 20:00:00
+2025-04-25 17:48:10,849 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-american-aquarium/
+2025-04-25 17:48:12,004 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-american-aquarium/
+2025-04-25 17:48:12,288 - First AvenueScraper - INFO - Updated event: American Aquarium, Kristina Murray on 2025-07-20 20:00:00
+2025-04-25 17:48:12,289 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-sam-barber/
+2025-04-25 17:48:13,596 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-sam-barber/
+2025-04-25 17:48:13,889 - First AvenueScraper - INFO - Updated event: Sam Barber on 2025-07-20 20:00:00
+2025-04-25 17:48:13,890 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-welcome-to-night-vale/
+2025-04-25 17:48:15,530 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-welcome-to-night-vale/
+2025-04-25 17:48:15,788 - First AvenueScraper - INFO - Added event: Welcome to Night Vale on 2025-07-21 20:00:00
+2025-04-25 17:48:15,788 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-lord-huron/
+2025-04-25 17:48:17,393 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-lord-huron/
+2025-04-25 17:48:17,649 - First AvenueScraper - INFO - Added event: Lord Huron, Lee Fields on 2025-07-22 19:30:00
+2025-04-25 17:48:17,649 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-petite-noir/
+2025-04-25 17:48:17,855 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-petite-noir/
+2025-04-25 17:48:18,112 - First AvenueScraper - INFO - Added event: Petite Noir on 2025-07-22 20:00:00
+2025-04-25 17:48:18,112 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-big-star-quintet/
+2025-04-25 17:48:18,318 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-big-star-quintet/
+2025-04-25 17:48:18,570 - First AvenueScraper - INFO - Added event: Big Star Quintet on 2025-07-23 19:15:00
+2025-04-25 17:48:18,571 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-bashfortheworld/
+2025-04-25 17:48:18,799 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-bashfortheworld/
+2025-04-25 17:48:19,041 - First AvenueScraper - INFO - Added event: BashfortheWorld on 2025-07-23 19:30:00
+2025-04-25 17:48:19,041 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-sematary/
+2025-04-25 17:48:20,297 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-sematary/
+2025-04-25 17:48:20,530 - First AvenueScraper - INFO - Added event: Sematary on 2025-07-25 19:00:00
+2025-04-25 17:48:20,530 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-white-denim/
+2025-04-25 17:48:21,424 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-white-denim/
+2025-04-25 17:48:21,682 - First AvenueScraper - INFO - Added event: White Denim on 2025-07-25 21:00:00
+2025-04-25 17:48:21,683 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-night-moves/
+2025-04-25 17:48:22,711 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-night-moves/
+2025-04-25 17:48:22,968 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-mitchell-ferguson/
+2025-04-25 17:48:23,184 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-mitchell-ferguson/
+2025-04-25 17:48:23,443 - First AvenueScraper - INFO - Added event: Mitchell Ferguson, Luke Borchelt on 2025-07-26 21:00:00
+2025-04-25 17:48:23,443 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-harbour/
+2025-04-25 17:48:24,240 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-harbour/
+2025-04-25 17:48:24,492 - First AvenueScraper - INFO - Added event: HARBOUR on 2025-07-27 20:00:00
+2025-04-25 17:48:24,492 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-glass-beams/
+2025-04-25 17:48:24,694 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-glass-beams/
+2025-04-25 17:48:24,939 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-the-church/
+2025-04-25 17:48:25,148 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-the-church/
+2025-04-25 17:48:25,433 - First AvenueScraper - INFO - Updated event: The Church on 2025-07-28 20:00:00
+2025-04-25 17:48:25,434 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-of-montreal/
+2025-04-25 17:48:25,650 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-of-montreal/
+2025-04-25 17:48:25,925 - First AvenueScraper - INFO - Updated event: of Montreal, Bijoux Cone on 2025-07-28 20:00:00
+2025-04-25 17:48:25,926 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-scowl/
+2025-04-25 17:48:26,185 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-scowl/
+2025-04-25 17:48:26,436 - First AvenueScraper - INFO - Added event: Scowl, Glixen on 2025-07-29 19:00:00
+2025-04-25 17:48:26,436 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-old-mervs/
+2025-04-25 17:48:27,626 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-old-mervs/
+2025-04-25 17:48:27,884 - First AvenueScraper - INFO - Added event: Old Mervs on 2025-07-29 20:00:00
+2025-04-25 17:48:27,884 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-07-pixies/
+2025-04-25 17:48:28,094 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-07-pixies/
+2025-04-25 17:48:28,346 - First AvenueScraper - INFO - Added event: Pixies, Kurt Vile and The Violators on 2025-07-31 20:00:00
+2025-04-25 17:48:28,347 - First AvenueScraper - INFO - Processing URL: https://first-avenue.com/shows/?post_type=event&start_date=20250801
+2025-04-25 17:48:29,980 - First AvenueScraper - INFO - Request successful. Parsing shows...
+2025-04-25 17:48:30,031 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-julie-eddy/
+2025-04-25 17:48:31,010 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-julie-eddy/
+2025-04-25 17:48:31,276 - First AvenueScraper - INFO - Added event: JULIE EDDY, Hailey James on 2025-08-01 20:00:00
+2025-04-25 17:48:31,276 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-mohanad-elshieky/
+2025-04-25 17:48:32,470 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-mohanad-elshieky/
+2025-04-25 17:48:32,757 - First AvenueScraper - INFO - Updated event: Mohanad Elshieky on 2025-08-01 20:00:00
+2025-04-25 17:48:32,758 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-pixies/
+2025-04-25 17:48:32,972 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-pixies/
+2025-04-25 17:48:33,250 - First AvenueScraper - INFO - Updated event: Pixies, Kurt Vile and The Violators on 2025-08-01 20:00:00
+2025-04-25 17:48:33,250 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-sierra-ferrell/
+2025-04-25 17:48:33,455 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-sierra-ferrell/
+2025-04-25 17:48:33,732 - First AvenueScraper - INFO - Added event: Sierra Ferrell, Kaitlin Butts on 2025-08-02 19:00:00
+2025-04-25 17:48:33,732 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-fitz-and-the-tantrums/
+2025-04-25 17:48:33,934 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-fitz-and-the-tantrums/
+2025-04-25 17:48:34,189 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-king-lil-g-young-drummer-boy/
+2025-04-25 17:48:34,391 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-king-lil-g-young-drummer-boy/
+2025-04-25 17:48:34,629 - First AvenueScraper - INFO - Added event: King Lil G, Young Drummer Boy, Hexxx on 2025-08-03 19:00:00
+2025-04-25 17:48:34,629 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-rainbow-kitten-surprise/
+2025-04-25 17:48:36,217 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-rainbow-kitten-surprise/
+2025-04-25 17:48:36,469 - First AvenueScraper - INFO - Added event: Rainbow Kitten Surprise, Medium Build on 2025-08-03 19:30:00
+2025-04-25 17:48:36,469 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-the-deslondes/
+2025-04-25 17:48:36,674 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-the-deslondes/
+2025-04-25 17:48:36,934 - First AvenueScraper - INFO - Added event: The Deslondes, Sabine McCalla on 2025-08-04 20:00:00
+2025-04-25 17:48:36,934 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-horsegirl/
+2025-04-25 17:48:37,150 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-horsegirl/
+2025-04-25 17:48:37,409 - First AvenueScraper - INFO - Added event: Horsegirl, Godcaster on 2025-08-05 19:30:00
+2025-04-25 17:48:37,410 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-jake-scott/
+2025-04-25 17:48:37,618 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-jake-scott/
+2025-04-25 17:48:37,878 - First AvenueScraper - INFO - Added event: Jake Scott, MaRynn Taylor on 2025-08-06 19:30:00
+2025-04-25 17:48:37,878 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-wim-tapley-the-cannons/
+2025-04-25 17:48:39,400 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-wim-tapley-the-cannons/
+2025-04-25 17:48:39,638 - First AvenueScraper - INFO - Added event: Wim Tapley & The Cannons on 2025-08-06 20:00:00
+2025-04-25 17:48:39,639 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-broncho/
+2025-04-25 17:48:40,733 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-broncho/
+2025-04-25 17:48:40,977 - First AvenueScraper - INFO - Added event: BRONCHO on 2025-08-07 20:00:00
+2025-04-25 17:48:40,977 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-clipping/
+2025-04-25 17:48:41,174 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-clipping/
+2025-04-25 17:48:41,426 - First AvenueScraper - INFO - Added event: clipping., Counterfeit Madison, Freecell on 2025-08-07 20:30:00
+2025-04-25 17:48:41,427 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-will-evans/
+2025-04-25 17:48:42,278 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-will-evans/
+2025-04-25 17:48:42,524 - First AvenueScraper - INFO - Added event: Will Evans on 2025-08-08 20:30:00
+2025-04-25 17:48:42,525 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-penelope-road/
+2025-04-25 17:48:43,598 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-penelope-road/
+2025-04-25 17:48:43,848 - First AvenueScraper - INFO - Added event: Penelope Road on 2025-08-09 19:00:00
+2025-04-25 17:48:43,849 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-delilah-bon/
+2025-04-25 17:48:44,084 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-delilah-bon/
+2025-04-25 17:48:44,335 - First AvenueScraper - INFO - Added event: Delilah Bon on 2025-08-12 20:00:00
+2025-04-25 17:48:44,336 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-ellise/
+2025-04-25 17:48:45,535 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-ellise/
+2025-04-25 17:48:45,797 - First AvenueScraper - INFO - Added event: Ellise on 2025-08-13 19:30:00
+2025-04-25 17:48:45,797 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-cardinal-black/
+2025-04-25 17:48:46,672 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-cardinal-black/
+2025-04-25 17:48:46,930 - First AvenueScraper - INFO - Added event: Cardinal Black on 2025-08-14 20:00:00
+2025-04-25 17:48:46,930 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-ear-hustle-live/
+2025-04-25 17:48:47,147 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-ear-hustle-live/
+2025-04-25 17:48:47,428 - First AvenueScraper - INFO - Updated event: Ear Hustle Live! on 2025-08-14 20:00:00
+2025-04-25 17:48:47,429 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-the-flaming-lips-modest-mouse/
+2025-04-25 17:48:47,644 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-the-flaming-lips-modest-mouse/
+2025-04-25 17:48:47,898 - First AvenueScraper - INFO - Added event: The Flaming Lips, Modest Mouse on 2025-08-15 19:00:00
+2025-04-25 17:48:47,899 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-hermitage-green/
+2025-04-25 17:48:49,072 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-hermitage-green/
+2025-04-25 17:48:49,320 - First AvenueScraper - INFO - Added event: Hermitage Green on 2025-08-18 20:00:00
+2025-04-25 17:48:49,321 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-gregory-alan-isakov/
+2025-04-25 17:48:49,519 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-gregory-alan-isakov/
+2025-04-25 17:48:49,766 - First AvenueScraper - INFO - Added event: Gregory Alan Isakov, Ocie Elliott on 2025-08-19 19:00:00
+2025-04-25 17:48:49,767 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-lettuce/
+2025-04-25 17:48:49,984 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-lettuce/
+2025-04-25 17:48:50,237 - First AvenueScraper - INFO - Added event: Lettuce, BALTHVS on 2025-08-20 20:00:00
+2025-04-25 17:48:50,238 - First AvenueScraper - INFO - Fetching event details from: https://first-avenue.com/event/2025-08-charley-crockett/
+2025-04-25 17:48:50,438 - First AvenueScraper - INFO - Fetching band names from: https://first-avenue.com/event/2025-08-charley-crockett/
+2025-04-25 17:48:50,684 - First AvenueScraper - INFO - Added event: Charley Crockett on 2025-08-23 19:00:00
+2025-04-25 17:48:50,707 - First AvenueScraper - INFO - Database changes committed
+2025-04-25 17:48:50,707 - First AvenueScraper - INFO - Cleaning up resources
+2025-04-25 17:48:50,843 - First AvenueScraper - INFO - WebDriver closed
+2025-04-25 17:48:50,843 - First AvenueScraper - INFO - Database cursor closed
+2025-04-25 17:48:50,843 - First AvenueScraper - INFO - Database connection closed
+2025-04-25 17:48:50,843 - First AvenueScraper - INFO - Scraper finished: Surly Brewing Festival Field | Success: True | Added: 198 | Updated: 135 | Duplicates: 37 | Errors: 0 | Duration: 344.58s
+2025-04-25 17:48:50,844 - First AvenueScraper - INFO - Results saved to /Users/musicdaddy/Desktop/venues/backend/scrapers/logs/first avenue_20250425_174306_results.json
