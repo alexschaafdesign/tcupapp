@@ -1,91 +1,96 @@
-import React, { useMemo } from 'react';
-import { Grid, Typography, FormControlLabel, Checkbox, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import { format, parse } from 'date-fns';
+import React from 'react';
+import { Grid, Typography, FormControlLabel, Checkbox } from '@mui/material';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+// Removed unused imports: Select, MenuItem, FormControl, InputLabel, useMemo, format, parse
 
 const DayHours = ({ day, hours, onChange }) => {
-  const timeOptions = useMemo(() => {
-    const options = [];
-    const current = new Date();
-    current.setHours(5, 0, 0); // Start at 5 AM
-    
-    while (current.getHours() < 23) { // Until 11 PM
-      options.push({
-        value: format(current, 'HH:mm'),
-        label: format(current, 'h:mm a')
-      });
-      current.setMinutes(current.getMinutes() + 30);
-    }
-    return options;
-  }, []);
 
-  const handleTimeChange = (type, timeString) => {
-    const newTime = timeString ? parse(timeString, 'HH:mm', new Date()) : null;
-    onChange(day, { 
+  // Handles changes from either TimePicker component
+  const handleTimeChange = (type, newDateValue) => {
+    // The newDateValue from TimePicker is already a Date object or null
+    onChange(day, {
       ...hours,
-      [type]: newTime,
-      isClosed: false
+      [type]: newDateValue, // Pass the Date object or null directly
+      isClosed: false // Automatically uncheck 'Closed' when a time is selected
     });
   };
 
-  const getDisplayTime = (time) => {
-    console.log('Time input:', time);
-    if (!time) return '';
-    try {
-      const value = format(time, 'HH:mm');
-      console.log('Formatted value:', value);
-      return value;
-    } catch (err) {
-      console.error('Format error:', err);
-      return '';
-    }
+  // Handles changes for the "Closed" checkbox
+  const handleCheckboxChange = (event) => {
+    const isChecked = event.target.checked;
+    onChange(day, {
+      ...hours,
+      isClosed: isChecked,
+      // Clear times if 'Closed' is checked for consistency
+      open: isChecked ? null : hours.open,
+      close: isChecked ? null : hours.close,
+    });
   };
 
+  // No need for timeOptions or getDisplayTime anymore
+
   return (
-    <Grid container spacing={2} sx={{ mb: 2 }}>
-      <Grid item xs={12} sm={3}>
-        <Typography sx={{ textTransform: 'capitalize' }}>{day}</Typography>
+    // Use alignItems="center" for better vertical alignment of items in the row
+    <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+
+      {/* Day Label */}
+      <Grid item xs={12} sm={3} md={2}> {/* Adjusted Grid sizing */}
+        <Typography sx={{ textTransform: 'capitalize', fontWeight: 'medium' }}>
+          {day}
+        </Typography>
       </Grid>
-      <Grid item xs={12} sm={2}>
+
+      {/* Closed Checkbox */}
+      <Grid item xs={5} sm={3} md={2}> {/* Adjusted Grid sizing */}
         <FormControlLabel
           control={
             <Checkbox
               checked={hours.isClosed}
-              onChange={(e) => onChange(day, { ...hours, isClosed: e.target.checked })}
+              onChange={handleCheckboxChange} // Use dedicated handler
             />
           }
           label="Closed"
+          sx={{ whiteSpace: 'nowrap'}} // Prevent label wrapping on small screens if possible
         />
       </Grid>
-      <Grid item xs={12} sm={3}>
-        <FormControl fullWidth>
-          <InputLabel>Open</InputLabel>
-          <Select
-            value={getDisplayTime(hours.open)}
-            onChange={(e) => handleTimeChange('open', e.target.value)}
-            disabled={hours.isClosed}
-            label="Open"
-          >
-            {timeOptions.map(time => (
-              <MenuItem key={time.value} value={time.value}>{time.label}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+
+      {/* Open Time Picker */}
+      <Grid item xs={7} sm={4} md={4}> {/* Adjusted Grid sizing */}
+        <TimePicker
+          // Use standard TextField styling within TimePicker via slotProps
+          slotProps={{
+            textField: {
+                size: 'small', // Make the input field smaller
+                fullWidth: true, // Ensure it takes up grid item width
+                label: 'Open', // Label directly on the component
+            }
+          }}
+          value={hours.open} // Should be a Date object or null
+          onChange={(newValue) => handleTimeChange('open', newValue)}
+          disabled={hours.isClosed}
+          ampm // Use AM/PM display format (optional, set to false for 24hr)
+          // minutesStep={15} // Optionally set minute increments
+        />
       </Grid>
-      <Grid item xs={12} sm={3}>
-        <FormControl fullWidth>
-          <InputLabel>Close</InputLabel>
-          <Select
-            value={getDisplayTime(hours.close)}
-            onChange={(e) => handleTimeChange('close', e.target.value)}
-            disabled={hours.isClosed}
-            label="Close"
-          >
-            {timeOptions.map(time => (
-              <MenuItem key={time.value} value={time.value}>{time.label}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+
+      {/* Close Time Picker */}
+      <Grid item xs={7} sm={4} md={4}> {/* Adjusted Grid sizing */}
+         <TimePicker
+          slotProps={{
+            textField: {
+                size: 'small',
+                fullWidth: true,
+                label: 'Close',
+            }
+          }}
+          value={hours.close} // Should be a Date object or null
+          onChange={(newValue) => handleTimeChange('close', newValue)}
+          disabled={hours.isClosed}
+          ampm // Use AM/PM display format
+          // minutesStep={15}
+        />
       </Grid>
+
     </Grid>
   );
 };

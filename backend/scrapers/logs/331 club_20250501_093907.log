@@ -1,0 +1,75 @@
+2025-05-01 09:39:07,532 - 331 ClubScraper - INFO - Setting up scraper for 331 Club
+2025-05-01 09:39:09,547 - 331 ClubScraper - INFO - Chrome initialized successfully
+2025-05-01 09:39:09,549 - 331 ClubScraper - INFO - Connecting to database
+2025-05-01 09:39:10,110 - 331 ClubScraper - INFO - Getting venue ID for 331 Club
+2025-05-01 09:39:10,203 - 331 ClubScraper - INFO - Venue ID for 331 Club: 9
+2025-05-01 09:39:10,203 - 331 ClubScraper - INFO - Setup complete for 331 Club
+2025-05-01 09:39:10,203 - 331 ClubScraper - INFO - Navigating to https://331club.com/#calendar
+2025-05-01 09:39:15,114 - 331 ClubScraper - INFO - Looking for 'See all upcoming events' button...
+2025-05-01 09:39:15,114 - 331 ClubScraper - WARNING - 'See all upcoming events' button not found or not clickable: BaseScraper.wait_for_element() got an unexpected keyword argument 'clickable'
+2025-05-01 09:39:15,114 - 331 ClubScraper - INFO - Continuing with currently visible events...
+2025-05-01 09:39:15,162 - 331 ClubScraper - INFO - Found 93 events on the page
+2025-05-01 09:39:15,456 - 331 ClubScraper - INFO - Updated event: Gently, Gently, Money Bones on 2025-05-03 22:00:00
+2025-05-01 09:39:15,702 - 331 ClubScraper - INFO - Updated event: J-Mo On The Beat The J-Lighters on 2025-05-04 19:00:00
+2025-05-01 09:39:15,832 - 331 ClubScraper - INFO - Updated event: Sneaky Pete Bauer on 2025-05-04 17:00:00
+2025-05-01 09:39:16,067 - 331 ClubScraper - INFO - Updated event: May Conspiracy Series featuring, Lena Elizabeth, Matthias Saint. John &, Planetless on 2025-05-06 21:30:00
+2025-05-01 09:39:16,142 - 331 ClubScraper - INFO - Updated event: Worker’s Playtime, Jeff Ray on 2025-05-06 20:00:00
+2025-05-01 09:39:16,526 - 331 ClubScraper - INFO - Updated event: sugarcoat, Mishi Mega, Linus on 2025-05-09 22:00:00
+2025-05-01 09:39:16,682 - 331 ClubScraper - INFO - Updated event: Nato Coles & the Blue Diamond Band, The 241s, The Dirty Pretty on 2025-05-10 22:00:00
+2025-05-01 09:39:17,281 - 331 ClubScraper - INFO - Updated event: May Conspiracy Series featuring, Lena Elizabeth, Freque, &, Charles on 2025-05-13 21:30:00
+2025-05-01 09:39:17,395 - 331 ClubScraper - INFO - Updated event: Worker’s Playtime, Dan Israel on 2025-05-13 20:00:00
+2025-05-01 09:39:17,488 - 331 ClubScraper - INFO - Updated event: Lenz Frenz, Ian Alexy on 2025-05-14 21:30:00
+2025-05-01 09:39:17,749 - 331 ClubScraper - INFO - Updated event: ART-A-WHIRL WEEKEND AT, 331CLUB, 2025, FRIDAY, outdoors, MCN6, music channel presents Bands On Vans, Big Salt, indoors, Uspop on 2025-05-16 22:00:00
+2025-05-01 09:39:18,118 - 331 ClubScraper - INFO - Updated event: “Womenfolk Presents”, Rachel Ries (of Her Crooked Heart) on 2025-05-19 18:00:00
+2025-05-01 09:39:18,227 - 331 ClubScraper - INFO - Updated event: May Conspiracy Series featuring, Lena Elizabeth, Bird Dog on 2025-05-20 21:30:00
+2025-05-01 09:39:18,338 - 331 ClubScraper - INFO - Updated event: Worker’s Playtime, Xenia on 2025-05-20 20:00:00
+2025-05-01 09:39:19,140 - 331 ClubScraper - INFO - Updated event: May Conspiracy Series featuring, Lena Elizabeth, The Twins of Franklin on 2025-05-27 21:30:00
+2025-05-01 09:39:19,236 - 331 ClubScraper - INFO - Updated event: Worker’s Playtime, mike munson on 2025-05-27 20:00:00
+2025-05-01 09:39:19,385 - 331 ClubScraper - INFO - Updated event: Harold’s House Party on KFAI, Connor McRae Trio on 2025-05-28 19:00:00
+2025-05-01 09:39:19,983 - 331 ClubScraper - INFO - Updated event: TBA on 2025-06-01 17:00:00
+2025-05-01 09:39:20,108 - 331 ClubScraper - INFO - Added event: Soul Trouvère on 2025-06-02 18:00:00
+2025-05-01 09:39:23,170 - 331 ClubScraper - INFO - Updated event: Harold’s House Party on KFAI, Swing 6625 on 2025-07-02 19:00:00
+2025-05-01 09:39:23,339 - 331 ClubScraper - INFO - Added event: TRAMPS LIKE US on 2025-07-04 22:00:00
+2025-05-01 09:39:23,403 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-07-04 19:00:00
+2025-05-01 09:39:23,462 - 331 ClubScraper - INFO - Added event: Longwinter, Switching Fields, T, he Electric Honeycomb on 2025-07-05 22:00:00
+2025-05-01 09:39:23,527 - 331 ClubScraper - INFO - Added event: Drinkin’ Spelling Bee on 2025-07-05 19:00:00
+2025-05-01 09:39:23,600 - 331 ClubScraper - INFO - Added event: Brass Messengers on 2025-07-06 19:00:00
+2025-05-01 09:39:23,664 - 331 ClubScraper - INFO - Added event: TBA on 2025-07-06 17:00:00
+2025-05-01 09:39:24,096 - 331 ClubScraper - INFO - Updated event: Harold’s House Party on KFAI, Ian Alexy on 2025-07-09 19:00:00
+2025-05-01 09:39:24,161 - 331 ClubScraper - INFO - Added event: Joe Hysell on 2025-07-10 21:30:00
+2025-05-01 09:39:24,210 - 331 ClubScraper - INFO - Added event: The Cameras on 2025-07-11 22:00:00
+2025-05-01 09:39:24,264 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-07-11 19:00:00
+2025-05-01 09:39:24,344 - 331 ClubScraper - INFO - Added event: Fairy Boat on 2025-07-12 22:00:00
+2025-05-01 09:39:24,404 - 331 ClubScraper - INFO - Added event: Drinkin’ Spelling Bee on 2025-07-12 19:00:00
+2025-05-01 09:39:24,461 - 331 ClubScraper - INFO - Added event: Emmy Woods, Ryan Young on 2025-07-13 19:00:00
+2025-05-01 09:39:24,538 - 331 ClubScraper - INFO - Added event: Dr. Sketchy’s Anti-Art School on 2025-07-13 16:00:00
+2025-05-01 09:39:24,655 - 331 ClubScraper - INFO - Added event: Hall & Young on 2025-07-14 18:00:00
+2025-05-01 09:39:24,947 - 331 ClubScraper - INFO - Updated event: Harold’s House Party on KFAI, Sweet Magnolia on 2025-07-16 19:00:00
+2025-05-01 09:39:25,066 - 331 ClubScraper - INFO - Added event: third date on 2025-07-18 22:00:00
+2025-05-01 09:39:25,127 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-07-18 19:00:00
+2025-05-01 09:39:25,204 - 331 ClubScraper - INFO - Added event: The Crimson Boys on 2025-07-19 22:00:00
+2025-05-01 09:39:25,324 - 331 ClubScraper - INFO - Added event: Drinkin’ Spelling Bee on 2025-07-19 19:00:00
+2025-05-01 09:39:25,393 - 331 ClubScraper - INFO - Added event: Switchyard on 2025-07-20 19:00:00
+2025-05-01 09:39:25,447 - 331 ClubScraper - INFO - Added event: TBA on 2025-07-20 17:00:00
+2025-05-01 09:39:25,512 - 331 ClubScraper - INFO - Added event: eleven degenerates on 2025-07-20 22:30:00
+2025-05-01 09:39:25,814 - 331 ClubScraper - INFO - Updated event: Worker’s Playtime, TBA on 2025-07-22 20:00:00
+2025-05-01 09:39:25,925 - 331 ClubScraper - INFO - Updated event: Danser on 2025-07-23 21:30:00
+2025-05-01 09:39:26,012 - 331 ClubScraper - INFO - Updated event: Harold’s House Party on KFAI, Jon Rodine Friends on 2025-07-23 19:00:00
+2025-05-01 09:39:26,079 - 331 ClubScraper - INFO - Added event: Kat the Kodachromes on 2025-07-24 21:30:00
+2025-05-01 09:39:26,133 - 331 ClubScraper - INFO - Added event: Solana the Sunsets on 2025-07-25 22:00:00
+2025-05-01 09:39:26,210 - 331 ClubScraper - INFO - Added event: Movie Music Trivia on 2025-07-25 19:00:00
+2025-05-01 09:39:26,269 - 331 ClubScraper - INFO - Added event: The Customers on 2025-07-26 22:00:00
+2025-05-01 09:39:26,336 - 331 ClubScraper - INFO - Added event: Drinkin’ Spelling Bee on 2025-07-26 19:00:00
+2025-05-01 09:39:26,405 - 331 ClubScraper - INFO - Added event: The Real Chuck NORAD on 2025-07-27 19:00:00
+2025-05-01 09:39:26,476 - 331 ClubScraper - INFO - Added event: TBA on 2025-07-27 17:00:00
+2025-05-01 09:39:26,550 - 331 ClubScraper - INFO - Added event: Roe Family Singers on 2025-07-28 20:00:00
+2025-05-01 09:39:26,607 - 331 ClubScraper - INFO - Added event: HonkyTonk Ranch on 2025-07-28 18:00:00
+2025-05-01 09:39:26,992 - 331 ClubScraper - INFO - Updated event: Harold’s House Party on KFAI, Jimmi Langemo the Band of Souls on 2025-07-30 19:00:00
+2025-05-01 09:39:27,061 - 331 ClubScraper - INFO - Added event: The Drunk Uncle’s on 2025-07-31 21:30:00
+2025-05-01 09:39:27,088 - 331 ClubScraper - INFO - Database changes committed
+2025-05-01 09:39:27,088 - 331 ClubScraper - INFO - Cleaning up resources
+2025-05-01 09:39:27,189 - 331 ClubScraper - INFO - WebDriver closed
+2025-05-01 09:39:27,189 - 331 ClubScraper - INFO - Database cursor closed
+2025-05-01 09:39:27,189 - 331 ClubScraper - INFO - Database connection closed
+2025-05-01 09:39:27,189 - 331 ClubScraper - INFO - Scraper finished: 331 Club | Success: True | Added: 32 | Updated: 25 | Duplicates: 107 | Errors: 0 | Duration: 19.66s
+2025-05-01 09:39:27,189 - 331 ClubScraper - INFO - Results saved to /Users/musicdaddy/Desktop/venues/backend/scrapers/logs/331 club_20250501_093907_results.json
