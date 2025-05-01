@@ -1,0 +1,156 @@
+2025-05-01 11:43:51,280 - BerlinScraper - INFO - Setting up scraper for Berlin
+2025-05-01 11:43:53,086 - BerlinScraper - INFO - Chrome initialized successfully
+2025-05-01 11:43:53,088 - BerlinScraper - INFO - Connecting to database
+2025-05-01 11:43:54,454 - BerlinScraper - INFO - Getting venue ID for Berlin
+2025-05-01 11:43:54,520 - BerlinScraper - INFO - Venue ID for Berlin: 12
+2025-05-01 11:43:54,521 - BerlinScraper - INFO - Setup complete for Berlin
+2025-05-01 11:43:54,521 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar
+2025-05-01 11:43:59,316 - BerlinScraper - INFO - Found 64 event cards
+2025-05-01 11:43:59,319 - BerlinScraper - INFO - Parsed start datetime: 2025-04-30 19:00:00
+2025-05-01 11:43:59,438 - BerlinScraper - INFO - Updated event: The Cherry Pit Presents: Bible Study at Berlin on 2025-04-30 19:00:00
+2025-05-01 11:43:59,531 - BerlinScraper - INFO - Parsed start datetime: 2025-05-01 18:30:00
+2025-05-01 11:43:59,632 - BerlinScraper - INFO - Updated event: The Cedar Cultural Center & Berlin Present: Kneebody on 2025-05-01 18:30:00
+2025-05-01 11:43:59,707 - BerlinScraper - INFO - Parsed start datetime: 2025-05-02 16:30:00
+2025-05-01 11:43:59,800 - BerlinScraper - INFO - Updated event: Early Evening Jazz: Polem (Mike Wolter / Kameron Markworth / Joey Van Phillips) on 2025-05-02 16:30:00
+2025-05-01 11:43:59,868 - BerlinScraper - INFO - Parsed start datetime: 2025-05-02 19:30:00
+2025-05-01 11:43:59,983 - BerlinScraper - INFO - Updated event: 58 Belvedere on 2025-05-02 19:30:00
+2025-05-01 11:44:00,060 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: Kinetic (w/ Shannon Blowtorch)
+2025-05-01 11:44:00,060 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: Kinetic (w/ Shannon Blowtorch)
+2025-05-01 11:44:00,061 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: Kinetic (w/ Shannon Blowtorch)
+2025-05-01 11:44:00,062 - BerlinScraper - INFO - Parsed start datetime: 2025-05-03 16:30:00
+2025-05-01 11:44:00,169 - BerlinScraper - INFO - Updated event: Early Evening Jazz: JC Sanford / Christopher Olson on 2025-05-03 16:30:00
+2025-05-01 11:44:00,226 - BerlinScraper - INFO - Parsed start datetime: 2025-05-03 19:30:00
+2025-05-01 11:44:00,326 - BerlinScraper - INFO - Updated event: Max Johnson 3 on 2025-05-03 19:30:00
+2025-05-01 11:44:00,389 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: XARED MT
+2025-05-01 11:44:00,389 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: XARED MT
+2025-05-01 11:44:00,389 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: XARED MT
+2025-05-01 11:44:00,390 - BerlinScraper - INFO - Parsed start datetime: 2025-05-04 19:00:00
+2025-05-01 11:44:00,496 - BerlinScraper - INFO - Updated event: Imagined by Nelson Devereaux: Klassik + Subtle Frequencies on 2025-05-04 19:00:00
+2025-05-01 11:44:00,565 - BerlinScraper - INFO - Parsed start datetime: 2025-05-07 19:00:00
+2025-05-01 11:44:00,677 - BerlinScraper - INFO - Updated event: The Cherry Pit Presents: Bible Study at Berlin on 2025-05-07 19:00:00
+2025-05-01 11:44:00,734 - BerlinScraper - INFO - Parsed start datetime: 2025-05-08 16:30:00
+2025-05-01 11:44:00,833 - BerlinScraper - INFO - Updated event: Early Evening Jazz: The Willie August Project on 2025-05-08 16:30:00
+2025-05-01 11:44:00,912 - BerlinScraper - INFO - Parsed start datetime: 2025-05-08 19:30:00
+2025-05-01 11:44:01,010 - BerlinScraper - INFO - Updated event: Dosh w/ Anthony Cox & Chris Thomson on 2025-05-08 19:30:00
+2025-05-01 11:44:01,060 - BerlinScraper - INFO - Parsed start datetime: 2025-05-09 16:30:00
+2025-05-01 11:44:01,180 - BerlinScraper - INFO - Updated event: Early Evening Jazz: Carpel / Goodroad / Hurtado on 2025-05-09 16:30:00
+2025-05-01 11:44:01,238 - BerlinScraper - INFO - Parsed start datetime: 2025-05-09 19:30:00
+2025-05-01 11:44:01,329 - BerlinScraper - INFO - Updated event: Ana Everling Quartet on 2025-05-09 19:30:00
+2025-05-01 11:44:01,409 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: Danny Sigelman
+2025-05-01 11:44:01,409 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: Danny Sigelman
+2025-05-01 11:44:01,410 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: Danny Sigelman
+2025-05-01 11:44:01,410 - BerlinScraper - INFO - Parsed start datetime: 2025-05-10 16:30:00
+2025-05-01 11:44:01,500 - BerlinScraper - INFO - Updated event: Early Evening Jazz: Paul Harper / Phil Aaron on 2025-05-10 16:30:00
+2025-05-01 11:44:01,558 - BerlinScraper - INFO - Parsed start datetime: 2025-05-10 19:30:00
+2025-05-01 11:44:01,668 - BerlinScraper - INFO - Updated event: Michael Sarian’s ESQUINA on 2025-05-10 19:30:00
+2025-05-01 11:44:01,730 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: McGinnis
+2025-05-01 11:44:01,730 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: McGinnis
+2025-05-01 11:44:01,730 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: McGinnis
+2025-05-01 11:44:01,731 - BerlinScraper - INFO - Parsed start datetime: 2025-05-11 19:00:00
+2025-05-01 11:44:01,821 - BerlinScraper - INFO - Updated event: Imagined by Nelson Devereaux: J. Hoard + Nelson Devereaux / Asher Kurtz on 2025-05-11 19:00:00
+2025-05-01 11:44:01,888 - BerlinScraper - INFO - Parsed start datetime: 2025-05-14 19:00:00
+2025-05-01 11:44:02,002 - BerlinScraper - INFO - Updated event: The Cherry Pit Presents: Bible Study at Berlin on 2025-05-14 19:00:00
+2025-05-01 11:44:02,057 - BerlinScraper - INFO - Parsed start datetime: 2025-05-15 16:30:00
+2025-05-01 11:44:02,163 - BerlinScraper - INFO - Updated event: Early Evening Jazz: Trius on 2025-05-15 16:30:00
+2025-05-01 11:44:02,275 - BerlinScraper - INFO - Parsed start datetime: 2025-05-15 19:30:00
+2025-05-01 11:44:02,377 - BerlinScraper - INFO - Updated event: Anthony Cox / John C.S. Keston / Suwal Singh on 2025-05-15 19:30:00
+2025-05-01 11:44:02,440 - BerlinScraper - INFO - Parsed start datetime: 2025-05-16 16:30:00
+2025-05-01 11:44:02,525 - BerlinScraper - INFO - Updated event: Early Evening Jazz: Dan Carpel / Chris Graham / Miguel Hurtado on 2025-05-16 16:30:00
+2025-05-01 11:44:02,604 - BerlinScraper - INFO - Parsed start datetime: 2025-05-16 19:30:00
+2025-05-01 11:44:02,714 - BerlinScraper - INFO - Updated event: Eric Jacobson Quartet on 2025-05-16 19:30:00
+2025-05-01 11:44:02,774 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: Chris Wilbourn (aka Felix of Heiruspecs)
+2025-05-01 11:44:02,774 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: Chris Wilbourn (aka Felix of Heiruspecs)
+2025-05-01 11:44:02,775 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: Chris Wilbourn (aka Felix of Heiruspecs)
+2025-05-01 11:44:02,776 - BerlinScraper - INFO - Parsed start datetime: 2025-05-17 16:30:00
+2025-05-01 11:44:02,883 - BerlinScraper - INFO - Updated event: Early Evening Jazz: Adam Linz / Joe Strachan on 2025-05-17 16:30:00
+2025-05-01 11:44:02,972 - BerlinScraper - INFO - Parsed start datetime: 2025-05-17 19:30:00
+2025-05-01 11:44:03,058 - BerlinScraper - INFO - Updated event: Tommaso Moretti’s Inside Out 4tet on 2025-05-17 19:30:00
+2025-05-01 11:44:03,128 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: DJ Amy Pickett B2B Allen Hz
+2025-05-01 11:44:03,128 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: DJ Amy Pickett B2B Allen Hz
+2025-05-01 11:44:03,128 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: DJ Amy Pickett B2B Allen Hz
+2025-05-01 11:44:03,129 - BerlinScraper - INFO - Parsed start datetime: 2025-05-18 19:00:00
+2025-05-01 11:44:03,692 - BerlinScraper - INFO - Updated event: Imagined by Nelson Devereaux: NTHNL + Hidden Bastille + Old Feels on 2025-05-18 19:00:00
+2025-05-01 11:44:03,772 - BerlinScraper - INFO - Parsed start datetime: 2025-05-21 19:00:00
+2025-05-01 11:44:03,972 - BerlinScraper - INFO - Updated event: En El Momento w/ Medium Zach (feat. Sir Spencer) on 2025-05-21 19:00:00
+2025-05-01 11:44:04,037 - BerlinScraper - INFO - Parsed start datetime: 2025-05-22 16:30:00
+2025-05-01 11:44:04,118 - BerlinScraper - INFO - Updated event: Early Evening Jazz: Dale Alexander on 2025-05-22 16:30:00
+2025-05-01 11:44:04,209 - BerlinScraper - INFO - Parsed start datetime: 2025-05-22 19:30:00
+2025-05-01 11:44:04,308 - BerlinScraper - INFO - Updated event: Society of Chemists on 2025-05-22 19:30:00
+2025-05-01 11:44:04,407 - BerlinScraper - INFO - Parsed start datetime: 2025-05-23 16:30:00
+2025-05-01 11:44:04,559 - BerlinScraper - INFO - Updated event: Early Evening Jazz: Matt Blair Trio on 2025-05-23 16:30:00
+2025-05-01 11:44:04,683 - BerlinScraper - INFO - Parsed start datetime: 2025-05-23 19:30:00
+2025-05-01 11:44:05,026 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: JEN-E
+2025-05-01 11:44:05,026 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: JEN-E
+2025-05-01 11:44:05,026 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: JEN-E
+2025-05-01 11:44:05,027 - BerlinScraper - INFO - Parsed start datetime: 2025-05-24 16:30:00
+2025-05-01 11:44:05,210 - BerlinScraper - INFO - Updated event: Early Evening Jazz: Charlie Bruber & Jack Barrett on 2025-05-24 16:30:00
+2025-05-01 11:44:05,395 - BerlinScraper - INFO - Parsed start datetime: 2025-05-24 19:30:00
+2025-05-01 11:44:05,759 - BerlinScraper - INFO - Updated event: Take That Back feat. Joan Hutton & Sue Orfield on 2025-05-24 19:30:00
+2025-05-01 11:44:06,070 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: Radio Pocho (Miguel Vargas & Terrell LaMarr)
+2025-05-01 11:44:06,070 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: Radio Pocho (Miguel Vargas & Terrell LaMarr)
+2025-05-01 11:44:06,070 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: Radio Pocho (Miguel Vargas & Terrell LaMarr)
+2025-05-01 11:44:06,070 - BerlinScraper - INFO - Parsed start datetime: 2025-05-25 19:00:00
+2025-05-01 11:44:06,288 - BerlinScraper - INFO - Updated event: Imagined by Nelson Devereaux: Caley Conway + The Music of Nelson Devereaux + James Taylor on 2025-05-25 19:00:00
+2025-05-01 11:44:06,363 - BerlinScraper - INFO - Parsed start datetime: 2025-05-28 19:00:00
+2025-05-01 11:44:06,460 - BerlinScraper - INFO - Updated event: The Cherry Pit Presents: Bible Study at Berlin on 2025-05-28 19:00:00
+2025-05-01 11:44:06,528 - BerlinScraper - INFO - Parsed start datetime: 2025-05-29 16:30:00
+2025-05-01 11:44:06,640 - BerlinScraper - INFO - Updated event: Early Evening Jazz: Cornbread Harris & Friends on 2025-05-29 16:30:00
+2025-05-01 11:44:06,694 - BerlinScraper - INFO - Parsed start datetime: 2025-05-29 19:30:00
+2025-05-01 11:44:06,810 - BerlinScraper - INFO - Updated event: String Showcase: Artaria Quartet & Ernest Bisong Group on 2025-05-29 19:30:00
+2025-05-01 11:44:06,913 - BerlinScraper - INFO - Parsed start datetime: 2025-05-30 16:30:00
+2025-05-01 11:44:06,998 - BerlinScraper - INFO - Updated event: Early Evening Jazz: WPK Trio on 2025-05-30 16:30:00
+2025-05-01 11:44:07,088 - BerlinScraper - INFO - Parsed start datetime: 2025-05-30 19:30:00
+2025-05-01 11:44:07,178 - BerlinScraper - INFO - Updated event: Black Diamond on 2025-05-30 19:30:00
+2025-05-01 11:44:07,249 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: DJ Wicked
+2025-05-01 11:44:07,250 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: DJ Wicked
+2025-05-01 11:44:07,250 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: DJ Wicked
+2025-05-01 11:44:07,251 - BerlinScraper - INFO - Parsed start datetime: 2025-05-31 19:30:00
+2025-05-01 11:44:07,361 - BerlinScraper - INFO - Updated event: Steven Hobert n Sirclesound on 2025-05-31 19:30:00
+2025-05-01 11:44:07,451 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: Jam E.Z.
+2025-05-01 11:44:07,451 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: Jam E.Z.
+2025-05-01 11:44:07,452 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: Jam E.Z.
+2025-05-01 11:44:07,452 - BerlinScraper - INFO - Parsed start datetime: 2025-06-01 19:00:00
+2025-05-01 11:44:07,582 - BerlinScraper - INFO - Updated event: Sundays With Nona (feat. Isa Gagarin & Walt McClements) on 2025-06-01 19:00:00
+2025-05-01 11:44:07,675 - BerlinScraper - INFO - Parsed start datetime: 2025-06-04 19:00:00
+2025-05-01 11:44:07,765 - BerlinScraper - INFO - Updated event: The Cherry Pit Presents: Bible Study at Berlin on 2025-06-04 19:00:00
+2025-05-01 11:44:07,813 - BerlinScraper - INFO - Parsed start datetime: 2025-06-05 19:00:00
+2025-05-01 11:44:07,908 - BerlinScraper - INFO - Updated event: Matthew Mallinger & IE on 2025-06-05 19:00:00
+2025-05-01 11:44:07,958 - BerlinScraper - INFO - Parsed start datetime: 2025-06-06 19:30:00
+2025-05-01 11:44:08,050 - BerlinScraper - INFO - Updated event: Atlas Tango Project on 2025-06-06 19:30:00
+2025-05-01 11:44:08,099 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: Akko
+2025-05-01 11:44:08,099 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: Akko
+2025-05-01 11:44:08,100 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: Akko
+2025-05-01 11:44:08,100 - BerlinScraper - INFO - Parsed start datetime: 2025-06-08 19:00:00
+2025-05-01 11:44:08,209 - BerlinScraper - INFO - Updated event: Sundays With Nona (feat. Molly Raben & Nat Harvie) on 2025-06-08 19:00:00
+2025-05-01 11:44:08,259 - BerlinScraper - INFO - Parsed start datetime: 2025-06-11 19:00:00
+2025-05-01 11:44:08,413 - BerlinScraper - INFO - Updated event: Freedom to Listen (feat. Peter Brendler, Jon Irabagon, and Mark Ferber) on 2025-06-11 19:00:00
+2025-05-01 11:44:08,499 - BerlinScraper - INFO - Parsed start datetime: 2025-06-12 19:00:00
+2025-05-01 11:44:08,617 - BerlinScraper - INFO - Updated event: Nathan Hanson’s Rope Ladder on 2025-06-12 19:00:00
+2025-05-01 11:44:08,683 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: DJ Blue Funk
+2025-05-01 11:44:08,683 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: DJ Blue Funk
+2025-05-01 11:44:08,683 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: DJ Blue Funk
+2025-05-01 11:44:08,684 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: Medium Zach
+2025-05-01 11:44:08,685 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: Medium Zach
+2025-05-01 11:44:08,685 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: Medium Zach
+2025-05-01 11:44:08,689 - BerlinScraper - INFO - Parsed start datetime: 2025-06-14 19:30:00
+2025-05-01 11:44:08,787 - BerlinScraper - INFO - Updated event: Michael Cain Trio (with Barbara Cohen & Terrell X) on 2025-06-14 19:30:00
+2025-05-01 11:44:08,838 - BerlinScraper - INFO - Parsed start datetime: 2025-06-15 19:00:00
+2025-05-01 11:44:08,925 - BerlinScraper - INFO - Updated event: Sundays With Nona (feat. Enhancement & Dungeon Synth Sunday Crew) on 2025-06-15 19:00:00
+2025-05-01 11:44:09,002 - BerlinScraper - INFO - Parsed start datetime: 2025-06-21 20:00:00
+2025-05-01 11:44:09,102 - BerlinScraper - INFO - Updated event: Damon Locks: List of Demands on 2025-06-21 20:00:00
+2025-05-01 11:44:09,150 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: D. Untethered
+2025-05-01 11:44:09,150 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: D. Untethered
+2025-05-01 11:44:09,150 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: D. Untethered
+2025-05-01 11:44:09,150 - BerlinScraper - INFO - Parsed start datetime: 2025-06-22 19:00:00
+2025-05-01 11:44:09,268 - BerlinScraper - INFO - Updated event: Sundays With Nona (feat. Silversmith) on 2025-06-22 19:00:00
+2025-05-01 11:44:09,317 - BerlinScraper - INFO - Parsed start datetime: 2025-06-25 19:00:00
+2025-05-01 11:44:09,465 - BerlinScraper - INFO - Updated event: The Cherry Pit Presents: Bible Study at Berlin (feat. iiisa) on 2025-06-25 19:00:00
+2025-05-01 11:44:09,534 - BerlinScraper - INFO - Parsed start datetime: 2025-06-29 19:00:00
+2025-05-01 11:44:09,630 - BerlinScraper - INFO - Updated event: Sundays With Nona (feat. Aby Wolf & DJ Dan Ryan) on 2025-06-29 19:00:00
+2025-05-01 11:44:09,710 - BerlinScraper - INFO - Database changes committed
+2025-05-01 11:44:09,710 - BerlinScraper - INFO - Cleaning up resources
+2025-05-01 11:44:09,809 - BerlinScraper - INFO - WebDriver closed
+2025-05-01 11:44:09,809 - BerlinScraper - INFO - Database cursor closed
+2025-05-01 11:44:09,809 - BerlinScraper - INFO - Database connection closed
+2025-05-01 11:44:09,809 - BerlinScraper - INFO - Scraper finished: Berlin | Success: True | Added: 0 | Updated: 49 | Duplicates: 51 | Errors: 0 | Duration: 18.53s
+2025-05-01 11:44:09,809 - BerlinScraper - INFO - Results saved to /Users/musicdaddy/Desktop/venues/backend/scrapers/logs/berlin_20250501_114351_results.json
