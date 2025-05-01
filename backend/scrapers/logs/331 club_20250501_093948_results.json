@@ -1,0 +1,15 @@
+{
+  "scraper_name": "331_club",
+  "success": true,
+  "start_time": "2025-05-01T09:39:48.240548",
+  "end_time": "2025-05-01T09:40:04.651763",
+  "duration_seconds": 16.411215,
+  "added_count": 0,
+  "updated_count": 0,
+  "duplicate_count": 164,
+  "error_count": 0,
+  "added_shows": [],
+  "updated_shows": [],
+  "errors": [],
+  "log_file": "/Users/musicdaddy/Desktop/venues/backend/scrapers/logs/331 club_20250501_093948.log"
+}
