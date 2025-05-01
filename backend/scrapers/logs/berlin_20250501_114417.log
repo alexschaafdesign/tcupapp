@@ -1,0 +1,107 @@
+2025-05-01 11:44:17,328 - BerlinScraper - INFO - Setting up scraper for Berlin
+2025-05-01 11:44:17,937 - BerlinScraper - INFO - Chrome initialized successfully
+2025-05-01 11:44:17,942 - BerlinScraper - INFO - Connecting to database
+2025-05-01 11:44:18,386 - BerlinScraper - INFO - Getting venue ID for Berlin
+2025-05-01 11:44:18,443 - BerlinScraper - INFO - Venue ID for Berlin: 12
+2025-05-01 11:44:18,443 - BerlinScraper - INFO - Setup complete for Berlin
+2025-05-01 11:44:18,444 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar
+2025-05-01 11:44:26,528 - BerlinScraper - INFO - Found 64 event cards
+2025-05-01 11:44:26,529 - BerlinScraper - INFO - Parsed start datetime: 2025-04-30 19:00:00
+2025-05-01 11:44:26,675 - BerlinScraper - INFO - Parsed start datetime: 2025-05-01 18:30:00
+2025-05-01 11:44:26,790 - BerlinScraper - INFO - Parsed start datetime: 2025-05-02 16:30:00
+2025-05-01 11:44:27,149 - BerlinScraper - INFO - Parsed start datetime: 2025-05-02 19:30:00
+2025-05-01 11:44:27,297 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: Kinetic (w/ Shannon Blowtorch)
+2025-05-01 11:44:27,297 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: Kinetic (w/ Shannon Blowtorch)
+2025-05-01 11:44:27,297 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: Kinetic (w/ Shannon Blowtorch)
+2025-05-01 11:44:27,298 - BerlinScraper - INFO - Parsed start datetime: 2025-05-03 16:30:00
+2025-05-01 11:44:27,509 - BerlinScraper - INFO - Parsed start datetime: 2025-05-03 19:30:00
+2025-05-01 11:44:27,649 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: XARED MT
+2025-05-01 11:44:27,650 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: XARED MT
+2025-05-01 11:44:27,651 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: XARED MT
+2025-05-01 11:44:27,652 - BerlinScraper - INFO - Parsed start datetime: 2025-05-04 19:00:00
+2025-05-01 11:44:27,762 - BerlinScraper - INFO - Parsed start datetime: 2025-05-07 19:00:00
+2025-05-01 11:44:27,878 - BerlinScraper - INFO - Parsed start datetime: 2025-05-08 16:30:00
+2025-05-01 11:44:28,123 - BerlinScraper - INFO - Parsed start datetime: 2025-05-08 19:30:00
+2025-05-01 11:44:28,282 - BerlinScraper - INFO - Parsed start datetime: 2025-05-09 16:30:00
+2025-05-01 11:44:28,428 - BerlinScraper - INFO - Parsed start datetime: 2025-05-09 19:30:00
+2025-05-01 11:44:28,591 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: Danny Sigelman
+2025-05-01 11:44:28,591 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: Danny Sigelman
+2025-05-01 11:44:28,592 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: Danny Sigelman
+2025-05-01 11:44:28,593 - BerlinScraper - INFO - Parsed start datetime: 2025-05-10 16:30:00
+2025-05-01 11:44:28,787 - BerlinScraper - INFO - Parsed start datetime: 2025-05-10 19:30:00
+2025-05-01 11:44:28,970 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: McGinnis
+2025-05-01 11:44:28,970 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: McGinnis
+2025-05-01 11:44:28,970 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: McGinnis
+2025-05-01 11:44:28,970 - BerlinScraper - INFO - Parsed start datetime: 2025-05-11 19:00:00
+2025-05-01 11:44:29,273 - BerlinScraper - INFO - Parsed start datetime: 2025-05-14 19:00:00
+2025-05-01 11:44:29,457 - BerlinScraper - INFO - Parsed start datetime: 2025-05-15 16:30:00
+2025-05-01 11:44:29,650 - BerlinScraper - INFO - Parsed start datetime: 2025-05-15 19:30:00
+2025-05-01 11:44:29,815 - BerlinScraper - INFO - Parsed start datetime: 2025-05-16 16:30:00
+2025-05-01 11:44:30,068 - BerlinScraper - INFO - Parsed start datetime: 2025-05-16 19:30:00
+2025-05-01 11:44:30,191 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: Chris Wilbourn (aka Felix of Heiruspecs)
+2025-05-01 11:44:30,191 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: Chris Wilbourn (aka Felix of Heiruspecs)
+2025-05-01 11:44:30,191 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: Chris Wilbourn (aka Felix of Heiruspecs)
+2025-05-01 11:44:30,191 - BerlinScraper - INFO - Parsed start datetime: 2025-05-17 16:30:00
+2025-05-01 11:44:30,522 - BerlinScraper - INFO - Parsed start datetime: 2025-05-17 19:30:00
+2025-05-01 11:44:30,647 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: DJ Amy Pickett B2B Allen Hz
+2025-05-01 11:44:30,647 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: DJ Amy Pickett B2B Allen Hz
+2025-05-01 11:44:30,647 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: DJ Amy Pickett B2B Allen Hz
+2025-05-01 11:44:30,648 - BerlinScraper - INFO - Parsed start datetime: 2025-05-18 19:00:00
+2025-05-01 11:44:30,806 - BerlinScraper - INFO - Parsed start datetime: 2025-05-21 19:00:00
+2025-05-01 11:44:30,933 - BerlinScraper - INFO - Parsed start datetime: 2025-05-22 16:30:00
+2025-05-01 11:44:31,097 - BerlinScraper - INFO - Parsed start datetime: 2025-05-22 19:30:00
+2025-05-01 11:44:31,222 - BerlinScraper - INFO - Parsed start datetime: 2025-05-23 16:30:00
+2025-05-01 11:44:31,395 - BerlinScraper - INFO - Parsed start datetime: 2025-05-23 19:30:00
+2025-05-01 11:44:31,524 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: JEN-E
+2025-05-01 11:44:31,525 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: JEN-E
+2025-05-01 11:44:31,526 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: JEN-E
+2025-05-01 11:44:31,527 - BerlinScraper - INFO - Parsed start datetime: 2025-05-24 16:30:00
+2025-05-01 11:44:31,649 - BerlinScraper - INFO - Parsed start datetime: 2025-05-24 19:30:00
+2025-05-01 11:44:31,851 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: Radio Pocho (Miguel Vargas & Terrell LaMarr)
+2025-05-01 11:44:31,851 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: Radio Pocho (Miguel Vargas & Terrell LaMarr)
+2025-05-01 11:44:31,852 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: Radio Pocho (Miguel Vargas & Terrell LaMarr)
+2025-05-01 11:44:31,852 - BerlinScraper - INFO - Parsed start datetime: 2025-05-25 19:00:00
+2025-05-01 11:44:31,966 - BerlinScraper - INFO - Parsed start datetime: 2025-05-28 19:00:00
+2025-05-01 11:44:32,108 - BerlinScraper - INFO - Parsed start datetime: 2025-05-29 16:30:00
+2025-05-01 11:44:32,241 - BerlinScraper - INFO - Parsed start datetime: 2025-05-29 19:30:00
+2025-05-01 11:44:32,357 - BerlinScraper - INFO - Parsed start datetime: 2025-05-30 16:30:00
+2025-05-01 11:44:32,507 - BerlinScraper - INFO - Parsed start datetime: 2025-05-30 19:30:00
+2025-05-01 11:44:32,626 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: DJ Wicked
+2025-05-01 11:44:32,626 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: DJ Wicked
+2025-05-01 11:44:32,626 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: DJ Wicked
+2025-05-01 11:44:32,627 - BerlinScraper - INFO - Parsed start datetime: 2025-05-31 19:30:00
+2025-05-01 11:44:32,765 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: Jam E.Z.
+2025-05-01 11:44:32,766 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: Jam E.Z.
+2025-05-01 11:44:32,766 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: Jam E.Z.
+2025-05-01 11:44:32,768 - BerlinScraper - INFO - Parsed start datetime: 2025-06-01 19:00:00
+2025-05-01 11:44:32,900 - BerlinScraper - INFO - Parsed start datetime: 2025-06-04 19:00:00
+2025-05-01 11:44:33,536 - BerlinScraper - INFO - Parsed start datetime: 2025-06-05 19:00:00
+2025-05-01 11:44:33,671 - BerlinScraper - INFO - Parsed start datetime: 2025-06-06 19:30:00
+2025-05-01 11:44:33,811 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: Akko
+2025-05-01 11:44:33,811 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: Akko
+2025-05-01 11:44:33,811 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: Akko
+2025-05-01 11:44:33,812 - BerlinScraper - INFO - Parsed start datetime: 2025-06-08 19:00:00
+2025-05-01 11:44:33,988 - BerlinScraper - INFO - Parsed start datetime: 2025-06-11 19:00:00
+2025-05-01 11:44:34,116 - BerlinScraper - INFO - Parsed start datetime: 2025-06-12 19:00:00
+2025-05-01 11:44:34,255 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: DJ Blue Funk
+2025-05-01 11:44:34,255 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: DJ Blue Funk
+2025-05-01 11:44:34,255 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: DJ Blue Funk
+2025-05-01 11:44:34,255 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: Medium Zach
+2025-05-01 11:44:34,256 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: Medium Zach
+2025-05-01 11:44:34,256 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: Medium Zach
+2025-05-01 11:44:34,256 - BerlinScraper - INFO - Parsed start datetime: 2025-06-14 19:30:00
+2025-05-01 11:44:34,392 - BerlinScraper - INFO - Parsed start datetime: 2025-06-15 19:00:00
+2025-05-01 11:44:34,531 - BerlinScraper - INFO - Parsed start datetime: 2025-06-21 20:00:00
+2025-05-01 11:44:34,646 - BerlinScraper - WARNING - Could not find time string for Late Night Lounge: D. Untethered
+2025-05-01 11:44:34,646 - BerlinScraper - WARNING - Skipping datetime parsing due to missing date or time for Late Night Lounge: D. Untethered
+2025-05-01 11:44:34,647 - BerlinScraper - WARNING - Skipping event due to missing/unparsable date/time: Late Night Lounge: D. Untethered
+2025-05-01 11:44:34,648 - BerlinScraper - INFO - Parsed start datetime: 2025-06-22 19:00:00
+2025-05-01 11:44:34,880 - BerlinScraper - INFO - Parsed start datetime: 2025-06-25 19:00:00
+2025-05-01 11:44:35,026 - BerlinScraper - INFO - Parsed start datetime: 2025-06-29 19:00:00
+2025-05-01 11:44:35,190 - BerlinScraper - INFO - Database changes committed
+2025-05-01 11:44:35,191 - BerlinScraper - INFO - Cleaning up resources
+2025-05-01 11:44:35,289 - BerlinScraper - INFO - WebDriver closed
+2025-05-01 11:44:35,289 - BerlinScraper - INFO - Database cursor closed
+2025-05-01 11:44:35,290 - BerlinScraper - INFO - Database connection closed
+2025-05-01 11:44:35,290 - BerlinScraper - INFO - Scraper finished: Berlin | Success: True | Added: 0 | Updated: 0 | Duplicates: 100 | Errors: 0 | Duration: 17.96s
+2025-05-01 11:44:35,290 - BerlinScraper - INFO - Results saved to /Users/musicdaddy/Desktop/venues/backend/scrapers/logs/berlin_20250501_114417_results.json
