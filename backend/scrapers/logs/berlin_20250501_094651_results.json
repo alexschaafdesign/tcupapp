@@ -1,0 +1,15 @@
+{
+  "scraper_name": "berlin",
+  "success": true,
+  "start_time": "2025-05-01T09:46:51.879758",
+  "end_time": "2025-05-01T09:51:55.184706",
+  "duration_seconds": 303.304948,
+  "added_count": 0,
+  "updated_count": 0,
+  "duplicate_count": 64,
+  "error_count": 0,
+  "added_shows": [],
+  "updated_shows": [],
+  "errors": [],
+  "log_file": "/Users/musicdaddy/Desktop/venues/backend/scrapers/logs/berlin_20250501_094651.log"
+}

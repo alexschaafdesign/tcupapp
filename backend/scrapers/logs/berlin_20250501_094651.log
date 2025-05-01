@@ -1,0 +1,93 @@
+2025-05-01 09:46:51,879 - BerlinScraper - INFO - Setting up scraper for Berlin
+2025-05-01 09:46:52,654 - BerlinScraper - INFO - Chrome initialized successfully
+2025-05-01 09:46:52,656 - BerlinScraper - INFO - Connecting to database
+2025-05-01 09:46:52,998 - BerlinScraper - INFO - Getting venue ID for Berlin
+2025-05-01 09:46:53,065 - BerlinScraper - INFO - Venue ID for Berlin: 12
+2025-05-01 09:46:53,066 - BerlinScraper - INFO - Setup complete for Berlin
+2025-05-01 09:46:53,066 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar
+2025-05-01 09:46:58,751 - BerlinScraper - INFO - Found 64 event cards
+2025-05-01 09:46:58,752 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/the-cherry-pit-bible-study-open-jam-minneapolis-april-30
+2025-05-01 09:47:01,075 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/kneebody-cedar-cultural-center
+2025-05-01 09:47:03,340 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/polem-mike-wolter
+2025-05-01 09:47:05,501 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/58-belvedere-granros-keen-power-may-2025
+2025-05-01 09:47:07,743 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/late-night-lounge-kinetic-shannon-blowtorch
+2025-05-01 09:47:19,935 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-05-01 09:47:20,028 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/jc-sanford-chris-olson
+2025-05-01 09:47:22,276 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/max-johnson-3
+2025-05-01 09:47:24,658 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/xared-mt-may-2025
+2025-05-01 09:47:36,848 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-05-01 09:47:36,937 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/nelson-devereaux-residency-week-1
+2025-05-01 09:47:40,836 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/the-cherry-pit-bible-study-open-jam-minneapolis-may-7
+2025-05-01 09:47:43,113 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-willie-august-project-may-2025
+2025-05-01 09:47:45,698 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/dosh-cox-thomson
+2025-05-01 09:47:48,181 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-carpel-goodroad-hurtado-may-2025
+2025-05-01 09:47:50,787 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/ana-everling-quartet
+2025-05-01 09:47:53,936 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/late-night-lounge-danny-sigelman-march-2025-3elb3
+2025-05-01 09:48:06,299 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-05-01 09:48:06,396 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/paul-harper-phil-aaron
+2025-05-01 09:48:09,840 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/michael-sarian-esquina
+2025-05-01 09:48:12,083 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/late-night-lounge-mcginnis-may-2025
+2025-05-01 09:48:24,300 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-05-01 09:48:24,405 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/nelson-devereaux-residency-week-2
+2025-05-01 09:48:27,140 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/the-cherry-pit-bible-study-open-jam-minneapolis-may-14
+2025-05-01 09:48:29,409 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/trius-may-2025
+2025-05-01 09:48:31,802 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/cox-keston-singh
+2025-05-01 09:48:34,054 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-carpel-graham-hurtado-may-2025
+2025-05-01 09:48:36,301 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/eric-jacobson-quartet
+2025-05-01 09:48:38,824 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/chris-wilbourn-may-2025
+2025-05-01 09:48:51,168 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-05-01 09:48:51,463 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-adam-linz-joe-strachan-may-2025
+2025-05-01 09:48:53,828 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/tommaso-moretti-inside-out-4tet-jake-wark-edinho-gerber-ben-dillinger
+2025-05-01 09:48:56,068 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/late-night-lounge-amy-pickett-allen-hz
+2025-05-01 09:49:08,223 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-05-01 09:49:08,368 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/nelson-devereaux-residency-week-3
+2025-05-01 09:49:12,086 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/medium-zach-sir-spencer
+2025-05-01 09:49:14,739 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-dale-alexander-feb-2025-slh34-hk9es
+2025-05-01 09:49:17,013 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/society-of-chemists-may-2025
+2025-05-01 09:49:19,320 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-matt-blair-trio
+2025-05-01 09:49:21,596 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/devin-gray-trio-mark-feldman-russ-johnson
+2025-05-01 09:49:23,861 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/late-night-lounge-jen-e
+2025-05-01 09:49:36,038 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-05-01 09:49:36,144 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/charlie-bruber-jack-barrett-may-2025
+2025-05-01 09:49:38,420 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/take-that-back-april-2025
+2025-05-01 09:49:40,651 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/radio-pocho-may-2025
+2025-05-01 09:49:52,825 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-05-01 09:49:52,908 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/nelson-devereaux-residency-week-4
+2025-05-01 09:49:55,421 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/the-cherry-pit-bible-study-open-jam-minneapolis-may-28
+2025-05-01 09:49:57,715 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/cornbread-harris
+2025-05-01 09:50:00,466 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/string-showcase-artaria-quartet-ernest-bisong-group
+2025-05-01 09:50:02,724 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/early-evening-jazz-wpk-trio
+2025-05-01 09:50:05,358 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/black-diamond-chicago
+2025-05-01 09:50:08,617 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/dj-wicked-may-2025
+2025-05-01 09:50:20,831 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-05-01 09:50:20,913 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/steven-hobert-sirclesound
+2025-05-01 09:50:23,176 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/late-night-lounge-jam-e-z-may-2025
+2025-05-01 09:50:35,391 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-05-01 09:50:35,524 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/nona-invie-residency-week-1
+2025-05-01 09:50:37,786 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/the-cherry-pit-bible-study-open-jam-minneapolis-june-4
+2025-05-01 09:50:40,048 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/matthew-mallinger-ie
+2025-05-01 09:50:42,270 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/atlas-tango-quartet
+2025-05-01 09:50:44,753 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/akko-june-2025
+2025-05-01 09:50:56,925 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-05-01 09:50:57,027 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/nona-invie-residency-week-2
+2025-05-01 09:50:59,286 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/peter-brendler-jon-irabagon-mark-ferber
+2025-05-01 09:51:01,537 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/nathan-hanson-rope-ladder-2025
+2025-05-01 09:51:03,791 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/late-night-lounge-dj-blue-funk-june-12
+2025-05-01 09:51:15,982 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-05-01 09:51:16,063 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/late-night-lounge-medium-zach
+2025-05-01 09:51:28,313 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-05-01 09:51:28,402 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/michael-cain-trio-terrell-x-barbara-cohen
+2025-05-01 09:51:30,708 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/nona-invie-residency-week-3
+2025-05-01 09:51:32,980 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/damon-locks-list-of-demands
+2025-05-01 09:51:35,768 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/d-untethered-june-2025
+2025-05-01 09:51:47,981 - BerlinScraper - WARNING - Timeout waiting for element: .event-time-localized-start
+2025-05-01 09:51:48,094 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/nona-invie-residency-week-4
+2025-05-01 09:51:50,401 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/the-cherry-pit-bible-study-open-jam-minneapolis-iiisa
+2025-05-01 09:51:52,720 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/nona-invie-residency-week-5
+2025-05-01 09:51:55,011 - BerlinScraper - INFO - Database changes committed
+2025-05-01 09:51:55,011 - BerlinScraper - INFO - Cleaning up resources
+2025-05-01 09:51:55,184 - BerlinScraper - INFO - WebDriver closed
+2025-05-01 09:51:55,184 - BerlinScraper - INFO - Database cursor closed
+2025-05-01 09:51:55,184 - BerlinScraper - INFO - Database connection closed
+2025-05-01 09:51:55,184 - BerlinScraper - INFO - Scraper finished: Berlin | Success: True | Added: 0 | Updated: 0 | Duplicates: 64 | Errors: 0 | Duration: 303.30s
+2025-05-01 09:51:55,185 - BerlinScraper - INFO - Results saved to /Users/musicdaddy/Desktop/venues/backend/scrapers/logs/berlin_20250501_094651_results.json
