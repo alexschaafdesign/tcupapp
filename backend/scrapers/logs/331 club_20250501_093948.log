@@ -1,0 +1,18 @@
+2025-05-01 09:39:48,240 - 331 ClubScraper - INFO - Setting up scraper for 331 Club
+2025-05-01 09:39:49,029 - 331 ClubScraper - INFO - Chrome initialized successfully
+2025-05-01 09:39:49,038 - 331 ClubScraper - INFO - Connecting to database
+2025-05-01 09:39:49,466 - 331 ClubScraper - INFO - Getting venue ID for 331 Club
+2025-05-01 09:39:49,537 - 331 ClubScraper - INFO - Venue ID for 331 Club: 9
+2025-05-01 09:39:49,537 - 331 ClubScraper - INFO - Setup complete for 331 Club
+2025-05-01 09:39:49,537 - 331 ClubScraper - INFO - Navigating to https://331club.com/#calendar
+2025-05-01 09:39:52,947 - 331 ClubScraper - INFO - Looking for 'See all upcoming events' button...
+2025-05-01 09:39:52,947 - 331 ClubScraper - WARNING - 'See all upcoming events' button not found or not clickable: BaseScraper.wait_for_element() got an unexpected keyword argument 'clickable'
+2025-05-01 09:39:52,947 - 331 ClubScraper - INFO - Continuing with currently visible events...
+2025-05-01 09:39:52,992 - 331 ClubScraper - INFO - Found 93 events on the page
+2025-05-01 09:40:04,552 - 331 ClubScraper - INFO - Database changes committed
+2025-05-01 09:40:04,554 - 331 ClubScraper - INFO - Cleaning up resources
+2025-05-01 09:40:04,651 - 331 ClubScraper - INFO - WebDriver closed
+2025-05-01 09:40:04,651 - 331 ClubScraper - INFO - Database cursor closed
+2025-05-01 09:40:04,651 - 331 ClubScraper - INFO - Database connection closed
+2025-05-01 09:40:04,651 - 331 ClubScraper - INFO - Scraper finished: 331 Club | Success: True | Added: 0 | Updated: 0 | Duplicates: 164 | Errors: 0 | Duration: 16.41s
+2025-05-01 09:40:04,652 - 331 ClubScraper - INFO - Results saved to /Users/musicdaddy/Desktop/venues/backend/scrapers/logs/331 club_20250501_093948_results.json

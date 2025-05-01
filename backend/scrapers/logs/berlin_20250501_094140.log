@@ -1,0 +1,14 @@
+2025-05-01 09:41:40,874 - BerlinScraper - INFO - Setting up scraper for Berlin
+2025-05-01 09:41:41,799 - BerlinScraper - INFO - Chrome initialized successfully
+2025-05-01 09:41:41,816 - BerlinScraper - INFO - Connecting to database
+2025-05-01 09:41:42,175 - BerlinScraper - INFO - Getting venue ID for Berlin
+2025-05-01 09:41:42,237 - BerlinScraper - INFO - Venue ID for Berlin: 12
+2025-05-01 09:41:42,238 - BerlinScraper - INFO - Setup complete for Berlin
+2025-05-01 09:41:42,238 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar
+2025-05-01 09:41:46,946 - BerlinScraper - INFO - Found 64 event cards
+2025-05-01 09:41:46,946 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/the-cherry-pit-bible-study-open-jam-minneapolis-april-30
+2025-05-01 09:41:49,288 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/kneebody-cedar-cultural-center
+2025-05-01 09:41:51,547 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/polem-mike-wolter
+2025-05-01 09:41:53,833 - BerlinScraper - INFO - Added event: Early Evening Jazz: Polem (Mike Wolter / Kameron Markworth / Joey Van Phillips) on 2025-05-02 16:30:00
+2025-05-01 09:41:53,833 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/58-belvedere-granros-keen-power-may-2025
+2025-05-01 09:41:56,094 - BerlinScraper - INFO - Navigating to https://www.berlinmpls.com/calendar/late-night-lounge-kinetic-shannon-blowtorch
