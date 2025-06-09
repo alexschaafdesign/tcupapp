@@ -252,10 +252,10 @@ const ListOfAllThreads = ({ posts, pagination, onPageChange }) => {
 
       {pagination && pagination.pages > 1 && (
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-          <Pagination 
-            count={pagination.pages} 
-            page={pagination.page} 
-            onChange={(e, page) => onPageChange(page)}
+          <Pagination
+            count={pagination.pages}
+            page={pagination.page}
+            onChange={onPageChange}
             color="primary"
             size={isMobile ? "small" : "medium"}
           />
