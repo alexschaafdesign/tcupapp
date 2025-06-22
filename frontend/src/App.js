@@ -140,7 +140,7 @@ function App() {
         {/* Public routes with layout */}
         <Route element={<Layout publicAccess={true} />}>
           <Route path="/" element={<MainChatPage />} />
-          <Route path="/shows" element={<ShowsTable />} />
+          <Route path="/shows" element={<MainChatPage />} />
           <Route path="/shows/:id" element={<ShowProfile />} />
           <Route path="/bands" element={<FullBandList />} />
           <Route path="/bands/:bandSlug" element={<BandProfile />} />
