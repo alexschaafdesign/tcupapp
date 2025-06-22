@@ -24,7 +24,6 @@ const getNavLinks = (isDevMode) => {
   return {
     mainLinks: [
       { text: "chat", path: "/chat", icon: <ChatIcon fontSize="small" /> },
-      { text: "show list", path: "/shows", icon: <EventIcon fontSize="small" /> }
     ],
     resourceLinks: [
       { text: "venues", path: "/venues", icon: <PlaceIcon fontSize="small" /> },
