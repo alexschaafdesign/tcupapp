@@ -209,41 +209,7 @@ const CreatePost = ({ onPostCreated, tags, setTags }) => {
         autoFocus
       />
 
-      {/* *** Conditionally render the imported fields section *** */}
-      {isAdmin && (
-        <React.Fragment>
-          {/* Imported fields row */}
-          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-            <TextField
-              label="Imported Author Name (Optional)"
-              value={importedAuthorName}
-              onChange={(e) => setImportedAuthorName(e.target.value)}
-              variant="outlined"
-              fullWidth
-            />
-            <TextField
-              label="Imported Date (Optional)"
-              value={importedDate}
-              onChange={(e) => setImportedDate(e.target.value)}
-              variant="outlined"
-              fullWidth
-              placeholder="e.g. 01/02/2018 3:45 PM"
-            />
-          </Box>
 
-          {/* Imported Avatar URL field */}
-          <TextField
-            label="Imported Avatar URL (Optional)"
-            value={importedAvatarUrl}
-            onChange={(e) => setImportedAvatarUrl(e.target.value)}
-            variant="outlined"
-            fullWidth
-            placeholder="e.g. https://example.com/myavatar.png"
-            sx={{ mb: 2 }}
-          />
-        </React.Fragment>
-      )}
-      {/* *** End of conditional section *** */}
 
 
       <EditorWithFormatting
