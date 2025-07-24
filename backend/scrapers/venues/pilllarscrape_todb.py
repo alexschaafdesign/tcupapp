@@ -6,7 +6,7 @@ import json
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
-from db_utils import connect_to_db, get_venue_id, insert_show
+from backend.scrapers.utils.db_utils import connect_to_db, get_venue_id, insert_show
 
 # Database connection
 conn = connect_to_db()

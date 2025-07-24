@@ -68,6 +68,9 @@ const ForumContainer = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // 👈 Add this line here
+
+
         let url = `${apiUrl}/posts`;
         
         // Add page and limit parameters
@@ -75,8 +78,8 @@ const ForumContainer = () => {
         if (selectedTags.length > 0) {
           queryParams.append('tags', selectedTags.join(','));
         }
-        queryParams.append('page', pagination.page.toString());
-        queryParams.append('limit', pagination.limit.toString());
+        queryParams.append('page', (pagination.page ?? 1).toString());
+        queryParams.append('limit', (pagination.limit ?? 20).toString());
         
         url = `${url}?${queryParams.toString()}`;
         
@@ -88,15 +91,15 @@ const ForumContainer = () => {
         console.log('Raw API response:', data);
         
         // Handle the response format correctly
-        if (data && data.posts) {
+        if (data && Array.isArray(data.posts)) {
           console.log("Setting posts from data.posts:", data.posts.length);
           setPosts(data.posts);
-          setPagination(data.pagination || pagination);
-        } else if (Array.isArray(data)) {
-          console.log("Setting posts from array data:", data.length);
-          setPosts(data);
+          setPagination(prev => ({
+            ...prev,
+            ...data.pagination
+          }));
         } else {
-          console.log("No posts found in data, setting empty array");
+          console.warn("Unexpected response format from /posts:", data);
           setPosts([]);
         }
       } catch (error) {
@@ -111,6 +114,7 @@ const ForumContainer = () => {
   }, [apiUrl, selectedTags, pagination.page, pagination.limit]);
 
   const handlePageChange = (event, newPage) => {
+    console.log("Page clicked:", newPage);
     setPagination(prev => ({
       ...prev,
       page: newPage

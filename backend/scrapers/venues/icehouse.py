@@ -13,7 +13,7 @@ from selenium.webdriver.support.ui import WebDriverWait # Added
 
 # --- Import Real db_utils ---
 try:
-    from db_utils import connect_to_db, get_venue_id, insert_show
+    from backend.scrapers.utils.db_utils import connect_to_db, get_venue_id, insert_show
 except ImportError:
     sys.stderr.write("ERROR: Failed to import from db_utils. Make sure db_utils.py is accessible.\n")
     # Define dummy functions to prevent NameError if import fails, allowing script to exit gracefully
