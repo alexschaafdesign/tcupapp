@@ -43,7 +43,15 @@ router.get('/', async (req, res) => {
       }
         const { data: threadsData, count } = await query;
         if (!threadsData || threadsData.length === 0) {
-            return res.json([]);
+            return res.json({
+                posts: [],
+                pagination: {
+                    page,
+                    limit,
+                    total: count || 0,
+                    pages: Math.ceil((count || 0) / limit)
+                }
+            });
         }
         
         const postIds = threadsData.map(post => post.id);

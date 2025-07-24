@@ -11,8 +11,8 @@ export const useAuth = () => {
 
   // Add debugging logs only when user exists to avoid console spam
   if (user) {
-    console.log('Auth0 user object:', user);
-    console.log('Roles namespace check:', user?.['https://tcupboard.org/roles']);
+    // console.log('Auth0 user object:', user);
+    // console.log('Roles namespace check:', user?.['https://tcupboard.org/roles']);
   }
   
   // Role utilities

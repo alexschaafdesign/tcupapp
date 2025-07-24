@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
-from db_utils import connect_to_db, insert_show, get_venue_id
+from backend.scrapers.utils.db_utils import connect_to_db, insert_show, get_venue_id
 
 DEFAULT_IMAGE = "https://res.cloudinary.com/dsll3ms2c/image/upload/v1734876745/Resource_guyvdn.jpg"
 

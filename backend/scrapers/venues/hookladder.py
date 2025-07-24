@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
-from db_utils import connect_to_db, insert_show, get_venue_id
+from backend.scrapers.utils.db_utils import connect_to_db, insert_show, get_venue_id
 
 # Initialize WebDriver
 driver = webdriver.Chrome()
