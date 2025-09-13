@@ -70,11 +70,14 @@ import RadioResourcesPage from "./pages/Resources/RadioResources.js";
 import PressResourcesPage from "./pages/Resources/PressResources.js";
 import VenuesTableEmbed from "./pages/Venues/VenuesTableEmbed.js";
 import DigitalZine3 from "./pages/DigitalZine3.js";
+import usePlausiblePageViews from "./hooks/usePlausiblePageViews.js";
 
 
 function App() {
   const { isAuthenticated, user, isLoading } = useAuth0();
   const { callApi } = useApi();
+
+  usePlausiblePageViews(); 
 
   console.log("NODE_ENV:", process.env.NODE_ENV);
 
