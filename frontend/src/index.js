@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
@@ -7,8 +7,6 @@ import App from './App.js';
 import theme from './styles/theme.js';
 import * as Sentry from "@sentry/react";
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-
-
 
 // Disable React's default error overlay in development mode
 if (process.env.NODE_ENV === "development") {
@@ -42,7 +40,6 @@ console.log('Current origin:', currentOrigin);
 let redirectUri = `${currentOrigin}/callback`;
 let logoutReturnTo = currentOrigin;
 
-// Override with environment-specific values if needed
 if (currentEnv === 'staging') {
   redirectUri = 'https://staging.tcupboard.org/callback';
   logoutReturnTo = 'https://staging.tcupboard.org';
@@ -55,6 +52,21 @@ console.log('Redirect URI:', redirectUri);
 console.log('Logout Return To:', logoutReturnTo);
 console.log('Auth0 Domain:', process.env.REACT_APP_AUTH0_DOMAIN);
 console.log('Auth0 Client ID:', process.env.REACT_APP_AUTH0_CLIENT_ID);
+
+// --- 🔹 Load Plausible only in production ---
+function loadPlausible() {
+  if (process.env.NODE_ENV === "production") {
+    if (!document.getElementById("plausible-script")) {
+      const script = document.createElement("script");
+      script.defer = true;
+      script.dataset.domain = "tcupboard.org";
+      script.src = "https://plausible.io/js/script.js";
+      script.id = "plausible-script";
+      document.head.appendChild(script);
+      console.log("✅ Plausible script loaded");
+    }
+  }
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -80,11 +92,13 @@ root.render(
       );
     }}
   >
-    
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <App />
+        {/* Load Plausible when app mounts */}
+        <PlausibleWrapper>
+          <App />
+        </PlausibleWrapper>
       </Router>
     </ThemeProvider>
   </Auth0Provider>
@@ -93,4 +107,11 @@ root.render(
 serviceWorkerRegistration.register();
 localStorage.removeItem('new_pwa_notice_shown');
 
+// --- 🔹 Wrapper to ensure Plausible loads on mount ---
+function PlausibleWrapper({ children }) {
+  useEffect(() => {
+    loadPlausible();
+  }, []);
 
+  return children;
+}
