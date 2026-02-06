@@ -22,8 +22,11 @@ frontend/node_modules/.cache/
 .env.development
 .env.development
 
+*.csr
+
 google-credentials.json
 
+.claude/
 
 # Ignore build folder
 build/
