@@ -14,18 +14,9 @@
 
 | Package | Installed | Current | Issue |
 |---------|-----------|---------|-------|
-| `multer` | `1.4.5-lts.1` | v2.0.2 | **Security vulnerability** — DoS via memory leak in <2.0 |
 | `multer-storage-cloudinary` | `4.0.0` | 4.0.0 | **Unmaintained** — last updated 6 years ago; conflicts with Cloudinary v2 |
 | `cloudinary` | `^1.41.3` | v2.9.0 | Major version behind; v2 is recommended |
 | `express` | `^4.21.1` | v5.2.1 | Express 5 is now stable (March 2025) |
-
-## Module System Inconsistency
-
-The project is `"type": "module"` (ESM), but one file uses CommonJS `require()` with ESM `export`:
-
-- `routes/venue-ratings.js` — uses `const express = require('express')` + `export default router`
-
-This should be converted to full ESM (`import express from 'express'`).
 
 ## Other Issues
 
