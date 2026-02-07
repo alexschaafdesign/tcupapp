@@ -1,6 +1,5 @@
 {
-  "name": "client",
-  "version": "0.1.0",
+  "name": "@repo/web",
   "private": true,
   "homepage": "https://tcupboard.org",
   "dependencies": {

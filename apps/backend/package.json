@@ -1,7 +1,5 @@
 {
-  "name": "venues",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "@repo/backend",
   "type": "module",
   "scripts": {
     "server": "NODE_ENV=development nodemon server.js",
@@ -12,10 +10,6 @@
     "migrate:make": "knex migrate:make --knexfile ./migrate-config.cjs --migrations-extension cjs",
     "migrate:rollback": "knex migrate:rollback --env development --knexfile ./migrate-config.cjs"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "@sendgrid/mail": "^8.1.4",
     "@supabase/supabase-js": "^2.47.10",
