@@ -66,6 +66,7 @@
     "start": "PORT=3003 react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "lint": "biome lint",
     "build:staging": "cross-env NODE_ENV=production react-scripts build",
     "build:production": "cross-env NODE_ENV=production react-scripts build"
   },
@@ -89,6 +90,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@biomejs/biome": "^2.3.14",
     "cross-env": "^7.0.3",
     "gh-pages": "^6.2.0",
     "workbox-webpack-plugin": "^7.3.0"
