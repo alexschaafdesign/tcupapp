@@ -3,13 +3,6 @@
 ## Priorities
 - Upgrade packages with security vulnerabilities
 
-## Duplicate Libraries
-
-| Category | Packages | Recommendation |
-|----------|----------|----------------|
-| Auth middleware | `express-jwt` (unused) + `express-oauth2-jwt-bearer` (used) | Keep **express-oauth2-jwt-bearer** only |
-| DB migrations | `node-pg-migrate` (unused) + `knex` (used) | Keep **knex** only |
-
 ## Security / Outdated
 
 | Package | Installed | Current | Issue |
