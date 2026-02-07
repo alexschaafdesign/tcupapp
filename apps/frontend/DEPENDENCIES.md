@@ -21,11 +21,11 @@
 
 | Package | What it is |
 |---------|-----------|
-| `@react-spring/web` | Animation library |
+| `@react-spring/web`   | Animation library |
 | `react-awesome-reveal` | Animation library |
-| `gsap` | Animation library |
-| `@react-three/fiber` | 3D rendering |
-| `@react-three/drei` | 3D rendering helpers |
+| `gsap` ✅| Animation library |
+| `@react-three/fiber` ✅ | 3D rendering |
+| `@react-three/drei` ✅| 3D rendering helpers |
 | `react-dropzone` | File upload (filepond is used instead) |
 | `react-easy-crop` | Image cropping |
 | `react-paginate` | Pagination |
