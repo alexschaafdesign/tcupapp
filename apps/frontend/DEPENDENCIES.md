@@ -2,7 +2,11 @@
 
 ## Questions
 - Why encryption? (`tweetnacl` used in 1 file: `EncryptionService.js`)
-- Why 3D rendering? (`@react-three/*` has 0 imports — never shipped?)
+
+## Priorities
+- Prune/consolidate dependencies
+- Migrate to Vite
+- Migrate to Typescript
 
 ## Deprecated / Archived
 
@@ -16,21 +20,6 @@
 | `auth0-lock` | Legacy, discouraged by Auth0 | `@auth0/auth0-react` + Universal Login (already installed) |
 | `prop-types` | Ignored in React 19+, maintenance-only | TypeScript |
 | `tweetnacl-util` | Deprecated by maintainer | `@stablelib/utf8` + `@stablelib/base64` |
-
-## Completely Unused (0 imports in `src/`)
-
-| Package | What it is |
-|---------|-----------|
-| `@react-spring/web`   | Animation library |
-| `react-awesome-reveal` | Animation library |
-| `gsap` ✅| Animation library |
-| `@react-three/fiber` ✅ | 3D rendering |
-| `@react-three/drei` ✅| 3D rendering helpers |
-| `react-dropzone` | File upload (filepond is used instead) |
-| `react-easy-crop` | Image cropping |
-| `react-paginate` | Pagination |
-| `http-proxy-middleware` | CRA proxy config |
-| `auth0-lock` | Legacy Auth0 widget |
 
 ## Duplicate Libraries (pick one)
 
